@@ -1,0 +1,94 @@
+server:
+  port: 9081
+
+spring:
+  application:
+    name: tm-lc-service
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 20
+    hibernate:
+      show_sql: true
+      naming:
+        physical-strategy: 'org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy'
+      dialect: 'org.hibernate.dialect.MySQL8Dialect'
+      ddl-auto: 'validate'
+      jdbc:
+        use_scrollable_resultset: true
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    jdbc-url: 'jdbc:mysql://127.0.0.1/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull'
+    url: 'jdbc:mysql://127.0.0.1/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull'
+    username: 'root'
+    password: 'Lucky#2018'
+    driver-class-name: 'com.mysql.cj.jdbc.Driver'
+    filters: stat
+    maxActive: 10
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+    auto-commit: true
+    default-auto-commit: true
+    base:
+      name: base
+      jdbc-url: jdbc:mysql://127.0.0.1/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+      url: jdbc:mysql://127.0.0.1/test?useUnicode=true&charaterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: Lucky#2018
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      filters: stat
+      maxActive: 10
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
+      auto-commit: true
+      default-auto-commit: true
+
+  session:
+    store-type: jdbc
+    timeout: 86400s
+
+  security:
+    user:
+      name: testman
+      password: 'testman==running996'
+
+elide:
+  modelPackage: 'com.tm.lc.models'
+  pageSize: 20
+  maxPageSize: 100
+  json-api:
+    path: /lc/json/api
+    enabled: true
+  # 如果不加下面的graphql配置，启动会报错
+  graphql:
+    path: /lc/graphql/api
+    enabled: true
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@localhost:8761/eureka/

@@ -1,0 +1,10 @@
+export interface StepNode {
+    type: string;
+    disabled: boolean;
+    level: number;
+    title: string;
+    key: string;
+    isLeaf: boolean;
+    children: StepNode[];
+    define: any;
+}

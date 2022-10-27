@@ -1,0 +1,32 @@
+package com.tm.lc.models.testmanage;
+
+import com.tm.lc.hooks.EntityPublicCreateHook;
+import com.tm.lc.hooks.EntityPublicModifyHook;
+import com.tm.lc.models.CommonSixItemsElideModel;
+import com.yahoo.elide.annotation.Include;
+import com.yahoo.elide.annotation.LifeCycleHookBinding;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+
+import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
+import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.UPDATE;
+import static com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase.PRECOMMIT;
+
+@Table(name = "api_ip_port_config")
+@Include(name="api_ip_port_config")
+@Entity
+@Getter
+@Setter
+@LifeCycleHookBinding(operation = CREATE, phase = PRECOMMIT, hook = EntityPublicCreateHook.class)
+@LifeCycleHookBinding(operation = UPDATE, phase = PRECOMMIT, hook = EntityPublicModifyHook.class)
+public class ApiIpPortConfig extends CommonSixItemsElideModel {
+    private String name;
+    private String url;
+    private String ip;
+    private String port;
+    @ManyToOne
+    @JoinColumn(name = "env_id", referencedColumnName="id")
+    private RunEnv runEnv;
+}
