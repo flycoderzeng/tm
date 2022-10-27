@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.DataDictMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.DataDictModel" >
+        <id column="display" property="display" jdbcType="VARCHAR" />
+        <result column="value" property="value" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select display,value from data_dict where data_type_id=#{dataTypeId,jdbcType=INTEGER}
+    </select>
+</mapper>

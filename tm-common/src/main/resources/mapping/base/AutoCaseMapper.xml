@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.AutoCaseMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.AutoCase" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="steps" property="steps" jdbcType="LONGVARCHAR" />
+        <result column="last_run_env_id" property="lastRunEnvId" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="group_variables" property="groupVariables" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectByPrimaryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+            t1.*, t2.name, t2.description
+        from auto_cases t1, data_nodes t2
+        where t1.id=#{id,jdbcType=INTEGER} and t1.id=t2.id and t2.data_type_id=6
+    </select>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.AutoCase"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into auto_cases
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="type != null" >
+                type,
+            </if>
+            <if test="steps != null" >
+                steps,
+            </if>
+            <if test="lastRunEnvId != null" >
+                last_run_env_id,
+            </if>
+            <if test="groupVariables != null" >
+                group_variables,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="type != null" >
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="steps != null" >
+                #{steps,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="lastRunEnvId != null" >
+                #{lastRunEnvId,jdbcType=INTEGER},
+            </if>
+            <if test="group_variables != null" >
+                #{groupVariables,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.AutoCase">
+        update auto_cases
+        <set >
+            <if test="type != null" >
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="steps != null" >
+                steps = #{steps,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="lastRunEnvId != null" >
+                last_run_env_id = #{lastRunEnvId,jdbcType=INTEGER},
+            </if>
+            <if test="groupVariables != null" >
+                group_variables = #{lastRunEnvId,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

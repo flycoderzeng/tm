@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.PlanCaseMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.PlanCase" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="plan_id" property="planId" jdbcType="INTEGER" />
+        <result column="case_id" property="caseId" jdbcType="INTEGER" />
+        <result column="seq" property="seq" jdbcType="INTEGER" />
+        <result column="case_name" property="caseName" jdbcType="VARCHAR"/>
+        <result column="case_create_time" property="caseCreateTime" jdbcType="TIMESTAMP" />
+        <result column="case_create_username" property="caseCreateUsername" jdbcType="VARCHAR" />
+        <result column="case_modify_time" property="caseModifyTime" jdbcType="TIMESTAMP" />
+        <result column="case_modify_username" property="caseModifyUsername" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.PlanCase"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into plan_case
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="planId != null" >
+                plan_id,
+            </if>
+            <if test="caseId != null" >
+                case_id,
+            </if>
+            <if test="seq != null" >
+                seq,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="planId != null" >
+                #{planId,jdbcType=INTEGER},
+            </if>
+            <if test="caseId != null" >
+                #{caseId,jdbcType=INTEGER},
+            </if>
+            <if test="seq != null" >
+                #{seq,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.PlanCase">
+        update plan_case
+        <set >
+            <if test="planId != null" >
+                plan_id = #{planId,jdbcType=INTEGER},
+            </if>
+            <if test="caseId != null" >
+                case_id = #{caseId,jdbcType=INTEGER},
+            </if>
+            <if test="seq != null" >
+                seq = #{seq,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <update id="batchInsert" parameterType="com.tm.common.base.model.PlanCase">
+        INSERT INTO plan_case
+        (id, plan_id, case_id, seq)
+        VALUES
+        <foreach collection ="planCaseList" item="planCase" separator =",">
+            (null, #{planCase.planId}, #{planCase.caseId}, #{planCase.seq})
+        </foreach >
+    </update>
+
+    <delete id="deleteByPlanId">
+        delete from plan_case where plan_id=#{planId,jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteByPrimaryKeyList">
+        delete from plan_case where plan_id=#{planId,jdbcType=INTEGER} and id in
+        <foreach collection="idList" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultMap="BaseResultMap">
+        select
+        t.*
+            from
+        (
+        select t3.*, t4.username as case_create_username, t5.username as case_modify_username from (select
+         t1.*, t2.add_user_id, t2.add_time as case_create_time, t2.last_modify_user_id, t2.last_modify_time as case_modify_time,
+            t2.name as case_name
+          from plan_case t1, data_nodes t2
+           where t1.case_id=t2.id and t2.data_type_id=6) t3
+            left join users t4 on t3.add_user_id=t4.id
+             left join users t5 on t3.last_modify_user_id=t5.id) t
+        where 1=1 and plan_id=#{planId,jdbcType=INTEGER}
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+        <if test="order != null" >
+            order by ${order}
+        </if>
+        <if test="sort != null" >
+            ${sort}
+        </if>
+        limit #{offset} , #{pageSize}
+    </select>
+
+    <select id="countList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultType="java.lang.Integer">
+        select
+        count(*)
+        from
+        (
+        select t3.*, t4.username as case_create_username, t5.username as case_modify_username from (select
+        t1.*, t2.add_user_id, t2.add_time as case_create_time, t2.last_modify_user_id, t2.last_modify_time as case_modify_time,
+        t2.name as case_name
+        from plan_case t1, data_nodes t2
+        where t1.case_id=t2.id and t2.data_type_id=6) t3
+        left join users t4 on t3.add_user_id=t4.id
+        left join users t5 on t3.last_modify_user_id=t5.id) t
+        where 1=1 and plan_id=#{planId,jdbcType=INTEGER}
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+    </select>
+
+    <select id="selectMaxSeq" resultType="java.lang.Integer">
+        select max(seq) from plan_case where plan_id=#{planId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByPlanIdAndCaseId" resultMap="BaseResultMap">
+        select * from plan_case where plan_id=#{planId,jdbcType=INTEGER} and case_id=#{caseId,jdbcType=INTEGER}
+    </select>
+
+    <update id="increaseSeq">
+        update plan_case set seq=seq+1 where plan_id=#{planId,jdbcType=INTEGER} and seq &gt;=#{baseSeq,jdbcType=INTEGER}
+    </update>
+</mapper>

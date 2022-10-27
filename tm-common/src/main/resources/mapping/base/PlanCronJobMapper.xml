@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.PlanCronJobMapper" >
+  <resultMap id="BaseResultMap" type="com.tm.common.base.model.PlanCronJob" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="cron_expression" property="cronExpression" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="last_run_time" property="lastRunTime" jdbcType="TIMESTAMP" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, description, cron_expression, status, last_run_time, add_time, add_user, last_modify_time, last_modify_user
+  </sql>
+
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    update plan_cron_jobs set status=1 where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from plan_cron_jobs
+        where id = #{id,jdbcType=INTEGER} and status=0
+    </select>
+
+    <select id="queryList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from plan_cron_jobs
+        where 1=1 and status=0
+        <if test="area != null and area == 1">
+            and add_user = #{loginUsername, jdbcType=VARCHAR}
+        </if>
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+              <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                   ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+              </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+        <if test="order != null and order != '' and sort != null and sort != ''">
+            order by ${order} ${sort}
+        </if>
+        limit #{offset} , #{pageSize}
+    </select>
+
+
+    <select id="countList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultType="java.lang.Integer">
+        select
+        count(*)
+        from plan_cron_jobs
+        where 1=1 and status=0
+        <if test="area != null and area == 1">
+            and add_user = #{loginUsername, jdbcType=VARCHAR}
+        </if>
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+    </select>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.PlanCronJob">
+        update plan_cron_jobs
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null" >
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="cronExpression != null" >
+                cron_expression = #{cronExpression,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="lastRunTime != null" >
+                last_run_time = #{lastRunTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addTime != null" >
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                add_user = #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user = #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.PlanCronJob"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into plan_cron_jobs
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="description != null" >
+                description,
+            </if>
+            <if test="cronExpression != null" >
+                cron_expression,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+            <if test="lastRunTime != null" >
+                last_run_time,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUser != null" >
+                add_user,
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time,
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null" >
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="cronExpression != null" >
+                #{cronExpression,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="lastRunTime != null" >
+                #{lastRunTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

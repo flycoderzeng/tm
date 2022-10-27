@@ -1,0 +1,27 @@
+package com.tm.worker.controller;
+
+import com.tm.common.base.model.User;
+import com.tm.worker.config.GlobalHandlerInterceptor;
+import com.tm.worker.ehcache.EhcacheService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+
+
+public class BaseController {
+    @Autowired
+    private EhcacheService ehcacheService;
+
+    public HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    }
+
+    public User getLoginUser() {
+        HttpServletRequest request = getRequest();
+        String username = request.getSession().getAttribute(GlobalHandlerInterceptor.SESSION_KEY_USER).toString();
+        User user = ehcacheService.get(username);
+        return user;
+    }
+}

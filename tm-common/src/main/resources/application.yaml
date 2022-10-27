@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    base:
+      name: base
+      jdbc-url: jdbc:mysql://127.0.0.1/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+      url: jdbc:mysql://127.0.0.1/test?useUnicode=true&charaterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: Lucky#2018
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      filters: stat
+      maxActive: 10
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
+      auto-commit: true
+      default-auto-commit: true
+

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.RoleRightMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.RoleRight" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="role_id" property="roleId" jdbcType="INTEGER" />
+        <result column="right_id" property="rightId" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+
+    <resultMap id="RoleRightResultMap" extends="BaseResultMap" type="com.tm.common.base.model.RoleRightRelation" >
+        <result column="right_name" property="rightName" jdbcType="VARCHAR" />
+        <result column="uri" property="uri" jdbcType="VARCHAR" />
+        <result column="right_type" property="rightType" jdbcType="INTEGER" />
+    </resultMap>
+
+
+    <select id="queryRoleRightList" resultMap="RoleRightResultMap" parameterType="java.lang.Integer">
+        select
+            t1.*, t2.name right_name, t2.uri, t2.type right_type
+        from role_right t1, rights t2
+        where t1.role_id=#{id,jdbcType=INTEGER} and t1.right_id=t2.id
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from role_right where id=#{id,jdbcType=INTEGER}
+    </delete>
+
+    <select id="selectByRoleIdRightId" resultMap="BaseResultMap" parameterType="com.tm.common.base.model.RoleRight">
+select * from role_right where role_id=#{roleId,jdbcType=INTEGER} and right_id=#{rightId,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertBySelective" parameterType="com.tm.common.base.model.RoleRight" useGeneratedKeys="true" keyProperty="id">
+        insert into role_right
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="roleId != null" >
+                role_id,
+            </if>
+            <if test="rightId != null" >
+                right_id,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUser != null" >
+                add_user,
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time,
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="roleId != null" >
+                #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="rightId != null" >
+                #{rightId,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

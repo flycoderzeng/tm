@@ -1,0 +1,45 @@
+package com.tm.mockagent.entities.enumerate;
+
+
+
+// 1-秒；2-分；3-时；4-日；5-月；6-年
+public enum DateUnitTypeNum {
+    SECOND(1, "秒"), MINUTE(2, "分"),
+    HOUR(3, "时"), DAY(4, "日"),
+    MONTH(5, "月"), YEAR(6, "年");
+    private Integer value;
+
+    private String description;
+
+    DateUnitTypeNum(Integer value, String description) {
+        this.value = value;
+        this.description = description;
+    }
+
+    public Integer val() {
+        return value;
+    }
+
+    public String desc() {
+        return description;
+    }
+
+    public static DateUnitTypeNum get(Integer value) {
+        switch (value) {
+            case 1:
+                return DateUnitTypeNum.SECOND;
+            case 2:
+                return DateUnitTypeNum.MINUTE;
+            case 3:
+                return DateUnitTypeNum.HOUR;
+            case 4:
+                return DateUnitTypeNum.DAY;
+            case 5:
+                return DateUnitTypeNum.MONTH;
+            case 6:
+                return DateUnitTypeNum.YEAR;
+            default:
+                return null;
+        }
+    }
+}

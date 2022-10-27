@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.HttpApiMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.HttpApi" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="method" property="method" jdbcType="INTEGER" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        <result column="req_body_type" property="reqBodyType" jdbcType="INTEGER" />
+        <result column="req_body_form" property="reqBodyForm" jdbcType="VARCHAR" />
+        <result column="req_body_kv" property="reqBodyKv" jdbcType="VARCHAR" />
+        <result column="req_headers" property="reqHeaders" jdbcType="VARCHAR" />
+        <result column="req_params" property="reqParams" jdbcType="VARCHAR" />
+        <result column="req_body_other" property="reqBodyOther" jdbcType="VARCHAR" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="res_body_type" property="resBodyType" jdbcType="INTEGER" />
+        <result column="res_body" property="resBody" jdbcType="VARCHAR" />
+        <result column="req_body_message" property="reqBodyMessage" jdbcType="VARCHAR" />
+        <result column="res_body_message" property="resBodyMessage" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+    </resultMap>
+
+    <select id="selectByPrimaryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select t3.*,t4.username add_user,t5.username last_modify_user
+        from
+             (select t1.*,t2.name,t2.description,t2.add_time,t2.add_user_id,t2.last_modify_time,t2.last_modify_user_id,t2.status
+             from http_api t1, data_nodes t2 where t1.id=#{id,jdbcType=INTEGER} and t1.id=t2.id and t2.data_type_id=2) t3
+left join users t4 on t3.add_user_id=t4.id left join users t5 on t3.last_modify_user_id=t5.id
+    </select>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.HttpApi"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into http_api
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="type != null" >
+                type,
+            </if>
+            <if test="method != null" >
+                method,
+            </if>
+            <if test="url != null" >
+                url,
+            </if>
+            <if test="reqBodyType != null" >
+                req_body_type,
+            </if>
+            <if test="reqBodyForm != null" >
+                req_body_form,
+            </if>
+            <if test="reqBodyKv != null" >
+                req_body_kv,
+            </if>
+            <if test="reqHeaders != null" >
+                req_headers,
+            </if>
+            <if test="reqParams != null" >
+                req_params,
+            </if>
+            <if test="reqBodyOther != null" >
+                req_body_other,
+            </if>
+            <if test="remark != null" >
+                remark,
+            </if>
+            <if test="resBodyType != null" >
+                res_body_type,
+            </if>
+            <if test="resBody != null" >
+                res_body,
+            </if>
+            <if test="reqBodyMessage != null" >
+                req_body_message,
+            </if>
+            <if test="resBodyMessage != null" >
+                res_body_message,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="type != null" >
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="method != null" >
+                #{method,jdbcType=INTEGER},
+            </if>
+            <if test="url != null" >
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="reqBodyType != null" >
+                #{reqBodyType,jdbcType=INTEGER},
+            </if>
+            <if test="reqBodyForm != null" >
+                #{reqBodyForm,jdbcType=VARCHAR},
+            </if>
+            <if test="reqBodyKv != null" >
+                #{reqBodyKv,jdbcType=VARCHAR},
+            </if>
+            <if test="reqHeaders != null" >
+                #{reqHeaders,jdbcType=VARCHAR},
+            </if>
+            <if test="reqParams != null" >
+                #{reqParams,jdbcType=VARCHAR},
+            </if>
+            <if test="reqBodyOther != null" >
+                #{reqBodyOther,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null" >
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="resBodyType != null" >
+                #{resBodyType,jdbcType=INTEGER},
+            </if>
+            <if test="resBody != null" >
+                #{resBody,jdbcType=VARCHAR},
+            </if>
+            <if test="reqBodyMessage != null" >
+                #{reqBodyMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="resBodyMessage != null" >
+                #{resBodyMessage,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.HttpApi">
+        update http_api
+        <set >
+            <if test="type != null" >
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="method != null" >
+                method = #{method,jdbcType=INTEGER},
+            </if>
+            <if test="url != null" >
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="reqBodyType != null" >
+                req_body_type = #{reqBodyType,jdbcType=INTEGER},
+            </if>
+            <if test="reqBodyForm != null" >
+                req_body_form = #{reqBodyForm,jdbcType=VARCHAR},
+            </if>
+            <if test="reqBodyKv != null" >
+                req_body_kv = #{reqBodyKv,jdbcType=VARCHAR},
+            </if>
+            <if test="reqHeaders != null" >
+                req_headers = #{reqHeaders,jdbcType=VARCHAR},
+            </if>
+            <if test="reqParams != null" >
+                req_params = #{reqParams,jdbcType=VARCHAR},
+            </if>
+            <if test="reqBodyOther != null" >
+                req_body_other = #{reqBodyOther,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="resBodyType != null" >
+                res_body_type = #{resBodyType,jdbcType=INTEGER},
+            </if>
+            <if test="resBody != null" >
+                res_body = #{resBody,jdbcType=VARCHAR},
+            </if>
+            <if test="reqBodyMessage != null" >
+                req_body_message = #{reqBodyMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="resBody != null" >
+                res_body_message = #{resBodyMessage,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.PlanExecuteResultMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.PlanExecuteResult" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="plan_or_case_id" property="planOrCaseId" jdbcType="INTEGER" />
+        <result column="plan_or_case_name" property="planOrCaseName" jdbcType="VARCHAR" />
+        <result column="result_status" property="resultStatus" jdbcType="INTEGER" />
+        <result column="start_timestamp" property="startTimestamp" jdbcType="INTEGER" />
+        <result column="end_timestamp" property="endTimestamp" jdbcType="INTEGER" />
+        <result column="total" property="total" jdbcType="INTEGER" />
+        <result column="success_count" property="successCount" jdbcType="INTEGER" />
+        <result column="fail_count" property="failCount" jdbcType="INTEGER" />
+        <result column="result_info" property="resultInfo" jdbcType="VARCHAR" />
+        <result column="submitter" property="submitter" jdbcType="VARCHAR" />
+        <result column="submit_timestamp" property="submitTimestamp" jdbcType="INTEGER" />
+        <result column="mail_sent" property="mailSent" jdbcType="INTEGER" />
+        <result column="worker_ip" property="workerIp" jdbcType="VARCHAR" />
+        <result column="plan_cron_job_id" property="planCronJobId" jdbcType="INTEGER" />
+        <result column="from_type" property="fromType" jdbcType="INTEGER" />
+        <result column="submit_date" property="submitDate" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectByPrimaryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select * from plan_execute_result where id=#{id,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.PlanExecuteResult"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into plan_execute_result
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="planOrCaseId != null" >
+                plan_or_case_id,
+            </if>
+            <if test="planOrCaseName != null" >
+                plan_or_case_name,
+            </if>
+            <if test="resultStatus != null" >
+                result_status,
+            </if>
+            <if test="startTimestamp != null" >
+                start_timestamp,
+            </if>
+            <if test="endTimestamp != null" >
+                end_timestamp,
+            </if>
+            <if test="total != null" >
+                total,
+            </if>
+            <if test="successCount != null" >
+                success_count,
+            </if>
+            <if test="failCount != null" >
+                fail_count,
+            </if>
+            <if test="resultInfo != null" >
+                result_info,
+            </if>
+            <if test="submitter != null" >
+                submitter,
+            </if>
+            <if test="submitTimestamp != null" >
+                submit_timestamp,
+            </if>
+            <if test="mailSent != null" >
+                mail_sent,
+            </if>
+            <if test="workerIp != null" >
+                worker_ip,
+            </if>
+            <if test="planCronJobId != null" >
+                plan_cron_job_id,
+            </if>
+            <if test="fromType != null" >
+                from_type,
+            </if>
+            <if test="submitDate != null" >
+                submit_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="planOrCaseId != null" >
+                #{planOrCaseId,jdbcType=INTEGER},
+            </if>
+            <if test="planOrCaseName != null" >
+                #{planOrCaseName,jdbcType=VARCHAR},
+            </if>
+            <if test="resultStatus != null" >
+                #{resultStatus,jdbcType=INTEGER},
+            </if>
+            <if test="startTimestamp != null" >
+                #{startTimestamp,jdbcType=INTEGER},
+            </if>
+            <if test="endTimestamp != null" >
+                #{endTimestamp,jdbcType=INTEGER},
+            </if>
+            <if test="total != null" >
+                #{total,jdbcType=INTEGER},
+            </if>
+            <if test="successCount != null" >
+                #{successCount,jdbcType=INTEGER},
+            </if>
+            <if test="failCount != null" >
+                #{failCount,jdbcType=INTEGER},
+            </if>
+            <if test="resultInfo != null" >
+                #{resultInfo,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="submitter != null" >
+                #{submitter,jdbcType=VARCHAR},
+            </if>
+            <if test="submitTimestamp != null" >
+                #{submitTimestamp,jdbcType=INTEGER},
+            </if>
+            <if test="mailSent != null" >
+                #{mailSent,jdbcType=INTEGER},
+            </if>
+            <if test="workerIp != null" >
+                #{workerIp,jdbcType=VARCHAR},
+            </if>
+            <if test="planCronJobId != null" >
+                #{planCronJobId,jdbcType=INTEGER},
+            </if>
+            <if test="fromType != null" >
+                #{fromType,jdbcType=INTEGER},
+            </if>
+            <if test="submitDate != null" >
+                #{submitDate,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.PlanExecuteResult">
+        update plan_execute_result
+        <set >
+            <if test="planOrCaseId != null" >
+                plan_or_case_id = #{planOrCaseId,jdbcType=INTEGER},
+            </if>
+            <if test="planOrCaseName != null" >
+                plan_or_case_name = #{planOrCaseName,jdbcType=VARCHAR},
+            </if>
+            <if test="resultStatus != null" >
+                result_status = #{resultStatus,jdbcType=INTEGER},
+            </if>
+            <if test="startTimestamp != null" >
+                start_timestamp = #{startTimestamp,jdbcType=INTEGER},
+            </if>
+            <if test="endTimestamp != null" >
+                end_timestamp = #{endTimestamp,jdbcType=INTEGER},
+            </if>
+            <if test="total != null" >
+                total = #{total,jdbcType=INTEGER},
+            </if>
+            <if test="successCount != null" >
+                success_count = #{successCount,jdbcType=INTEGER},
+            </if>
+            <if test="failCount != null" >
+                fail_count = #{failCount,jdbcType=INTEGER},
+            </if>
+            <if test="resultInfo != null" >
+                result_info = #{resultInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="submitter != null" >
+                submitter = #{submitter,jdbcType=VARCHAR},
+            </if>
+            <if test="submitTimestamp != null" >
+                submit_timestamp = #{submitTimestamp,jdbcType=INTEGER},
+            </if>
+            <if test="mailSent != null" >
+                mail_sent = #{mailSent,jdbcType=INTEGER},
+            </if>
+            <if test="workerIp != null" >
+                worker_ip = #{workerIp,jdbcType=VARCHAR},
+            </if>
+            <if test="planCronJobId != null" >
+                plan_cron_job_id = #{planCronJobId,jdbcType=INTEGER},
+            </if>
+            <if test="fromType != null" >
+                from_type = #{fromType,jdbcType=INTEGER},
+            </if>
+            <if test="submitDate != null" >
+                submit_date = #{submitDate,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="addFailCount" parameterType="java.lang.Integer">
+        update plan_execute_result
+        set fail_count=fail_count+1
+        where id = #{planExecuteResultId,jdbcType=INTEGER}
+    </update>
+
+    <update id="addSuccessCount" parameterType="java.lang.Integer">
+        update plan_execute_result
+        set success_count=success_count+1
+        where id = #{planExecuteResultId,jdbcType=INTEGER}
+    </update>
+
+    <select id="getNewestPlanExecuteResult" resultMap="BaseResultMap" parameterType="com.tm.common.entities.autotest.request.GetNewestPlanExecuteResultBody">
+        select * from plan_execute_result where plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and from_type=#{fromType,jdbcType=INTEGER} order by id desc limit 1
+    </select>
+
+    <select id="getPlanHistoryExecuteResultList" resultMap="BaseResultMap" parameterType="com.tm.common.entities.base.CommonTableQueryBody">
+        select * from plan_execute_result
+        where plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and from_type=#{fromType,jdbcType=INTEGER}
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+
+        <if test="order != null and order != '' and sort != null and sort != ''">
+            order by ${order} ${sort}
+        </if>
+        limit #{offset} , #{pageSize}
+    </select>
+
+    <select id="getPlanHistoryExecuteResultListCount" resultType="java.lang.Integer" parameterType="com.tm.common.entities.autotest.request.GetNewestPlanExecuteResultBody">
+        select count(*) from plan_execute_result
+        where plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and from_type=#{fromType,jdbcType=INTEGER}
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+    </select>
+</mapper>

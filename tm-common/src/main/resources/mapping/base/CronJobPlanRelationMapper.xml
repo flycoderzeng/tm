@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.CronJobPlanRelationMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.CronJobPlanRelation" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="plan_cron_job_id" property="planCronJobId" jdbcType="INTEGER" />
+        <result column="plan_id" property="planId" jdbcType="INTEGER" />
+        <result column="env_id" property="envId" jdbcType="INTEGER" />
+        <result column="run_type" property="runType" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="plan_name" property="planName" jdbcType="VARCHAR" />
+        <result column="env_name" property="envName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.CronJobPlanRelation"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into cron_job_plan_relation
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="planCronJobId != null" >
+                plan_cron_job_id,
+            </if>
+            <if test="planId != null" >
+                plan_id,
+            </if>
+            <if test="envId != null" >
+                env_id,
+            </if>
+            <if test="runType != null" >
+                run_type,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="planCronJobId != null" >
+                #{planCronJobId,jdbcType=INTEGER},
+            </if>
+            <if test="planId != null" >
+                #{planId,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null" >
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="runType != null" >
+                #{runType,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.CronJobPlanRelation">
+        update cron_job_plan_relation
+        <set >
+            <if test="planCronJobId != null" >
+                plan_cron_job_id = #{planCronJobId,jdbcType=INTEGER},
+            </if>
+            <if test="planId != null" >
+                plan_id = #{planId,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null" >
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="runType != null" >
+                run_type = #{runType,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectByCronJobId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+            t1.*, t2.name plan_name, t3.name env_name
+        from
+            cron_job_plan_relation t1,
+            data_nodes t2,
+            run_env t3
+        where
+              t1.plan_cron_job_id=#{planCronJobId,jdbcType=INTEGER}
+          and t1.plan_id=t2.id
+          and t2.data_type_id=7
+          and t1.env_id=t3.id
+          and t1.status=0
+    </select>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update cron_job_plan_relation set status=1 where id=#{id,jdbcType=INTEGER}
+    </update>
+</mapper>

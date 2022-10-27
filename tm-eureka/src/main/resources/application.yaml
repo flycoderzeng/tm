@@ -1,0 +1,23 @@
+spring:
+  security:
+    user:
+      name: testman
+      password: 'testman==running996'
+
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 3000
+  client:
+    #屏蔽注册信息
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}/eureka/
+    #禁止自己当做服务注册
+    registerWithEureka: false

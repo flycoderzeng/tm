@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.DataNodeMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.DataNode" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="data_type_id" property="dataTypeId" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="project_id" property="projectId" jdbcType="INTEGER" />
+        <result column="is_folder" property="isFolder" jdbcType="INTEGER" />
+        <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+        <result column="level" property="level" jdbcType="INTEGER" />
+        <result column="seq" property="seq" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user_id" property="addUserId" jdbcType="INTEGER" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user_id" property="lastModifyUserId" jdbcType="INTEGER" />
+        <result column="parent1" property="parent1" jdbcType="INTEGER" />
+        <result column="parent2" property="parent2" jdbcType="INTEGER" />
+        <result column="parent3" property="parent3" jdbcType="INTEGER" />
+        <result column="parent4" property="parent4" jdbcType="INTEGER" />
+        <result column="parent5" property="parent5" jdbcType="INTEGER" />
+        <result column="parent6" property="parent6" jdbcType="INTEGER" />
+        <result column="parent7" property="parent7" jdbcType="INTEGER" />
+        <result column="parent8" property="parent8" jdbcType="INTEGER" />
+        <result column="parent9" property="parent9" jdbcType="INTEGER" />
+        <result column="parent10" property="parent10" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, data_type_id, name, description, project_id, is_folder, parent_id, level, seq, add_time, add_user_id
+, last_modify_time, last_modify_user_id,
+    parent1, parent2, parent3, parent4, parent5, parent6, parent7, parent8, parent9, parent10, status
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from data_nodes
+        where
+            id = #{id,jdbcType=INTEGER}
+        and data_type_id=#{dataTypeId,jdbcType=INTEGER}
+    </select>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update
+            data_nodes set status=1
+        where (id = #{id,jdbcType=INTEGER} or parent${level}=#{id,jdbcType=INTEGER})
+            and data_type_id=#{dataTypeId,jdbcType=INTEGER}
+    </update>
+
+    <select id="getMaxSeq" resultType="java.lang.Integer">
+        select
+               ifnull(max(seq), 1)
+        from data_nodes
+        where
+              parent_id=#{id,jdbcType=INTEGER} and data_type_id = #{dataTypeId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getNodesTree" resultMap="BaseResultMap" parameterType="com.tm.common.entities.autotest.request.GetNodesTreeBody">
+        select
+        <include refid="Base_Column_List" />
+        from data_nodes
+        where 1=1
+        <if test="projectId != null" >
+            and project_id = #{projectId,jdbcType=INTEGER}
+        </if>
+          and data_type_id=#{dataTypeId,jdbcType=INTEGER}
+          and parent_id = #{parentId,jdbcType=INTEGER}
+          and status=0
+        order by seq asc
+    </select>
+
+    <select id="countSubLeafNode" resultType="java.lang.Integer" parameterType="com.tm.common.entities.autotest.request.GetNodesTreeBody">
+        select
+            count(*)
+        from data_nodes
+        where
+            project_id=#{projectId,jdbcType=INTEGER}
+            and data_type_id=#{dataTypeId,jdbcType=INTEGER}
+            and parent${level} = #{parentId,jdbcType=INTEGER}
+            and is_folder = 0
+            and status=0
+
+    </select>
+
+    <update id="refreshSeq" parameterType="com.tm.common.base.model.DataNode">
+        update
+            data_nodes set seq=seq+1
+        where
+          data_type_id=#{dataTypeId,jdbcType=INTEGER}
+          and project_id=#{projectId,jdbcType=INTEGER}
+          and parent_id = #{parentId,jdbcType=INTEGER} and seq>=#{seq,jdbcType=INTEGER} and id != #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.DataNode">
+        update data_nodes
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null" >
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="projectId != null" >
+                project_id = #{projectId,jdbcType=INTEGER},
+            </if>
+            <if test="isFolder != null" >
+                is_folder = #{isFolder,jdbcType=INTEGER},
+            </if>
+            <if test="parentId != null" >
+                parent_id = #{parentId,jdbcType=INTEGER},
+            </if>
+            <if test="level != null" >
+                level = #{level,jdbcType=INTEGER},
+            </if>
+            <if test="seq != null" >
+                seq = #{seq,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUserId != null" >
+                add_user_id = #{addUserId,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUserId != null" >
+                last_modify_user_id = #{lastModifyUserId,jdbcType=INTEGER},
+            </if>
+            <if test="parent1 != null" >
+                parent1 = #{parent1,jdbcType=INTEGER},
+            </if>
+            <if test="parent2 != null" >
+                parent2 = #{parent2,jdbcType=INTEGER},
+            </if>
+            <if test="parent3 != null" >
+                parent3 = #{parent3,jdbcType=INTEGER},
+            </if>
+            <if test="parent4 != null" >
+                parent4 = #{parent4,jdbcType=INTEGER},
+            </if>
+            <if test="parent5 != null" >
+                parent5 = #{parent5,jdbcType=INTEGER},
+            </if>
+            <if test="parent6 != null" >
+                parent6 = #{parent6,jdbcType=INTEGER},
+            </if>
+            <if test="parent7 != null" >
+                parent7 = #{parent7,jdbcType=INTEGER},
+            </if>
+            <if test="parent8 != null" >
+                parent8 = #{parent8,jdbcType=INTEGER},
+            </if>
+            <if test="parent9 != null" >
+                parent9 = #{parent9,jdbcType=INTEGER},
+            </if>
+            <if test="parent10 != null" >
+                parent10 = #{parent10,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER} and data_type_id=#{dataTypeId,jdbcType=INTEGER}
+    </update>
+
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.DataNode"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into data_nodes
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="dataTypeId != null" >
+                data_type_id,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="description != null" >
+                description,
+            </if>
+            <if test="projectId != null" >
+                project_id,
+            </if>
+            <if test="isFolder != null" >
+                is_folder,
+            </if>
+            <if test="parentId != null" >
+                parent_id,
+            </if>
+            <if test="level != null" >
+                level,
+            </if>
+            <if test="seq != null" >
+                seq,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUserId != null" >
+                add_user_id,
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time,
+            </if>
+            <if test="lastModifyUserId != null" >
+                last_modify_user_id,
+            </if>
+            <if test="parent1 != null" >
+                parent1,
+            </if>
+            <if test="parent2 != null" >
+                parent2,
+            </if>
+            <if test="parent3 != null" >
+                parent3,
+            </if>
+            <if test="parent4 != null" >
+                parent4,
+            </if>
+            <if test="parent5 != null" >
+                parent5,
+            </if>
+            <if test="parent6 != null" >
+                parent6,
+            </if>
+            <if test="parent7 != null" >
+                parent7,
+            </if>
+            <if test="parent8 != null" >
+                parent8,
+            </if>
+            <if test="parent9 != null" >
+                parent9,
+            </if>
+            <if test="parent10 != null" >
+                parent10,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="dataTypeId != null" >
+                #{dataTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null" >
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="projectId != null" >
+                #{projectId,jdbcType=INTEGER},
+            </if>
+            <if test="isFolder != null" >
+                #{isFolder,jdbcType=INTEGER},
+            </if>
+            <if test="parentId != null" >
+                #{parentId,jdbcType=INTEGER},
+            </if>
+            <if test="level != null" >
+                #{level,jdbcType=INTEGER},
+            </if>
+            <if test="seq != null" >
+                #{seq,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUserId != null" >
+                #{addUserId,jdbcType=INTEGER},
+            </if>
+            <if test="lastModifyTime != null" >
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUserId != null" >
+                #{lastModifyUserId,jdbcType=INTEGER},
+            </if>
+            <if test="parent1 != null" >
+                #{parent1,jdbcType=INTEGER},
+            </if>
+            <if test="parent2 != null" >
+                #{parent2,jdbcType=INTEGER},
+            </if>
+            <if test="parent3 != null" >
+                #{parent3,jdbcType=INTEGER},
+            </if>
+            <if test="parent4 != null" >
+                #{parent4,jdbcType=INTEGER},
+            </if>
+            <if test="parent5 != null" >
+                #{parent5,jdbcType=INTEGER},
+            </if>
+            <if test="parent6 != null" >
+                #{parent6,jdbcType=INTEGER},
+            </if>
+            <if test="parent7 != null" >
+                #{parent7,jdbcType=INTEGER},
+            </if>
+            <if test="parent8 != null" >
+                #{parent8,jdbcType=INTEGER},
+            </if>
+            <if test="parent9 != null" >
+                #{parent9,jdbcType=INTEGER},
+            </if>
+            <if test="parent10 != null" >
+                #{parent10,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="queryList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultMap="BaseResultMap">
+        select
+        t1.*,t2.username add_user, t3.username last_modify_user
+        from data_nodes t1 left join users t2 on t1.add_user_id=t2.id left join users t3 on t1.last_modify_user_id=t3.id
+        where t1.status=0 and t1.is_folder=0
+          and t1.data_type_id=#{dataTypeId,jdbcType=INTEGER}
+        <if test="projectId != null">
+          and t1.project_id=#{projectId,jdbcType=INTEGER}
+        </if>
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    t1.${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    t1.${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+        order by t1.last_modify_time desc
+        limit #{offset} , #{pageSize}
+    </select>
+
+    <select id="countList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultType="java.lang.Integer">
+        select
+        count(*)
+        from data_nodes
+        where 1=1 and status=0 and is_folder=0 and data_type_id=#{dataTypeId,jdbcType=INTEGER}
+        <if test="projectId != null">
+          and project_id=#{projectId,jdbcType=INTEGER}
+        </if>
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+    </select>
+</mapper>

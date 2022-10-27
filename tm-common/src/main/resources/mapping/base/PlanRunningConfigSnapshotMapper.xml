@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.PlanRunningConfigSnapshotMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.PlanRunningConfigSnapshot" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="plan_result_id" property="planResultId" jdbcType="INTEGER" />
+        <result column="max_occurs" property="maxOccurs" jdbcType="INTEGER" />
+        <result column="run_type" property="runType" jdbcType="INTEGER" />
+        <result column="runs" property="runs" jdbcType="INTEGER" />
+        <result column="env_id" property="envId" jdbcType="INTEGER" />
+        <result column="env_name" property="envName" jdbcType="VARCHAR" />
+        <result column="fail_continue" property="failContinue" jdbcType="INTEGER" />
+        <result column="global_variables" property="globalVariables" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectByPrimaryPlanResultId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select * from plan_running_config_snapshot where plan_result_id=#{id,jdbcType=INTEGER} limit 1
+    </select>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.PlanRunningConfigSnapshot"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into plan_running_config_snapshot
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="planResultId != null" >
+                plan_result_id,
+            </if>
+            <if test="runType != null" >
+                run_type,
+            </if>
+            <if test="runs != null" >
+                runs,
+            </if>
+            <if test="maxOccurs != null" >
+                max_occurs,
+            </if>
+            <if test="envId != null" >
+                env_id,
+            </if>
+            <if test="envName != null" >
+                env_name,
+            </if>
+            <if test="failContinue != null" >
+                fail_continue,
+            </if>
+            <if test="globalVariables != null" >
+                global_variables,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="planResultId != null" >
+                #{planResultId,jdbcType=INTEGER},
+            </if>
+            <if test="runType != null" >
+                #{runType,jdbcType=INTEGER},
+            </if>
+            <if test="runs != null" >
+                #{runs,jdbcType=INTEGER},
+            </if>
+            <if test="maxOccurs != null" >
+                #{maxOccurs,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null" >
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envName != null" >
+                #{envName,jdbcType=VARCHAR},
+            </if>
+            <if test="failContinue != null" >
+                #{failContinue,jdbcType=INTEGER},
+            </if>
+            <if test="globalVariables != null" >
+                #{globalVariables,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.PlanRunningConfigSnapshot">
+        update plan_running_config_snapshot
+        <set >
+            <if test="planResultId != null" >
+                plan_result_id = #{planResultId,jdbcType=INTEGER},
+            </if>
+            <if test="runType != null" >
+                run_type = #{runType,jdbcType=INTEGER},
+            </if>
+            <if test="runs != null" >
+                runs = #{runs,jdbcType=INTEGER},
+            </if>
+            <if test="maxOccurs != null" >
+                max_occurs = #{maxOccurs,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null" >
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="envName != null" >
+                env_name = #{envName,jdbcType=VARCHAR},
+            </if>
+            <if test="failContinue != null" >
+                fail_continue = #{failContinue,jdbcType=INTEGER},
+            </if>
+            <if test="globalVariables != null" >
+                global_variables = #{globalVariables,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

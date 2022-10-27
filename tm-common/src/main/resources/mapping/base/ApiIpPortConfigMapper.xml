@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.ApiIpPortConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.tm.common.base.model.ApiIpPortConfig" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="port" property="port" jdbcType="VARCHAR" />
+    <result column="env_id" property="envId" jdbcType="INTEGER" />
+    <result column="env_name" property="envName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, url, ip, port, status, env_id, add_time, add_user, last_modify_time, last_modify_user
+  </sql>
+
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    update api_ip_port_config set status=1 where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from api_ip_port_config
+        where id = #{id,jdbcType=INTEGER} and status=0
+    </select>
+
+    <select id="queryList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultMap="BaseResultMap">
+        select
+        t1.*, t2.name env_name
+        from api_ip_port_config t1, run_env t2
+        where 1=1 and t1.status=0 and t1.env_id=t2.id
+        <if test="area != null and area == 1">
+            and t1.add_user = #{loginUsername, jdbcType=VARCHAR}
+        </if>
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+              <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                   t1.${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+              </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    t1.${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+        <if test="order != null and order != '' and sort != null and sort != ''">
+            order by ${order} ${sort}
+        </if>
+        limit #{offset} , #{pageSize}
+    </select>
+
+
+    <select id="countList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultType="java.lang.Integer">
+        select
+        count(*)
+        from api_ip_port_config
+        where 1=1 and status=0
+        <if test="area != null and area == 1">
+            and add_user = #{loginUsername, jdbcType=VARCHAR}
+        </if>
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+    </select>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.ApiIpPortConfig">
+        update api_ip_port_config
+        <set >
+            <if test="url != null" >
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null" >
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="port != null" >
+                port = #{port,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null" >
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                add_user = #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user = #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.ApiIpPortConfig"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into api_ip_port_config
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="url != null" >
+                url,
+            </if>
+            <if test="ip != null" >
+                ip,
+            </if>
+            <if test="port != null" >
+                port,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+            <if test="envId != null" >
+                env_id,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUser != null" >
+                add_user,
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time,
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="url != null" >
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null" >
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="port != null" >
+                #{port,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null" >
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

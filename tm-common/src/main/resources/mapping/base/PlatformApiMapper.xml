@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.PlatformApiMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.PlatformApi" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="define_json" property="defineJson" jdbcType="LONGVARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectByPrimaryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select t1.*, t2.name, t2.description from platform_api t1, data_nodes t2 where t1.id=#{id,jdbcType=INTEGER} and t1.id=t2.id and t2.data_type_id=5
+    </select>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.PlatformApi"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into platform_api
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="defineJson != null" >
+                define_json,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="defineJson != null" >
+                #{defineJson,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.PlatformApi">
+        update platform_api
+        <set >
+            <if test="defineJson != null" >
+                define_json = #{defineJson,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.MockRuleAgentRelationMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.MockRuleAgentRelation" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="mock_rule_id" property="mockRuleId" jdbcType="INTEGER" />
+        <result column="mock_rule_type" property="mockRuleType" jdbcType="INTEGER" />
+        <result column="mock_agent_id" property="mockAgentId" jdbcType="INTEGER" />
+        <result column="enabled" property="enabled" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="HttpMockRuleResultMap" type="com.tm.common.base.model.HttpMockRule" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="uri" property="uri" jdbcType="VARCHAR" />
+        <result column="method" property="method" jdbcType="VARCHAR" />
+        <result column="enabled" property="enabled" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="mock_source_ip" property="mockSourceIp" jdbcType="VARCHAR" />
+        <result column="mock_source_port" property="mockSourcePort" jdbcType="INTEGER" />
+        <result column="http_protocol_type" property="httpProtocolType" jdbcType="INTEGER" />
+        <result column="mock_target_ip" property="mockTargetIp" jdbcType="VARCHAR" />
+        <result column="mock_target_port" property="mockTargetPort" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <update id="enable" parameterType="java.lang.Integer">
+        update mock_rule_agent_relation set enabled = 0 where id=#{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="disable" parameterType="java.lang.Integer">
+        update mock_rule_agent_relation set enabled = 1 where id=#{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="remove" parameterType="java.lang.Integer">
+        update mock_rule_agent_relation set status = 1 where id=#{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectAllHttpMockRules" resultMap="HttpMockRuleResultMap">
+        select
+               t1.enabled, t1.status, t2.*,
+               t3.mock_source_ip, t3.mock_source_port, t3.http_protocol_type,
+               t4.mock_target_ip, t4.mock_target_port
+        from mock_rule_agent_relation t1, http_mock_rules t2, http_mock_source_config t3, http_mock_target_config t4
+        where
+              t1.mock_rule_type=1
+          and t1.status = 0
+          and t1.mock_source_config_id = t3.id
+          and t1.mock_target_config_id = t4.id
+          and t1.mock_agent_id=#{mockAgentId,jdbcType=INTEGER}
+          and t1.mock_rule_id=t2.id
+    </select>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.MockRuleAgentRelation">
+        update mock_rule_agent_relation
+        <set >
+            <if test="mockRuleId != null" >
+                mock_rule_id = #{mockRuleId,jdbcType=INTEGER},
+            </if>
+            <if test="mockRuleType != null" >
+                mock_rule_type = #{mockRuleType,jdbcType=INTEGER},
+            </if>
+            <if test="mockAgentId != null" >
+                mock_agent_id = #{mockAgentId,jdbcType=INTEGER},
+            </if>
+            <if test="enabled != null" >
+                enabled = #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                add_user = #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user = #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.MockRuleAgentRelation"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into mock_rule_agent_relation
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="mockRuleId != null" >
+                mock_rule_id,
+            </if>
+            <if test="mockRuleType != null" >
+                mock_rule_type,
+            </if>
+            <if test="mockAgentId != null" >
+                mock_agent_id,
+            </if>
+            <if test="enabled != null" >
+                enabled,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUser != null" >
+                add_user,
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time,
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="mockRuleId != null" >
+                #{mockRuleId,jdbcType=INTEGER},
+            </if>
+            <if test="mockRuleType != null" >
+                #{mockRuleType,jdbcType=INTEGER},
+            </if>
+            <if test="mockAgentId != null" >
+                #{mockAgentId,jdbcType=INTEGER},
+            </if>
+            <if test="enabled != null" >
+                #{enabled,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

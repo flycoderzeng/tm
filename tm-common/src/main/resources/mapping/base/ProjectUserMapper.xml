@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.ProjectUserMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.ProjectUser" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="project_id" property="projectId" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+    <resultMap id="ProjectUserResultMap" extends="BaseResultMap" type="com.tm.common.base.model.ProjectUserRelation" >
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="chinese_name" property="chineseName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, project_id, user_id, add_time, add_user, last_modify_time, last_modify_user
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from project_user
+        where id = #{id,jdbcType=INTEGER} limit 1
+    </select>
+
+    <select id="selectByProjectUser" resultMap="BaseResultMap" parameterType="com.tm.common.base.model.ProjectUser">
+        select
+        <include refid="Base_Column_List" />
+        from project_user
+        where project_id = #{projectId,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER} limit 1
+    </select>
+
+    <select id="queryProjectUserList" resultMap="ProjectUserResultMap" parameterType="com.tm.common.entities.system.QueryProjectUserBody">
+        select
+            t1.*, t2.username, t2.chinese_name
+        from project_user t1, users t2
+        where t1.project_id=#{projectId,jdbcType=INTEGER} and t1.user_id=t2.id
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    t2.${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    t2.${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+        limit #{offset} , #{pageSize}
+    </select>
+
+    <select id="countProjectUserList" resultType="java.lang.Integer" parameterType="com.tm.common.entities.system.QueryProjectUserBody">
+        select
+        count(*)
+        from project_user t1, users t2
+        where t1.project_id=#{projectId,jdbcType=INTEGER} and t1.user_id=t2.id
+        <if test="filterConditionList != null and filterConditionList.size() > 0">
+            and
+            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
+                    t2.${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="linkOperator != null and linkOperator == 'or'">
+                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
+                    t2.${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from project_user where id=#{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insertBySelective" parameterType="com.tm.common.base.model.ProjectUser" useGeneratedKeys="true" keyProperty="id">
+        insert into project_user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="projectId != null" >
+                project_id,
+            </if>
+            <if test="userId != null" >
+                user_id,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUser != null" >
+                add_user,
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time,
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="projectId != null" >
+                #{projectId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null" >
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.ProjectUser">
+        update project_user
+        <set >
+            <if test="projectId != null" >
+                project_id = #{projectId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null" >
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                add_user = #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user = #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

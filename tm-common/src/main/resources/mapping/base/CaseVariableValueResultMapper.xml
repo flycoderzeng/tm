@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.CaseVariableValueResultMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.CaseVariableValueResult" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="plan_result_id" property="planResultId" jdbcType="INTEGER" />
+        <result column="case_id" property="caseId" jdbcType="INTEGER" />
+        <result column="group_no" property="groupNo" jdbcType="INTEGER" />
+        <result column="variable_name" property="variableName" jdbcType="VARCHAR" />
+        <result column="variable_value" property="variableValue" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectByPlanResultIdCaseIdAndGroupNo" resultMap="BaseResultMap">
+        select
+               *
+        from case_variable_value_result_${tableSuffix}
+        where
+              plan_result_id=#{planResultId,jdbcType=INTEGER}
+          and case_id=#{caseId,jdbcType=INTEGER}
+          and group_no=#{groupNo,jdbcType=INTEGER}
+        order by variable_name
+    </select>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.CaseVariableValueResult"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into case_variable_value_result_${tableSuffix}
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="planResultId != null" >
+                plan_result_id,
+            </if>
+            <if test="caseId != null" >
+                case_id,
+            </if>
+            <if test="groupNo != null" >
+                group_no,
+            </if>
+            <if test="variableName != null" >
+                variable_name,
+            </if>
+            <if test="variableValue != null" >
+                variable_value,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="planResultId != null" >
+                #{planResultId,jdbcType=INTEGER},
+            </if>
+            <if test="caseId != null" >
+                #{caseId,jdbcType=INTEGER},
+            </if>
+            <if test="groupNo != null" >
+                #{groupNo,jdbcType=INTEGER},
+            </if>
+            <if test="variableName != null" >
+                #{variableName,jdbcType=VARCHAR},
+            </if>
+            <if test="variableValue != null" >
+                #{variableValue,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.CaseVariableValueResult">
+        update case_variable_value_result_${tableSuffix}
+        <set >
+            <if test="planResultId != null" >
+                plan_result_id = #{planResultId,jdbcType=INTEGER},
+            </if>
+            <if test="caseId != null" >
+                case_id = #{caseId,jdbcType=INTEGER},
+            </if>
+            <if test="groupNo != null" >
+                group_no = #{groupNo,jdbcType=INTEGER},
+            </if>
+            <if test="variableName != null" >
+                variable_name = #{variableName,jdbcType=VARCHAR},
+            </if>
+            <if test="variableValue != null" >
+                variable_value = #{variableValue,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="createCaseVariableValueResultTable" parameterType="java.lang.String">
+        CREATE TABLE IF NOT EXISTS `case_variable_value_result_${tableSuffix}` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `plan_result_id` int(11) DEFAULT NULL,
+            `case_id` int(11) DEFAULT NULL,
+            `group_no` int(11) DEFAULT NULL,
+            `variable_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `variable_value` longtext COLLATE utf8mb4_general_ci,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    </update>
+</mapper>

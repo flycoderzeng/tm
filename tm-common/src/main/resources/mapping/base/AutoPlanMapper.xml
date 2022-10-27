@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.AutoPlanMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.AutoPlan" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="mail_list" property="mailList" jdbcType="VARCHAR" />
+        <result column="max_occurs" property="maxOccurs" jdbcType="INTEGER" />
+        <result column="runs" property="runs" jdbcType="INTEGER" />
+        <result column="env_id" property="envId" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="fail_continue" property="failContinue" jdbcType="INTEGER" />
+        <result column="global_variables" property="globalVariables" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectByPrimaryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+               t1.*, t2.name, t2.description
+        from auto_plans t1, data_nodes t2
+        where t1.id=#{id,jdbcType=INTEGER} and t1.id=t2.id and t2.data_type_id=7
+    </select>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.AutoPlan"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into auto_plans
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="type != null" >
+                type,
+            </if>
+            <if test="mailList != null" >
+                mail_list,
+            </if>
+            <if test="maxOccurs != null" >
+                max_occurs,
+            </if>
+            <if test="runs != null" >
+                runs,
+            </if>
+            <if test="envId != null" >
+                env_id,
+            </if>
+            <if test="failContinue != null" >
+                fail_continue,
+            </if>
+            <if test="globalVariables != null" >
+                global_variables,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="type != null" >
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="mailList != null" >
+                #{mailList,jdbcType=VARCHAR},
+            </if>
+            <if test="maxOccurs != null" >
+                #{maxOccurs,jdbcType=INTEGER},
+            </if>
+            <if test="runs != null" >
+                #{runs,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null" >
+                #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="failContinue != null" >
+                #{failContinue,jdbcType=INTEGER},
+            </if>
+            <if test="globalVariables != null" >
+                #{globalVariables,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySelective" parameterType="com.tm.common.base.model.AutoPlan">
+        update auto_plans
+        <set >
+            <if test="type != null" >
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="mailList != null" >
+                mail_list = #{mailList,jdbcType=VARCHAR},
+            </if>
+            <if test="maxOccurs != null" >
+                max_occurs = #{maxOccurs,jdbcType=INTEGER},
+            </if>
+            <if test="runs != null" >
+                runs = #{runs,jdbcType=INTEGER},
+            </if>
+            <if test="envId != null" >
+                env_id = #{envId,jdbcType=INTEGER},
+            </if>
+            <if test="failContinue != null" >
+                fail_continue = #{failContinue,jdbcType=INTEGER},
+            </if>
+            <if test="globalVariables != null" >
+                global_variables = #{globalVariables,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

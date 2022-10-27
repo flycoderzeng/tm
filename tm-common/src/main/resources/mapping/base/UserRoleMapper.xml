@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.UserRoleMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.UserRole" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="role_id" property="roleId" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+
+    <resultMap id="UserRoleResultMap" extends="BaseResultMap" type="com.tm.common.base.model.UserRoleRelation" >
+        <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+        <result column="role_description" property="roleDescription" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+    <select id="queryUserRoleList" resultMap="UserRoleResultMap" parameterType="java.lang.Integer">
+        select
+            t1.*, t2.name role_name, t2.description role_description
+        from user_role t1, roles t2
+        where t1.user_id=#{id,jdbcType=INTEGER} and t1.role_id=t2.id
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user_role where id=#{id,jdbcType=INTEGER}
+    </delete>
+
+    <select id="selectByUserIdRoleId" resultMap="BaseResultMap" parameterType="com.tm.common.base.model.UserRole">
+        select * from user_role where user_id=#{userId,jdbcType=INTEGER} and role_id=#{roleId,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertBySelective" parameterType="com.tm.common.base.model.UserRole" useGeneratedKeys="true" keyProperty="id">
+        insert into user_role
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="userId != null" >
+                user_id,
+            </if>
+            <if test="roleId != null" >
+                role_id,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUser != null" >
+                add_user,
+            </if>
+            <if test="lastModifyTime != null" >
+                last_modify_time,
+            </if>
+            <if test="lastModifyUser != null" >
+                last_modify_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null" >
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="roleId != null" >
+                #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                #{addUser,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifyTime != null" >
+                #{lastModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifyUser != null" >
+                #{lastModifyUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>
