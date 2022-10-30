@@ -20,6 +20,8 @@ class RightList extends CommonListPage {
             editUrl: '/rightedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'right';
+        this.state.queryInfo.area = '-1';
     }
 
     componentDidMount() {

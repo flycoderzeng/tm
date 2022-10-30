@@ -20,6 +20,8 @@ class MenuList extends CommonListPage {
             editUrl: '/menuedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'menu';
+        this.state.queryInfo.area = '-1';
     }
 
     componentDidMount() {

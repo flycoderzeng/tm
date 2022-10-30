@@ -3,14 +3,13 @@ import { RouteComponentProps,withRouter } from "react-router-dom";
 import axios from "axios";
 import {Button, message, Table, Tooltip, Select} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
-import moment from "moment";
 import {ApiUrlConfig} from "../../../config/api.url";
 interface IProps {}
 type CurrProps = IProps & RouteComponentProps;
 const { Option } = Select;
 interface RoleRightModel {
-    id: number;
-    rightName: string;
+    rightId: number;
+    name: string;
     uri: string;
     type: number;
     addTime: string;
@@ -45,54 +44,37 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
             optionList: []
         }
     }
+
     loadRoleInfo() {
         if (this.state.id > 0) {
-            axios.post(ApiUrlConfig.LOAD_ROLE_URL, {id: this.state.id}).then(resp => {
+            axios.get(ApiUrlConfig.LOAD_ROLE_URL + this.state.id + '?include=rights').then(resp => {
                 if (resp.status !== 200) {
                     message.error('加载角色失败');
                 } else {
                     const ret = resp.data;
-                    if (ret.code !== 0) {
-                        message.error(ret.message);
-                    } else {
-                        if (!ret.data) {
-                            return;
-                        }
-                        this.setState({
-                            name: ret.data.name,
-                            description: ret.data.description,
-                            type: ret.data.type,
-                            addUser: ret.data.addUser,
-                            addTime: moment(new Date(ret.data.addTime)).format('YYYY-MM-DD HH:mm:ss')
-                        });
-                        this.getRightList();
+                    if (!ret.data) {
+                        return;
                     }
-                }
-            });
-        }
-    }
-    loadRoleRightInfo() {
-        if (this.state.id > 0) {
-            axios.post(ApiUrlConfig.QUERY_ROLE_RIGHT_LIST_URL, {id: this.state.id}).then(resp => {
-                if (resp.status !== 200) {
-                    message.error('加载角色权限失败');
-                } else {
-                    const ret = resp.data;
-                    if (ret.code !== 0) {
-                        message.error(ret.message);
-                    } else {
-                        if (!ret.data) {
-                            return;
-                        }
-                        const data = ret.data || [];
-                        data.map(function(v) {
-                            v.addTime = moment(new Date(v.addTime)).format('YYYY-MM-DD HH:mm:ss');
-                            return true;
-                        });
-                        this.setState({
-                            data: data
+                    const rows: RoleRightModel[] = [];
+                    if (ret.included) {
+                        ret.included.map(v => {
+                            rows.push({name: v.attributes.name,
+                                uri: v.attributes.uri,
+                                rightId: v.id,
+                                type: v.attributes.type, addUser: v.attributes.addUser,
+                                addTime: v.attributes.addTime});
+                            return null;
                         });
                     }
+                    this.setState({
+                        name: ret.data.attributes.name,
+                        description: ret.data.attributes.description,
+                        type: ret.data.attributes.type,
+                        addUser: ret.data.attributes.addUser,
+                        addTime: ret.data.attributes.addTime,
+                        data: rows
+                    });
+                    this.getRightList();
                 }
             });
         }
@@ -100,14 +82,13 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
 
     componentDidMount() {
         this.loadRoleInfo();
-        this.loadRoleRightInfo();
     }
 
-    delete = id => {
+    delete = rightId => {
         if(!window.confirm("确定删除吗？")) {
             return;
         }
-        axios.post(ApiUrlConfig.DELETE_ROLE_RIGHT_URL, {id: id}).then(resp => {
+        axios.post(ApiUrlConfig.DELETE_ROLE_RIGHT_URL, {rightId: rightId, roleId: this.state.id}).then(resp => {
             if (resp.status !== 200) {
                 message.error('删除失败');
             } else {
@@ -116,7 +97,7 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
                     message.error(ret.message);
                 } else {
                     message.success('操作成功');
-                    this.loadRoleRightInfo();
+                    this.loadRoleInfo();
                 }
             }
         });
@@ -134,30 +115,21 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
 
     getRightList() {
         const children :any[] = [];
-        axios.post(ApiUrlConfig.QUERY_RIGHT_LIST_URL,
-            {
-                pageNum: 1,
-                pageSize: 1000,
-                filterConditionList: [{columnName: 'type', operator: '=', value: this.state.type}]
-            }).then(resp => {
+        axios.get(ApiUrlConfig.QUERY_RIGHT_LIST_URL + '?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Bright%5D=status%3D%3D0;type%3D%3D' + this.state.type + '&sort=id&page%5Bsize%5D=100').then(resp => {
             if (resp.status !== 200) {
                 message.error('加载列表失败');
             } else {
                 const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    ret.data.rows && ret.data.rows.map(function(v) {
-                        children.push({
-                            text: v.name,
-                            value: v.id.toString()
-                        });
-                        return true;
+                ret.data && ret.data.map(function(v) {
+                    children.push({
+                        text: v.attributes.name + ': ' + v.attributes.uri,
+                        value: v.id
                     });
-                    this.setState({
-                        optionList: children
-                    });
-                }
+                    return true;
+                });
+                this.setState({
+                    optionList: children
+                });
             }
         });
     }
@@ -180,10 +152,10 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
                     message.error(ret.message);
                 } else {
                     message.success('操作成功');
-                    this.loadRoleRightInfo();
                     this.setState({
                         rightIdList: []
                     });
+                    this.loadRoleInfo();
                 }
             }
         }).finally(() => {
@@ -207,8 +179,8 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
             },
             {
                 title: '权限名称',
-                dataIndex: 'rightName',
-                key: 'rightName',
+                dataIndex: 'name',
+                key: 'name',
             },
             {
                 title: 'uri',
@@ -217,8 +189,8 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
             },
             {
                 title: '类型',
-                dataIndex: 'rightType',
-                key: 'rightType',
+                dataIndex: 'type',
+                key: 'type',
                 render: text => <span>{text === 1 ? '系统类型' : '项目类型'}</span>,
             },
             {
@@ -236,7 +208,7 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
                     <div>
                         <Tooltip title="删除">
                             <Button danger size="small" type="primary" shape="circle"
-                                    onClick={() => this.delete(record.id)}>D</Button>
+                                    onClick={() => this.delete(record.rightId)}>D</Button>
                         </Tooltip>
                     </div>
                 )

@@ -15,8 +15,8 @@ class MockInstancesList extends CommonListPage {
         const commonApiUrlModel: CommonApiUrlModel = {
             listUrl: ApiUrlConfig.QUERY_MOCK_INSTANCE_LIST_URL,
             saveUrl: '',
-            deleteUrl: ApiUrlConfig.DELETE_MOCK_INSTANCE_URL,
-            loadUrl: ApiUrlConfig.LOAD_MOCK_INSTANCE_URL,
+            deleteUrl: '',
+            loadUrl: '',
             editUrl: '/mockinstanceedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;

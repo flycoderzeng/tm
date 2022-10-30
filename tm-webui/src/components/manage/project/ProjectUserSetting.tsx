@@ -65,54 +65,41 @@ class ProjectUserSetting extends React.Component<CurrProps, IState> {
     }
     getRoleList() {
         const children :any[] = [];
-        axios.post(ApiUrlConfig.QUERY_ROLE_LIST_URL,
-            {
-                pageNum: 1,
-                pageSize: 1000,
-                filterConditionList: [{columnName: 'type', operator: '=', value: 2}]
-            }).then(resp => {
+        axios.get(ApiUrlConfig.QUERY_ROLE_LIST_URL + '?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Brole%5D=status%3D%3D0;type%3D%3D02&sort=id&page%5Bsize%5D=100').then(resp => {
             if (resp.status !== 200) {
                 message.error('加载列表失败');
             } else {
                 const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    ret.data.rows && ret.data.rows.map(function(v) {
-                        children.push({
-                            text: v.chineseName+"("+v.description+")",
-                            value: v.id.toString()
-                        });
-                        return true;
+                ret.data && ret.data.map(v => {
+                    children.push({
+                        text: v.attributes.chineseName+"("+v.attributes.description+")",
+                        value: v.id.toString()
                     });
-                    this.setState({
-                        roleOptionList: children
-                    });
-                }
+                    return true;
+                });
+                this.setState({
+                    roleOptionList: children
+                });
             }
         });
     }
 
     loadProjectInfo() {
         if(this.state.id > 0) {
-            axios.post(ApiUrlConfig.LOAD_PROJECT_URL, {id: this.state.id}).then(resp => {
+            axios.get(ApiUrlConfig.LOAD_PROJECT_URL + this.state.id).then(resp => {
                 if (resp.status !== 200) {
                     message.error('加载失败');
                 } else {
                     const ret = resp.data;
-                    if (ret.code !== 0) {
-                        message.error(ret.message);
-                    } else {
-                        if (!ret.data) {
-                            return;
-                        }
-                        this.setState({
-                            name: ret.data.name,
-                            description: ret.data.description,
-                            addTime: moment(new Date(ret.data.addTime)).format('YYYY-MM-DD HH:mm:ss'),
-                            addUser: ret.data.addUser
-                        });
+                    if (!ret.data) {
+                        return;
                     }
+                    this.setState({
+                        name: ret.data.attributes.name,
+                        description: ret.data.attributes.description,
+                        addTime: ret.data.attributes.addTime,
+                        addUser: ret.data.attributes.addUser
+                    });
                 }
             });
         }
@@ -131,41 +118,29 @@ class ProjectUserSetting extends React.Component<CurrProps, IState> {
         if(!value || value.length < 1) {
             return;
         }
-        const filterConditionList =
-            [{"columnName": "username", "value":value},
-                {"columnName": "chinese_name", "value":value}];
-        const data = {
-            pageNum: 1,
-            pageSize: 30,
-            linkOperator: 'or',
-            filterConditionList: filterConditionList
-        };
+
         this.setState({
             fetching: true,
         });
         const children :any[] = [];
-        axios.post(ApiUrlConfig.QUERY_USER_LIST_URL, data).then(resp => {
+        axios.get(ApiUrlConfig.QUERY_USER_LIST_URL + '?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Buser%5D=status%3D%3D0;(username%3D%3D*' + encodeURIComponent(value) + '*,chineseName%3D%3D*' + encodeURIComponent(value) + '*)&sort=id&page%5Bsize%5D=30').then(resp => {
             if (resp.status !== 200) {
                 message.error('搜索失败');
             } else {
                 const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    if (!ret.data) {
-                        return;
-                    }
-                    ret.data.rows && ret.data.rows.map(function(v) {
-                        children.push({
-                            text: v.username+"("+v.chineseName+")",
-                            value: v.id.toString()
-                        });
-                        return true;
-                    });
-                    this.setState({
-                        userOptionList: children
-                    });
+                if (!ret.data) {
+                    return;
                 }
+                ret.data && ret.data.map(function(v) {
+                    children.push({
+                        text: v.attributes.username+"("+v.attributes.chineseName+")",
+                        value: v.id.toString()
+                    });
+                    return true;
+                });
+                this.setState({
+                    userOptionList: children
+                });
             }
         }).finally(() => {
             this.setState({

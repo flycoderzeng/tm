@@ -241,9 +241,9 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         data['sort'] = sort;
 
         let filter = 'status==0';
-        if(pagination.area && pagination.area === '1' && this.modelType !== 'run_env') {
+        if(pagination.area && pagination.area === '1') {
             filter += ';addUser==' + LocalStorageUtils.getLoginUsername();
-        }else if(!pagination.area && this.state.queryInfo.area === '1' && this.modelType !== 'run_env') {
+        }else if(!pagination.area && this.state.queryInfo.area === '1') {
             filter += ';addUser==' + LocalStorageUtils.getLoginUsername();
         }
         if(pagination.searchValue) {

@@ -6,16 +6,12 @@ import com.tm.common.base.mapper.ProjectUserMapper;
 import com.tm.common.base.mapper.ProjectUserRoleMapper;
 import com.tm.common.base.model.*;
 import com.tm.common.entities.base.BaseResponse;
-import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.base.CommonTableQueryResponse;
 import com.tm.common.entities.base.IdBody;
 import com.tm.common.entities.system.AddUserToProjectBody;
 import com.tm.common.entities.system.DeleteProjectUserRoleBody;
 import com.tm.common.entities.system.QueryProjectUserBody;
-import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,60 +22,12 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/project")
 public class ProjectController extends BaseController {
-    private static Logger logger = LoggerFactory.getLogger(ProjectController.class);
     @Autowired
     private ProjectMapper projectMapper;
     @Autowired
     private ProjectUserMapper projectUserMapper;
     @Autowired
     private ProjectUserRoleMapper projectUserRoleMapper;
-    @PostMapping(value = "/queryProjectList", produces = {"application/json;charset=UTF-8"})
-    public BaseResponse queryProjectList(@RequestBody @Valid CommonTableQueryBody body) {
-        CommonTableQueryResponse response = new CommonTableQueryResponse<Project>();
-        response.setRows(projectMapper.queryList(body));
-        response.setTotal(projectMapper.countList(body));
-
-        return ResultUtils.success(response);
-    }
-
-
-    @PostMapping(value = "/load" ,produces = {"application/json;charset=UTF-8"})
-    public BaseResponse load(@RequestBody @Valid IdBody body) {
-        Project project = projectMapper.findById(body.getId());
-        return ResultUtils.success(project);
-    }
-
-    @PostMapping(value = "/save", produces = {"application/json;charset=UTF-8"})
-    public BaseResponse save(@RequestBody Project body) {
-        Project project;
-        User loginUser = this.getLoginUser();
-        if(body.getId() != null) {
-            project = projectMapper.findById(body.getId());
-            if(project == null) {
-                return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
-            }
-        } else {
-            project = new Project();
-            project.setAddUser(loginUser.getUsername());
-            project.setAddTime(new Date());
-        }
-        project.setName(body.getName());
-        project.setDescription(body.getDescription());
-        project.setLastModifyUser(loginUser.getUsername());
-        project.setLastModifyTime(new Date());
-
-        if(body.getId() == null) {
-            projectMapper.insertBySelective(project);
-        }else{
-            projectMapper.updateBySelective(project);
-        }
-        return ResultUtils.success(project.getId());
-    }
-
-    @PostMapping(value = "/delete", produces = {"application/json;charset=UTF-8"})
-    public BaseResponse delete(@RequestBody @Valid IdBody body) {
-        return ResultUtils.success(projectMapper.deleteByPrimaryKey(body.getId()));
-    }
 
     @PostMapping(value = "/addProjectUser", produces = {"application/json;charset=UTF-8"})
     public BaseResponse addProjectUser(@RequestBody @Valid AddUserToProjectBody body) {

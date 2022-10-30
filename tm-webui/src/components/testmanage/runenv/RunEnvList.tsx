@@ -21,6 +21,7 @@ class RunEnvList extends CommonListPage {
         };
         this.commonApiUrlModel = commonApiUrlModel;
         this.modelType = 'run_env';
+        this.state.queryInfo.area = '-1';
     }
 
     componentDidMount() {

@@ -58,25 +58,44 @@ class MenuEdit extends React.Component<MenuProps, IState> {
     }
 
     onFinish = values => {
-        if(this.state.id > 0) {
-            values['id'] = this.state.id;
+        const data = {
+            "data": {
+                "type": "menu",
+                "attributes": {
+                    menuName: values.menuName,
+                    url: values.url,
+                    seq: values.seq,
+                    parentId: values.parentId || 0
+                }
+            }
         }
         this.setState({saving: true});
-        axios.post(ApiUrlConfig.SAVE_MENU_URL, values).then(resp => {
-            if (resp.status !== 200) {
-                message.error('保存失败');
-            } else {
-                const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
+        if(this.state.id > 0) {
+            data["data"]["id"] = this.state.id;
+            axios.patch(ApiUrlConfig.SAVE_MENU_URL + '/' + this.state.id, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 204) {
+                    message.error('保存失败');
                 } else {
                     message.success('操作成功');
                     this.back();
                 }
-            }
-        }).finally(() => {
-            this.setState({saving: false});
-        });
+            }).finally(() => {
+                this.setState({saving: false});
+            });
+        } else {
+            axios.post(ApiUrlConfig.SAVE_MENU_URL, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 201) {
+                    message.error('保存失败');
+                } else {
+                    message.success('操作成功');
+                    this.back();
+                }
+            }).finally(() => {
+                this.setState({saving: false});
+            });
+        }
     }
 
     onFinishFailed = errorInfo => {
@@ -115,24 +134,20 @@ class MenuEdit extends React.Component<MenuProps, IState> {
             }
         });
         if(this.state.id > 0) {
-            axios.post(ApiUrlConfig.LOAD_MENU_URL, {id: this.state.id}).then(resp => {
+            axios.get(ApiUrlConfig.LOAD_MENU_URL + this.state.id).then(resp => {
                 if (resp.status !== 200) {
                     message.error('加载菜单失败');
                 } else {
                     const ret = resp.data;
-                    if (ret.code !== 0) {
-                        message.error(ret.message);
-                    } else {
-                        if (!ret.data) {
-                            return;
-                        }
-                        this.state.ref.current.setFieldsValue({
-                            menuName: ret.data.menuName,
-                            url: ret.data.url,
-                            seq: ret.data.seq,
-                            parentId: ret.data.parentId === 0 ? '' : ret.data.parentId
-                        });
+                    if (!ret.data) {
+                        return;
                     }
+                    this.state.ref.current.setFieldsValue({
+                        menuName: ret.data.attributes.menuName,
+                        url: ret.data.attributes.url,
+                        seq: ret.data.attributes.seq,
+                        parentId: ret.data.attributes.parentId === 0 ? '' : ret.data.attributes.parentId
+                    });
                 }
             });
         }

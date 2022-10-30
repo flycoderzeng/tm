@@ -76,55 +76,43 @@ class UserRoleSetting extends React.Component<CurrProps, IState> {
 
     loadUserInfo() {
         if (this.state.id > 0) {
-            axios.post(ApiUrlConfig.LOAD_USER_URL, {id: this.state.id}).then(resp => {
+            axios.get(ApiUrlConfig.LOAD_USER_URL + this.state.id).then(resp => {
                 if (resp.status !== 200) {
                     message.error('加载用户失败');
                 } else {
                     const ret = resp.data;
-                    if (ret.code !== 0) {
-                        message.error(ret.message);
-                    } else {
-                        if (!ret.data) {
-                            return;
-                        }
-                        this.setState({
-                            username: ret.data.username,
-                            chineseName: ret.data.chineseName,
-                            addUser: ret.data.addUser,
-                            addTime: moment(new Date(ret.data.addTime)).format('YYYY-MM-DD HH:mm:ss')
-                        });
-                        this.getRoleList();
+                    if (!ret.data) {
+                        return;
                     }
+                    this.setState({
+                        username: ret.data.attributes.username,
+                        chineseName: ret.data.attributes.chineseName,
+                        addUser: ret.data.attributes.addUser,
+                        addTime: ret.data.attributes.addTime
+                    });
+                    this.getRoleList();
                 }
             });
         }
     }
+
     getRoleList() {
         const children :any[] = [];
-        axios.post(ApiUrlConfig.QUERY_ROLE_LIST_URL,
-            {
-                pageNum: 1,
-                pageSize: 1000,
-                filterConditionList: [{columnName: 'type', operator: '=', value: 1}]
-            }).then(resp => {
+        axios.get(ApiUrlConfig.QUERY_ROLE_LIST_URL + '?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Brole%5D=status%3D%3D0;type%3D%3D01&sort=id&page%5Bsize%5D=100').then(resp => {
             if (resp.status !== 200) {
                 message.error('加载列表失败');
             } else {
                 const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    ret.data.rows && ret.data.rows.map(function(v) {
-                        children.push({
-                            text: v.chineseName+"("+v.description+")",
-                            value: v.id.toString()
-                        });
-                        return true;
+                ret.data && ret.data.map(function(v) {
+                    children.push({
+                        text: v.attributes.name + ': ' + v.attributes.chineseName+"("+v.attributes.description+")",
+                        value: v.id
                     });
-                    this.setState({
-                        optionList: children
-                    });
-                }
+                    return true;
+                });
+                this.setState({
+                    optionList: children
+                });
             }
         });
     }

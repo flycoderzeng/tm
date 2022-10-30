@@ -42,25 +42,42 @@ class ProjectEdit extends React.Component<ProjectProps, IState> {
     }
 
     onFinish = values => {
-        if(this.state.id > 0) {
-            values['id'] = this.state.id;
+        const data = {
+            "data": {
+                "type": "project",
+                "attributes": {
+                    name: values.name,
+                    description: values.description
+                }
+            }
         }
         this.setState({saving: true});
-        axios.post(ApiUrlConfig.SAVE_PROJECT_URL, values).then(resp => {
-            if (resp.status !== 200) {
-                message.error('保存失败');
-            } else {
-                const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
+        if(this.state.id > 0) {
+            data["data"]["id"] = this.state.id;
+            axios.patch(ApiUrlConfig.SAVE_PROJECT_URL + '/' + this.state.id, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 204) {
+                    message.error('保存失败');
                 } else {
                     message.success('操作成功');
                     this.back();
                 }
-            }
-        }).finally(() => {
-            this.setState({saving: false});
-        });
+            }).finally(() => {
+                this.setState({saving: false});
+            });
+        }else{
+            axios.post(ApiUrlConfig.SAVE_PROJECT_URL, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 201) {
+                    message.error('保存失败');
+                } else {
+                    message.success('操作成功');
+                    this.back();
+                }
+            }).finally(() => {
+                this.setState({saving: false});
+            });
+        }
     }
 
     onFinishFailed = errorInfo => {
@@ -69,26 +86,23 @@ class ProjectEdit extends React.Component<ProjectProps, IState> {
 
     componentDidMount() {
         if(this.state.id > 0) {
-            axios.post(ApiUrlConfig.LOAD_PROJECT_URL, {id: this.state.id}).then(resp => {
+            axios.get(ApiUrlConfig.LOAD_PROJECT_URL + this.state.id).then(resp => {
                 if (resp.status !== 200) {
                     message.error('加载失败');
                 } else {
                     const ret = resp.data;
-                    if (ret.code !== 0) {
-                        message.error(ret.message);
-                    } else {
-                        if (!ret.data) {
-                            return;
-                        }
-                        this.state.ref.current.setFieldsValue({
-                            name: ret.data.name,
-                            description: ret.data.description,
-                        });
+                    if (!ret.data) {
+                        return;
                     }
+                    this.state.ref.current.setFieldsValue({
+                        name: ret.data.attributes.name,
+                        description: ret.data.attributes.description,
+                    });
                 }
             });
         }
     }
+
     back() {
         this.props.history.push('/projectlist');
     }

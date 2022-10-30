@@ -20,6 +20,8 @@ class ProjectList extends CommonListPage {
             editUrl: '/projectedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'project';
+        this.state.queryInfo.area = '-1';
     }
 
     componentDidMount() {

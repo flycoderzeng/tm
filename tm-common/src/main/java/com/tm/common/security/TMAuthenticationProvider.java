@@ -40,7 +40,8 @@ public class TMAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException(INVALID_USERNAME);
         }
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(4);
-        if(!bCryptPasswordEncoder.matches(password, userDetails.getPassword()) && !bCryptPasswordEncoder.matches(bCryptPasswordEncoder.encode(password), userDetails.getPassword())) {
+        if(!bCryptPasswordEncoder.matches(password, userDetails.getPassword()) &&
+                !bCryptPasswordEncoder.matches(bCryptPasswordEncoder.encode(password), userDetails.getPassword())) {
             log.error("密码: {} 不正确", password);
             throw new BadCredentialsException(INVALID_PASSWORD);
         }

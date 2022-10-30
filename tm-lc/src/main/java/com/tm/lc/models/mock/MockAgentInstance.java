@@ -32,17 +32,4 @@ public class MockAgentInstance {
     private String lastRegisterTime;
 
     private Integer status;
-
-
-    @Transient
-    @ComputedAttribute
-    public Integer getTotal(RequestScope requestScope) {
-        return null;
-    }
-
-    @Transient
-    @ComputedAttribute
-    public Integer getOnlineTotal(RequestScope requestScope) {
-        return null;
-    }
 }

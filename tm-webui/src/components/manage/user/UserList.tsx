@@ -20,6 +20,8 @@ class UserList extends CommonListPage {
             editUrl: '/useredit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'user';
+        this.state.queryInfo.area = '-1';
     }
 
     componentDidMount() {

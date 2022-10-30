@@ -20,6 +20,8 @@ class RoleList extends CommonListPage {
             editUrl: '/roleedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'role';
+        this.state.queryInfo.area = '-1';
     }
 
     componentDidMount() {
