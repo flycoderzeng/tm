@@ -9,7 +9,10 @@ import java.util.Date;
 public class DateAndString implements AttributeConverter<String, Date> {
     @Override
     public Date convertToDatabaseColumn(String s) {
-        return null;
+        if(s == null) {
+            return null;
+        }
+        return DateUtils.toDate(s, DateUtils.DATE_PATTERN_DEFAULT);
     }
 
     @Override

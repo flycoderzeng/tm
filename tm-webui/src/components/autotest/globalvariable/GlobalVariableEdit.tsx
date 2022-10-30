@@ -1,7 +1,7 @@
 import React from "react";
 import {FormInstance} from "antd/lib/form";
 import axios from "axios";
-import {Form, Input, Button, Select, Tooltip, message, Radio} from 'antd';
+import {Form, Input, Button, Tooltip, message, Radio} from 'antd';
 import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import { ArrowLeftOutlined } from '@ant-design/icons';

@@ -5,13 +5,15 @@ import { RouteComponentProps } from "react-router-dom";
 import {CommonApiUrlModel} from "../../entities/CommonApiUrlModel";
 import {DateUtils} from "../../utils/DateUtils";
 import {LocalStorageUtils} from "../../utils/LocalStorageUtils";
+import {StrUtils} from "../../utils/StrUtils";
+import {MathUtils} from "../../utils/MathUtils";
 
 interface IProps {}
 
 type CommonProps = IProps & RouteComponentProps;
 
 interface IState {
-    data: [];
+    data: any[];
     loading: boolean;
     pagination: any;
     sortedInfo: any;
@@ -24,6 +26,7 @@ interface IState {
 
 class CommonListPage extends React.Component<CommonProps, IState> {
     commonApiUrlModel: CommonApiUrlModel;
+    modelType: string;
     columnFilters: any[];
     constructor(props: IState, className?: string) {
         super(props);
@@ -59,6 +62,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             {text: '最后修改者', value: 'lastModifyUser'},
             {text: '最后修改时间', value: 'lastModifyTime'}
         ];
+        this.modelType = '';
     }
 
     onFilter = (value, record) => {
@@ -159,7 +163,8 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             current: this.state.pagination.current,
             linkOperator: this.state.pagination.linkOperator,
             filterConditionList: filterConditionList,
-            area: queryInfo.area || this.state.queryInfo.area
+            area: queryInfo.area || this.state.queryInfo.area,
+            searchValue: queryInfo.searchValue || this.state.queryInfo.searchValue
         };
         if(this.state.sortedInfo.columnKey) {
             data.order = this.state.sortedInfo.columnKey;
@@ -170,8 +175,17 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         this.loadDataListSort(data, null, this.state.sortedInfo);
     }
 
-    _onChange = (pagination, filters, sorter) => {
-        this.loadDataListSort(pagination, filters, sorter);
+    loadDataListSort = (pagination, filters, sorter, reset ?: boolean) => {
+        if(!pagination) {
+            pagination = this.state.pagination;
+        }
+        if(sorter?.columnKey) {
+            pagination.order = sorter.columnKey;
+        }
+        if(sorter?.order) {
+            pagination.sort = sorter.order;
+        }
+        this.loadDataList(pagination, reset);
     }
 
     _onChangeQueryArea = (e) => {
@@ -198,17 +212,88 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         if(!pagination) {
             pagination = this.state.pagination;
         }
-        if(reset) {
-            pagination.current = 1;
+        this.setPaginationState(pagination, reset);
+
+        if(this.commonApiUrlModel.listUrl.startsWith("/lc/lc/json/api/")) {
+            this.loadDataList1(pagination);
+        } else {
+            this.loadDataList2(pagination);
         }
-        this.setState({
-            loading: true, pagination: {
-                ...this.state.pagination,
-                pageNum: pagination.current,
-                pageSize: pagination.pageSize,
-                current: pagination.current,
-            },
+    }
+
+    private loadDataList1(pagination) {
+        const data: any = {
+            'page[totals]': '',
+            'page[number]': pagination.current,
+            'page[size]': pagination.pageSize
+        }
+        let sort = '';
+        if(pagination.order) {
+            sort += pagination.order;
+        }
+        if(!sort) {
+            sort = 'id';
+        }
+        sort = StrUtils.getCamelCase(sort);
+        if(pagination.sort === 'ascend') {
+            sort = '-' + sort;
+        }
+        data['sort'] = sort;
+
+        let filter = 'status==0';
+        if(pagination.area && pagination.area === '1' && this.modelType !== 'run_env') {
+            filter += ';addUser==' + LocalStorageUtils.getLoginUsername();
+        }else if(!pagination.area && this.state.queryInfo.area === '1' && this.modelType !== 'run_env') {
+            filter += ';addUser==' + LocalStorageUtils.getLoginUsername();
+        }
+        if(pagination.searchValue) {
+            filter += ';(';
+            if(MathUtils.isNumberSequence(pagination.searchValue)) {
+                filter += 'id==' + pagination.searchValue + ',';
+            }
+            filter += 'name==*' + pagination.searchValue + '*';
+            if(this.modelType === 'api_ip_port_config') {
+                filter += ',url==*' + pagination.searchValue + '*';
+            }
+            filter += ')';
+        }
+        data['filter[' + this.modelType + ']'] = filter;
+
+        if(this.modelType === 'db_config') {
+            data['fields[db_config]'] = 'addTime,addUser,lastModifyTime,lastModifyUser,ip,port,username,status,type,envId,envName,dbName';
+        }
+        axios.get(this.commonApiUrlModel.listUrl + '?' + StrUtils.getGetParams(data)).then(resp => {
+            if (resp.status !== 200) {
+                message.error('加载列表失败');
+            } else {
+                const ret = resp.data;
+                const rows: any[] = [];
+                if(ret.data) {
+                    ret.data.map((v: any) => {
+                        v.attributes.id = v.id;
+                        v.attributes.key = v.id;
+                        rows.push(v.attributes);
+                    });
+                }
+                let total: number = 0;
+                if(ret.meta && ret.meta.page) {
+                    total = ret.meta.page.totalRecords;
+                }
+                this.setState({
+                    data: rows,
+                    pagination: {
+                        ...this.state.pagination,
+                        total: total
+                    }
+                });
+            }
+        }).finally(() => {
+            this.setState({loading: false});
         });
+    }
+
+
+    private loadDataList2(pagination) {
         const data: any = {
             pageNum: pagination.current,
             pageSize: pagination.pageSize,
@@ -246,34 +331,40 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         });
     }
 
-    loadDataListSort = (pagination, filters, sorter, reset ?: boolean) => {
-        if(!pagination) {
-            pagination = this.state.pagination;
+    private setPaginationState(pagination, reset: boolean | undefined) {
+        if(reset) {
+            pagination.current = 1;
         }
-        if(sorter?.columnKey) {
-            pagination.order = sorter.columnKey;
-        }
-        if(sorter?.order) {
-            pagination.sort = sorter.order;
-        }
-        this.loadDataList(pagination, reset);
+        this.setState({
+            loading: true, pagination: {
+                ...this.state.pagination,
+                pageNum: pagination.current,
+                pageSize: pagination.pageSize,
+                current: pagination.current,
+            },
+        });
     }
 
     delete = id => {
         if(!window.confirm("确定删除吗？")) {
             return;
         }
-        axios.post(this.commonApiUrlModel.deleteUrl, {id: id}).then(resp => {
-            if (resp.status !== 200) {
+        const data = {
+            "data": {
+                "type": this.modelType,
+                "id": id,
+                "attributes": {
+                    "status": 1
+                }
+            }
+        };
+        axios.patch(this.commonApiUrlModel.deleteUrl + id, data,
+            {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+            if (resp.status !== 204) {
                 message.error('删除失败');
             } else {
-                const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    message.success('操作成功');
-                    this.loadDataListSort(null, null, null, true);
-                }
+                message.success('操作成功');
+                this.loadDataListSort(null, null, null, true);
             }
         });
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Button, Tooltip} from 'antd';
+import {Table, Button} from 'antd';
 import { Input } from 'antd';
 import {withRouter} from "react-router-dom";
 import CommonListPage from "../../common/CommonListPage";
@@ -65,14 +65,14 @@ class MockInstancesList extends CommonListPage {
                 dataIndex: 'onlineTotal',
                 key: 'id',
                 sorter: ()=>{},
-                render: (text, record) => <span>{text}/{record.total}</span>,
+                render: (text, record) => <span>{record.onlineTotal || 0}/{record.total}</span>,
             },{
                 title: '操作',
                 fixed: 'right',
                 render: (text, record) => (
                     <div>
                         <Button className="padding-left0" size="small" type="link" onClick={() => this.edit(record.id)}>配置</Button>
-                        <Button danger size="small" type="link" onClick={() => this.delete(record.id)}>关注</Button>
+                        <Button danger size="small" type="link" onClick={() => this.concern(record.id)}>关注</Button>
                     </div>
                 ),
             },
@@ -95,6 +95,10 @@ class MockInstancesList extends CommonListPage {
                 />
             </div>
         </div>)
+    }
+
+    private concern(id) {
+
     }
 }
 

@@ -1,5 +1,6 @@
 export class LocalStorageUtils {
     public static COPY_STEP_NODE = '__COPY_STEP_NODE';
+    public static _LOGIN_USERNAME = '_LOGIN_USERNAME';
 
     public static saveFilteredValue(className: string, filteredValue: string[]): void {
         localStorage.setItem(className + '_filteredValue', JSON.stringify(filteredValue));
@@ -17,5 +18,9 @@ export class LocalStorageUtils {
             }
         }
         return [];
+    }
+
+    public static getLoginUsername(): string|null {
+        return localStorage.getItem(LocalStorageUtils._LOGIN_USERNAME);
     }
 }

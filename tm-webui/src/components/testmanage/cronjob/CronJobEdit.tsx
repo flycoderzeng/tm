@@ -11,11 +11,11 @@ import {RandomUtils} from "../../../utils/RandomUtils";
 const Option = Select.Option;
 
 interface CronJobPlanRelation {
-    id: number|null;
-    planCronJobId: number|null;
-    planId: number|null;
-    envId: string|number|null;
-    runType: number|null;
+    id: string|number|undefined|null;
+    planCronJobId: string|number|undefined|null;
+    planId: string|number|undefined|null;
+    envId: string|number|undefined|null;
+    runType: string|number|undefined|null;
     key?: string;
 }
 
@@ -53,46 +53,135 @@ const CronJobEdit: React.FC<IState> = (props) => {
     }, [id]);
 
     function onFinish(values) {
-        values.cronExpression = expression;
-        values.planList = planRows;
-        values.id = id;
-        setSaving(true);
-        axios.post(ApiUrlConfig.SAVE_CRON_JOB_URL, values).then(resp => {
-            if (resp.status !== 200) {
-                message.error('操作失败');
-            } else {
-                const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    setId(ret.data);
-                    message.success('操作成功');
+        const data = {
+            "data": {
+                "type": "plan_cron_job",
+                "attributes": {
+                    name: values.name,
+                    description: values.description,
+                    expression: values.expression
                 }
             }
-        }).finally(() => {
-            setSaving(false);
+        }
+
+        setSaving(true);
+        if (!id || id < 1) {
+            axios.post(ApiUrlConfig.SAVE_CRON_JOB_URL, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 201) {
+                    message.error('操作失败');
+                } else {
+                    const ret = resp.data;
+                    setId(ret.data.id);
+                    message.success('操作成功');
+                    savePlanRows(ret.data.id);
+                }
+            }).finally(() => {
+                setSaving(false);
+            });
+        }else{
+            data["data"]["id"] = id;
+            axios.patch(ApiUrlConfig.SAVE_CRON_JOB_URL + '/' + id, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 204) {
+                    message.error('操作失败');
+                } else {
+                    message.success('操作成功');
+                    savePlanRows(id);
+                }
+            }).finally(() => {
+                setSaving(false);
+            });
+        }
+    }
+
+    function savePlanRows(id) {
+        planRows.map(value => {
+            if(!value.id) {
+                const data = {
+                    "data": {
+                        "type": "cron_job_plan_relation",
+                        "attributes": {
+                            "envId": value.envId,
+                            "planId": value.planId,
+                            "runType": value.runType,
+                            "status": 0
+                        },
+                        "relationships": {
+                            "planCronJob": {
+                                "data": {
+                                    "id": id,
+                                    "type": "plan_cron_job"
+                                }
+                            }
+                        }
+                    }
+                }
+                axios.post(ApiUrlConfig.SAVE_CRON_JOB_PLAN_RELATION_URL, data,
+                    {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                    if (resp.status !== 201) {
+                        message.error('操作失败');
+                    } else {
+                        const ret = resp.data;
+                        value.id = ret.data.id;
+                    }
+                });
+            } else {
+                const data = {
+                    "data": {
+                        "type": "cron_job_plan_relation",
+                        "id": value.id,
+                        "attributes": {
+                            "envId": value.envId,
+                            "planId": value.planId,
+                            "runType": value.runType,
+                            "status": 0
+                        },
+                        "relationships": {
+                            "planCronJob": {
+                                "data": {
+                                    "id": id,
+                                    "type": "plan_cron_job"
+                                }
+                            }
+                        }
+                    }
+                }
+                axios.patch(ApiUrlConfig.SAVE_CRON_JOB_PLAN_RELATION_URL + '/' + value.id, data,
+                    {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                    if (resp.status !== 204) {
+                        message.error('操作失败');
+                    }
+                });
+            }
+            return null;
         });
     }
 
     function load() {
-        if(!id || id < 1 || id === '0') {
+        if(!id || id < 1) {
             return ;
         }
-        axios.post(ApiUrlConfig.LOAD_PLAN_CRON_JOB_URL, {id: id}).then(resp => {
+        axios.get(ApiUrlConfig.LOAD_PLAN_CRON_JOB_URL + id + '?include=cronJobPlanRelations&sort=-cronJobPlanRelations.id').then(resp => {
             if (resp.status !== 200) {
                 message.error('加载失败');
             } else {
                 const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    ref.current?.setFieldsValue({
-                        name: ret.data.name,
-                        description: ret.data.description
+                ref.current?.setFieldsValue({
+                    name: ret.data.attributes.name,
+                    description: ret.data.attributes.description
+                });
+                setExpression(ret.data.attributes.cronExpression);
+
+                const rows: CronJobPlanRelation[] = [];
+                if(ret.included) {
+                    ret.included.map(v => {
+                        rows.push({id: v.id, planCronJobId: id, envId: v.attributes.envId + '',
+                            planId: v.attributes.planId, runType: v.attributes.runType, key: v.id+''});
+                        return null;
                     });
-                    setExpression(ret.data.cronExpression);
-                    setPlanRows(ret.data.planList);
                 }
+                setPlanRows(rows);
             }
         });
     }
@@ -143,7 +232,8 @@ const CronJobEdit: React.FC<IState> = (props) => {
     }
 
     function onAddPlan() {
-        planRows.push({id: null, planId: null, planCronJobId: id || null, envId: null, runType: 1, key: RandomUtils.getKey()});
+        planRows.push({id: undefined, planId: undefined, planCronJobId: id || null,
+            envId: '', runType: 1, key: RandomUtils.getKey()});
         setPlanRows([...planRows]);
     }
 
@@ -163,10 +253,19 @@ const CronJobEdit: React.FC<IState> = (props) => {
     }
 
     function removeRow(index) {
-        if(planRows[index]) {
+        if(planRows[index] && planRows[index].id) {
+            axios.delete(ApiUrlConfig.DELETE_CRON_JOB_PLAN_RELATION_URL + planRows[index].id).then(resp => {
+                if (resp.status !== 204) {
+                    message.error('操作失败');
+                } else {
+                    planRows.splice(index, 1);
+                    setPlanRows([...planRows]);
+                }
+            });
+        }else if(planRows[index]) {
             planRows.splice(index, 1);
+            setPlanRows([...planRows]);
         }
-        setPlanRows([...planRows]);
     }
 
     function renderPlanRows() {
@@ -176,7 +275,7 @@ const CronJobEdit: React.FC<IState> = (props) => {
                 defaultValue = row.runType.toString();
             }
             return (
-            <Row className="description-row" key={row.key}>
+            <Row className="description-row" key={row.id}>
                 <Col span={8} className="padding-right5">
                     <CommonRemoteSearchSingleSelect
                         onChange={(v) => {handlePlanChange(v, row);}}
@@ -185,7 +284,7 @@ const CronJobEdit: React.FC<IState> = (props) => {
                         dataTypeId={DataTypeEnum.AUTO_PLAN}></CommonRemoteSearchSingleSelect>
                 </Col>
                 <Col span={8} className="padding-right5">
-                    <RunEnvSelect value={row.envId} onChange={(v) => {handleRunEnvChange(v, row);}}></RunEnvSelect>
+                    <RunEnvSelect value={row.envId+''} onChange={(v) => {handleRunEnvChange(v, row);}}></RunEnvSelect>
                 </Col>
                 <Col span={8}>
                     <div style={{display: 'flex', alignItems: 'center'}}>
@@ -287,7 +386,7 @@ const CronJobEdit: React.FC<IState> = (props) => {
         </div>
         <Modal
             width={600}
-            visible={visibleCronExpressionDescription}
+            open={visibleCronExpressionDescription}
             onCancel={handleClose}
             title="表达式说明"
             footer={[
@@ -337,7 +436,7 @@ const CronJobEdit: React.FC<IState> = (props) => {
         <Modal
             width={600}
             onCancel={handleClose}
-            visible={visibleExpressionDates}
+            open={visibleExpressionDates}
             title="近期运行时间列表"
             footer={[
                 <Button key="close" onClick={handleClose}>

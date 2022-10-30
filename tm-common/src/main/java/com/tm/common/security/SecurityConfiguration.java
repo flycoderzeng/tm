@@ -1,5 +1,6 @@
 package com.tm.common.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -16,6 +17,7 @@ import org.springframework.web.cors.CorsUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)  //  启用方法级别的权限认证
@@ -23,7 +25,7 @@ import java.io.PrintWriter;
 public class SecurityConfiguration {
     public static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json;charset=utf-8";
     public static final String LOGIN_SUCCESS = "{\"code\": 0, \"message\": \"login success\"}";
-    public static final String LOGOUT_SUCCESS = "{\"code\": 401, \"message\": \"logout success\"}";
+    public static final String LOGOUT_SUCCESS = "{\"code\": 0, \"message\": \"logout success\"}";
     public static final String JSESSIONID = "JSESSIONID";
     public static final String LOGIN_URI = "/login";
 
@@ -37,6 +39,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http, TMAccessDeniedHandler tmAccessDeniedHandler,
                                            FilterInvocationSecurityMetadataSourceImpl filterInvocationSecurityMetadataSource,
                                            AccessDecisionManagerImpl accessDecisionManager) throws Exception {
+        log.info("配置 HttpSecurity");
         return http.headers().frameOptions().disable()
                 .and().cors().and().csrf().disable().exceptionHandling()
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()).and().authorizeRequests()

@@ -3,6 +3,7 @@
 <mapper namespace="com.tm.common.base.mapper.ApiIpPortConfigMapper" >
   <resultMap id="BaseResultMap" type="com.tm.common.base.model.ApiIpPortConfig" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="url" property="url" jdbcType="VARCHAR" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="VARCHAR" />
@@ -16,7 +17,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, url, ip, port, status, env_id, add_time, add_user, last_modify_time, last_modify_user
+    id, name, url, ip, port, status, env_id, add_time, add_user, last_modify_time, last_modify_user
   </sql>
 
   <update id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -84,6 +85,9 @@
     <update id="updateBySelective" parameterType="com.tm.common.base.model.ApiIpPortConfig">
         update api_ip_port_config
         <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
             <if test="url != null" >
                 url = #{url,jdbcType=VARCHAR},
             </if>
@@ -123,6 +127,9 @@
             <if test="id != null" >
                 id,
             </if>
+            <if test="name != null" >
+                name,
+            </if>
             <if test="url != null" >
                 url,
             </if>
@@ -154,6 +161,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
                 #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
             </if>
             <if test="url != null" >
                 #{url,jdbcType=VARCHAR},

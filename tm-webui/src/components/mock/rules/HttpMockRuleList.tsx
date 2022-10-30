@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Button, Tooltip, Radio} from 'antd';
+import {Table, Button, Radio} from 'antd';
 import { Input } from 'antd';
 import {withRouter} from "react-router-dom";
 import CommonListPage from "../../common/CommonListPage";

@@ -2,11 +2,9 @@ import React, {useState} from "react";
 import {Button, Input, Modal} from "antd";
 import {Row, Col, message} from 'antd';
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
-import {Select} from 'antd';
 import {RandomUtils} from "../../../../utils/RandomUtils";
 
 const {TextArea} = Input;
-const {Option} = Select;
 
 interface IState {
     userDefinedVariables: AutoCaseVariable[]

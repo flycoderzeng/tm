@@ -10,6 +10,6 @@ public class IsCommonAdmin extends UserCheck {
 
     @Override
     public boolean ok(User user) {
-        return user.isInRole("ROLE_ROOT_ADMIN");
+        return user.isInRole("ROLE_COMMON_ADMIN");
     }
 }

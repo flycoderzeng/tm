@@ -84,7 +84,7 @@ const PlanResultPage: React.FC<IState> = (props) => {
                         message.error(ret.message);
                     } else if(!ret.data) {
                         message.info('计划没有执行过');
-                    } {
+                    } else {
                         renderBasicInfo(ret.data);
                     }
                 }

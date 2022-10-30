@@ -1,13 +1,12 @@
 import React from "react";
 import axios from "axios";
-import {Form, Input, Button, Select, Tooltip, message} from 'antd';
+import {Form, Input, Button, Tooltip, message} from 'antd';
 import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import { FormInstance } from 'antd/lib/form';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import {ApiUrlConfig} from "../../../config/api.url";
 interface IProps {}
-const { Option } = Select;
 type RunEnvProps = IProps & RouteComponentProps;
 
 interface RunEnvModel {
@@ -47,25 +46,42 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
     }
 
     onFinish = values => {
-        if(this.state.id > 0) {
-            values['id'] = this.state.id;
-        }
-        this.setState({saving: true});
-        axios.post(ApiUrlConfig.SAVE_RUN_ENV_URL, values).then(resp => {
-            if (resp.status !== 200) {
-                message.error('保存失败');
-            } else {
-                const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    message.success('操作成功');
-                    this.back();
+        const data = {
+            "data": {
+                "type": "run_env",
+                "attributes": {
+                    name: values.name,
+                    description: values.description
                 }
             }
-        }).finally(() => {
-            this.setState({saving: false});
-        });
+        }
+        this.setState({saving: true});
+        if(this.state.id > 0) {
+            data["data"]["id"] = this.state.id;
+            axios.patch(ApiUrlConfig.SAVE_RUN_ENV_URL + '/' + this.state.id, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 204) {
+                    message.error('操作失败');
+                } else {
+                    message.success('操作成功');
+                }
+            }).finally(() => {
+                this.setState({saving: false});
+            });
+        }else{
+            axios.post(ApiUrlConfig.SAVE_RUN_ENV_URL, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 201) {
+                    message.error('操作失败');
+                } else {
+                    const ret = resp.data;
+                    this.setState({id: ret.data.id});
+                    message.success('操作成功');
+                }
+            }).finally(() => {
+                this.setState({saving: false});
+            });
+        }
     }
 
     onFinishFailed = errorInfo => {
@@ -74,20 +90,15 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
 
     componentDidMount() {
         if(this.state.id > 0) {
-            axios.post(ApiUrlConfig.LOAD_RUN_ENV_URL, {id: this.state.id}).then(resp => {
+            axios.get(ApiUrlConfig.LOAD_RUN_ENV_URL + this.state.id).then(resp => {
                 if (resp.status !== 200) {
                     message.error('加载失败');
                 } else {
                     const ret = resp.data;
-                    if (ret.code !== 0) {
-                        message.error(ret.message);
-                    } else {
-                        if (!ret.data) {
-                            return;
-                        }
+                    if (ret.data) {
                         this.state.ref.current.setFieldsValue({
-                            name: ret.data.name,
-                            description: ret.data.description
+                            name: ret.data.attributes.name,
+                            description: ret.data.attributes.description
                         });
                     }
                 }

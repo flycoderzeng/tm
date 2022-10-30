@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, message, Row, Tooltip, Select} from "antd";
-import {ArrowLeftOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import {Button, Form, Input, message, Tooltip, Select} from "antd";
+import {ArrowLeftOutlined} from "@ant-design/icons";
 import {FormInstance} from "antd/lib/form";
 import {RunEnvSelect} from "../runenv/RunEnvSelect";
 import axios from "axios";
@@ -35,50 +35,77 @@ const DbConfigEdit: React.FC<IState> = (props) => {
     }
 
     function load() {
-        if (!id || id < 1 || id === '0') {
+        if (!id || id < 1) {
             return;
         }
-        axios.post(ApiUrlConfig.LOAD_DB_CONFIG_URL, {id: id}).then(resp => {
+        axios.get(ApiUrlConfig.LOAD_DB_CONFIG_URL + id).then(resp => {
             if (resp.status !== 200) {
                 message.error('加载失败');
             } else {
                 const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    ref.current?.setFieldsValue({
-                        dbName: ret.data.dbName,
-                        ip: ret.data.ip,
-                        port: ret.data.port,
-                        username: ret.data.username,
-                        password: ret.data.password,
-                        envId: ret.data.envId,
-                        type: ret.data.type.toString()
-                    });
-                    setRunEnvId(ret.data.envId.toString() || undefined);
-                }
+                ref.current?.setFieldsValue({
+                    dbName: ret.data.attributes.dbName,
+                    ip: ret.data.attributes.ip,
+                    port: ret.data.attributes.port,
+                    username: ret.data.attributes.username,
+                    password: ret.data.attributes.password,
+                    type: ret.data.attributes.type + '',
+                    envId: ret.data.attributes.envId + ''
+                });
+                setRunEnvId(ret.data.attributes.envId + '');
             }
         });
     }
 
     function onFinish(values) {
-        values.id = id;
-        setSaving(true);
-        axios.post(ApiUrlConfig.SAVE_DB_CONFIG_URL, values).then(resp => {
-            if (resp.status !== 200) {
-                message.error('操作失败');
-            } else {
-                const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    setId(ret.data);
-                    message.success('操作成功');
+        const data = {
+            "data": {
+                "type": "db_config",
+                "attributes": {
+                    dbName: values.dbName,
+                    username: values.username,
+                    password: values.password,
+                    type: values.type,
+                    ip: values.ip,
+                    port: values.port,
+                },
+                "relationships": {
+                    "runEnv": {
+                        "data": {
+                            "id": runEnvId,
+                            "type": "run_env"
+                        }
+                    }
                 }
             }
-        }).finally(() => {
-            setSaving(false);
-        });
+        }
+        setSaving(true);
+        if (!id || id < 1 || id === '0') {
+            axios.post(ApiUrlConfig.SAVE_DB_CONFIG_URL, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 201) {
+                    message.error('操作失败');
+                } else {
+                    const ret = resp.data;
+                    setId(ret.data.id);
+                    message.success('操作成功');
+                }
+            }).finally(() => {
+                setSaving(false);
+            });
+        } else {
+            data["data"]["id"] = id;
+            axios.patch(ApiUrlConfig.SAVE_DB_CONFIG_URL + '/' + id, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 204) {
+                    message.error('操作失败');
+                } else {
+                    message.success('操作成功');
+                }
+            }).finally(() => {
+                setSaving(false);
+            });
+        }
     }
 
     return (<div className="card">

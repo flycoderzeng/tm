@@ -2,7 +2,7 @@ import { Select, Spin, message } from 'antd';
 import { SelectProps } from 'antd/es/select';
 import debounce from 'lodash/debounce';
 import React, {useState} from "react";
-import {ApiUrlConfig, BaseUrl} from "../../../config/api.url";
+import {ApiUrlConfig} from "../../../config/api.url";
 import axios from "axios";
 import {ValueItem} from "../../../entities/common/ValueItem";
 

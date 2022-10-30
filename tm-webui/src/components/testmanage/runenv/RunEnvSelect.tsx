@@ -27,6 +27,7 @@ const RunEnvSelect: React.FC<IState> = (props) => {
     if(rows.length === 0) {
         getAllRunEnv();
     }
+
     if(value !== props.value) {
         setValue(props.value);
     }
@@ -44,10 +45,13 @@ const RunEnvSelect: React.FC<IState> = (props) => {
                 message.error('加载环境列表失败');
             } else {
                 const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    setRows(ret.data || []);
+                if(ret.data) {
+                    const rows: RunEnv[] = [];
+                    ret.data.map(v => {
+                        rows.push({id: v.id + '', name: v.attributes.name, description: ''});
+                        return null;
+                    });
+                    setRows(rows);
                 }
             }
         });
@@ -62,7 +66,8 @@ const RunEnvSelect: React.FC<IState> = (props) => {
 
     return (<Select
         showSearch
-        value={value||undefined}
+        defaultValue={value || undefined}
+        value={value || undefined}
         placeholder="请选择环境"
         style={props.style}
         defaultActiveFirstOption={false}

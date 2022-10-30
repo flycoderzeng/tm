@@ -3,6 +3,7 @@ import React from 'react';
 import axios from 'axios';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {ApiUrlConfig} from "../config/api.url";
+import {LocalStorageUtils} from "../utils/LocalStorageUtils";
 
 class Login extends React.Component {
     state = {
@@ -26,7 +27,7 @@ class Login extends React.Component {
                 if (ret.code !== 0) {
                     message.error(ret.message);
                 } else {
-                    localStorage.setItem('_LOGIN_USERNAME', this.state.username);
+                    localStorage.setItem(LocalStorageUtils._LOGIN_USERNAME, this.state.username);
                     window.location.href = '/'
                 }
             }

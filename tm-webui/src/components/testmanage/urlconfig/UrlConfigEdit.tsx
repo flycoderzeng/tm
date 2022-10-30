@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Button, Col, Form, Input, message, Row, Tooltip} from "antd";
-import {ArrowLeftOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import {Button, Form, Input, message, Tooltip} from "antd";
+import {ArrowLeftOutlined} from "@ant-design/icons";
 import {FormInstance} from "antd/lib/form";
 import {RunEnvSelect} from "../runenv/RunEnvSelect";
 import axios from "axios";
@@ -23,7 +23,7 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
     const [id, setId] = useState(configId);
     const [saving, setSaving] = useState(false);
     const [ref] = useState(React.createRef<FormInstance>());
-    const [runEnvId, setRunEnvId] = useState('');
+    const [runEnvId, setRunEnvId] = useState<string>('');
 
     useEffect(() => {
         load();
@@ -36,44 +36,72 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
         if (!id || id < 1 || id === '0') {
             return;
         }
-        axios.post(ApiUrlConfig.LOAD_URL_CONFIG_URL, {id: id}).then(resp => {
+        axios.get(ApiUrlConfig.LOAD_URL_CONFIG_URL + id).then(resp => {
             if (resp.status !== 200) {
                 message.error('加载失败');
             } else {
                 const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
+                if(ret.data) {
                     ref.current?.setFieldsValue({
-                        url: ret.data.url,
-                        ip: ret.data.ip,
-                        port: ret.data.port,
-                        envId: ret.data.envId
+                        name: ret.data.attributes.name,
+                        url: ret.data.attributes.url,
+                        ip: ret.data.attributes.ip,
+                        port: ret.data.attributes.port,
+                        envId: ret.data.attributes.envId + ''
                     });
-                    setRunEnvId(ret.data.envId.toString() || undefined);
+                    setRunEnvId(ret.data.attributes.envId + '');
                 }
             }
         });
     }
 
     function onFinish(values) {
-        values.id = id;
-        setSaving(true);
-        axios.post(ApiUrlConfig.SAVE_URL_CONFIG_URL, values).then(resp => {
-            if (resp.status !== 200) {
-                message.error('操作失败');
-            } else {
-                const ret = resp.data;
-                if (ret.code !== 0) {
-                    message.error(ret.message);
-                } else {
-                    setId(ret.data);
-                    message.success('操作成功');
+        const data = {
+            "data": {
+                "type": "api_ip_port_config",
+                "attributes": {
+                    name: values.name,
+                    url: values.url,
+                    ip: values.ip,
+                    port: values.port,
+                },
+                "relationships": {
+                    "runEnv": {
+                        "data": {
+                            "id": runEnvId,
+                            "type": "run_env"
+                        }
+                    }
                 }
             }
-        }).finally(() => {
-            setSaving(false);
-        });
+        }
+        setSaving(true);
+        if(!id || id < 1 || id === '0') {
+            axios.post(ApiUrlConfig.SAVE_URL_CONFIG_URL, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 201) {
+                    message.error('操作失败');
+                } else {
+                    const ret = resp.data;
+                    setId(ret.data.id);
+                    message.success('操作成功');
+                }
+            }).finally(() => {
+                setSaving(false);
+            });
+        } else {
+            data["data"]["id"] = id;
+            axios.patch(ApiUrlConfig.SAVE_URL_CONFIG_URL + '/' + id, data,
+                {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                if (resp.status !== 204) {
+                    message.error('操作失败');
+                } else {
+                    message.success('操作成功');
+                }
+            }).finally(() => {
+                setSaving(false);
+            });
+        }
     }
 
     return (<div className="card">
@@ -87,13 +115,20 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
         <div className="card-body">
             <Form
                 {...layout}
-                name="cronjob"
+                name="ipPortConfig"
                 ref={ref}
                 initialValues={initialValues}
                 onFinish={onFinish}
             >
                 <Form.Item
-                    label="接口路径"
+                    label="名称"
+                    name="name"
+                    rules={[{required: true, message: '请输入接口名称!'}]}
+                >
+                    <Input style={{width: '300px'}} placeholder="如：开户"/>
+                </Form.Item>
+                <Form.Item
+                    label="路径"
                     name="url"
                     rules={[{required: true, message: '请输入接口路径!'}]}
                 >

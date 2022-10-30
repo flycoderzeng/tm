@@ -3,43 +3,38 @@ package com.tm.lc.models.testmanage;
 import com.tm.lc.hooks.EntityPublicCreateHook;
 import com.tm.lc.hooks.EntityPublicModifyHook;
 import com.tm.lc.models.CommonSixItemsElideModel;
-import com.yahoo.elide.annotation.*;
-import com.yahoo.elide.core.RequestScope;
+import com.yahoo.elide.annotation.DeletePermission;
+import com.yahoo.elide.annotation.Include;
+import com.yahoo.elide.annotation.LifeCycleHookBinding;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 
+import java.util.Set;
+
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.UPDATE;
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase.PRECOMMIT;
 
-@Table(name = "api_ip_port_config")
-@Include(name="api_ip_port_config")
+@Table(name = "plan_cron_jobs")
+@Include(name="plan_cron_job")
 @Entity
 @Getter
 @Setter
 @LifeCycleHookBinding(operation = CREATE, phase = PRECOMMIT, hook = EntityPublicCreateHook.class)
 @LifeCycleHookBinding(operation = UPDATE, phase = PRECOMMIT, hook = EntityPublicModifyHook.class)
 @DeletePermission(expression = "user is a root admin")
-public class ApiIpPortConfig extends CommonSixItemsElideModel {
+public class PlanCronJob extends CommonSixItemsElideModel {
     private String name;
-    private String url;
-    private String ip;
-    private String port;
-    @ManyToOne
-    @JoinColumn(name = "env_id", referencedColumnName="id")
-    private RunEnv runEnv;
 
-    @Transient
-    @ComputedAttribute
-    public String getEnvName(RequestScope requestScope) {
-        return runEnv == null ? null : runEnv.getName();
-    }
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 
-    @Transient
-    @ComputedAttribute
-    public Integer getEnvId(RequestScope requestScope) {
-        return runEnv == null ? null : runEnv.getId();
-    }
+    private String cronExpression;
+
+    @OneToMany
+    @JoinColumn(name = "plan_cron_job_id",referencedColumnName = "id")
+    private Set<CronJobPlanRelation> cronJobPlanRelations;
 }

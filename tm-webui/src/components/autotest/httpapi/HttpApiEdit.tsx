@@ -17,7 +17,6 @@ import { Collapse } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import { JsonDefineEditor } from "./JsonDefineEditor";
 import {FormEditor} from "./FormEditor";
-import {HttpApiPreview} from "./HttpApiPreview";
 import {HttpApiModel} from "../../../entities/HttpApiModel";
 import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
@@ -47,9 +46,7 @@ const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
 };
-const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 },
-};
+
 
 class HttpApiEdit extends React.Component<AppApiProps, IState> {
     constructor(props) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Button, Tooltip, Radio} from 'antd';
+import {Table, Button, Radio} from 'antd';
 import { Input } from 'antd';
 import {withRouter} from "react-router-dom";
 import CommonListPage from "../../common/CommonListPage";
@@ -16,10 +16,11 @@ class CronJobList extends CommonListPage {
             listUrl: ApiUrlConfig.QUERY_CRON_JOB_LIST_URL,
             saveUrl: ApiUrlConfig.SAVE_CRON_JOB_URL,
             deleteUrl: ApiUrlConfig.DELETE_CRON_JOB_URL,
-            loadUrl: ApiUrlConfig.LOAD_CRON_JOB_URL,
+            loadUrl: '',
             editUrl: '/cronjobedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'plan_cron_job';
     }
 
     componentDidMount() {
@@ -57,6 +58,10 @@ class CronJobList extends CommonListPage {
                     size="small"
                     type="link"
                     onClick={() => this.edit(record.id)}>{text}</Button>,
+            },{
+                title: '定时表达式',
+                dataIndex: 'cronExpression',
+                render: text => <span>{text}</span>,
             },{
                 title: '创建者',
                 dataIndex: 'addUser',

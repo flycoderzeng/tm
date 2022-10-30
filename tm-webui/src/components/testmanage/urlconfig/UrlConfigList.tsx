@@ -18,6 +18,7 @@ class UrlConfigList extends CommonListPage {
             editUrl: '/urlconfigedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'api_ip_port_config';
     }
 
     componentDidMount() {
@@ -26,8 +27,9 @@ class UrlConfigList extends CommonListPage {
 
     onSearch = (value) => {
         let filterConditionList =
-            [{"columnName": "url", "value":value},
-                {"columnName": "id", "operator": "=", "value":value}];
+            [{"columnName": "url", "value": value},
+                {"columnName": "id", "operator": "=", "value":value},
+                {"columnName": "name", "value":value}];
         this._onSearch({searchValue: value}, filterConditionList);
     }
 
@@ -48,15 +50,20 @@ class UrlConfigList extends CommonListPage {
                 dataIndex: 'id',
                 render: text => <span>{text}</span>,
             },{
-                title: '接口路径',
-                dataIndex: 'url',
-                key: 'url',
+                title: '名称',
+                dataIndex: 'name',
+                key: 'name',
                 sorter: ()=>{},
                 render: (text, record) => <Button
                     className="padding-left0"
                     size="small"
                     type="link"
                     onClick={() => this.edit(record.id)}>{text}</Button>,
+            },{
+                title: '接口路径',
+                dataIndex: 'url',
+                key: 'url',
+                sorter: ()=>{},
             },{
                 title: 'ip',
                 dataIndex: 'ip',
@@ -109,7 +116,7 @@ class UrlConfigList extends CommonListPage {
             </div>
             <div className="card-body">
                 <div className="list-toolbar">
-                    <Search placeholder="Id或者路径" onSearch={this.onSearch} enterButton
+                    <Search placeholder="Id、名称或者路径" onSearch={this.onSearch} enterButton
                             onChange={this.onChangeSearchValue}
                             style={{ width: 400,marginRight: '5px'}}/>
                     <Radio.Group

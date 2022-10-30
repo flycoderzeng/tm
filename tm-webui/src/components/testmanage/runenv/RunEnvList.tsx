@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Button, Tooltip} from 'antd';
+import {Table, Button} from 'antd';
 import { Input } from 'antd';
 import {withRouter} from "react-router-dom";
 import CommonListPage from "../../common/CommonListPage";
@@ -20,6 +20,7 @@ class RunEnvList extends CommonListPage {
             editUrl: '/runenvedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'run_env';
     }
 
     componentDidMount() {

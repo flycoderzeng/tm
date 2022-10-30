@@ -23,28 +23,6 @@ public class PlanCronJobController extends BaseController {
     @Autowired
     private PlanCronJobService planCronJobService;
 
-    @PostMapping(value = "/delete" ,produces = {"application/json;charset=UTF-8"})
-    public BaseResponse delete(@RequestBody @Valid IdBody body) {
-        return ResultUtils.success(planCronJobService.delete(body.getId()));
-    }
-
-    @PostMapping(value = "/load" ,produces = {"application/json;charset=UTF-8"})
-    public BaseResponse load(@RequestBody @Valid IdBody body) {
-        return ResultUtils.success(planCronJobService.load(body.getId()));
-    }
-
-    @PostMapping(value = "/queryList", produces = {"application/json;charset=UTF-8"})
-    public BaseResponse queryCronJobList(@RequestBody @Valid CommonTableQueryBody body) {
-        User user = getLoginUser();
-        return ResultUtils.success(planCronJobService.queryList(body, user));
-    }
-
-    @PostMapping(value = "/save", produces = {"application/json;charset=UTF-8"})
-    public BaseResponse save(@RequestBody PlanCronJob body) {
-        User user = this.getLoginUser();
-        return ResultUtils.success(planCronJobService.save(body, user));
-    }
-
     @PostMapping(value = "/checkCronExpression", produces = {"application/json;charset=UTF-8"})
     public BaseResponse checkCronExpression(@RequestBody @Valid CheckExpressionBody body) {
         return planCronJobService.checkCronExpression(body.getExpression());

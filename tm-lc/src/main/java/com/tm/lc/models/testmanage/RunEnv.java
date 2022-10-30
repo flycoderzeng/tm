@@ -3,8 +3,7 @@ package com.tm.lc.models.testmanage;
 import com.tm.lc.hooks.EntityPublicCreateHook;
 import com.tm.lc.hooks.EntityPublicModifyHook;
 import com.tm.lc.models.CommonSixItemsElideModel;
-import com.yahoo.elide.annotation.Include;
-import com.yahoo.elide.annotation.LifeCycleHookBinding;
+import com.yahoo.elide.annotation.*;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -20,6 +19,9 @@ import static com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase.P
 @Data
 @LifeCycleHookBinding(operation = CREATE, phase = PRECOMMIT, hook = EntityPublicCreateHook.class)
 @LifeCycleHookBinding(operation = UPDATE, phase = PRECOMMIT, hook = EntityPublicModifyHook.class)
+@UpdatePermission(expression = "user is a common admin")
+@CreatePermission(expression = "user is a common admin")
+@DeletePermission(expression = "user is a root admin")
 public class RunEnv extends CommonSixItemsElideModel {
     private String name;
     private String description;

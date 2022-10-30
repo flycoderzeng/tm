@@ -18,6 +18,7 @@ class DbConfigList extends CommonListPage {
             editUrl: '/dbconfigedit/:id'
         };
         this.commonApiUrlModel = commonApiUrlModel;
+        this.modelType = 'db_config';
     }
 
     componentDidMount() {
