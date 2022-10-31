@@ -182,7 +182,7 @@ const PlanResultPage: React.FC<IState> = (props) => {
         </div>
         <Modal
             title="历史执行结果"
-            visible={visible}
+            open={visible}
             onOk={() => setVisible(false)}
             onCancel={() => setVisible(false)}
             width={1300}

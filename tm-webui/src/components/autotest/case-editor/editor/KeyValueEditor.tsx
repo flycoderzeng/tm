@@ -331,7 +331,7 @@ const KeyValueEditor: React.FC<IState> = (props) => {
         </Row>
         {renderRows()}
 
-        <Modal width={800} title="详细" visible={isDetailVisible} onOk={handleOk} onCancel={handleCancel}>
+        <Modal width={800} title="详细" open={isDetailVisible} onOk={handleOk} onCancel={handleCancel}>
             <Row style={{paddingBottom: '5px'}}>
                 <Col flex="100px">{nameTheadName}</Col>
                 <Col flex="auto">

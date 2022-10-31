@@ -253,7 +253,7 @@ const CaseResultPage: React.FC<IState> = (props) => {
         </div>
         <Modal
             title="步骤结果"
-            visible={visible}
+            open={visible}
             onOk={() => setVisible(false)}
             onCancel={() => setVisible(false)}
             width={1200}

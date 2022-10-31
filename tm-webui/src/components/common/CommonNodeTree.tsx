@@ -375,9 +375,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
 
     function renderRightMenu() {
         const list = rightMenuKeys.map(v => {
-            return (<Menu.Item key={v.key} disabled={v.disabled}>
-                {v.title}
-            </Menu.Item>);
+            return {label: v.title, key: v.key, disabled: v.disabled};
         });
         return list;
     }
@@ -522,12 +520,11 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                 allowDrop={allowDrop}
                 treeData={treeData}
             />
-            <Menu onClick={onClickRightMenuItem} className="node-tree-context-menu" style={contextMenuPosition as any} mode="vertical">
-                {renderRightMenu()}
+            <Menu onClick={onClickRightMenuItem} className="node-tree-context-menu" style={contextMenuPosition as any} mode="vertical" items={renderRightMenu()}>
             </Menu>
             <Modal
                 title={titleNodeEdit}
-                visible={visibleNodeEdit}
+                open={visibleNodeEdit}
                 onOk={handleOkNodeEdit}
                 confirmLoading={confirmSavingNodeEdit}
                 onCancel={handleCancelNodeEdit}

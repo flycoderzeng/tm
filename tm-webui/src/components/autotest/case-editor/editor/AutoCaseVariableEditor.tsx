@@ -172,7 +172,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                 </Row>
                 {renderRows()}
             </div>
-            <Modal width={700} title="变量详细" visible={isVariableDetailModalVisible} onOk={handleOk}
+            <Modal width={700} title="变量详细" open={isVariableDetailModalVisible} onOk={handleOk}
                    onCancel={handleCancel}>
                 <Row style={{paddingBottom: '5px'}}>
                     <Col flex="100px" style={{fontWeight: 600, color: '#6e6e6e'}}>变量名称</Col>

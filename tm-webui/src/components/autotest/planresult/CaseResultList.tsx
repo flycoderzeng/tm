@@ -225,7 +225,7 @@ const CaseResultList: React.FC<IState> = (props) => {
             loading={loading}/>
         <Modal
             title="用例变量结果"
-            visible={visible}
+            open={visible}
             onOk={() => setVisible(false)}
             onCancel={() => setVisible(false)}
             width={1100}
@@ -240,7 +240,7 @@ const CaseResultList: React.FC<IState> = (props) => {
             title="结果信息"
             onOk={() => setIsModalVisible(false)}
             onCancel={() => setIsModalVisible(false)}
-            visible={isModalVisible}
+            open={isModalVisible}
             footer={null}
             width={1100}>
             <div style={{paddingBottom: 5}}>

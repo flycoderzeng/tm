@@ -293,7 +293,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
         <Modal width={1200}
                title="用例选择"
                confirmLoading={confirmLoading}
-               visible={isModalVisible}
+               open={isModalVisible}
                onOk={handleOk}
                onCancel={handleCancel}>
             <CommonNodeListPage
@@ -306,7 +306,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
                 dataTypeId={DataTypeEnum.AUTO_CASE}>
             </CommonNodeListPage>
         </Modal>
-        <Modal title="调整用例位置" visible={isChangeCaseSeqModalVisible}
+        <Modal title="调整用例位置" open={isChangeCaseSeqModalVisible}
                onOk={handleOkChangeCaseSeq}
                onCancel={handleCancelChangeCaseSeq}>
             <Input placeholder="输入用例位置" value={seqValue} onChange={onChangeSeqValue}/>

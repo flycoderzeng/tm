@@ -176,7 +176,7 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
                 size="small"
             />
         </div>
-        <Modal width={800} title="详细" visible={isDetailVisible} onOk={handleOk} onCancel={handleCancel}>
+        <Modal width={800} title="详细" open={isDetailVisible} onOk={handleOk} onCancel={handleCancel}>
             <Row style={{paddingBottom: '5px'}}>
                 <Col flex="100px">参数名称</Col>
                 <Col flex="auto">

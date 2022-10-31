@@ -317,10 +317,10 @@ const JsonDefineEditor: React.FC<IState> = (props) => {
                 <Button type="primary" size="small">导入Json</Button>
             </div>
             {generate(defineRows[0])}
-            <Modal title="备注" visible={isRemarkModalVisible} onOk={handleOkSetRemark} onCancel={handleCancelSetRemark}>
+            <Modal title="备注" open={isRemarkModalVisible} onOk={handleOkSetRemark} onCancel={handleCancelSetRemark}>
                 <TextArea rows={8} value={remark} onChange={onChangeRemark}/>
             </Modal>
-            <Modal title="高级设置" visible={isDetailModalVisible} onOk={handleOkSetDetail} onCancel={handleCancelSetDetail}>
+            <Modal title="高级设置" open={isDetailModalVisible} onOk={handleOkSetDetail} onCancel={handleCancelSetDetail}>
                 <TextArea rows={8} value={remark} onChange={onChangeRemark}/>
             </Modal>
         </div>
