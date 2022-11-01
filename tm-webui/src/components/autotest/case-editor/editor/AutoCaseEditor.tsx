@@ -176,6 +176,10 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [rootNode, setRootNode] = useState<StepNode>(treeData[0]);
     const [runEnvId, setRunEnvId] = useState('');
     const [copyNodeData, setCopyNodeData] = useState<StepNode|null>(null);
+    const [rightMenuList, setRightMenuList] = useState<any[]>([])
+    if(rightMenuList.length < 1) {
+        setRightMenuList(renderRightMenu());
+    }
 
     if (id !== props.id) {
         setId(props.id);
@@ -448,32 +452,27 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function renderRightMenu() {
-        const list = rightMenuKeys.map(v => {
+        const list: any[] = rightMenuKeys.map(v => {
             if (!v.children || v.children.length < 1) {
-                return (<Menu.Item icon={v.icon} key={v.key} disabled={v.disabled}>
-                    {v.title}
-                </Menu.Item>);
+                return {icon: v.icon, key: v.key, disabled: v.disabled, label: v.title};
             } else if (v.children && v.children.length > 0) {
+                const r: any = {icon: v.icon, key: v.key, disabled: v.disabled, label: v.title};
+
                 const subMenuList = v.children.map(subMenu => {
                     if (!subMenu.children || subMenu.children.length < 1) {
-                        return (<Menu.Item icon={subMenu.icon} key={subMenu.key} disabled={subMenu.disabled}>
-                            {subMenu.title}
-                        </Menu.Item>);
+                        return {icon: subMenu.icon, key: subMenu.key, disabled: subMenu.disabled, label: subMenu.title};
                     } else if (subMenu.children && subMenu.children.length > 0) {
+                        const r1: any = {icon: subMenu.icon, key: subMenu.key, disabled: subMenu.disabled, label: subMenu.title};
                         const subSubMenuList = subMenu.children.map(subSubMenu => {
-                            return (<Menu.Item key={subSubMenu.key}
-                                               disabled={subSubMenu.disabled}>{subSubMenu.title}</Menu.Item>)
+                            return {icon: subSubMenu.icon, key: subSubMenu.key, disabled: subSubMenu.disabled, label: subSubMenu.title};
                         });
-                        return (<SubMenu disabled={subMenu.disabled} key={subMenu.key} icon={subMenu.icon}
-                                         title={subMenu.title}>
-                            {subSubMenuList}
-                        </SubMenu>)
+                        r1.children = subSubMenuList;
+                        return r1;
                     }
                     return undefined;
                 });
-                return (<SubMenu disabled={v.disabled} key={v.key} icon={v.icon} title={v.title}>
-                    {subMenuList}
-                </SubMenu>)
+                r.children = subMenuList;
+                return r;
             }
             return undefined;
         });
@@ -893,8 +892,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 </div>
             </div>
             <Menu onClick={onClickRightMenuItem} className="node-tree-context-menu" style={contextMenuPosition as any}
-                  mode="vertical">
-                {renderRightMenu()}
+                  mode="vertical" items={rightMenuList}>
             </Menu>
         </div>
     )

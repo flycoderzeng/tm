@@ -114,34 +114,21 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
             </Input.Group>
         </div>
         <div style={{paddingTop: '5px'}}>
-            <Tabs defaultActiveKey="1" onChange={onChangeTab}>
-                <TabPane tab="Params" key="1">
-                    <KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                    rows={props.define.params}
-                                    type={''}>
-                    </KeyValueEditor>
-                </TabPane>
-                <TabPane tab="Headers" key="2">
-                    <KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                    rows={props.define.headers}
-                                    type={''}>
-                    </KeyValueEditor>
-                </TabPane>
-                <TabPane tab="Body" key="3">
-                    {renderBodyArea()}
-                </TabPane>
-                <TabPane tab="响应断言" key="4">
-                    <KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                    rows={props.define.checkErrorList}
-                                    type={'response-assert'}>
-                    </KeyValueEditor>
-                </TabPane>
-                <TabPane tab="响应提取" key="5">
-                    <KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                    rows={props.define.responseExtractorList}
-                                    type={'response-extractor'}>
-                    </KeyValueEditor>
-                </TabPane>
+            <Tabs defaultActiveKey="1" onChange={onChangeTab} items={[{label: 'Params', key: '1', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+                                                                                                                             rows={props.define.params}
+                                                                                                                             type={''}>
+                </KeyValueEditor>)}, {label: 'Headers', key: '2', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+                                                                                             rows={props.define.headers}
+                                                                                             type={''}>
+                </KeyValueEditor>)}, {label: 'Body', key: '3', children: renderBodyArea()}, {
+                label: '响应断言', key: '4', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+                                                                        rows={props.define.checkErrorList}
+                                                                        type={'response-assert'}>
+                </KeyValueEditor>)
+            }, {label: '响应提取', key:'5', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+                                                                       rows={props.define.responseExtractorList}
+                                                                       type={'response-extractor'}>
+                </KeyValueEditor>)}]}>
             </Tabs>
         </div>
     </div>)
