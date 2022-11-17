@@ -118,6 +118,8 @@ public class HttpSampler extends StepNodeBase {
         }else if(StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value())) {
             headerMap.putIfAbsent(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         }
+        final String contentType = headerMap.get(HttpHeaders.CONTENT_TYPE);
+        addResultInfo("Content-Type: ").addResultInfoLine(contentType);
     }
 
     private String getActualUrl(AutoTestVariables caseVariables) throws UnsupportedEncodingException {
