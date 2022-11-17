@@ -63,13 +63,17 @@ public class HttpSampler extends StepNodeBase {
         final List<HttpCookie> cookies = autoTestCookie.getCookies(actualUrl);
 
         HttpResponse response = executeHttp(caseVariables, actualUrl, headerMap, cookies);
+        if(!headerMap.isEmpty()) {
+            addResultInfoLine("Request Headers: ");
+            headerMap.forEach((k, v) -> addResultInfo("\t").addResultInfo(k).addResultInfo(": ").addResultInfoLine(v));
+        }
+        addResultInfoLine("请求报文: ").addResultInfoLine(content);
         if(response == null) {
             throw new SendHttpException("发送http请求异常");
         }
-        final String body = response.body();
-        log.info(body);
-        addResultInfo("响应报文: ").addResultInfoLine(body);
-        addResultInfo("响应码: ").addResultInfoLine(response.getStatus());
+        addResultInfo("Cookie: ").addResultInfoLine(cookies.toString());
+        log.info(response.toString());
+        addResultInfoLine(response.toString());
 
         checkError(caseVariables, response);
         extractResponse(caseVariables, response);
@@ -85,8 +89,8 @@ public class HttpSampler extends StepNodeBase {
 
     private HttpResponse executeHttp(AutoTestVariables caseVariables, String actualUrl, Map<String, String> headerMap, List<HttpCookie> cookies) throws UnsupportedEncodingException {
         HttpResponse body = null;
+        addResultInfo("请求方法: ").addResultInfoLine(requestType);
         if(HttpMethod.GET.name().equals(requestType)) {
-            addResultInfo("请求方法: ").addResultInfoLine(requestType);
             body = HttpRequest.get(actualUrl).headerMap(headerMap, true)
                     .cookie(cookies).timeout(60000).execute();
         }
@@ -99,8 +103,6 @@ public class HttpSampler extends StepNodeBase {
             }else if(StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value())) {
                 content = getParamStr(caseVariables, formUrlencoded);
             }
-
-            addResultInfo("请求报文: ").addResultInfoLine(content);
             body = HttpRequest.post(actualUrl).headerMap(headerMap, true)
                     .cookie(cookies).timeout(60000).body(content).execute();
         }
@@ -118,8 +120,6 @@ public class HttpSampler extends StepNodeBase {
         }else if(StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value())) {
             headerMap.putIfAbsent(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         }
-        final String contentType = headerMap.get(HttpHeaders.CONTENT_TYPE);
-        addResultInfo("Content-Type: ").addResultInfoLine(contentType);
     }
 
     private String getActualUrl(AutoTestVariables caseVariables) throws UnsupportedEncodingException {

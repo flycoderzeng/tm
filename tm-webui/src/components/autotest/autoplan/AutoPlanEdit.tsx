@@ -162,7 +162,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                 }
             }
         }).catch(reason => {
-            message.error(reason.response.statusText);
+            message.error(reason);
         }).finally(() => {
             if (runType === 1) {
                 setRunning1(false);

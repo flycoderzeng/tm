@@ -57,8 +57,8 @@ public class JDBCRequest extends StepNodeBase {
 
         DbConfig dbConfig = context.getTaskService().findDbConfig(runningConfigSnapshot.getEnvId(), dbName);
         if(dbConfig == null) {
-            throw new CommonValueBlankException(String.format("不存在 数据库名: %s，环境id: %s 的配置",
-                    dbName, runningConfigSnapshot.getEnvId()));
+            throw new CommonValueBlankException(String.format("不存在 数据库名: %s，环境: %s(id: %s) 的配置",
+                    dbName, runningConfigSnapshot.getEnvName(), runningConfigSnapshot.getEnvId()));
         }
 
         if(StringUtils.isBlank(content)) {

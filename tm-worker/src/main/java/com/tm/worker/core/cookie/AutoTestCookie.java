@@ -45,11 +45,11 @@ public class AutoTestCookie {
             domain = ExpressionUtils.replaceExpression(domain, caseVariables.getVariables());
             String rowPath = cookie.getPath();
             rowPath = ExpressionUtils.replaceExpression(rowPath, caseVariables.getVariables());
-            if(StringUtils.isBlank(path)) {
+            if(StringUtils.isBlank(rowPath)) {
                 rowPath = "/";
             }
 
-            if(StringUtils.equals(domain, host) && StringUtils.equals(rowPath, path)) {
+            if(StringUtils.equals(domain, host) && (StringUtils.equals(rowPath, "/") || (!StringUtils.equals(rowPath, "/") && path.startsWith(rowPath)))) {
                 final String name = ExpressionUtils.replaceExpression(cookie.getName(), caseVariables.getVariables());
                 final String value = ExpressionUtils.replaceExpression(cookie.getValue(), caseVariables.getVariables());
                 httpCookies.add(new HttpCookie(name,value));
