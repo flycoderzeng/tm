@@ -1,7 +1,6 @@
 package com.tm.worker.controller;
 
 import com.tm.common.base.model.User;
-import com.tm.worker.config.GlobalHandlerInterceptor;
 import com.tm.worker.ehcache.EhcacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -20,7 +19,7 @@ public class BaseController {
 
     public User getLoginUser() {
         HttpServletRequest request = getRequest();
-        String username = request.getSession().getAttribute(GlobalHandlerInterceptor.SESSION_KEY_USER).toString();
+        String username = request.getUserPrincipal().getName();
         User user = ehcacheService.get(username);
         return user;
     }

@@ -10,7 +10,6 @@ import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.utils.ExpressionUtils;
-import com.tm.worker.utils.RSAUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

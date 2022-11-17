@@ -9,7 +9,7 @@ export interface HttpNode extends BaseNode {
     headers: KeyValueRow[];
     checkErrorList: KeyValueRow[];
     responseExtractorList: KeyValueRow[];
-    // none form-data x-www-urlencoded raw
+    // none form-data x-www-form-urlencoded raw
     bodyType: string;
     // text json xml
     rawType: string;

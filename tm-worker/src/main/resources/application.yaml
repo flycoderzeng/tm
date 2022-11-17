@@ -34,6 +34,10 @@ spring:
       auto-commit: true
       default-auto-commit: true
 
+  session:
+    store-type: jdbc
+    timeout: 86400s
+
   autotest:
     result:
       variable-result-split-table-type: 1

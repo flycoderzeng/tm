@@ -1,4 +1,4 @@
-package com.tm.worker.config;
+package com.tm.worker.exception;
 
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;

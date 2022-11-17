@@ -17,10 +17,24 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [url, setUrl] = useState(props.define.url);
     const [requestType, setRequestType] = useState(props.define.requestType);
     const [rawLanguage, setRawLanguage] = useState('json');
+
+    if(bodyType !== props.define.bodyType) {
+        setBodyType(props.define.bodyType);
+    }
+
     if(rawType !== props.define.rawType) {
         setRawType(props.define.rawType);
         setRawLanguage(props.define.rawType);
     }
+
+    if(url !== props.define.url) {
+        setUrl(props.define.url);
+    }
+
+    if(requestType !== props.define.requestType) {
+        setRequestType(props.define.requestType);
+    }
+
     if(content !== props.define.content) {
         setContent(props.define.content);
     }
@@ -79,7 +93,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
         }else if(bodyType === 'form-data') {
             contentArea = (<KeyValueEditor rows={props.define.formData} type={'form-data'}>
             </KeyValueEditor>)
-        }else if(bodyType === 'x-www-urlencoded') {
+        }else if(bodyType === 'x-www-form-urlencoded') {
             contentArea = (<KeyValueEditor rows={props.define.formUrlencoded} type={''}>
             </KeyValueEditor>)
         }
@@ -88,7 +102,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
                 <Radio.Group onChange={onChangeBodyType} value={bodyType}>
                     <Radio value="none">none</Radio>
                     <Radio value="form-data">form-data</Radio>
-                    <Radio value="x-www-urlencoded">x-www-urlencoded</Radio>
+                    <Radio value="x-www-form-urlencoded">x-www-form-urlencoded</Radio>
                     <Radio value="raw">raw</Radio>
                 </Radio.Group>
                 {rawTypeSelect}
@@ -110,7 +124,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
                     <Option value="POST">POST</Option>
                     <Option value="GET">GET</Option>
                 </Select>
-                <Input defaultValue={url} placeholder="请求地址" onChange={onChangeUrl}/>
+                <Input defaultValue={url} value={url} placeholder="请求地址" onChange={onChangeUrl}/>
             </Input.Group>
         </div>
         <div style={{paddingTop: '5px'}}>

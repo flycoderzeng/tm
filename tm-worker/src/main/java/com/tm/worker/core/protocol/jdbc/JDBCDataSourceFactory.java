@@ -1,7 +1,7 @@
 package com.tm.worker.core.protocol.jdbc;
 
 import com.tm.common.base.model.DbConfig;
-import com.tm.worker.utils.RSAUtils;
+import com.tm.common.utils.RSAUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
