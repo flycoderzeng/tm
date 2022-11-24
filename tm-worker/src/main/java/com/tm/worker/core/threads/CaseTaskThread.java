@@ -111,7 +111,11 @@ public class CaseTaskThread implements Callable<BaseResponse> {
                 Thread.interrupted();
             }
             error = true;
-            resultInfo = org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace(exception);
+            if(exception instanceof TMException) {
+                resultInfo = exception.getMessage();
+            }else{
+                resultInfo = org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace(exception);
+            }
             currStepNode.getDefine().logError(resultInfo);
             return ResultUtils.error(ResultCodeEnum.CASE_RUN_ERROR);
         } finally {

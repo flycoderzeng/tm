@@ -7,6 +7,8 @@ import java.util.Map;
 public class AutoTestVariables {
     public static final String BUILTIN_VARIABLE_NAME_REQUEST = "__request";
     public static final String BUILTIN_VARIABLE_NAME_RESPONSE = "__response";
+
+    public static final String BUILTIN_VARIABLE_NAME_RESPONSE_STATUS = "__response_status";
     public static final String BUILTIN_VARIABLE_NAME_CASE_ID = "__case_id";
     public static final String BUILTIN_VARIABLE_NAME_CASE_NAME = "__case_name";
     public static final String BUILTIN_VARIABLE_NAME_PLAN_ID = "__plan_id";
@@ -83,6 +85,7 @@ public class AutoTestVariables {
     private void initBuiltinVariables() {
         put(BUILTIN_VARIABLE_NAME_REQUEST, "");
         put(BUILTIN_VARIABLE_NAME_RESPONSE, "");
+        put(BUILTIN_VARIABLE_NAME_RESPONSE_STATUS, "");
         put(BUILTIN_VARIABLE_NAME_CASE_ID, null);
         put(BUILTIN_VARIABLE_NAME_CASE_NAME, null);
         put(BUILTIN_VARIABLE_NAME_PLAN_ID, null);

@@ -46,6 +46,12 @@ const ContentEditor: React.FC<IState> = (props) => {
             insertText: '${__response}',
             detail: '上一个响应包内容',
         });
+        suggestions.push({
+            label: '__response_status',
+            kind: monaco.languages.CompletionItemKind.Variable,
+            insertText: '${__response_status}',
+            detail: '上一个请求的响应码',
+        });
         const builtInFunctions: any = [{
             label: 'max',
             insertText: '${rand()}',

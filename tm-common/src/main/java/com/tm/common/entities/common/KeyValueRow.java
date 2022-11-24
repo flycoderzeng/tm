@@ -1,6 +1,5 @@
 package com.tm.common.entities.common;
 
-import com.tm.common.entities.common.enumerate.RelationOperatorEnum;
 import lombok.Data;
 
 @Data
@@ -12,7 +11,7 @@ public class KeyValueRow extends BaseNameValue {
     private String description;
     private String domain;
     private String path;
-    private RelationOperatorEnum relationOperator;
+    private String relationOperator;
     // error warning
     private String assertLevel;
 

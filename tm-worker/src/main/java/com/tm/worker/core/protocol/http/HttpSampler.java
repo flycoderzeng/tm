@@ -80,6 +80,9 @@ public class HttpSampler extends StepNodeBase {
             throw new TMException("发送http请求异常");
         }
         log.info(response.toString());
+        caseVariables.putObject(AutoTestVariables.BUILTIN_VARIABLE_NAME_RESPONSE_STATUS, response.getStatus());
+        caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_RESPONSE, response.body());
+
         addResultInfoLine(response.toString());
 
         checkError(caseVariables, response);
@@ -93,7 +96,8 @@ public class HttpSampler extends StepNodeBase {
             return ;
         }
         for (KeyValueRow keyValueRow : responseExtractorList) {
-            Object leftOperand = extractLeftOperand(caseVariables, httpResponse, keyValueRow);
+            final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
+            Object leftOperand = extractLeftOperand(httpResponse, keyValueRow, name);
             final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
             String resultVariable = ExpressionUtils.extractVariable(value);
             if(StringUtils.isNoneBlank(resultVariable)) {
@@ -117,10 +121,9 @@ public class HttpSampler extends StepNodeBase {
         }
     }
 
-    private Object extractLeftOperand(AutoTestVariables caseVariables, HttpResponse httpResponse, KeyValueRow keyValueRow) {
+    private Object extractLeftOperand(HttpResponse httpResponse, KeyValueRow keyValueRow, String name) {
         Document document;
         final String body = httpResponse.body();
-        final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
         Object leftOperand = "";
         if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_BODY.val())) {
             if(name.startsWith("$.")) {
@@ -134,6 +137,8 @@ public class HttpSampler extends StepNodeBase {
                 if(nodes != null && !nodes.isEmpty()) {
                     leftOperand = nodes.get(0).getStringValue();
                 }
+            }else{
+                throw new TMException("参数路径不能为空");
             }
         }else if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_HEADER.val())) {
             leftOperand = httpResponse.header(name);
@@ -145,16 +150,17 @@ public class HttpSampler extends StepNodeBase {
     }
 
     private boolean checkResponseBody(AutoTestVariables caseVariables, HttpResponse httpResponse, KeyValueRow keyValueRow) {
-        Object leftOperand = extractLeftOperand(caseVariables, httpResponse, keyValueRow);
+        final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
+        Object leftOperand = extractLeftOperand(httpResponse, keyValueRow, name);
         final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
-        final RelationOperatorEnum relationOperator = keyValueRow.getRelationOperator();
+        final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
         addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand.toString()).addResultInfo("] ")
                 .addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
         if(AssertUtils.compare(leftOperand.toString(), relationOperator, value)) {
-            addResultInfo("[成功]");
+            addResultInfoLine("[成功]");
             return true;
         }else{
-            addResultInfo("[失败]");
+            addResultInfoLine("[失败]");
             return false;
         }
     }
@@ -175,6 +181,8 @@ public class HttpSampler extends StepNodeBase {
             }else if(StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value())) {
                 content = getParamStr(caseVariables, formUrlencoded);
             }
+            caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_REQUEST, content);
+
             body = HttpRequest.post(actualUrl).headerMap(headerMap, true)
                     .cookie(cookies).timeout(60000).body(content).execute();
         }else if(HttpMethod.POST.name().equals(requestType) && StringUtils.equals(bodyType, BodyTypeNum.FORM_DATA.value())) {
