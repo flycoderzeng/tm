@@ -11,6 +11,7 @@ interface IProps {}
 
 interface GlobalVariableModel {
     name: string;
+    value: string;
     description: string;
     modifyFlag: number;
 }
@@ -45,6 +46,7 @@ class GlobalVariableEdit extends React.Component<GlobalVariableProps, IState> {
             saving: false,
             initialValues: {
                 name: '',
+                value: '',
                 description: '',
                 modifyFlag: 1,
             }
@@ -65,6 +67,7 @@ class GlobalVariableEdit extends React.Component<GlobalVariableProps, IState> {
                     }
                     this.state.ref.current.setFieldsValue({
                         name: ret.data.name,
+                        value: ret.data.value,
                         description: ret.data.description,
                         modifyFlag: ret.data.modifyFlag,
                     });
@@ -153,9 +156,17 @@ class GlobalVariableEdit extends React.Component<GlobalVariableProps, IState> {
                     </Form.Item>
 
                     <Form.Item
-                        label="是否运行在用例中修改"
+                        label="值"
+                        name="value"
+                        rules={[{required: false, message: '请输入值!'}]}
+                    >
+                        <Input/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="是否能在用例运行时修改值"
                         name="modifyFlag"
-                        rules={[{required: true, message: '是否运行在用例中修改'}]}
+                        rules={[{required: true, message: '是否能在用例运行时修改值'}]}
                     >
                         <Radio.Group>
                             <Radio value={1}>是</Radio>
