@@ -6,7 +6,8 @@ testman
 ![image](https://user-images.githubusercontent.com/31311782/198885997-38a957ac-6aa5-4359-9bb1-c778b784c607.png)
 
 # 自动化用例编辑
-![image](https://user-images.githubusercontent.com/31311782/198886046-7c875aef-df67-4946-a736-6e0701e58c62.png)
+![image](https://user-images.githubusercontent.com/31311782/203733196-ca8b5365-fa1c-43f8-88e1-f738639fd5d9.png)
 
 # 自动化用例运行结果
-![image](https://user-images.githubusercontent.com/31311782/198886096-1509fa36-d16a-43ed-a888-86f2b2322279.png)
+![image](https://user-images.githubusercontent.com/31311782/203733197-606f23ac-6ac7-41fd-8530-1e7ae98ae39a.png)
+
