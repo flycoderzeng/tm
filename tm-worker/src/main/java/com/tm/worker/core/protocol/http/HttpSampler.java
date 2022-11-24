@@ -98,9 +98,9 @@ public class HttpSampler extends StepNodeBase {
         for (KeyValueRow keyValueRow : responseExtractorList) {
             final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
             Object leftOperand = extractLeftOperand(httpResponse, keyValueRow, name);
-            final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
-            String resultVariable = ExpressionUtils.extractVariable(value);
+            String resultVariable = ExpressionUtils.extractVariable(keyValueRow.getValue());
             if(StringUtils.isNoneBlank(resultVariable)) {
+                addResultInfo("将").addResultInfo(name).addResultInfo("结果存入变量[").addResultInfo(resultVariable).addResultInfoLine("]");
                 caseVariables.putObject(resultVariable, leftOperand);
             }
         }
