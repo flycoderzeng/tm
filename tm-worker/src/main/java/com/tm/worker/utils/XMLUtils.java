@@ -20,8 +20,8 @@ import java.io.StringWriter;
 import java.util.List;
 
 @Slf4j
-public final class XpathUtils {
-    private XpathUtils() {}
+public final class XMLUtils {
+    private XMLUtils() {}
 
     public static Document parseXmlString(String xmlContent) {
         SAXReader reader = new SAXReader();

@@ -2,26 +2,36 @@ package com.tm.worker.core.protocol.http;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import com.jayway.jsonpath.JsonPath;
 import com.tm.common.entities.autotest.enumerate.BodyTypeNum;
+import com.tm.common.entities.autotest.enumerate.ExtractorTypeEnum;
 import com.tm.common.entities.autotest.enumerate.RawTypeNum;
 import com.tm.common.entities.common.KeyValueRow;
+import com.tm.common.entities.common.enumerate.RelationOperatorEnum;
 import com.tm.worker.core.cookie.AutoTestCookie;
 import com.tm.worker.core.exception.CommonValueBlankException;
+import com.tm.worker.core.exception.InvalidXMLStringException;
 import com.tm.worker.core.exception.SendHttpException;
 import com.tm.worker.core.node.StepNodeBase;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.core.variable.AutoTestVariables;
+import com.tm.worker.utils.AssertUtils;
 import com.tm.worker.utils.ExpressionUtils;
 import com.tm.worker.utils.FunctionUtils;
+import com.tm.worker.utils.XMLUtils;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
 import java.util.HashMap;
@@ -65,13 +75,13 @@ public class HttpSampler extends StepNodeBase {
         HttpResponse response = executeHttp(caseVariables, actualUrl, headerMap, cookies);
         if(!headerMap.isEmpty()) {
             addResultInfoLine("Request Headers: ");
-            headerMap.forEach((k, v) -> addResultInfo("\t").addResultInfo(k).addResultInfo(": ").addResultInfoLine(v));
+            headerMap.forEach((k, v) -> addResultInfo("    ").addResultInfo(k).addResultInfo(": ").addResultInfoLine(v));
         }
+        addResultInfo("Cookie: ").addResultInfoLine(cookies.toString());
         addResultInfoLine("请求报文: ").addResultInfoLine(content);
         if(response == null) {
             throw new SendHttpException("发送http请求异常");
         }
-        addResultInfo("Cookie: ").addResultInfoLine(cookies.toString());
         log.info(response.toString());
         addResultInfoLine(response.toString());
 
@@ -79,12 +89,47 @@ public class HttpSampler extends StepNodeBase {
         extractResponse(caseVariables, response);
     }
 
-    private void extractResponse(AutoTestVariables caseVariables, HttpResponse body) {
-
+    private void extractResponse(AutoTestVariables caseVariables, HttpResponse httpResponse) {
+        if(responseExtractorList == null || responseExtractorList.isEmpty()) {
+            return ;
+        }
+        final String body = httpResponse.body();
     }
 
-    private void checkError(AutoTestVariables caseVariables, HttpResponse body) {
+    private void checkError(AutoTestVariables caseVariables, HttpResponse httpResponse) {
+        addResultInfoLine("断言检查结果");
+        if(checkErrorList == null || checkErrorList.isEmpty()) {
+            addResultInfoLine("没有配置断言");
+            return ;
+        }
+        final String body = httpResponse.body();
 
+        for (KeyValueRow keyValueRow : checkErrorList) {
+            if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_BODY.val())) {
+                checkResponseBody(caseVariables, body, keyValueRow);
+            }
+        }
+    }
+
+    private void checkResponseBody(AutoTestVariables caseVariables, String body, KeyValueRow keyValueRow) {
+        Document document;
+        final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
+        final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
+        if(name.startsWith("$.")) {
+            final Object read = JsonPath.read(body, name);
+            final RelationOperatorEnum relationOperator = keyValueRow.getRelationOperator();
+            addResultInfo(name).addResultInfo(" ").addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
+            if(AssertUtils.compare(read.toString(), relationOperator, value)) {
+                addResultInfo("[成功]");
+            }else{
+                addResultInfo("[失败]");
+            }
+        }else if(name.startsWith("/")) {
+            document = XMLUtils.parseXmlString(body);
+            if(document == null) {
+                throw new InvalidXMLStringException("http的响应不是xml字符串");
+            }
+        }
     }
 
     private HttpResponse executeHttp(AutoTestVariables caseVariables, String actualUrl, Map<String, String> headerMap, List<HttpCookie> cookies) throws UnsupportedEncodingException {
@@ -105,9 +150,28 @@ public class HttpSampler extends StepNodeBase {
             }
             body = HttpRequest.post(actualUrl).headerMap(headerMap, true)
                     .cookie(cookies).timeout(60000).body(content).execute();
+        }else if(HttpMethod.POST.name().equals(requestType) && StringUtils.equals(bodyType, BodyTypeNum.FORM_DATA.value())) {
+            Map<String, Object> formMap = getFormMap(caseVariables);
+            HttpRequest.post(actualUrl).headerMap(headerMap, true).cookie(cookies).form(formMap).timeout(60000).execute();
         }
 
         return body;
+    }
+
+    private Map<String, Object> getFormMap(AutoTestVariables caseVariables) {
+        Map<String, Object> formMap = new HashMap<>();
+        if(formData != null && !formData.isEmpty()) {
+            for (KeyValueRow formDatum : formData) {
+                final String name = ExpressionUtils.replaceExpression(formDatum.getName(), caseVariables.getVariables());
+                final String value = ExpressionUtils.replaceExpression(formDatum.getValue(), caseVariables.getVariables());
+                if(StringUtils.equals("text", formDatum.getType())) {
+                    formMap.put(name, value);
+                } else if (StringUtils.equals("file", formDatum.getType())) {
+                    formMap.put(name, new File(value));
+                }
+            }
+        }
+        return formMap;
     }
 
     private void updateContentType(Map<String, String> headerMap) {

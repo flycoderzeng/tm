@@ -5,7 +5,7 @@ import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.core.variable.AutoTestVariables;
-import com.tm.worker.utils.XpathUtils;
+import com.tm.worker.utils.XMLUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -81,7 +81,7 @@ public class XmlMultiExtractorNode extends FunctionNode {
             addResultInfoLine("参数[content]内容为空");
             return ;
         }
-        Document doc = XpathUtils.parseXmlString(content);
+        Document doc = XMLUtils.parseXmlString(content);
         if(doc == null) {
             throw new ParameterValueTypeErrorException("content参数内容非法，不是xml字符串");
         }
@@ -90,7 +90,7 @@ public class XmlMultiExtractorNode extends FunctionNode {
             String xpath = getContent(argList.get(i), caseVariables);
             if (StringUtils.isNotBlank(xpath)) {
                 addResultInfo("xml路径: ").addResultInfoLine(xpath);
-                List<Node> nodes = XpathUtils.selectNodeList(doc, xpath);
+                List<Node> nodes = XMLUtils.selectNodeList(doc, xpath);
                 if(nodes == null || nodes.isEmpty()) {
                     addResultInfoLine("xml路径提取结果空");
                 }else{
