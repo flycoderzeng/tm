@@ -4,7 +4,7 @@ import com.googlecode.aviator.runtime.function.AbstractFunction;
 import com.googlecode.aviator.runtime.function.FunctionUtils;
 import com.googlecode.aviator.runtime.type.AviatorObject;
 import com.googlecode.aviator.runtime.type.AviatorString;
-import com.tm.worker.core.exception.ParameterValueTypeErrorException;
+import com.tm.worker.core.exception.TMException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,7 +16,7 @@ public class GetRandomInt extends AbstractFunction {
         if(arg1 instanceof AviatorString) {
             String count = FunctionUtils.getStringValue(arg1, env);
             if(!StringUtils.isNumeric(count)) {
-                throw new ParameterValueTypeErrorException("[" + arg1 + "]参数值类型错误，必须是数字");
+                throw new TMException("[" + arg1 + "]参数值类型错误，必须是数字");
             }
             return Integer.valueOf(count);
         }

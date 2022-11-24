@@ -18,8 +18,7 @@ import com.tm.worker.core.control.GenericController;
 import com.tm.worker.core.control.IfController;
 import com.tm.worker.core.control.LoopController;
 import com.tm.worker.core.control.WhileController;
-import com.tm.worker.core.exception.CaseStructureInvalidException;
-import com.tm.worker.core.exception.NoStepNodeControlLogicException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.logic.Action;
 import com.tm.worker.core.logic.SetUp;
 import com.tm.worker.core.logic.TearDown;
@@ -289,7 +288,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         StepNodeTypeDefineEnum nodeTypeDefineEnum = StepNodeTypeDefineEnum.get(type);
         if(nodeTypeDefineEnum == null) {
             log.info(type);
-            throw new NoStepNodeControlLogicException("未定义的节点类型："  + type);
+            throw new TMException("未定义的节点类型："  + type);
         }
         switch (nodeTypeDefineEnum) {
             case ROOT:
@@ -365,7 +364,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
                 return define;
             default:
                 log.info(type);
-                throw new NoStepNodeControlLogicException("未定义处理类的节点类型："  + type);
+                throw new TMException("未定义处理类的节点类型："  + type);
         }
     }
 
@@ -403,7 +402,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         log.info("初始化用例步骤树");
         Map[] stepNodes = gson.fromJson(caseTask.getAutoCase().getSteps(), HashMap[].class);
         if(stepNodes == null) {
-            throw new CaseStructureInvalidException("用例结构非法");
+            throw new TMException("用例结构非法");
         }
         Map node = stepNodes[0];
         change(node, null, true);

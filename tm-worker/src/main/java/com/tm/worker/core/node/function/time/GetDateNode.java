@@ -3,7 +3,7 @@ package com.tm.worker.core.node.function.time;
 
 import com.tm.common.entities.autotest.enumerate.DateUnitTypeNum;
 import com.tm.common.utils.DateUtils;
-import com.tm.worker.core.exception.ParameterValueTypeErrorException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -53,7 +53,7 @@ public class GetDateNode extends FunctionNode {
         if(parametersMap.containsKey(ARG_3)) {
             String unitString = ExpressionUtils.replaceExpression(parametersMap.get(ARG_3), caseVariables.getVariables());
             if(StringUtils.isNotBlank(unitString) && !StringUtils.isNumeric(unitString)) {
-                throw new ParameterValueTypeErrorException("[" + ARG_3 + "]参数值错误。必须是：1-秒；2-分；3-时；4-日；5-月；6-年。");
+                throw new TMException("[" + ARG_3 + "]参数值错误。必须是：1-秒；2-分；3-时；4-日；5-月；6-年。");
             }
             if(StringUtils.isNotBlank(unitString)) {
                 unit = Integer.valueOf(unitString);

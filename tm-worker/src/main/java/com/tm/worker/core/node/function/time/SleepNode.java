@@ -1,6 +1,6 @@
 package com.tm.worker.core.node.function.time;
 
-import com.tm.worker.core.exception.ParameterValueTypeErrorException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -36,12 +36,12 @@ public class SleepNode extends FunctionNode {
             }
         }
         if(!StringUtils.isNumeric(secondsStr)) {
-            throw new ParameterValueTypeErrorException("seconds 必须是整数");
+            throw new TMException("seconds 必须是整数");
         }
         addResultInfo("休眠秒数: ").addResultInfoLine(secondsStr);
         Integer seconds = Integer.valueOf(secondsStr);
         if(seconds > 24 * 3600) {
-            throw new ParameterValueTypeErrorException("seconds 必须小于24 * 3600 秒");
+            throw new TMException("seconds 必须小于24 * 3600 秒");
         }
         if(seconds > 0) {
             TimeUnit.SECONDS.sleep(seconds);

@@ -1,7 +1,6 @@
 package com.tm.worker.core.node.function.check;
 
-import com.tm.worker.core.exception.AssertionException;
-import com.tm.worker.core.exception.ConditionExpressionResultException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -39,10 +38,10 @@ public class AssertNode extends FunctionNode {
         addResultInfo("result: ").addResultInfoLine(result);
         if("true".contentEquals(result) || "false".contentEquals(result)) {
             if("false".contentEquals(result)) {
-                throw new AssertionException("断言不通过");
+                throw new TMException("断言不通过");
             }
         }else{
-            throw new ConditionExpressionResultException("表达氏的结果必须是true或者false，计算结果是：" + result);
+            throw new TMException("表达氏的结果必须是true或者false，计算结果是：" + result);
         }
     }
 }

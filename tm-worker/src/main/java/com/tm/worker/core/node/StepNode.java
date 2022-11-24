@@ -2,7 +2,7 @@ package com.tm.worker.core.node;
 
 import com.tm.common.entities.autotest.enumerate.StepNodeTypeDefineEnum;
 import com.tm.worker.core.control.GenericController;
-import com.tm.worker.core.exception.NoStepNodeControlLogicException;
+import com.tm.worker.core.exception.TMException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +32,7 @@ public class StepNode {
     public void run() {
         runCount++;
         if(define == null) {
-            throw new NoStepNodeControlLogicException(getTitle() + " 没有对应的处理逻辑代码");
+            throw new TMException(getTitle() + " 没有对应的处理逻辑代码");
         }
         if(!define.isEnabled()) {
             log.info("{} 被禁用了，不执行", getTitle());

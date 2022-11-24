@@ -3,8 +3,7 @@ package com.tm.worker.core.protocol.jdbc;
 import com.tm.common.base.model.DbConfig;
 import com.tm.common.base.model.PlanRunningConfigSnapshot;
 import com.tm.common.entities.common.KeyValueRow;
-import com.tm.worker.core.exception.CommonValueBlankException;
-import com.tm.worker.core.exception.ExecSqlException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.StepNodeBase;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -43,30 +42,30 @@ public class JDBCRequest extends StepNodeBase {
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
         if(StringUtils.isBlank(dbName)) {
-            throw new CommonValueBlankException("数据库名不能为空");
+            throw new TMException("数据库名不能为空");
         }
         PlanRunningConfigSnapshot runningConfigSnapshot = context.getPlanTask().getRunningConfigSnapshot();
         if(runningConfigSnapshot.getEnvId() == null) {
-            throw new CommonValueBlankException("运行环境不能为空");
+            throw new TMException("运行环境不能为空");
         }
 
         dbName = ExpressionUtils.replaceExpression(dbName, caseVariables.getVariables());
         if(StringUtils.isBlank(dbName)) {
-            throw new CommonValueBlankException("数据库名不能为空");
+            throw new TMException("数据库名不能为空");
         }
 
         DbConfig dbConfig = context.getTaskService().findDbConfig(runningConfigSnapshot.getEnvId(), dbName);
         if(dbConfig == null) {
-            throw new CommonValueBlankException(String.format("不存在 数据库名: %s，环境: %s(id: %s) 的配置",
+            throw new TMException(String.format("不存在 数据库名: %s，环境: %s(id: %s) 的配置",
                     dbName, runningConfigSnapshot.getEnvName(), runningConfigSnapshot.getEnvId()));
         }
 
         if(StringUtils.isBlank(content)) {
-            throw new CommonValueBlankException("sql语句不能为空");
+            throw new TMException("sql语句不能为空");
         }
         content = ExpressionUtils.replaceExpression(content, caseVariables.getVariables());
         if(StringUtils.isBlank(content)) {
-            throw new CommonValueBlankException("sql语句不能为空");
+            throw new TMException("sql语句不能为空");
         }
         content = content.trim();
         addResultInfo("数据库名：").addResultInfoLine(dbName);
@@ -92,7 +91,7 @@ public class JDBCRequest extends StepNodeBase {
 
         Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
         if(conn == null) {
-            throw new CommonValueBlankException("获取数据库连接失败");
+            throw new TMException("获取数据库连接失败");
         }
         Statement stmt = null;
         List<Map<String, String>> list = new ArrayList<>();
@@ -115,7 +114,7 @@ public class JDBCRequest extends StepNodeBase {
             }
         }catch(SQLException e){
             log.error("exec sql error, ", e);
-            throw new ExecSqlException(e.getMessage());
+            throw new TMException("执行select发生错误", e);
         }finally{
             if(rs != null) {
                 try {

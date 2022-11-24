@@ -2,8 +2,7 @@ package com.tm.worker.core.node.function.randomizer;
 
 import com.googlecode.aviator.AviatorEvaluator;
 import com.tm.common.utils.DateUtils;
-import com.tm.worker.core.exception.ParameterUnfoundedException;
-import com.tm.worker.core.exception.ParameterValueTypeErrorException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -28,12 +27,12 @@ public class GetRandomIntNode extends FunctionNode {
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
         if (!parametersMap.containsKey(ARG_1)) {
-            throw new ParameterUnfoundedException("缺少必要的参数: [" + ARG_1 + "]");
+            throw new TMException("缺少必要的参数: [" + ARG_1 + "]");
         }
         String count = parametersMap.get(ARG_1);
         count = ExpressionUtils.replaceExpression(count, caseVariables.getVariables());
         if (!StringUtils.isNumeric(count)) {
-            throw new ParameterValueTypeErrorException("[" + ARG_1 + "]参数值类型错误，必须是数字");
+            throw new TMException("[" + ARG_1 + "]参数值类型错误，必须是数字");
         }
 
         addResultInfo("count: ").addResultInfoLine(count);

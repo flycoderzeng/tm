@@ -1,7 +1,6 @@
 package com.tm.worker.core.control;
 
-import com.tm.worker.core.exception.CommonValueBlankException;
-import com.tm.worker.core.exception.ConditionExpressionResultException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.StepNodeBase;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -24,13 +23,13 @@ public class GenericController extends StepNodeBase {
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
         if(StringUtils.isBlank(condition)) {
-            throw new CommonValueBlankException("条件表达式不能为空");
+            throw new TMException("条件表达式不能为空");
         }
         String result = ExpressionUtils.replaceExpression(condition, caseVariables.getVariables());
         log.info(result);
         addResultInfo("表达式：").addResultInfoLine(result);
         if(StringUtils.isBlank(result)) {
-            throw new CommonValueBlankException("条件表达式不能为空");
+            throw new TMException("条件表达式不能为空");
         }
         result = ExpressionUtils.executeExpression(result, caseVariables.getVariables());
         log.info(result);
@@ -40,7 +39,7 @@ public class GenericController extends StepNodeBase {
                 setBreakLoop(true);
             }
         }else{
-            throw new ConditionExpressionResultException("条件表达氏的结果必须是true或者false，计算结果是：" + result);
+            throw new TMException("条件表达氏的结果必须是true或者false，计算结果是：" + result);
         }
     }
 }

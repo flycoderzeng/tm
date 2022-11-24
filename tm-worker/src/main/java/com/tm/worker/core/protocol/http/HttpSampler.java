@@ -9,9 +9,7 @@ import com.tm.common.entities.autotest.enumerate.RawTypeNum;
 import com.tm.common.entities.common.KeyValueRow;
 import com.tm.common.entities.common.enumerate.RelationOperatorEnum;
 import com.tm.worker.core.cookie.AutoTestCookie;
-import com.tm.worker.core.exception.CommonValueBlankException;
-import com.tm.worker.core.exception.InvalidXMLStringException;
-import com.tm.worker.core.exception.SendHttpException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.StepNodeBase;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -26,8 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
+import org.dom4j.Node;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
@@ -80,7 +77,7 @@ public class HttpSampler extends StepNodeBase {
         addResultInfo("Cookie: ").addResultInfoLine(cookies.toString());
         addResultInfoLine("请求报文: ").addResultInfoLine(content);
         if(response == null) {
-            throw new SendHttpException("发送http请求异常");
+            throw new TMException("发送http请求异常");
         }
         log.info(response.toString());
         addResultInfoLine(response.toString());
@@ -90,45 +87,75 @@ public class HttpSampler extends StepNodeBase {
     }
 
     private void extractResponse(AutoTestVariables caseVariables, HttpResponse httpResponse) {
+        addResultInfoLine("响应提取结果:");
         if(responseExtractorList == null || responseExtractorList.isEmpty()) {
+            addResultInfoLine("没有配置响应提取");
             return ;
         }
-        final String body = httpResponse.body();
+        for (KeyValueRow keyValueRow : responseExtractorList) {
+            Object leftOperand = extractLeftOperand(caseVariables, httpResponse, keyValueRow);
+            final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
+            String resultVariable = ExpressionUtils.extractVariable(value);
+            if(StringUtils.isNoneBlank(resultVariable)) {
+                caseVariables.putObject(resultVariable, leftOperand);
+            }
+        }
     }
 
     private void checkError(AutoTestVariables caseVariables, HttpResponse httpResponse) {
-        addResultInfoLine("断言检查结果");
+        addResultInfoLine("断言检查结果:");
         if(checkErrorList == null || checkErrorList.isEmpty()) {
             addResultInfoLine("没有配置断言");
             return ;
         }
-        final String body = httpResponse.body();
-
+        boolean checkResult = true;
         for (KeyValueRow keyValueRow : checkErrorList) {
-            if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_BODY.val())) {
-                checkResponseBody(caseVariables, body, keyValueRow);
-            }
+            checkResult = checkResult && checkResponseBody(caseVariables, httpResponse, keyValueRow);
+        }
+        if(!checkResult) {
+            throw new TMException("响应断言失败");
         }
     }
 
-    private void checkResponseBody(AutoTestVariables caseVariables, String body, KeyValueRow keyValueRow) {
+    private Object extractLeftOperand(AutoTestVariables caseVariables, HttpResponse httpResponse, KeyValueRow keyValueRow) {
         Document document;
+        final String body = httpResponse.body();
         final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
+        Object leftOperand = "";
+        if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_BODY.val())) {
+            if(name.startsWith("$.")) {
+                leftOperand = JsonPath.read(body, name);
+            }else if(name.startsWith("/")) {
+                document = XMLUtils.parseXmlString(body);
+                if(document == null) {
+                    throw new TMException("http的响应不是xml字符串");
+                }
+                List<Node> nodes = XMLUtils.selectNodeList(document, name);
+                if(nodes != null && !nodes.isEmpty()) {
+                    leftOperand = nodes.get(0).getStringValue();
+                }
+            }
+        }else if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_HEADER.val())) {
+            leftOperand = httpResponse.header(name);
+        }else if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.COOKIE.val())) {
+            leftOperand = httpResponse.getCookie(name).getValue();
+        }
+
+        return leftOperand;
+    }
+
+    private boolean checkResponseBody(AutoTestVariables caseVariables, HttpResponse httpResponse, KeyValueRow keyValueRow) {
+        Object leftOperand = extractLeftOperand(caseVariables, httpResponse, keyValueRow);
         final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
-        if(name.startsWith("$.")) {
-            final Object read = JsonPath.read(body, name);
-            final RelationOperatorEnum relationOperator = keyValueRow.getRelationOperator();
-            addResultInfo(name).addResultInfo(" ").addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
-            if(AssertUtils.compare(read.toString(), relationOperator, value)) {
-                addResultInfo("[成功]");
-            }else{
-                addResultInfo("[失败]");
-            }
-        }else if(name.startsWith("/")) {
-            document = XMLUtils.parseXmlString(body);
-            if(document == null) {
-                throw new InvalidXMLStringException("http的响应不是xml字符串");
-            }
+        final RelationOperatorEnum relationOperator = keyValueRow.getRelationOperator();
+        addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand.toString()).addResultInfo("] ")
+                .addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
+        if(AssertUtils.compare(leftOperand.toString(), relationOperator, value)) {
+            addResultInfo("[成功]");
+            return true;
+        }else{
+            addResultInfo("[失败]");
+            return false;
         }
     }
 
@@ -188,12 +215,12 @@ public class HttpSampler extends StepNodeBase {
 
     private String getActualUrl(AutoTestVariables caseVariables) throws UnsupportedEncodingException {
         if(StringUtils.isBlank(url)) {
-            throw new CommonValueBlankException("请求地址不能为空");
+            throw new TMException("请求地址不能为空");
         }
         addResultInfo("请求地址: ").addResultInfoLine(url);
         String actualUrl = ExpressionUtils.replaceExpression(url, caseVariables.getVariables());
         if(StringUtils.isBlank(actualUrl)) {
-            throw new CommonValueBlankException("实际的请求地址不能为空");
+            throw new TMException("实际的请求地址不能为空");
         }
 
         // 拼装params
@@ -229,11 +256,11 @@ public class HttpSampler extends StepNodeBase {
             for (KeyValueRow param : keyValueRows) {
                 String paramName = param.getName();
                 if(StringUtils.isBlank(paramName)) {
-                    throw new CommonValueBlankException("参数名称不能为空");
+                    throw new TMException("参数名称不能为空");
                 }
                 paramName = ExpressionUtils.replaceExpression(paramName, caseVariables.getVariables());
                 if(StringUtils.isBlank(paramName)) {
-                    throw new CommonValueBlankException("参数名称不能为空");
+                    throw new TMException("参数名称不能为空");
                 }
                 builder.append(FunctionUtils.encodeURIComponent(paramName)).append("&");
                 String value = param.getValue();

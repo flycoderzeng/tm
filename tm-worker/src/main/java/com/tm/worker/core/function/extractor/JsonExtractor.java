@@ -5,7 +5,7 @@ import com.googlecode.aviator.runtime.function.FunctionUtils;
 import com.googlecode.aviator.runtime.type.AviatorObject;
 import com.googlecode.aviator.runtime.type.AviatorString;
 import com.jayway.jsonpath.JsonPath;
-import com.tm.worker.core.exception.CommonValueBlankException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.utils.AviatorUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class JsonExtractor extends AbstractFunction {
     private String getPath(Map<String, Object> env, AviatorObject arg1) {
         String path = AviatorUtils.getArgStringValue(env, arg1);
         if(StringUtils.isBlank(path)) {
-            throw new CommonValueBlankException("json路径不能为空");
+            throw new TMException("json路径不能为空");
         }
 
         return path;

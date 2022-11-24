@@ -1,6 +1,6 @@
 package com.tm.worker.core.node.function.extractor;
 
-import com.tm.worker.core.exception.ParameterValueTypeErrorException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -83,7 +83,7 @@ public class XmlMultiExtractorNode extends FunctionNode {
         }
         Document doc = XMLUtils.parseXmlString(content);
         if(doc == null) {
-            throw new ParameterValueTypeErrorException("content参数内容非法，不是xml字符串");
+            throw new TMException("content参数内容非法，不是xml字符串");
         }
 
         for (int i = 0; i < argList.size(); i++) {

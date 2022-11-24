@@ -45,8 +45,17 @@ public class JsonPathTest {
                 "}";
         Object authors = JsonPath.read(json,"$.store.book[*].author222");
         System.out.println(authors instanceof List);
-        System.out.println("===>" + authors);
+        System.out.println("===6>" + authors);
         Object o = JsonPath.read(json,"$.store.book");
-        System.out.println("===>" + o);
+        System.out.println("===1>" + o);
+        o = JsonPath.read(json,"$.store");
+        System.out.println("===2>" + o);
+        System.out.println("===32>" + o.getClass());
+        json = "[1,2,\"3\"]";
+        final Object read = JsonPath.read(json, "$.[0]");
+        System.out.println(read instanceof Integer);
+        json = "{\"d\": \"e\"}";
+        final Object read1 = JsonPath.read(json, "$.d");
+        System.out.println(read1 instanceof String);
     }
 }

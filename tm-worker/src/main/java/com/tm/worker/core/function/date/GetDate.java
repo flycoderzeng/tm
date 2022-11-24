@@ -6,7 +6,7 @@ import com.googlecode.aviator.runtime.type.AviatorObject;
 import com.googlecode.aviator.runtime.type.AviatorString;
 import com.tm.common.entities.autotest.enumerate.DateUnitTypeNum;
 import com.tm.common.utils.DateUtils;
-import com.tm.worker.core.exception.ParameterValueTypeErrorException;
+import com.tm.worker.core.exception.TMException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -38,10 +38,10 @@ public class GetDate extends AbstractFunction {
         if(offsetObject instanceof String) {
             String offsetString = offsetObject.toString();
             if(!StringUtils.isNotBlank(offsetString) && !offsetString.startsWith("-") && !StringUtils.isNumeric(offsetString)) {
-                throw new ParameterValueTypeErrorException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + offsetString);
+                throw new TMException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + offsetString);
             }
             if(!StringUtils.isNotBlank(offsetString) && offsetString.startsWith("-") && !StringUtils.isNumeric(offsetString.substring(1))) {
-                throw new ParameterValueTypeErrorException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + offsetString);
+                throw new TMException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + offsetString);
             }
             offset = Integer.valueOf(offsetString);
         } else {
@@ -59,7 +59,7 @@ public class GetDate extends AbstractFunction {
         if(unitObject instanceof String) {
             String unitString = FunctionUtils.getStringValue(arg, env);
             if(!StringUtils.isNotBlank(unitString) && !StringUtils.isNumeric(unitString)) {
-                throw new ParameterValueTypeErrorException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + unitString);
+                throw new TMException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + unitString);
             }
             unit = Integer.valueOf(unitString);
         } else {
@@ -67,7 +67,7 @@ public class GetDate extends AbstractFunction {
         }
         DateUnitTypeNum unitTypeNum = DateUnitTypeNum.get(unit);
         if(unitTypeNum == null) {
-            throw new ParameterValueTypeErrorException("[unit]参数值错误。必须是：1-秒；2-分；3-时；4-日；5-月；6-年。");
+            throw new TMException("[unit]参数值错误。必须是：1-秒；2-分；3-时；4-日；5-月；6-年。");
         }
         return unit;
     }

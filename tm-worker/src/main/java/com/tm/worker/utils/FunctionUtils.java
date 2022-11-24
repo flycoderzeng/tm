@@ -1,6 +1,6 @@
 package com.tm.worker.utils;
 
-import com.tm.worker.core.exception.ParameterValueTypeErrorException;
+import com.tm.worker.core.exception.TMException;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,10 +16,10 @@ public final class FunctionUtils {
             return result;
         }
         if(!intStr.startsWith("-") && !StringUtils.isNumeric(intStr)) {
-            throw new ParameterValueTypeErrorException("[" + argName + "]参数值类型错误，必须是数字。");
+            throw new TMException("[" + argName + "]参数值类型错误，必须是数字。");
         }
         if(intStr.startsWith("-") && !StringUtils.isNumeric(intStr.substring(1))) {
-            throw new ParameterValueTypeErrorException("[" + argName + "]参数值类型错误，必须是数字。");
+            throw new TMException("[" + argName + "]参数值类型错误，必须是数字。");
         }
         result = Integer.valueOf(intStr);
         return result;

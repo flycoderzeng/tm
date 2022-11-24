@@ -1,7 +1,6 @@
 package com.tm.worker.core.control;
 
-import com.tm.worker.core.exception.CommonValueBlankException;
-import com.tm.worker.core.exception.ConditionExpressionResultException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.core.variable.AutoTestVariables;
@@ -18,7 +17,7 @@ public class LoopController extends GenericController {
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
         if(StringUtils.isBlank(condition)) {
-            throw new CommonValueBlankException("固定循环次数值不能为空");
+            throw new TMException("固定循环次数值不能为空");
         }
 
         if(total <= -1) {
@@ -28,7 +27,7 @@ public class LoopController extends GenericController {
                 total = count.intValue();
                 count();
             }else{
-                throw new ConditionExpressionResultException("循环次数值表达氏的结果必须是整数，计算结果是：" + result);
+                throw new TMException("循环次数值表达氏的结果必须是整数，计算结果是：" + result);
             }
         }else{
            count();

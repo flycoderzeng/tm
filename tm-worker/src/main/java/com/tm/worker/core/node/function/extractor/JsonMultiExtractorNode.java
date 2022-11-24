@@ -1,7 +1,7 @@
 package com.tm.worker.core.node.function.extractor;
 
 import com.jayway.jsonpath.JsonPath;
-import com.tm.worker.core.exception.CommonValueBlankException;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -76,7 +76,7 @@ public class JsonMultiExtractorNode extends FunctionNode {
         }
         if(StringUtils.isBlank(content)) {
             log.info("json提取，content为空");
-            throw new CommonValueBlankException("参数[content]内容为空");
+            throw new TMException("参数[content]内容为空");
         }
         // json提取
         for (int i = 0; i < argList.size(); i++) {
