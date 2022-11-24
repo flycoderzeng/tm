@@ -32,3 +32,11 @@ build/
 ### VS Code ###
 .vscode/
 **/src/test/
+**/mvnw
+**/mvnw.cmd
+/tm-worker/src/test/
+/tm-web/src/test/
+/tm-mockserver/src/test/
+/tm-mockagent/src/test/
+/tm-lc/src/test/
+/tm-eureka/src/test/
