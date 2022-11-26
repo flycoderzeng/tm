@@ -92,6 +92,7 @@ const initTreeData: StepNode[] = [{
     "key": "1",
     "isLeaf": false,
     disabled: false,
+    seq: 1,
     children: [
         {
             "type": "setUp",
@@ -106,6 +107,7 @@ const initTreeData: StepNode[] = [{
             "title": "setUp",
             "key": "2",
             disabled: false,
+            seq: 2
         }, {
             "type": "action",
             "level": 2,
@@ -119,6 +121,7 @@ const initTreeData: StepNode[] = [{
             "title": "action",
             "key": "3",
             disabled: false,
+            seq: 3,
         }, {
             "type": "teardown",
             "level": 2,
@@ -132,9 +135,12 @@ const initTreeData: StepNode[] = [{
             "title": "teardown",
             "key": "4",
             disabled: false,
+            seq: 4
         }
     ]
 }];
+
+let seq = 4;
 
 const AutoCaseEditor: React.FC<IState> = (props) => {
     //let history = useHistory();
@@ -291,6 +297,36 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         loadPlatformApiTree();
     }, [id]);// eslint-disable-line react-hooks/exhaustive-deps
 
+    function initStepSeq(steps: StepNode[]) {
+        seq = 1;
+        const stack: StepNode[] = [steps[0]];
+        let init = false;
+        let maxSeq = -1;
+        if(steps[0].seq) {
+            init = true;
+        }
+        while (true) {
+            const stepNode: StepNode|undefined = stack.shift();
+            if(stepNode && stepNode.children) {
+                for (let i = 0; i < stepNode.children.length; i++) {
+                    stack.push(stepNode.children[i]);
+                }
+            }
+            if(stepNode && !init) {
+                stepNode.seq = seq;
+                seq = seq + 1;
+            }else if(stepNode && stepNode.seq > maxSeq){
+                maxSeq = stepNode.seq;
+            }
+            if(!stepNode) {
+                 break;
+            }
+        }
+        if(init) {
+            seq = maxSeq + 1;
+        }
+    }
+
     function load() {
         axios.post(ApiUrlConfig.LOAD_AUTO_CASE_URL, {id: id}).then(resp => {
             if (resp.status !== 200) {
@@ -306,6 +342,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     } else {
                         steps = JSON.parse(JSON.stringify(initTreeData));
                     }
+                    initStepSeq(steps);
                     setTreeData(steps);
                     setCurrStepNode(steps[0]);
                     setRootNode(steps[0]);
@@ -485,7 +522,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
             key: RandomUtils.getKey(),
             children: [], define: define,
             disabled: false,
+            seq: seq,
         };
+        seq = seq + 1;
         return node;
     }
 
@@ -874,6 +913,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                         onExpand={onExpand}
                         defaultExpandedKeys={defaultExpandedKeys}
                         draggable={draggable}
+                        titleRender={(nodeData) => {return (<span>{nodeData.seq + ': ' + nodeData.title}</span>)}}
                         blockNode
                         expandedKeys={expandedKeys}
                         selectedKeys={selectedKeys}
