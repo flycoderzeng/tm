@@ -74,30 +74,6 @@ const MenuKey = {
 
 const platformApiTree: MenuItem[] = [];
 
-const rightMenuInitKeys: MenuItem[] = [
-    {key: MenuKey.AddResource, title: '添加资源', icon: <PlusOutlined/>, disabled: false, children: []},
-    {key: MenuKey.AddRecent, title: '添加最近', icon: <PlusOutlined/>, disabled: false, children: []},
-    {
-        key: MenuKey.AddMostCommonlyUsed, title: '添加常用', icon: <PlusOutlined/>, disabled: false, children: [
-            {key: MenuKey.AddHttpRequest, title: 'HTTP请求', disabled: false},
-            {key: MenuKey.AddJDBCRequest, title: 'JDBC请求', disabled: false},
-        ]
-    },
-    {key: MenuKey.AddPlatformApi, title: '添加API', icon: <PlusOutlined/>, disabled: false, children: platformApiTree},
-    {key: MenuKey.Remove, title: '删除', icon: <DeleteOutlined/>, disabled: false},
-    {key: MenuKey.Copy, title: '复制', icon: <CopyOutlined/>, disabled: false},
-    {key: MenuKey.Paste, title: '粘贴', icon: <SettingOutlined/>, disabled: false},
-    {key: MenuKey.Enable, title: '启用', icon: <PlayCircleOutlined/>, disabled: false},
-    {key: MenuKey.Disable, title: '禁用', icon: <PauseOutlined/>, disabled: false},
-    {
-        key: MenuKey.AddLogic, title: '添加逻辑', icon: <PlusOutlined/>, disabled: false, children: [
-            {key: MenuKey.If, title: 'if', icon: null, disabled: false},
-            {key: MenuKey.While, title: 'while', icon: null, disabled: false},
-            {key: MenuKey.Loop, title: 'loop', icon: null, disabled: false}
-        ]
-    }
-];
-
 const whenClickLeafStepNodeDisabledMenuItems: string[] = [MenuKey.AddResource, MenuKey.AddPlatformApi,
     MenuKey.AddRecent, MenuKey.AddMostCommonlyUsed, MenuKey.AddLogic];
 
@@ -170,16 +146,14 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [expandedKeys, setExpandedKeys] = useState(['1', '2', '3', '4']);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const [contextMenuPosition, setContextMenuPosition] = useState(rightMenuInitStyle);
-    const [rightMenuKeys, setRightMenuKeys] = useState(rightMenuInitKeys);
     const [treeData, setTreeData] = useState<StepNode[]>(initTreeData);
     const [currStepNode, setCurrStepNode] = useState<StepNode>(treeData[0]);
     const [rootNode, setRootNode] = useState<StepNode>(treeData[0]);
     const [runEnvId, setRunEnvId] = useState('');
+    const [groupVariables, setGroupVariables] = useState(null);
     const [copyNodeData, setCopyNodeData] = useState<StepNode|null>(null);
-    const [rightMenuList, setRightMenuList] = useState<any[]>([])
-    if(rightMenuList.length < 1) {
-        setRightMenuList(renderRightMenu());
-    }
+    const [rightMenuKeys, setRightMenuKeys] = useState<MenuItem[]>([]);
+    const [rightMenuList, setRightMenuList] = useState<any[]>([]);
 
     if (id !== props.id) {
         setId(props.id);
@@ -194,9 +168,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     const ret = resp.data;
                     if (ret.code !== 0) {
                         message.error(ret.message);
-                    } else if (!ret.data) {
-
-                    } else {
+                    } else if (ret.data) {
                         setLoadedPlatformApi(true);
                         if (platformApiTree.length > 0) {
                             return;
@@ -223,6 +195,31 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                                 });
                             }
                         }
+                        const rightMenuInitKeys: MenuItem[] = [
+                            {key: MenuKey.AddResource, title: '添加资源', icon: <PlusOutlined/>, disabled: false, children: []},
+                            {key: MenuKey.AddRecent, title: '添加最近', icon: <PlusOutlined/>, disabled: false, children: []},
+                            {
+                                key: MenuKey.AddMostCommonlyUsed, title: '添加常用', icon: <PlusOutlined/>, disabled: false, children: [
+                                    {key: MenuKey.AddHttpRequest, title: 'HTTP请求', disabled: false},
+                                    {key: MenuKey.AddJDBCRequest, title: 'JDBC请求', disabled: false},
+                                ]
+                            },
+                            {key: MenuKey.AddPlatformApi, title: '添加API', icon: <PlusOutlined/>, disabled: false, children: platformApiTree},
+                            {key: MenuKey.Remove, title: '删除', icon: <DeleteOutlined/>, disabled: false},
+                            {key: MenuKey.Copy, title: '复制', icon: <CopyOutlined/>, disabled: false},
+                            {key: MenuKey.Paste, title: '粘贴', icon: <SettingOutlined/>, disabled: false},
+                            {key: MenuKey.Enable, title: '启用', icon: <PlayCircleOutlined/>, disabled: false},
+                            {key: MenuKey.Disable, title: '禁用', icon: <PauseOutlined/>, disabled: false},
+                            {
+                                key: MenuKey.AddLogic, title: '添加逻辑', icon: <PlusOutlined/>, disabled: false, children: [
+                                    {key: MenuKey.If, title: 'if', icon: null, disabled: false},
+                                    {key: MenuKey.While, title: 'while', icon: null, disabled: false},
+                                    {key: MenuKey.Loop, title: 'loop', icon: null, disabled: false}
+                                ]
+                            }
+                        ];
+                        setRightMenuKeys(rightMenuInitKeys);
+                        setRightMenuList(renderRightMenu(rightMenuInitKeys));
                     }
                 }
             });
@@ -313,6 +310,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     setCurrStepNode(steps[0]);
                     setRootNode(steps[0]);
                     setRunEnvId(ret.data.lastRunEnvId + '');
+                    setGroupVariables(ret.data.groupVariables);
                 }
             }
         });
@@ -451,8 +449,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         return true;
     }
 
-    function renderRightMenu() {
-        const list: any[] = rightMenuKeys.map(v => {
+    function renderRightMenu(menuItems: MenuItem[]) {
+        const list: any[] = menuItems.map(v => {
             if (!v.children || v.children.length < 1) {
                 return {icon: v.icon, key: v.key, disabled: v.disabled, label: v.title};
             } else if (v.children && v.children.length > 0) {
@@ -764,7 +762,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     function renderRightPanel() {
         switch (currStepNode.type) {
             case "root":
-                return (<RootNodeEditor refreshTree={refreshTree} stepNode={currStepNode}
+                return (<RootNodeEditor refreshTree={refreshTree} stepNode={currStepNode} groupVariables={groupVariables}
                                         define={currStepNode.define}>
                 </RootNodeEditor>);
             case "if":
