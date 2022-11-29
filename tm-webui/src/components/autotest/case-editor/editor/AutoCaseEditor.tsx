@@ -781,7 +781,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     function onSave() {
         setSaving(true);
-        const data = {id: id, type: 1, steps: JSON.stringify(treeData)};
+        const data = {id: id, type: 1, steps: JSON.stringify(treeData), groupVariables: groupVariables};
         axios.post(ApiUrlConfig.SAVE_AUTO_CASE_URL, data).then(resp => {
             if (resp.status !== 200) {
                 message.error('保存失败');
@@ -801,7 +801,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     function renderRightPanel() {
         switch (currStepNode.type) {
             case "root":
-                return (<RootNodeEditor refreshTree={refreshTree} stepNode={currStepNode} groupVariables={groupVariables}
+                return (<RootNodeEditor refreshTree={refreshTree} stepNode={currStepNode} groupVariables={groupVariables} onChangeGroupVariables={setGroupVariables}
                                         define={currStepNode.define}>
                 </RootNodeEditor>);
             case "if":

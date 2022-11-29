@@ -159,12 +159,12 @@ public class TaskService {
             // 组合配置不为空，并且是组合运行方式
             if (StringUtils.isNotBlank(groupVariablesStr) && PlanRunTypeEnum.GROUP.value().equals(snapshot.getRunType())) {
                 HashMap<String, String>[] groups = gson.fromJson(groupVariablesStr, groupVariablesTypeToken);
-
+                log.info("组合方式运行， 用例id: {}", caseId);
                 for (int j = 0; j < groups.length; j++) {
                     HashMap<String, String> group = groups[j];
                     String taskId = planExecuteResult.getId() + "_" + i;
                     AutoTestVariables groupVariables = new AutoTestVariables();
-                    if (group.containsKey(GROUP_VARIABLE_RUN_FLAG) && group.get(GROUP_VARIABLE_RUN_FLAG).equals("1")) {
+                    if (group.containsKey(GROUP_VARIABLE_RUN_FLAG) && "1".equals(group.get(GROUP_VARIABLE_RUN_FLAG))) {
                         groupVariables = new AutoTestVariables(group);
                     }
                     CaseTask caseTask = new CaseTask(taskId, planTask, autoCase, groupVariables);
@@ -176,6 +176,7 @@ public class TaskService {
                     i++;
                 }
             } else {
+                log.info("非组合方式运行， 用例id: {}", caseId);
                 String taskId = planExecuteResult.getId() + "_" + i;
                 CaseTask caseTask = new CaseTask(taskId, planTask, autoCase);
                 caseTaskQueue.add(caseTask);

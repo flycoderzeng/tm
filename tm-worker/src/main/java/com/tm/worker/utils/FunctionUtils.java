@@ -16,10 +16,10 @@ public final class FunctionUtils {
             return result;
         }
         if(!intStr.startsWith("-") && !StringUtils.isNumeric(intStr)) {
-            throw new TMException("[" + argName + "]参数值类型错误，必须是数字。");
+            throw new TMException("[" + argName + "]参数值类型错误，必须是数字。当前的值是：" + intStr);
         }
         if(intStr.startsWith("-") && !StringUtils.isNumeric(intStr.substring(1))) {
-            throw new TMException("[" + argName + "]参数值类型错误，必须是数字。");
+            throw new TMException("[" + argName + "]参数值类型错误，必须是数字。当前的值是：" + intStr);
         }
         result = Integer.valueOf(intStr);
         return result;

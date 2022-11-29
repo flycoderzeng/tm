@@ -149,22 +149,22 @@ const CaseResultList: React.FC<IState> = (props) => {
         },
         {
             width: 100,
-            title: '状态',
-            dataIndex: 'resultStatus',
-            key: 'id',
-            render: (text, record) => <span>{renderResultStatus(record)}</span>,
-        },
-        {
-            width: 100,
             title: '组合编号',
             dataIndex: 'groupNo',
             key: 'id',
         },
         {
             ellipsis: true,
-            title: '组合名称',
+            title: '组合描述',
             dataIndex: 'groupName',
             key: 'id',
+        },
+        {
+            width: 100,
+            title: '状态',
+            dataIndex: 'resultStatus',
+            key: 'id',
+            render: (text, record) => <span>{renderResultStatus(record)}</span>,
         },
         {
             width: 150,

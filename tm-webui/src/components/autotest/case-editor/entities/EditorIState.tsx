@@ -7,4 +7,5 @@ export interface EditorIState<T> {
     refreshTree: any;
     userDefinedVariables?: AutoCaseVariable[];
     groupVariables?: string|null;
+    onChangeGroupVariables?: any;
 }
