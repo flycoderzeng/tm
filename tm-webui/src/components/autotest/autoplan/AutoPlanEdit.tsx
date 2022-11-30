@@ -106,7 +106,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                             type: ret.data.type.toString(),
                             maxOccurs: ret.data.maxOccurs || 100,
                             runs: ret.data.runs || 1,
-                            envId: ret.data.envId,
+                            envId: ret.data.envId+'',
                             failContinue: ret.data.failContinue === 0 ? 0 : 1
                         });
                         setRunEnvId(ret.data.envId.toString() || undefined);

@@ -899,11 +899,11 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     onRun(2);
                 }}>运行组合</Button>
                 <Button size="small" type="primary" danger>停止</Button>
-                <Button size="small" type="default">查看内置函数与变量</Button>
+                <RunEnvSelect size={'small'} onChange={setRunEnvId} style={{width: '150px', marginRight: '5px'}} value={runEnvId}></RunEnvSelect>
                 <Button size="small" type="primary" onClick={() => {
                     onViewResult();
                 }}>查看运行结果</Button>
-                <RunEnvSelect onChange={setRunEnvId} style={{width: '150px'}} value={runEnvId}></RunEnvSelect>
+                <Button size="small" type="default">查看内置函数与变量</Button>
             </div>
             <div className="case-editor-main-content">
                 <div className="case-editor-step-tree">
