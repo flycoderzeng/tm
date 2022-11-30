@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tm.common.base.mapper.AutoCaseHistoryMapper" >
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.AutoCaseHistory" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="auto_case_id" property="autoCaseId" jdbcType="INTEGER" />
+        <result column="steps" property="steps" jdbcType="LONGVARCHAR" />
+        <result column="group_variables" property="groupVariables" jdbcType="LONGVARCHAR" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <insert id="insertBySelective"
+            parameterType="com.tm.common.base.model.AutoCaseHistory"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into auto_case_history
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="autoCaseId != null" >
+                auto_case_id,
+            </if>
+            <if test="steps != null" >
+                steps,
+            </if>
+            <if test="groupVariables != null" >
+                group_variables,
+            </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
+            <if test="addUser != null" >
+                add_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="autoCaseId != null" >
+                #{autoCaseId,jdbcType=INTEGER},
+            </if>
+            <if test="steps != null" >
+                #{steps,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="groupVariables != null" >
+                #{groupVariables,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addUser != null" >
+                #{addUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>
