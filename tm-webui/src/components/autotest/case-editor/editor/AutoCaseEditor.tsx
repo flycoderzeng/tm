@@ -294,8 +294,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     useEffect(() => {
         load();
-        loadPlatformApiTree();
     }, [id]);// eslint-disable-line react-hooks/exhaustive-deps
+
+    loadPlatformApiTree();
 
     function initStepSeq(steps: StepNode[]) {
         seq = 1;
