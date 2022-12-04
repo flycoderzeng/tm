@@ -121,7 +121,6 @@ const ContentEditor: React.FC<IState> = (props) => {
             });
         }
         window['isRegisterCompletionItemProvider'] = true;
-
     }
 
     function onChangeHandle(value, e) {
@@ -132,6 +131,8 @@ const ContentEditor: React.FC<IState> = (props) => {
     return (<div>
         <div style={{width: '100%', height: '400px'}} >
             <MonacoEditor
+                width={'100%'}
+                height={400}
                 theme="vs-dark"
                 language={language}
                 value={content}

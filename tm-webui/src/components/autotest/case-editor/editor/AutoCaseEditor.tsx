@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Button, Menu, message, Tree} from "antd";
+import {Button, Menu, message, Modal, Tree} from "antd";
 import {RootNodeEditor} from "./RootNodeEditor";
 import {
     SettingOutlined,
@@ -24,6 +24,8 @@ import {RunEnvSelect} from "../../../testmanage/runenv/RunEnvSelect";
 import {RandomUtils} from "../../../../utils/RandomUtils";
 import {JDBCRequestEditor} from "./JDBCRequestEditor";
 import {LocalStorageUtils} from "../../../../utils/LocalStorageUtils";
+import {PlanResultList} from "../../planresult/PlanResultList";
+import {CaseHistoryList} from "../CaseHistoryList";
 
 const {SubMenu} = Menu;
 
@@ -145,6 +147,7 @@ let seq = 4;
 const AutoCaseEditor: React.FC<IState> = (props) => {
     //let history = useHistory();
     const [saving, setSaving] = useState(false);
+    const [visibleHistory, setVisibleHistory] = useState(false);
     const [running1, setRunning1] = useState(false);
     const [running2, setRunning2] = useState(false);
     const [loadedPlatformApi, setLoadedPlatformApi] = useState(false);
@@ -328,8 +331,11 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         }
     }
 
-    function load() {
+    function load(hideHistoryModal?: boolean) {
         axios.post(ApiUrlConfig.LOAD_AUTO_CASE_URL, {id: id}).then(resp => {
+            if(hideHistoryModal) {
+                setVisibleHistory(false);
+            }
             if (resp.status !== 200) {
                 message.error('加载用例失败');
             } else {
@@ -781,8 +787,22 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function onSave() {
+        onSaveAutoCase();
+    }
+
+    function onSaveAutoCase(steps?: string|null, groups ?: string|null, loading ?: boolean) {
         setSaving(true);
-        const data = {id: id, type: 1, steps: JSON.stringify(treeData), groupVariables: groupVariables};
+        const data: any = {id: id, type: 1, steps: null,
+            groupVariables: groupVariables};
+        if(steps !== undefined) {
+            data.steps = steps;
+        }else{
+            data.steps = JSON.stringify(treeData);
+        }
+        if(groups !== undefined) {
+            data.groupVariables = groups;
+        }
+
         axios.post(ApiUrlConfig.SAVE_AUTO_CASE_URL, data).then(resp => {
             if (resp.status !== 200) {
                 message.error('保存失败');
@@ -792,6 +812,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     message.error(ret.message);
                 } else {
                     message.success('操作成功');
+                    if(loading) {
+                        load(true);
+                    }
                 }
             }
         }).finally(() => {
@@ -905,6 +928,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     onViewResult();
                 }}>查看运行结果</Button>
                 <Button size="small" type="default">查看内置函数与变量</Button>
+                <Button size="small" type="default"onClick={() => {
+                    setVisibleHistory(true);
+                }}>恢复历史</Button>
             </div>
             <div className="case-editor-main-content">
                 <div className="case-editor-step-tree">
@@ -933,6 +959,18 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
             <Menu onClick={onClickRightMenuItem} className="node-tree-context-menu" style={contextMenuPosition as any}
                   mode="vertical" items={rightMenuList}>
             </Menu>
+            <Modal
+                title="用例历史记录"
+                open={visibleHistory}
+                onOk={() => setVisibleHistory(false)}
+                onCancel={() => setVisibleHistory(false)}
+                width={900}
+                footer={null}
+            >
+                <div>
+                    <CaseHistoryList caseId={id} saveAutoCase={onSaveAutoCase}></CaseHistoryList>
+                </div>
+            </Modal>
         </div>
     )
 }

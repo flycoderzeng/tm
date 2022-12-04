@@ -20,7 +20,9 @@ public class AutoCaseHistory {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     private Integer autoCaseId;
+    @Lob
     private String steps;
+    @Lob
     private String groupVariables;
 
     @Column(name = "add_time", columnDefinition = "TIMESTAMP")

@@ -16,6 +16,7 @@ const ApiUrlConfig = {
     DELETE_ROLE_RIGHT_URL: '/web/role/deleteRoleRight',
     ADD_ROLE_RIGHT_URL: '/web/role/addRoleRight',
     QUERY_ROLE_LIST_URL: '/lc/lc/json/api/role',
+    QUERY_CASE_HISTORY_LIST_URL: '/lc/lc/json/api/auto_case_history',
     SAVE_ROLE_URL: '/lc/lc/json/api/role',
     DELETE_ROLE_URL: '/lc/lc/json/api/role/',
     LOAD_ROLE_URL: '/lc/lc/json/api/role/',
