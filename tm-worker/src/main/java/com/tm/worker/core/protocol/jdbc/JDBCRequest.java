@@ -114,7 +114,7 @@ public class JDBCRequest extends StepNodeBase {
             }
         }catch(SQLException e){
             log.error("exec sql error, ", e);
-            throw new TMException("执行select发生错误", e);
+            throw new TMException("执行select发生错误: " + e.getMessage(), e);
         }finally{
             if(rs != null) {
                 try {

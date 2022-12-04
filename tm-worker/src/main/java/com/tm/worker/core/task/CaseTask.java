@@ -11,7 +11,7 @@ public class CaseTask {
     private PlanTask planTask;
     private AutoCase autoCase;
     private AutoTestVariables groupVariables;
-    private Integer groupNo = 1;
+    private Integer groupNo = 0;
     private String groupName;
     private Integer seq = 1;
 

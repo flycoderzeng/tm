@@ -8,6 +8,7 @@ interface IState {
     value: number|string|null;
     style?: any;
     onChange?: any;
+    size?: any;
 }
 
 interface RunEnv {
@@ -21,6 +22,7 @@ const { Option } = Select;
 const RunEnvSelect: React.FC<IState> = (props) => {
     const [value, setValue] = useState(props.value);
     const {onChange} = props;
+    const {size} = props;
 
     const [rows, setRows] = useState<RunEnv[]>([]);
 
@@ -73,6 +75,7 @@ const RunEnvSelect: React.FC<IState> = (props) => {
         defaultActiveFirstOption={false}
         optionFilterProp="children"
         showArrow={false}
+        size={size}
         onChange={handleChange}
         notFoundContent={null}
     >

@@ -16,7 +16,7 @@ public class GetRandomInt extends AbstractFunction {
         if(arg1 instanceof AviatorString) {
             String count = FunctionUtils.getStringValue(arg1, env);
             if(!StringUtils.isNumeric(count)) {
-                throw new TMException("[" + arg1 + "]参数值类型错误，必须是数字");
+                throw new TMException("[" + arg1 + "]参数值类型错误，必须是数字。当前的值是：" + count);
             }
             return Integer.valueOf(count);
         }

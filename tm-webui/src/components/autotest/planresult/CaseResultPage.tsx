@@ -243,6 +243,7 @@ const CaseResultPage: React.FC<IState> = (props) => {
             <Tree
                 style={{background: 'aliceblue'}}
                 expandedKeys={expandedKeys}
+                titleRender={(nodeData) => {return (<span>{nodeData.seq + ': ' + nodeData.title}</span>)}}
                 onSelect={onSelect}
                 onExpand={onExpand}
                 treeData={steps}

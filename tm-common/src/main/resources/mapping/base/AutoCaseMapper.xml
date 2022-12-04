@@ -71,7 +71,7 @@
                 last_run_env_id = #{lastRunEnvId,jdbcType=INTEGER},
             </if>
             <if test="groupVariables != null" >
-                group_variables = #{lastRunEnvId,jdbcType=LONGVARCHAR},
+                group_variables = #{groupVariables,jdbcType=LONGVARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}

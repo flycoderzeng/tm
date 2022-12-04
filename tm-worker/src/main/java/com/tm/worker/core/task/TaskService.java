@@ -113,33 +113,7 @@ public class TaskService {
                                  PlanRunningConfigSnapshot snapshot,
                                  AutoTestVariables globalVariables) {
         List<Integer> caseIdList = new ArrayList<>();
-        // 如果不是调试用例，查询计划用例关联列表
-        if (!planExecuteResult.getFromType().equals(PlanRunFromTypeEnum.CASE.value())) {
-            log.info("执行计划");
-            CommonTableQueryBody body = new CommonTableQueryBody();
-            body.setPageSize(MAX_PLAN_CASE_TOTAL);
-            body.setOrder("seq");
-            body.setSort("asc");
-            body.setPlanId(planExecuteResult.getPlanOrCaseId());
-            int total = planCaseDao.countList(body);
-            if (total < 1) {
-                log.info("计划没有关联用例， 计划id：{}，计划运行来源类型：{}", planExecuteResult.getPlanOrCaseId(),
-                        planExecuteResult.getFromType());
-                planExecuteResultDao.setPlanExecuteResultEndStatus(planExecuteResult,
-                        PlanExecuteResultStatusEnum.EXCEPTION, "计划没有关联用例");
-                return;
-            }
-            //更新将运行的用例总数
-            planExecuteResultDao.setTotal(planExecuteResult, total);
-
-            List<PlanCase> planCases = planCaseDao.queryList(body);
-            for (PlanCase planCase : planCases) {
-                caseIdList.add(planCase.getCaseId());
-            }
-        } else {
-            log.info("调试用例");
-            caseIdList.add(planExecuteResult.getPlanOrCaseId());
-        }
+        if (!fillCaseIdList(planExecuteResult, caseIdList)) return;
 
         if (caseIdList.isEmpty()) {
             log.info("计划没有关联用例， 计划id：{}，计划运行来源类型：{}", planExecuteResult.getPlanOrCaseId(),
@@ -159,12 +133,12 @@ public class TaskService {
             // 组合配置不为空，并且是组合运行方式
             if (StringUtils.isNotBlank(groupVariablesStr) && PlanRunTypeEnum.GROUP.value().equals(snapshot.getRunType())) {
                 HashMap<String, String>[] groups = gson.fromJson(groupVariablesStr, groupVariablesTypeToken);
-
+                log.info("组合方式运行， 用例id: {}", caseId);
                 for (int j = 0; j < groups.length; j++) {
                     HashMap<String, String> group = groups[j];
                     String taskId = planExecuteResult.getId() + "_" + i;
                     AutoTestVariables groupVariables = new AutoTestVariables();
-                    if (group.containsKey(GROUP_VARIABLE_RUN_FLAG) && group.get(GROUP_VARIABLE_RUN_FLAG).equals("1")) {
+                    if (group.containsKey(GROUP_VARIABLE_RUN_FLAG) && "1".equals(group.get(GROUP_VARIABLE_RUN_FLAG))) {
                         groupVariables = new AutoTestVariables(group);
                     }
                     CaseTask caseTask = new CaseTask(taskId, planTask, autoCase, groupVariables);
@@ -176,6 +150,7 @@ public class TaskService {
                     i++;
                 }
             } else {
+                log.info("非组合方式运行， 用例id: {}", caseId);
                 String taskId = planExecuteResult.getId() + "_" + i;
                 CaseTask caseTask = new CaseTask(taskId, planTask, autoCase);
                 caseTaskQueue.add(caseTask);
@@ -193,6 +168,38 @@ public class TaskService {
         planTask.setTotalCases(caseTaskQueue.size());
         planTaskList.add(planTask);
         planTaskList.sort();
+    }
+
+    private boolean fillCaseIdList(PlanExecuteResult planExecuteResult, List<Integer> caseIdList) {
+        // 如果不是调试用例，查询计划用例关联列表
+        if (!planExecuteResult.getFromType().equals(PlanRunFromTypeEnum.CASE.value())) {
+            log.info("执行计划");
+            CommonTableQueryBody body = new CommonTableQueryBody();
+            body.setPageSize(MAX_PLAN_CASE_TOTAL);
+            body.setOrder("seq");
+            body.setSort("asc");
+            body.setPlanId(planExecuteResult.getPlanOrCaseId());
+            int total = planCaseDao.countList(body);
+            if (total < 1) {
+                log.info("计划没有关联用例， 计划id：{}，计划运行来源类型：{}", planExecuteResult.getPlanOrCaseId(),
+                        planExecuteResult.getFromType());
+                planExecuteResultDao.setPlanExecuteResultEndStatus(planExecuteResult,
+                        PlanExecuteResultStatusEnum.EXCEPTION, "计划没有关联用例");
+                return false;
+            }
+            //更新将运行的用例总数
+            planExecuteResultDao.setTotal(planExecuteResult, total);
+
+            List<PlanCase> planCases = planCaseDao.queryList(body);
+            for (PlanCase planCase : planCases) {
+                caseIdList.add(planCase.getCaseId());
+            }
+        } else {
+            log.info("调试用例");
+            caseIdList.add(planExecuteResult.getPlanOrCaseId());
+        }
+
+        return true;
     }
 
     public boolean canSubmitPlanTask() {

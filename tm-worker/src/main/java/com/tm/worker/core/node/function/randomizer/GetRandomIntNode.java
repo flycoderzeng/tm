@@ -32,7 +32,7 @@ public class GetRandomIntNode extends FunctionNode {
         String count = parametersMap.get(ARG_1);
         count = ExpressionUtils.replaceExpression(count, caseVariables.getVariables());
         if (!StringUtils.isNumeric(count)) {
-            throw new TMException("[" + ARG_1 + "]参数值类型错误，必须是数字");
+            throw new TMException("[" + ARG_1 + "]参数值类型错误，必须是数字。当前的值是：" + count);
         }
 
         addResultInfo("count: ").addResultInfoLine(count);

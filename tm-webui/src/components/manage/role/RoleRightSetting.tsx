@@ -9,6 +9,7 @@ type CurrProps = IProps & RouteComponentProps;
 const { Option } = Select;
 interface RoleRightModel {
     rightId: number;
+    key: string;
     name: string;
     uri: string;
     type: number;
@@ -61,7 +62,9 @@ class RoleRightSetting extends React.Component<CurrProps, IState> {
                             rows.push({name: v.attributes.name,
                                 uri: v.attributes.uri,
                                 rightId: v.id,
-                                type: v.attributes.type, addUser: v.attributes.addUser,
+                                type: v.attributes.type,
+                                addUser: v.attributes.addUser,
+                                key: v.id+'',
                                 addTime: v.attributes.addTime});
                             return null;
                         });

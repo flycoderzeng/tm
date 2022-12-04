@@ -7,6 +7,7 @@ import {PlanResultStatusUtils} from "../../../utils/PlanResultStatusUtils";
 import {PlanResultList} from "./PlanResultList";
 import {CaseResultList} from "./CaseResultList";
 import {CaseResultPage} from "./CaseResultPage";
+
 interface IState {
     planOrCaseId: number|null|undefined;
     fromType: number|null|undefined;

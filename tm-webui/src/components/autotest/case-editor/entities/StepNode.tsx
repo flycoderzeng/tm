@@ -7,4 +7,5 @@ export interface StepNode {
     isLeaf: boolean;
     children: StepNode[];
     define: any;
+    seq: number;
 }

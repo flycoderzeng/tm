@@ -23,6 +23,7 @@ public class StepNodeBase {
     protected String name;
     protected String comments;
     protected boolean enabled;
+    private Integer seq;
 
     protected CaseStepExecuteResult caseStepExecuteResult;
 
