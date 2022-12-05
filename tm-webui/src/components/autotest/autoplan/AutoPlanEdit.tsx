@@ -187,9 +187,8 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
             </span>
         </div>
         <div className="card-body">
-            <Tabs defaultActiveKey="1" onChange={onChangeTab}>
-                <TabPane tab="基本信息" key="1">
-                    <div className="card-body stretch-left">
+            <Tabs defaultActiveKey="1" onChange={onChangeTab} items={[
+                {label: '基本信息', key: '1', children: (<div className="card-body stretch-left">
                         <Form
                             {...layout}
                             name="autoplan"
@@ -276,13 +275,10 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                                 </div>
                             </Form.Item>
                         </Form>
-                    </div>
-                </TabPane>
-                <TabPane tab="计划用例" key="2">
-                    <PlanCaseEdit projectId={projectId} planId={id}></PlanCaseEdit>
-                </TabPane>
+                    </div>)},
+                {label: '计划用例', key: '2', children: (<PlanCaseEdit projectId={projectId} planId={id}></PlanCaseEdit>)}
+            ]}>
             </Tabs>
-
         </div>
     </div>)
 }

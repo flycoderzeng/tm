@@ -4,6 +4,7 @@ import axios from 'axios';
 import { message, Button, Dropdown } from 'antd';
 import { Link } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
+import type { MenuProps } from 'antd';
 import {
     DownOutlined,
 } from '@ant-design/icons';
@@ -11,7 +12,6 @@ import { RouteComponentProps } from "react-router-dom";
 import {ApiUrlConfig} from "../../config/api.url";
 
 const { Content, Header } = Layout;
-const { SubMenu } = Menu;
 
 interface IProps {}
 
@@ -64,11 +64,6 @@ class Index extends React.Component <IndexProps, IState> {
     }
 
     render() {
-        const menu = (
-            <Menu>
-                <Button type="link" onClick={() => this.logout()}>退出</Button>
-            </Menu>
-        );
         const menuTreeList = this.state.menuTreeList;
         const items:any[] = [];
         menuTreeList.map(row => {
@@ -87,12 +82,14 @@ class Index extends React.Component <IndexProps, IState> {
         });
         const route = this.state.route || {children: []};
         const loginUsername = localStorage.getItem('_LOGIN_USERNAME');
+
+        const rightItems: MenuProps = {items: [{label: (<Button type="link" onClick={() => this.logout()}>退出</Button>), key: '1'}]};
         return (<Layout style={{ minHeight: '100vh' }}>
                 <Header style={{display: 'flex'}}>
                     <div className="logo-text">testman</div>
                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="horizontal" style={{flex: 1, marginLeft: '200px'}} items={items}></Menu>
                     <div style={{float: 'right'}}>
-                        <Dropdown overlay={menu} trigger={['click']}>
+                        <Dropdown menu={rightItems}>
                             <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
                                 {loginUsername} <DownOutlined />
                             </a>

@@ -923,7 +923,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     onViewResult();
                 }}>查看运行结果</Button>
                 <Button size="small" type="default">查看内置函数与变量</Button>
-                <Button size="small" type="default"onClick={() => {
+                <Button size="small" type="default" onClick={() => {
                     setVisibleHistory(true);
                 }}>恢复历史</Button>
             </div>
