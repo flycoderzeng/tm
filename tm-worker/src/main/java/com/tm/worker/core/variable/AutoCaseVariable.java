@@ -8,21 +8,10 @@ public class AutoCaseVariable {
     // string number boolean integer
     private String type = "string";
     private String value;
+    private String planVariableName;
     private String key;
 
     public AutoCaseVariable() {
 
-    }
-
-    public AutoCaseVariable(String name, String type, String value) {
-        this.name = name;
-        this.type = type;
-        this.value = value;
-    }
-
-    public AutoCaseVariable(String name, String value) {
-        this.name = name;
-        this.type = "string";
-        this.value = value;
     }
 }

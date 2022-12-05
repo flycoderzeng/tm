@@ -180,7 +180,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                 <Button onClick={back} type="primary" size="small" shape="circle" icon={<ArrowLeftOutlined/>}/>
             </Tooltip>
             <span style={{float: 'right'}}>
-                <Button type="primary" size="small">全局变量配置</Button>
+                <Button type="primary" size="small">计划变量配置</Button>
                 <Button className="margin-left5" onClick={runPlan} loading={running1} type="default" size="small">运行计划</Button>
                 <Button className="margin-left5" onClick={runPlanWithGroup} loading={running2} type="primary" size="small">组合运行</Button>
                 <Button className="margin-left5" onClick={checkPlanResult} type="default" size="small">查看运行结果</Button>

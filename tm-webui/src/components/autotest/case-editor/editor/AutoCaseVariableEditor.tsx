@@ -37,6 +37,10 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
         userDefinedVariables[index].value = value.target.value;
     }
 
+    function onChangePlanVariableName(value: any, index: number) {
+        userDefinedVariables[index].planVariableName = value.target.value;
+    }
+
     function renderRows() {
         return userDefinedVariables.map((value, index) => {
             const variableRowSelectedClass = index === currIndex ? "variable-row-selected" : "";
@@ -44,18 +48,21 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                          onClick={() => {
                              onClickRow(index)
                          }}>
-                <Col span={12} style={{paddingRight: '5px'}}>
+                <Col span={8} style={{paddingRight: '5px'}}>
                     <Input defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
                 </Col>
-                <Col span={12}>
+                <Col span={8}>
                     <Input defaultValue={value.value} onChange={(v) => {onChangeValue(v, index);}}/>
+                </Col>
+                <Col span={8}>
+                    <Input defaultValue={value.planVariableName} onChange={(v) => {onChangePlanVariableName(v, index);}}/>
                 </Col>
             </Row>)
         });
     }
 
     function addVariable() {
-        const v = {name: '', type: 'string', value: ''};
+        const v = {name: '', type: 'string', value: '', planVariableName: ''};
         v['key'] = RandomUtils.getKey();
         userDefinedVariables.push(v);
         setUserDefinedVariables(userDefinedVariables);
@@ -165,9 +172,12 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                     <Button size="small" type="primary" onClick={() => onMove(3)}>置顶</Button>
                 </div>
                 <Row style={{paddingTop: '5px'}}>
-                    <Col span={12} style={{fontWeight: 600, color: '#6e6e6e'}}>变量名称</Col>
-                    <Col span={12} style={{fontWeight: 600, color: '#6e6e6e'}}>
+                    <Col span={8} style={{fontWeight: 600, color: '#6e6e6e'}}>变量名称</Col>
+                    <Col span={8} style={{fontWeight: 600, color: '#6e6e6e'}}>
                         变量值
+                    </Col>
+                    <Col span={8} style={{fontWeight: 600, color: '#6e6e6e'}}>
+                        计划变量
                     </Col>
                 </Row>
                 {renderRows()}
