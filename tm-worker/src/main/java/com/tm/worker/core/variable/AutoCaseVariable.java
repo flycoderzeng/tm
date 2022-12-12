@@ -11,7 +11,4 @@ public class AutoCaseVariable {
     private String planVariableName;
     private String key;
 
-    public AutoCaseVariable() {
-
-    }
 }

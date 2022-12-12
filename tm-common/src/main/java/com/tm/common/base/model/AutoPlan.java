@@ -13,5 +13,5 @@ public class AutoPlan extends CommonNameDescriptionModel {
     private Integer maxOccurs;
     private Integer maxFailRetry;
     private Integer failContinue;
-    private String globalVariables;
+    private String planVariables;
 }

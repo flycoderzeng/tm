@@ -111,7 +111,7 @@ public class TaskService {
 
     public void handleSubmitTask(PlanExecuteResult planExecuteResult,
                                  PlanRunningConfigSnapshot snapshot,
-                                 AutoTestVariables globalVariables) {
+                                 AutoTestVariables planVariables) {
         List<Integer> caseIdList = new ArrayList<>();
         if (!fillCaseIdList(planExecuteResult, caseIdList)) return;
 
@@ -123,7 +123,7 @@ public class TaskService {
             return;
         }
 
-        PlanTask planTask = new PlanTask(planExecuteResult, snapshot, globalVariables);
+        PlanTask planTask = new PlanTask(planExecuteResult, snapshot, planVariables);
         WorkerCaseTaskQueue caseTaskQueue = new WorkerCaseTaskQueue();
         int i = 0;
         for (Integer caseId : caseIdList) {
