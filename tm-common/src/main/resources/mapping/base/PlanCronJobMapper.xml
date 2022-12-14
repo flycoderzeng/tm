@@ -17,4 +17,34 @@
   <sql id="Base_Column_List" >
     id, name, description, cron_expression, status, last_run_time, add_time, add_user, last_modify_time, last_modify_user
   </sql>
+
+  <select id="getAllPlanCronJobs" resultMap="BaseResultMap">
+    select * from plan_cron_jobs where status=0
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from plan_cron_jobs where id=#{id,jdbcType=INTEGER}
+  </select>
+
+  <update id="updateBySelective" parameterType="com.tm.common.base.model.PlanCronJob">
+    update plan_cron_jobs
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExpression != null" >
+        cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="lastRunTime != null" >
+        last_run_time = #{lastRunTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

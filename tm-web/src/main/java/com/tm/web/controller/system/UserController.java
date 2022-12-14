@@ -1,6 +1,5 @@
 package com.tm.web.controller.system;
 
-import com.tm.web.controller.BaseController;
 import com.tm.common.base.mapper.UserRoleMapper;
 import com.tm.common.base.model.User;
 import com.tm.common.base.model.UserRole;
@@ -9,6 +8,7 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.IdBody;
 import com.tm.common.entities.system.AddUserRoleBody;
 import com.tm.common.utils.ResultUtils;
+import com.tm.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

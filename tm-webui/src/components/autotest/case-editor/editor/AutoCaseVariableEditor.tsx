@@ -51,7 +51,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                 <Col span={8} style={{paddingRight: '5px'}}>
                     <Input defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
                 </Col>
-                <Col span={8}>
+                <Col span={8} style={{paddingRight: '5px'}}>
                     <Input defaultValue={value.value} onChange={(v) => {onChangeValue(v, index);}}/>
                 </Col>
                 <Col span={8}>

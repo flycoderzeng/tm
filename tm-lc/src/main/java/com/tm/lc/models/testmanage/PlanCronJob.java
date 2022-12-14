@@ -1,5 +1,6 @@
 package com.tm.lc.models.testmanage;
 
+import com.tm.lc.convert.DateAndString;
 import com.tm.lc.hooks.EntityPublicCreateHook;
 import com.tm.lc.hooks.EntityPublicModifyHook;
 import com.tm.lc.models.CommonSixItemsElideModel;
@@ -33,6 +34,10 @@ public class PlanCronJob extends CommonSixItemsElideModel {
     private String description;
 
     private String cronExpression;
+
+    @Column(name = "last_run_time", columnDefinition = "TIMESTAMP")
+    @Convert(converter = DateAndString.class)
+    protected String lastRunTime;
 
     @OneToMany
     @JoinColumn(name = "plan_cron_job_id", referencedColumnName = "id")

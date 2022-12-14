@@ -34,9 +34,11 @@ class CronJobList extends CommonListPage {
         this._onSearch({searchValue: value}, filterConditionList);
     }
 
-    onChange = (pagination, filters, sorter) => {
-        this.loadDataListSort(pagination, filters, sorter);
-        this.setState({sortedInfo: sorter});
+    onChange = (pagination, filters, sorter, {action}) => {
+        if(action !== 'filter') {
+            this.loadDataListSort(pagination, filters, sorter);
+        }
+        this.updateCommonState(this.constructor.name, filters, sorter);
     }
 
     onChangeQueryArea = (e) => {
@@ -63,28 +65,16 @@ class CronJobList extends CommonListPage {
                 dataIndex: 'cronExpression',
                 render: text => <span>{text}</span>,
             },{
-                title: '创建者',
-                dataIndex: 'addUser',
-                render: text => <span>{text}</span>,
-            },{
-                title: '创建时间',
-                dataIndex: 'addTime',
-                key: 'add_time',
-                sorter: ()=>{},
-                render: text => <span>{text}</span>,
-            },{
-                title: '修改者',
-                dataIndex: 'lastModifyUser',
-                render: text => <span>{text}</span>,
-            },{
-                title: '修改时间',
-                dataIndex: 'lastModifyTime',
-                key: 'last_modify_time',
-                sorter: ()=>{},
+                title: '最近运行时间',
+                dataIndex: 'lastRunTime',
+                key: 'last_run_time',
                 render: text => <span>{text}</span>,
             },{
                 title: '操作',
                 fixed: 'right',
+                filters: this.columnFilters,
+                filteredValue: this.state.filteredValue,
+                onFilter: (value, record) => this.onFilter(value,record),
                 render: (text, record) => (
                     <div>
                         <Button className="padding-left0" size="small" type="link" onClick={() => this.edit(record.id)}>修改</Button>
@@ -94,6 +84,8 @@ class CronJobList extends CommonListPage {
             },
         ];
         const {area} = this.state.queryInfo;
+        this.showCommonColumns(columns);
+
         return (<div className="card">
             <div className="card-header card-header-divider">定时任务<span className="card-subtitle">定时执行自动化计划</span>
             </div>

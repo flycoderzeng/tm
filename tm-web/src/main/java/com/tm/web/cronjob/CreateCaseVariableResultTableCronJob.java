@@ -2,7 +2,6 @@ package com.tm.web.cronjob;
 
 
 import com.tm.common.base.mapper.CaseVariableValueResultMapper;
-import com.tm.common.utils.DateUtils;
 import com.tm.common.utils.TableSuffixUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

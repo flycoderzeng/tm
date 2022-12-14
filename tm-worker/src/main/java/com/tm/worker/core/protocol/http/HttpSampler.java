@@ -166,10 +166,10 @@ public class HttpSampler extends StepNodeBase {
     }
 
     private HttpResponse executeHttp(AutoTestVariables caseVariables, String actualUrl, Map<String, String> headerMap, List<HttpCookie> cookies) throws UnsupportedEncodingException {
-        HttpResponse body = null;
+        HttpResponse httpResponse = null;
         addResultInfo("请求方法: ").addResultInfoLine(requestType);
         if(HttpMethod.GET.name().equals(requestType)) {
-            body = HttpRequest.get(actualUrl).headerMap(headerMap, true)
+            httpResponse = HttpRequest.get(actualUrl).headerMap(headerMap, true)
                     .cookie(cookies).timeout(60000).execute();
         }
 
@@ -183,14 +183,14 @@ public class HttpSampler extends StepNodeBase {
             }
             caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_REQUEST, content);
 
-            body = HttpRequest.post(actualUrl).headerMap(headerMap, true)
+            httpResponse = HttpRequest.post(actualUrl).headerMap(headerMap, true)
                     .cookie(cookies).timeout(60000).body(content).execute();
         }else if(HttpMethod.POST.name().equals(requestType) && StringUtils.equals(bodyType, BodyTypeNum.FORM_DATA.value())) {
             Map<String, Object> formMap = getFormMap(caseVariables);
-            HttpRequest.post(actualUrl).headerMap(headerMap, true).cookie(cookies).form(formMap).timeout(60000).execute();
+            httpResponse = HttpRequest.post(actualUrl).headerMap(headerMap, true).cookie(cookies).form(formMap).timeout(60000).execute();
         }
 
-        return body;
+        return httpResponse;
     }
 
     private Map<String, Object> getFormMap(AutoTestVariables caseVariables) {
