@@ -1,5 +1,6 @@
 package com.tm.mockagent;
 
+import com.sun.tools.attach.*;
 import com.tm.mockagent.boot.MockAgentApplication;
 import com.tm.mockagent.entities.model.MockAgentArgsInfo;
 import com.tm.mockagent.utils.AgentUtils;
@@ -10,10 +11,9 @@ import org.slf4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.IllegalClassFormatException;
-import java.lang.instrument.Instrumentation;
+import java.lang.instrument.*;
 import java.security.ProtectionDomain;
+import java.util.List;
 
 
 public class UspMockAgent {
@@ -22,29 +22,68 @@ public class UspMockAgent {
     private static final Logger logger = LoggerFactory.getLogger(UspMockAgent.class);
     public static final MockAgentApplication application = new MockAgentApplication();
 
-    public static void main(String[] args) {
-        final MockAgentArgsInfo agentInfo = AgentUtils.getAgentInfo("ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321");
-        application.init(agentInfo);
-        application.run();
+    public static void main(String[] args) throws IOException, AttachNotSupportedException, AgentLoadException, AgentInitializationException {
+        List<VirtualMachineDescriptor> list = VirtualMachine.list();
+        for (VirtualMachineDescriptor vmd : list) {
+            if (vmd.displayName().indexOf("mockserver") > -1) {
+                VirtualMachine virtualMachine = VirtualMachine.attach(vmd.id());
+                virtualMachine.loadAgent("C:\\Users\\zengb\\Documents\\java-workspace\\tm\\tm-mockagent\\target\\mockagent-1.0.0-jar-with-dependencies.jar", "ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321");
+                virtualMachine.detach();
+            }
+        }
     }
 
+    public static void agentmain(String agentArgs, Instrumentation inst) throws UnmodifiableClassException, ClassNotFoundException {
+        runAgent(agentArgs, inst);
+        addTransformer(inst);
+        retransformClasses(inst);
+    }
     public static void premain(String agentArgs, Instrumentation inst) {
+        // "ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321"
+        runAgent(agentArgs, inst);
+        addTransformer(inst);
+    }
+
+    private static void runAgent(String agentArgs, Instrumentation inst) {
         logger.info("agentArgs : {}", agentArgs);
         final MockAgentArgsInfo agentInfo = AgentUtils.getAgentInfo(agentArgs);
         application.init(agentInfo);
         application.run();
-        logger.info("add transformer");
+    }
+
+    private static void addTransformer(Instrumentation inst) {
         inst.addTransformer(new UspMockAgentDefineTransformer(), true);
     }
+
+    public static void retransformClasses(Instrumentation inst) throws UnmodifiableClassException {
+        Class<?>[] allClasses = inst.getAllLoadedClasses();
+        for (Class<?> clz : allClasses) {
+            final String name = clz.getName();
+            String dotClassPath = name.replace("/", ".");
+            switch (dotClassPath) {
+                case SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH:
+                    logger.info("agentmain retransformClasses {}", dotClassPath);
+                    inst.retransformClasses(clz);
+                default:
+                    break;
+            }
+        }
+    }
+
 
     static class UspMockAgentDefineTransformer implements ClassFileTransformer {
 
         @Override
-        public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+        public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
+                                ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
             String dotClassPath = className.replace("/", ".");
+            return getBytes(dotClassPath, loader, classfileBuffer);
+        }
+
+        public static byte[] getBytes(String dotClassPath, ClassLoader loader, byte[] classfileBuffer) {
             switch (dotClassPath) {
                 case SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH:
-                    logger.info("premain load class {}", className);
+                    logger.info("premain load class {}", dotClassPath);
                     return mockSpringRestTemplateHttp(loader, classfileBuffer);
                 default:
                     break;
@@ -53,7 +92,7 @@ public class UspMockAgent {
             return classfileBuffer;
         }
 
-        private byte[] mockSpringRestTemplateHttp(ClassLoader loader, byte[] classfileBuffer) {
+        public static byte[] mockSpringRestTemplateHttp(ClassLoader loader, byte[] classfileBuffer) {
             ClassPool classPool = ClassPool.getDefault();
             CtClass cc = null;
             classPool.appendClassPath(new LoaderClassPath(loader));
@@ -66,6 +105,7 @@ public class UspMockAgent {
                 for (CtMethod ctMethod : ctMethods) {
                     if(ctMethod.getName().equals(mockMethodName)) {
                         ctMethod.insertBefore("{$1=com.tm.mockagent.UspMockAgent.application.getMockTargetUrl($1, $2+\"\");}");
+                        break;
                     }
                 }
                 return cc.toBytecode();
