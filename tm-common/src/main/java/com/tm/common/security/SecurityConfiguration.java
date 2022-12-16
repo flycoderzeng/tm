@@ -28,10 +28,10 @@ public class SecurityConfiguration {
     public static final String LOGOUT_SUCCESS = "{\"code\": 0, \"message\": \"logout success\"}";
     public static final String JSESSIONID = "JSESSIONID";
     public static final String LOGIN_URI = "/login";
+    public static final String SESSION = "SESSION";
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        // 仅仅作为演示
         return web -> web.ignoring().antMatchers("/tm/public/api/**");
     }
 
@@ -45,6 +45,7 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()).and().authorizeRequests()
                 // 处理跨域请求中的Preflight请求
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .antMatchers("/tm/public/api/**").permitAll()
                 .and().httpBasic()
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
@@ -62,7 +63,7 @@ public class SecurityConfiguration {
                     }
                 })
                 .antMatchers(LOGIN_URI).permitAll().antMatchers(HttpMethod.OPTIONS).permitAll()
-                .anyRequest().authenticated().and()   // 其他地址的访问均需验证权限
+                .anyRequest().authenticated().and()  // 其他地址的访问均需验证权限
                 .formLogin().loginProcessingUrl(LOGIN_URI).failureHandler((request, response, authException) -> {
                     response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -89,7 +90,7 @@ public class SecurityConfiguration {
                     out.flush();
                     out.close();
                 }).permitAll().invalidateHttpSession(true)
-                .deleteCookies(JSESSIONID)
+                .deleteCookies(JSESSIONID, SESSION)
                 .and().sessionManagement().maximumSessions(10).and()
                 .and().build();
     }

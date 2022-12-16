@@ -55,6 +55,7 @@ public class TMWebMvcConfigurer implements WebMvcConfigurer {
         //排除的路径
         addInterceptor.excludePathPatterns("/login");
         addInterceptor.excludePathPatterns("/logout");
+        addInterceptor.excludePathPatterns("/tm/public/api/**");
         //拦截所有路径
         addInterceptor.addPathPatterns("/**");
     }

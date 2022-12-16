@@ -22,19 +22,11 @@ public class PlanQuartzJobInitializer implements ApplicationRunner {
 
     @Autowired
     private PlanCronJobMapper planCronJobMapper;
-    @Autowired
-    private CronJobPlanRelationMapper cronJobPlanRelationMapper;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         log.info("计划定时任务初始化");
         final List<PlanCronJob> allPlanCronJobs = planCronJobMapper.getAllPlanCronJobs();
-        for (PlanCronJob planCronJob : allPlanCronJobs) {
-            final List<CronJobPlanRelation> cronJobPlanRelations =
-                    cronJobPlanRelationMapper.selectByCronJobId(planCronJob.getId());
-            planCronJob.setPlanList(cronJobPlanRelations);
-        }
-
         for (PlanCronJob planCronJob : allPlanCronJobs) {
             planQuartzJobManager.createScheduleJob(planCronJob);
         }

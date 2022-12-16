@@ -9,14 +9,13 @@ public enum PlanRunFromTypeEnum {
     public Integer value() {return value;}
     public static PlanRunFromTypeEnum get(int value) {
         switch (value) {
-            case 1:
-                return PlanRunFromTypeEnum.PLAN;
             case 2:
                 return PlanRunFromTypeEnum.CASE;
             case 3:
                 return PlanRunFromTypeEnum.CRON_JOB;
+            case 1:
             default:
-                return null;
+                return PlanRunFromTypeEnum.PLAN;
         }
     }
 }

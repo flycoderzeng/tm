@@ -19,6 +19,9 @@ public class BaseController {
 
     public User getLoginUser() {
         HttpServletRequest request = getRequest();
+        if(request.getUserPrincipal() == null) {
+            return new User();
+        }
         String username = request.getUserPrincipal().getName();
         User user = ehcacheService.get(username);
         return user;
