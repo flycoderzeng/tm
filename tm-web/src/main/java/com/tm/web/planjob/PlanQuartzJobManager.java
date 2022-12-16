@@ -27,6 +27,14 @@ public class PlanQuartzJobManager {
         return TriggerKey.triggerKey(JOB_NAME + jobId);
     }
 
+    public CronTrigger getCronTrigger(Scheduler scheduler, Integer jobId){
+        try {
+            return (CronTrigger) scheduler.getTrigger(getTriggerKey(jobId));
+        } catch (SchedulerException e) {
+            throw new RuntimeException("获取定时任务CronTrigger出现异常", e);
+        }
+    }
+
     public void createScheduleJob(PlanCronJob planCronJob) {
         try {
             // 1.获取调度器 Scheduler
@@ -65,6 +73,13 @@ public class PlanQuartzJobManager {
         // 1.获取调度器 Scheduler
         Scheduler scheduler = getScheduler();
         try {
+            if(!scheduler.checkExists(getJobKey(jobId))) {
+                return ;
+            }
+        } catch (SchedulerException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             // 2.暂停触发器
             scheduler.pauseTrigger(getTriggerKey(jobId));
             // 3.删除触发器
@@ -72,7 +87,7 @@ public class PlanQuartzJobManager {
             // 4.删除任务
             scheduler.deleteJob(getJobKey(jobId));
         } catch (SchedulerException e) {
-            throw new RuntimeException("删除定时任务失败",e);
+            throw new RuntimeException("删除定时任务失败", e);
         }
     }
 }

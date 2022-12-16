@@ -32,7 +32,6 @@ public class PlanQuartzJob extends QuartzJobBean {
     @Autowired
     private CronJobPlanRelationMapper cronJobPlanRelationMapper;
 
-
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         PlanCronJob planCronJob = (PlanCronJob) context.getMergedJobDataMap().get(PLAN_QUARTZ_PARAM_KEY);
