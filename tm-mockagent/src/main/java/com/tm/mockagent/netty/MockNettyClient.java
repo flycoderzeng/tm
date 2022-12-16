@@ -1,8 +1,6 @@
 package com.tm.mockagent.netty;
 
-import com.tm.mockagent.entities.msg.BaseMockMsg;
 import com.tm.mockagent.entities.msg.MockCommunicationMsg;
-import com.tm.mockagent.entities.enumerate.MockMsgType;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -10,14 +8,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.concurrent.TimeUnit;
 
 @Data
 public class MockNettyClient {
-    private static final Logger logger = LoggerFactory.getLogger(MockNettyClient.class);
+    private static final Logger logger = Logger.getLogger(MockNettyClient.class);
 
     private ChannelFuture future;
     private String ip;

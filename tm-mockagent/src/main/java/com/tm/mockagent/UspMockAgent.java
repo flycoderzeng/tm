@@ -5,13 +5,14 @@ import com.tm.mockagent.boot.MockAgentApplication;
 import com.tm.mockagent.entities.model.MockAgentArgsInfo;
 import com.tm.mockagent.utils.AgentUtils;
 import javassist.*;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
+import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.instrument.*;
+import java.lang.instrument.ClassFileTransformer;
+import java.lang.instrument.IllegalClassFormatException;
+import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
 import java.security.ProtectionDomain;
 import java.util.List;
 
@@ -19,33 +20,36 @@ import java.util.List;
 public class UspMockAgent {
     public static final String SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH = "org.springframework.web.client.RestTemplate";
 
-    private static final Logger logger = LoggerFactory.getLogger(UspMockAgent.class);
+    private static final Logger logger = Logger.getLogger(UspMockAgent.class);
     public static final MockAgentApplication application = new MockAgentApplication();
 
     public static void main(String[] args) throws IOException, AttachNotSupportedException, AgentLoadException, AgentInitializationException {
         List<VirtualMachineDescriptor> list = VirtualMachine.list();
         for (VirtualMachineDescriptor vmd : list) {
-            if (vmd.displayName().indexOf("mockserver") > -1) {
+            if (vmd.displayName().indexOf("MockServerApplication") > -1) {
                 VirtualMachine virtualMachine = VirtualMachine.attach(vmd.id());
-                virtualMachine.loadAgent("C:\\Users\\zengb\\Documents\\java-workspace\\tm\\tm-mockagent\\target\\mockagent-1.0.0-jar-with-dependencies.jar", "ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321");
-                virtualMachine.detach();
+                try {
+                    virtualMachine.loadAgent("C:\\Users\\zengb\\Documents\\java-workspace\\tm\\tm-mockagent\\target\\mockagent-1.0.0-jar-with-dependencies.jar", "ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321");
+                } finally {
+                    virtualMachine.detach();
+                }
             }
         }
     }
 
     public static void agentmain(String agentArgs, Instrumentation inst) throws UnmodifiableClassException, ClassNotFoundException {
-        runAgent(agentArgs, inst);
+        runAgent(agentArgs);
         addTransformer(inst);
         retransformClasses(inst);
     }
     public static void premain(String agentArgs, Instrumentation inst) {
         // "ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321"
-        runAgent(agentArgs, inst);
+        runAgent(agentArgs);
         addTransformer(inst);
     }
 
-    private static void runAgent(String agentArgs, Instrumentation inst) {
-        logger.info("agentArgs : {}", agentArgs);
+    private static void runAgent(String agentArgs) {
+        logger.info("agentArgs : " + agentArgs);
         final MockAgentArgsInfo agentInfo = AgentUtils.getAgentInfo(agentArgs);
         application.init(agentInfo);
         application.run();
@@ -62,7 +66,7 @@ public class UspMockAgent {
             String dotClassPath = name.replace("/", ".");
             switch (dotClassPath) {
                 case SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH:
-                    logger.info("agentmain retransformClasses {}", dotClassPath);
+                    logger.info("agentmain retransformClasses " + dotClassPath);
                     inst.retransformClasses(clz);
                 default:
                     break;
@@ -83,7 +87,7 @@ public class UspMockAgent {
         public static byte[] getBytes(String dotClassPath, ClassLoader loader, byte[] classfileBuffer) {
             switch (dotClassPath) {
                 case SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH:
-                    logger.info("premain load class {}", dotClassPath);
+                    logger.info("premain load class " + dotClassPath);
                     return mockSpringRestTemplateHttp(loader, classfileBuffer);
                 default:
                     break;

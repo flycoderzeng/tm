@@ -8,8 +8,7 @@ import com.tm.mockagent.threads.MockAgentThreadFactory;
 import com.tm.mockagent.threads.MockNettyClientThread;
 import com.tm.mockagent.threads.MockRuleManageThread;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
@@ -17,7 +16,7 @@ import java.util.concurrent.Executors;
 
 @Data
 public class MockAgentApplication {
-    private static final Logger logger = LoggerFactory.getLogger(MockAgentApplication.class);
+    private static final Logger logger = Logger.getLogger(MockAgentApplication.class);
 
     private MockAgentContext context;
 
