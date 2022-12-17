@@ -1,12 +1,9 @@
 package com.tm.worker.controller;
 
 import com.tm.common.base.model.User;
-import com.tm.common.entities.autotest.RunPlanBean;
-import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
 import com.tm.common.entities.autotest.request.RunCaseBody;
 import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;
-import com.tm.common.utils.ResultUtils;
 import com.tm.worker.service.AutoTestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

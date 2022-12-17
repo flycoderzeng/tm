@@ -1,8 +1,6 @@
 package com.tm.worker.controller;
 
 import com.tm.common.base.model.User;
-import com.tm.common.entities.autotest.RunPlanBean;
-import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
 import com.tm.common.entities.autotest.request.RunCaseBody;
 import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;

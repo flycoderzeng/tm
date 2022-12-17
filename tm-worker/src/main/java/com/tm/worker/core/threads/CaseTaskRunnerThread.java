@@ -1,13 +1,17 @@
 package com.tm.worker.core.threads;
 
 import com.tm.common.base.model.PlanRunningConfigSnapshot;
+import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.base.BaseResponse;
-import com.tm.worker.core.task.*;
-import com.tm.worker.service.CaseResultLogService;
-import com.tm.worker.service.DbConfigService;
+import com.tm.common.entities.common.enumerate.ResultCodeEnum;
+import com.tm.worker.core.task.CaseTask;
+import com.tm.worker.core.task.PlanTask;
+import com.tm.worker.core.task.TaskService;
+import com.tm.worker.core.task.WorkerCaseTaskQueue;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -64,7 +68,11 @@ public class CaseTaskRunnerThread implements Runnable {
                         index++;
                         continue;
                     }
-                    runCase(planTask, caseTask);
+                    runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
+                        if(baseResponse != null) {
+                            teardownPlanTask(planTask, baseResponse);
+                        }
+                    }));
                 }
             } catch (InterruptedException e) {
                 log.error("sleep error, ", e);
@@ -75,11 +83,54 @@ public class CaseTaskRunnerThread implements Runnable {
         }
     }
 
-    private Future<BaseResponse> runCase(PlanTask planTask, CaseTask caseTask) {
-        if (!planTask.isStopped()) {
-            CaseTaskThread caseTaskThread = new CaseTaskThread(caseTask, taskService);
-            return taskService.submitCaseTask(caseTaskThread);
+    private void removePlanTask(PlanTask planTask) {
+        boolean removed = taskService.removePlanTask(planTask.getPlanExecuteResultId());
+        if (!removed) {
+            log.error("remove failed, {}", planTask.getPlanExecuteResultId());
         }
-        return null;
+    }
+
+    private void teardownPlanTask(PlanTask planTask, BaseResponse baseResponse) {
+        planTask.increaseFinishedCount();
+        planTask.decreaseRunningCount();
+        // 最后一个用例执行完，设置计划结果状态为完成
+        if (planTask.getFinishedCount().equals(planTask.getTotalCases())) {
+            log.info("最后一个用例执行完，设置计划结果状态为完成, 计划结果id：{}", planTask.getPlanExecuteResultId());
+            taskService.setPlanExecuteEnd(planTask);
+            removePlanTask(planTask);
+        } else if (planTask.getRunningTotal().equals(0) && planTask.isStopped()) {
+            log.info("计划被用户停止，设置为停止状态, 计划结果id：{}", planTask.getPlanExecuteResultId());
+            taskService.setPlanExecuteResultStatus(planTask, PlanExecuteResultStatusEnum.CANCELED);
+            removePlanTask(planTask);
+        }
+        log.info("更新计划{}结果成功、失败数目", planTask.getPlanExecuteResultId());
+        // 更新计划结果成功、失败数目
+        if(baseResponse.getCode().equals(ResultCodeEnum.CASE_RUN_ERROR.getCode())) {
+            taskService.addFailCount(planTask.getPlanExecuteResultId());
+        }else{
+            taskService.addSuccessCount(planTask.getPlanExecuteResultId());
+        }
+        // 用例失败 并且 计划设置失败后停止执行
+        if(baseResponse.getCode().equals(ResultCodeEnum.CASE_RUN_ERROR.getCode())
+                && planTask.getRunningConfigSnapshot().getFailContinue().equals(0)) {
+            log.info("用例失败，并且 计划设置失败后停止执行");
+            taskService.stopPlanTask(planTask.getPlanExecuteResultId());
+        }
+    }
+
+    private CompletableFuture<BaseResponse> runCase(PlanTask planTask, CaseTask caseTask) {
+        if (planTask.isStopped()) {
+            return null;
+        }
+        return CompletableFuture.supplyAsync(() -> {
+            CaseTaskThread caseTaskThread = new CaseTaskThread(caseTask, taskService);
+            try {
+                return taskService.submitCaseTask(caseTaskThread).get();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
