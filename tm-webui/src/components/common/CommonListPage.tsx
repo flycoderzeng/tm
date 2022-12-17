@@ -22,6 +22,7 @@ interface IState {
         searchValue: string | null | undefined;
     },
     filteredValue: string[];
+    rows?: any[];
 }
 
 class CommonListPage extends React.Component<CommonProps, IState> {
