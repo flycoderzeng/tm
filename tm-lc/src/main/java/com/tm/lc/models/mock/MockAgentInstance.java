@@ -18,6 +18,7 @@ public class MockAgentInstance {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
+    private String applicationName;
     private String ip;
     private Integer port;
     private String name;

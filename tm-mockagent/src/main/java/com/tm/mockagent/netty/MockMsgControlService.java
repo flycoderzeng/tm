@@ -16,7 +16,7 @@ import java.util.Objects;
 @Data
 public class MockMsgControlService {
     private static final Logger logger = Logger.getLogger(MockMsgControlService.class);
-    private Integer agentId = null;
+    private volatile Integer agentId = null;
     private MockAgentInstanceInfo mockAgentInstanceInfo;
     private long lastReceiveHeartbeatAckTimestamp = System.currentTimeMillis();
 

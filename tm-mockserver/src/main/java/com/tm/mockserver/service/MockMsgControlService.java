@@ -143,6 +143,7 @@ public class MockMsgControlService {
         MockAgentInstance mockAgentInstance = mockAgentInstanceMapper.selectByIpAndPort(mockMsg.getIp(), mockMsg.getPort());
         if(mockAgentInstance == null) {
             mockAgentInstance = new MockAgentInstance();
+            mockAgentInstance.setApplicationName(mockMsg.getApplicationName());
             mockAgentInstance.setIp(mockMsg.getIp());
             mockAgentInstance.setPort(mockMsg.getPort());
             mockAgentInstance.setName(mockMsg.getName());
@@ -152,6 +153,7 @@ public class MockMsgControlService {
             mockAgentInstance.setStatus(1);
             mockAgentInstanceMapper.insertBySelective(mockAgentInstance);
         }else{
+            mockAgentInstance.setApplicationName(mockMsg.getApplicationName());
             mockAgentInstance.setName(mockMsg.getName());
             mockAgentInstance.setDescription(mockMsg.getDescription());
             mockAgentInstance.setLastRegisterTime(new Date());

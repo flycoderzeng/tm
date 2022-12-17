@@ -33,7 +33,9 @@ public class MockAgentApplication {
         MockRuleFactory ruleFactory = new MockRuleFactory();
         context.setNettyClient(nettyClient);
         context.setRuleFactory(ruleFactory);
-        context.getMockMsgControlService().setMockAgentInstanceInfo(new MockAgentInstanceInfo(info.getIp(),
+        context.getMockMsgControlService().setMockAgentInstanceInfo(new MockAgentInstanceInfo(
+                info.getApplicationName(),
+                info.getIp(),
                 info.getPort(), info.getName(), info.getDescription()));
     }
 

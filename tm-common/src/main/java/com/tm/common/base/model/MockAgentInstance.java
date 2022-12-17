@@ -7,6 +7,8 @@ import java.util.Date;
 
 @Data
 public class MockAgentInstance {
+
+    private String applicationName;
     private Integer id;
     private String ip;
     private Integer port;
