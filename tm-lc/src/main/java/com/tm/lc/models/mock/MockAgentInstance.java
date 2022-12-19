@@ -1,8 +1,10 @@
 package com.tm.lc.models.mock;
 
 import com.tm.lc.convert.DateAndString;
-import com.yahoo.elide.annotation.*;
-import com.yahoo.elide.core.RequestScope;
+import com.yahoo.elide.annotation.CreatePermission;
+import com.yahoo.elide.annotation.DeletePermission;
+import com.yahoo.elide.annotation.Include;
+import com.yahoo.elide.annotation.UpdatePermission;
 import lombok.Data;
 
 import javax.persistence.*;

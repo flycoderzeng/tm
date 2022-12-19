@@ -20,7 +20,6 @@ import java.io.PrintWriter;
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)  //  启用方法级别的权限认证
 @Order(-1)
 public class SecurityConfiguration {
     public static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json;charset=utf-8";
