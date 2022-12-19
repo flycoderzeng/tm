@@ -19,7 +19,6 @@ import com.tm.worker.utils.ExpressionUtils;
 import com.tm.worker.utils.FunctionUtils;
 import com.tm.worker.utils.XMLUtils;
 import lombok.Data;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
