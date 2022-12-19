@@ -6,7 +6,6 @@ import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.utils.ExpressionUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,9 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 public class AssertNode extends FunctionNode {
     private static final String ARG_1 = "expression";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：断言");
         String expression = getArgStringValue(ARG_1);

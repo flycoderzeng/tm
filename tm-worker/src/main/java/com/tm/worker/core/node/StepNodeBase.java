@@ -26,7 +26,7 @@ public class StepNodeBase {
 
     protected CaseStepExecuteResult caseStepExecuteResult;
 
-    public void run() {
+    public void run() throws Exception {
     }
 
     protected StringBuilder resultInfoBuilder;

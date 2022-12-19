@@ -1,12 +1,11 @@
 package com.tm.mockserver.config;
 
 import com.tm.mockserver.service.CustomizeMockRequestHandleService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 @Slf4j
@@ -18,7 +17,8 @@ public class GlobalHandlerInterceptor implements HandlerInterceptor {
     private CustomizeMockRequestHandleService customizeMockRequestHandleService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+                             Object handler) throws Exception {
         String requestURI = request.getRequestURI();
         if(requestURI.startsWith(CUSTOMIZE_MOCK_URI_PREFIX)) {
             customizeMockRequestHandleService.handle(request, response);

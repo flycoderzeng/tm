@@ -1,10 +1,10 @@
 package com.tm.worker.core.node.function.decoder;
 
 import com.tm.worker.core.node.function.FunctionNode;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 
@@ -12,9 +12,8 @@ import java.net.URLDecoder;
 public class DecodeURIComponentNode extends FunctionNode {
     private static final String ARG_1 = "encodedString";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：decodeURIComponent 解码");
         String encodedString = getArgStringValue(ARG_1);

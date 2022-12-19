@@ -16,9 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class SleepNode extends FunctionNode {
     private static final String ARG_1 = "seconds";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：休眠");
         AutoTestContext context = AutoTestContextService.getContext();

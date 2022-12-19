@@ -150,7 +150,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         return null;
     }
 
-    private StepNode runStepNode(StepNode currStepNode) {
+    private StepNode runStepNode(StepNode currStepNode) throws Exception {
         currStepNode.getDefine().logStart(currStepNode.getKey());
         currStepNode.run();
         if ((currStepNode.getType().equals(StepNodeTypeDefineEnum.WHILE.value())

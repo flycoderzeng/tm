@@ -11,7 +11,7 @@ spring:
     hibernate:
       show_sql: true
       naming:
-        physical-strategy: 'org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy'
+        physical-strategy: 'org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl'
       dialect: 'org.hibernate.dialect.MySQL8Dialect'
       ddl-auto: 'validate'
       jdbc:

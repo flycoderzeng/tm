@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.1</version>
+        <version>3.0.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.tm</groupId>
@@ -15,8 +15,9 @@
     <description>service center</description>
 
     <properties>
-        <java.version>11</java.version>
-        <spring-cloud.version>LATEST</spring-cloud.version>
+        <java.version>19</java.version>
+        <maven.compiler.source>19</maven.compiler.source>
+        <spring-cloud.version>2022.0.0</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -54,7 +55,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.4.1</version>
             </plugin>
         </plugins>
     </build>

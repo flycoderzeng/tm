@@ -21,7 +21,7 @@ public class GetChineseIdCardNoNode extends FunctionNode {
     private static final String ARG_4 = "baseDate";
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：获取中国idcardno");
         AutoTestContext context = AutoTestContextService.getContext();

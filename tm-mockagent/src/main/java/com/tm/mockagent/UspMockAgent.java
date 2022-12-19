@@ -33,6 +33,7 @@ public class UspMockAgent {
                 } finally {
                     virtualMachine.detach();
                 }
+                break;
             }
         }
     }

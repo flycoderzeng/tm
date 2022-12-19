@@ -18,7 +18,7 @@ public class GenericController extends StepNodeBase {
     protected boolean breakLoop = false;
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();

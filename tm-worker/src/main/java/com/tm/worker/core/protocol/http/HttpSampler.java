@@ -53,9 +53,8 @@ public class HttpSampler extends StepNodeBase {
     private List<KeyValueRow> responseExtractorList;
     private String content;
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行http步骤，{}", getName());
 

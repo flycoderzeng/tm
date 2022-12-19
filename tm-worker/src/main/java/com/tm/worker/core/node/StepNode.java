@@ -29,7 +29,7 @@ public class StepNode {
 
     private boolean ended = false;
 
-    public void run() {
+    public void run() throws Exception {
         runCount++;
         if(define == null) {
             throw new TMException(getTitle() + " 没有对应的处理逻辑代码");

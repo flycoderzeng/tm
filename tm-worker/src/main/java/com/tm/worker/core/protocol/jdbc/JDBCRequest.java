@@ -39,7 +39,7 @@ public class JDBCRequest extends StepNodeBase {
     private Integer retryIntervalSeconds = 10;
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行jdbc request步骤，{}", getName());
         AutoTestContext context = AutoTestContextService.getContext();

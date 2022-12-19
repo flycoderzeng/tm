@@ -33,6 +33,9 @@ spring:
       maxOpenPreparedStatements: 20
       auto-commit: true
       default-auto-commit: true
+  session:
+    store-type: jdbc
+    timeout: 86400s
 
 eureka:
   instance:

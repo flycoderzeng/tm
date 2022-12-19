@@ -26,9 +26,8 @@ public class OperationExpressionNode extends FunctionNode {
     private static final String OUT_3 = "result_3";
     private static final String OUT_4 = "result_4";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：表达式运算");
         AutoTestContext context = AutoTestContextService.getContext();

@@ -118,8 +118,7 @@ class MockInstancesList extends CommonListPage {
                 key: 'operation',
                 render: () => (
                     <Space size="middle">
-                        <a>规则关联</a>
-                        <a>卸载</a>
+                        <a>规则配置</a>
                     </Space>
                 ),
             },

@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GetMobileNode extends FunctionNode {
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：获取手机号");
         String mobile = ChineseMobileNumberGenerator.getInstance()

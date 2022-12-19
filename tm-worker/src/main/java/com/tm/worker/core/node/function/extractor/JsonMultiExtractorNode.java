@@ -38,7 +38,7 @@ public class JsonMultiExtractorNode extends FunctionNode {
     private static final String OUT_10 = "result_10";
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行 json报文提取器");
         AutoTestContext context = AutoTestContextService.getContext();

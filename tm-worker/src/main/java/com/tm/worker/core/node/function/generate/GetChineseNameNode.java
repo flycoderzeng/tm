@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GetChineseNameNode extends FunctionNode {
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：获取中国姓名");
         String generatedName = ChineseNameGenerator.getInstance().generate();

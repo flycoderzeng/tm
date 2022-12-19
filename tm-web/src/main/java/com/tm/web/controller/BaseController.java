@@ -2,11 +2,11 @@ package com.tm.web.controller;
 
 import com.tm.common.base.model.User;
 import com.tm.web.ehcache.EhcacheService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 
 
 public class BaseController {

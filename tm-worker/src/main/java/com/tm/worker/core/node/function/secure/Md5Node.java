@@ -11,9 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 public class Md5Node extends FunctionNode {
     private static final String ARG_1 = "srcString";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：获取字符串md5值");
         String srcString = getArgStringValue(ARG_1);

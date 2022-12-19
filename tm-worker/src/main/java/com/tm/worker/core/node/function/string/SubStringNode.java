@@ -17,9 +17,8 @@ public class SubStringNode extends FunctionNode {
     private static final String ARG_5 = "toStringExclude";
     private static final String ARG_6 = "length";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：截取字符串");
         String srcString = getArgStringValue(ARG_1);
