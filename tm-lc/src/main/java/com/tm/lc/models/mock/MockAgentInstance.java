@@ -7,7 +7,7 @@ import com.yahoo.elide.annotation.Include;
 import com.yahoo.elide.annotation.UpdatePermission;
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "mock_agent_instances")
@@ -20,6 +20,7 @@ public class MockAgentInstance {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "application_name")
     private String applicationName;
     private String ip;
     private Integer port;

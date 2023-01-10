@@ -3,7 +3,7 @@ package com.tm.lc.models;
 import com.tm.lc.convert.DateAndString;
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 
 @MappedSuperclass
@@ -20,8 +20,9 @@ public abstract class CommonSixItemsElideModel {
     @Column(name = "last_modify_time", columnDefinition = "TIMESTAMP")
     @Convert(converter = DateAndString.class)
     protected String lastModifyTime;
-
+    @Column(name = "add_user")
     protected String addUser;
+    @Column(name = "last_modify_user")
     protected String lastModifyUser;
     // 0-正常 1-删除
     protected Integer status = 0;

@@ -1,9 +1,9 @@
 package com.tm.lc.convert;
 
 import com.tm.common.utils.DateUtils;
+import jakarta.persistence.AttributeConverter;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import javax.persistence.AttributeConverter;
 import java.util.Date;
 
 public class DateAndString implements AttributeConverter<String, Date> {

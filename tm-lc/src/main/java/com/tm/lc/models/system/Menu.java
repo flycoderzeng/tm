@@ -4,11 +4,12 @@ import com.tm.lc.hooks.EntityPublicCreateHook;
 import com.tm.lc.hooks.EntityPublicModifyHook;
 import com.tm.lc.models.CommonSixItemsElideModel;
 import com.yahoo.elide.annotation.*;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.UPDATE;
@@ -25,8 +26,10 @@ import static com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase.P
 @UpdatePermission(expression = "user is a common admin")
 @CreatePermission(expression = "user is a common admin")
 public class Menu extends CommonSixItemsElideModel {
+    @Column(name = "menu_name")
     private String menuName;
     private String url;
+    @Column(name = "parent_id")
     private Integer parentId;
     @Exclude
     private String icon;

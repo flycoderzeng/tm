@@ -7,7 +7,7 @@ import com.yahoo.elide.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Set;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
@@ -26,6 +26,7 @@ import static com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase.P
 @CreatePermission(expression = "user is a root admin")
 public class Role extends CommonSixItemsElideModel {
     private String name;
+    @Column(name = "chinese_name")
     private String chineseName;
     private String description;
     private Integer type;
