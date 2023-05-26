@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
+@EnableTransactionManagement
 @SpringBootApplication(exclude= DataSourceAutoConfiguration.class, scanBasePackages = {"com.tm.lc", "com.tm.common"})
 @MapperScan({"com.tm.common"})
 @EntityScan

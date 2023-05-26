@@ -12,10 +12,10 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     base:
       name: base
-      jdbc-url: jdbc:mysql://127.0.0.1/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
-      url: jdbc:mysql://127.0.0.1/test?useUnicode=true&charaterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+      jdbc-url: jdbc:mysql://127.0.0.1/autotest?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+      url: jdbc:mysql://127.0.0.1/autotest?useUnicode=true&charaterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
       username: root
-      password: Lucky#2018
+      password: 123456
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
       filters: stat

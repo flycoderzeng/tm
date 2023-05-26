@@ -348,7 +348,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     setTreeData(steps);
                     setCurrStepNode(steps[0]);
                     setRootNode(steps[0]);
-                    setRunEnvId(ret.data.lastRunEnvId + '');
+                    setRunEnvId(ret.data.lastRunEnvId == null ? '' : (ret.data.lastRunEnvId + ''));
                     setGroupVariables(ret.data.groupVariables);
                 }
             }

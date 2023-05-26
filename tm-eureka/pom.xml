@@ -15,8 +15,8 @@
     <description>service center</description>
 
     <properties>
-        <java.version>19</java.version>
-        <maven.compiler.source>19</maven.compiler.source>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
         <spring-cloud.version>2022.0.0</spring-cloud.version>
     </properties>
 

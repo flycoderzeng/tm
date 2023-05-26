@@ -16,15 +16,15 @@
     <name>tm-common</name>
 
     <properties>
-        <java.version>19</java.version>
-        <maven.compiler.source>19</maven.compiler.source>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.2.15</version>
+            <version>1.2.16</version>
         </dependency>
 
         <dependency>
@@ -70,13 +70,13 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.30</version>
+            <version>8.0.32</version>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.26</version>
             <scope>provided</scope>
         </dependency>
 
@@ -91,6 +91,13 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
