@@ -4,6 +4,8 @@ import com.tm.common.base.mapper.*;
 import com.tm.common.base.model.*;
 import com.tm.common.entities.autotest.RunPlanBean;
 import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
+import com.tm.common.entities.autotest.request.RunCaseBody;
+import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
@@ -33,20 +35,41 @@ public class AutoTestService {
     @Autowired
     private TaskService taskService;
 
-    public BaseResponse runAutoPlan(RunPlanBean body, User loginUser) {
-        log.info("{} run plan {}", loginUser.getUsername(), body.getPlanId());
+    public BaseResponse runAutoCase(RunCaseBody body, User loginUser) {
+        RunPlanBean bean = new RunPlanBean();
+        bean.setCaseId(body.getCaseId());
+        bean.setRunEnvId(body.getRunEnvId());
+        bean.setRunType(body.getRunType());
+        bean.setFromTypeEnum(PlanRunFromTypeEnum.CASE);
+        return runAutoPlan(bean, loginUser);
+    }
+
+    public BaseResponse runAutoPlan(RunPlanBody body, User loginUser) {
+        RunPlanBean bean = new RunPlanBean();
+        bean.setPlanId(body.getPlanId());
+        bean.setRunType(body.getRunType());
+        bean.setRunEnvId(body.getRunEnvId());
+        bean.setFromTypeEnum(PlanRunFromTypeEnum.get(body.getFromType()));
+        bean.setPlanCronJobId(body.getPlanCronJobId());
+        bean.setPriority(body.getPriority());
+        bean.setFromTypeEnum(PlanRunFromTypeEnum.PLAN);
+        return runAutoPlan(bean, loginUser);
+    }
+
+    public BaseResponse runAutoPlan(RunPlanBean bean, User loginUser) {
+        log.info("{} run plan {}", loginUser.getUsername(), bean.getPlanId());
         if(!taskService.canSubmitPlanTask()) {
             return ResultUtils.error(ResultCodeEnum.COPY_TASK_OVERFLOW_ERROR);
         }
-        PlanExecuteResult planExecuteResult = newPlanExecuteResult(body, loginUser);
+        PlanExecuteResult planExecuteResult = newPlanExecuteResult(bean, loginUser);
         if(planExecuteResult == null) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
         log.info("新增 planExecuteResult 成功, {}", planExecuteResult.getId());
-        PlanRunningConfigSnapshot snapshot = newPlanRunningConfigSnapshot(planExecuteResult, body);
+        PlanRunningConfigSnapshot snapshot = newPlanRunningConfigSnapshot(planExecuteResult, bean);
         log.info("新增 计划运行时配置成功, {}", snapshot.getPlanResultId());
-        if(body.getFromTypeEnum() == PlanRunFromTypeEnum.CASE) {
-            updateAutoCaseLastRunEnvId(body);
+        if(bean.getFromTypeEnum() == PlanRunFromTypeEnum.CASE) {
+            updateAutoCaseLastRunEnvId(bean);
         }
         submitPlanTask(planExecuteResult, snapshot);
 
@@ -78,7 +101,7 @@ public class AutoTestService {
         if(body.getFromTypeEnum() == PlanRunFromTypeEnum.PLAN || body.getFromTypeEnum() == PlanRunFromTypeEnum.CRON_JOB) {
             snapshot.setMaxOccurs(autoPlan.getMaxOccurs());
             snapshot.setFailContinue(autoPlan.getFailContinue());
-            snapshot.setGlobalVariables(autoPlan.getGlobalVariables());
+            snapshot.setGlobalVariables(autoPlan.getPlanVariables());
         }
         snapshot.setRunType(body.getRunType());
 
@@ -103,17 +126,22 @@ public class AutoTestService {
         if(dataNode == null) {
             return null;
         }
-        return addPlanExecuteResult(dataNode, loginUser, body.getFromTypeEnum());
+        return addPlanExecuteResult(dataNode, loginUser, body);
     }
 
-    private PlanExecuteResult addPlanExecuteResult(DataNode dataNode, User loginUser, PlanRunFromTypeEnum fromTypeEnum) {
+    private PlanExecuteResult addPlanExecuteResult(DataNode dataNode, User loginUser, RunPlanBean runPlanBean) {
         PlanExecuteResult record = new PlanExecuteResult();
-        record.setFromType(fromTypeEnum.value());
+        record.setFromType(runPlanBean.getFromTypeEnum().value());
         record.setPlanOrCaseId(dataNode.getId());
         record.setPlanOrCaseName(dataNode.getName());
-        record.setSubmitter(loginUser.getUsername());
+        if(PlanRunFromTypeEnum.CRON_JOB == runPlanBean.getFromTypeEnum()) {
+            record.setSubmitter("定时任务");
+        }else {
+            record.setSubmitter(loginUser.getUsername());
+        }
         record.setSubmitTimestamp(System.currentTimeMillis());
         record.setWorkerIp(LocalHostUtils.getLocalIp());
+        record.setPlanCronJobId(runPlanBean.getPlanCronJobId());
         record.setSubmitDate(DateUtils.parseTimestampToFormatDate(System.currentTimeMillis(), DateUtils.DATE_PATTERN_YMD));
         record.setTotal(1);
 

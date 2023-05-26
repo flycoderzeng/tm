@@ -29,7 +29,9 @@ public class MockNettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("Channel active......， {}", ((InetSocketAddress)ctx.channel().remoteAddress()).getAddress().getHostAddress());
+        log.info("Channel active......， {}",
+                ((InetSocketAddress)ctx.channel().
+                        remoteAddress()).getAddress().getHostAddress());
     }
 
     @Override

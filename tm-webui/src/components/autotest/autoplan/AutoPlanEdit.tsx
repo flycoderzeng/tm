@@ -180,16 +180,15 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                 <Button onClick={back} type="primary" size="small" shape="circle" icon={<ArrowLeftOutlined/>}/>
             </Tooltip>
             <span style={{float: 'right'}}>
-                <Button type="primary" size="small">全局变量配置</Button>
+                <Button type="primary" size="small">计划变量配置</Button>
                 <Button className="margin-left5" onClick={runPlan} loading={running1} type="default" size="small">运行计划</Button>
                 <Button className="margin-left5" onClick={runPlanWithGroup} loading={running2} type="primary" size="small">组合运行</Button>
                 <Button className="margin-left5" onClick={checkPlanResult} type="default" size="small">查看运行结果</Button>
             </span>
         </div>
         <div className="card-body">
-            <Tabs defaultActiveKey="1" onChange={onChangeTab}>
-                <TabPane tab="基本信息" key="1">
-                    <div className="card-body stretch-left">
+            <Tabs defaultActiveKey="1" onChange={onChangeTab} items={[
+                {label: '基本信息', key: '1', children: (<div className="card-body stretch-left">
                         <Form
                             {...layout}
                             name="autoplan"
@@ -276,13 +275,10 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                                 </div>
                             </Form.Item>
                         </Form>
-                    </div>
-                </TabPane>
-                <TabPane tab="计划用例" key="2">
-                    <PlanCaseEdit projectId={projectId} planId={id}></PlanCaseEdit>
-                </TabPane>
+                    </div>)},
+                {label: '计划用例', key: '2', children: (<PlanCaseEdit projectId={projectId} planId={id}></PlanCaseEdit>)}
+            ]}>
             </Tabs>
-
         </div>
     </div>)
 }

@@ -12,7 +12,7 @@ public class GetTimestampNode extends FunctionNode {
     private static final String ARG_1 = "type";
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：获取时间戳");
         AutoTestContext context = AutoTestContextService.getContext();

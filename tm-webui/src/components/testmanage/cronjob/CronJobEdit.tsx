@@ -59,7 +59,7 @@ const CronJobEdit: React.FC<IState> = (props) => {
                 "attributes": {
                     name: values.name,
                     description: values.description,
-                    expression: values.expression
+                    cronExpression: expression
                 }
             }
         }

@@ -2,10 +2,12 @@ package com.tm.lc.models;
 
 import com.tm.lc.hooks.EntityPublicCreateHook;
 import com.tm.lc.hooks.EntityPublicModifyHook;
-import com.yahoo.elide.annotation.*;
+import com.yahoo.elide.annotation.DeletePermission;
+import com.yahoo.elide.annotation.Include;
+import com.yahoo.elide.annotation.LifeCycleHookBinding;
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.Entity;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.UPDATE;

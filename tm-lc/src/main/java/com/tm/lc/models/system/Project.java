@@ -4,11 +4,12 @@ import com.tm.lc.hooks.EntityPublicCreateHook;
 import com.tm.lc.hooks.EntityPublicModifyHook;
 import com.tm.lc.models.CommonSixItemsElideModel;
 import com.yahoo.elide.annotation.*;
-import lombok.Setter;
 import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import java.util.Set;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;

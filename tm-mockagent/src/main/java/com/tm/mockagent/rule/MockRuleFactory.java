@@ -4,8 +4,7 @@ import com.tm.mockagent.entities.enumerate.HttpMethod;
 import com.tm.mockagent.entities.model.HttpMockRule;
 import com.tm.mockagent.entities.msg.PushMockRuleMsg;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MockRuleFactory {
-    private static final Logger logger = LoggerFactory.getLogger(MockRuleFactory.class);
+    private static final Logger logger = Logger.getLogger(MockRuleFactory.class);
 
     public static final String CUSTOMIZE_MOCK_URI_PREFIX = "/__customize_mock";
 
@@ -38,7 +37,7 @@ public class MockRuleFactory {
     }
 
     public String getMockTargetUrl(String sourceUrl, String method) {
-        logger.info("判断 {}：{} 是否有配置mock规则", method, sourceUrl);
+        logger.info("判断 " + method + " " + sourceUrl + " 是否有配置mock规则");
         final HttpMethod httpMethod = HttpMethod.get(method);
         if(httpMethod == null) {
             return sourceUrl;
@@ -60,7 +59,7 @@ public class MockRuleFactory {
                 keyBuilder.append(uri.getPort());
             }
             keyBuilder.append("_").append(httpMethod.val()).append("_").append(uri.getPath());
-            logger.info("http mock rule key: {}", keyBuilder);
+            logger.info("http mock rule key: " + keyBuilder);
             final HttpMockRule httpMockRule = getHttpMockRule(keyBuilder.toString());
             if(httpMockRule != null) {
                 logger.info("配置了mock规则");
@@ -76,7 +75,7 @@ public class MockRuleFactory {
                 }else{
                     sb.append("?__MOCK_RULE_ID=").append(httpMockRule.getId());
                 }
-                logger.info("mock后的地址是：{}", sb);
+                logger.info("mock后的地址是：" + sb);
                 return sb.toString();
             }
         } catch (URISyntaxException e) {

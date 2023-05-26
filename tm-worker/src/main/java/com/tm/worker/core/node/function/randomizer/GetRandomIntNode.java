@@ -21,7 +21,7 @@ public class GetRandomIntNode extends FunctionNode {
     private static final String ARG_3 = "suffix";
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：生成指定位数的随机数");
         AutoTestContext context = AutoTestContextService.getContext();

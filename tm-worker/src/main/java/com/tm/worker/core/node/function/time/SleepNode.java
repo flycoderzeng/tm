@@ -6,7 +6,6 @@ import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.utils.ExpressionUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,9 +15,8 @@ import java.util.concurrent.TimeUnit;
 public class SleepNode extends FunctionNode {
     private static final String ARG_1 = "seconds";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：休眠");
         AutoTestContext context = AutoTestContextService.getContext();

@@ -1,23 +1,22 @@
 package com.tm.mockagent.netty;
 
 import com.tm.mockagent.UspMockAgent;
-import com.tm.mockagent.entities.msg.MockAgentInstanceInfo;
-import com.tm.mockagent.entities.msg.BaseMockMsg;
-import com.tm.mockagent.entities.msg.MockCommunicationMsg;
 import com.tm.mockagent.entities.enumerate.MockMsgType;
+import com.tm.mockagent.entities.msg.BaseMockMsg;
+import com.tm.mockagent.entities.msg.MockAgentInstanceInfo;
+import com.tm.mockagent.entities.msg.MockCommunicationMsg;
 import com.tm.mockagent.entities.msg.PushMockRuleMsg;
 import com.tm.mockagent.utils.DateUtils;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.Objects;
 
 @Data
 public class MockMsgControlService {
-    private static final Logger logger = LoggerFactory.getLogger(MockMsgControlService.class);
-    private Integer agentId = null;
+    private static final Logger logger = Logger.getLogger(MockMsgControlService.class);
+    private volatile Integer agentId = null;
     private MockAgentInstanceInfo mockAgentInstanceInfo;
     private long lastReceiveHeartbeatAckTimestamp = System.currentTimeMillis();
 
@@ -27,18 +26,18 @@ public class MockMsgControlService {
 
         switch (mockMsgType) {
             case HEARTBEAT_ACK:
-                logger.debug("收到来自服务端的心跳ack消息, {}", communicationMsg);
+                logger.debug("收到来自服务端的心跳ack消息, " + communicationMsg);
                 processHeartbeatAckMsg();
                 break;
             case REGISTER_ACK:
-                logger.debug("收到来自服务端的注册ack消息, {}", communicationMsg);
+                logger.debug("收到来自服务端的注册ack消息, " + communicationMsg);
                 processRegisterAckMsg(communicationMsg);
                 break;
             case REQUEST_LOAD_MOCK_RULE_ACK:
-                logger.debug("收到来自服务端的加载mock规则ack消息， {}", communicationMsg);
+                logger.debug("收到来自服务端的加载mock规则ack消息， " + communicationMsg);
                 break;
             case PUSH_MOCK_RULE:
-                logger.debug("收到来自服务端的推送mock规则消息, {}", communicationMsg);
+                logger.debug("收到来自服务端的推送mock规则消息, " + communicationMsg);
                 processPushMockRule(ctx, communicationMsg);
                 break;
             default:

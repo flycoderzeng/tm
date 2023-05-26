@@ -4,7 +4,7 @@ import com.yahoo.elide.annotation.Include;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Table(name = "cron_job_plan_relation")
 @Include(name="cron_job_plan_relation")
@@ -15,8 +15,11 @@ public class CronJobPlanRelation {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "plan_id")
     private Integer planId;
+    @Column(name = "env_id")
     private Integer envId;
+    @Column(name = "run_type")
     private Integer runType;
     private Integer status;
 

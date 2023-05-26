@@ -3,12 +3,15 @@ package com.tm.lc.models.testmanage;
 import com.tm.lc.hooks.EntityPublicCreateHook;
 import com.tm.lc.hooks.EntityPublicModifyHook;
 import com.tm.lc.models.CommonSixItemsElideModel;
-import com.yahoo.elide.annotation.*;
+import com.yahoo.elide.annotation.ComputedAttribute;
+import com.yahoo.elide.annotation.DeletePermission;
+import com.yahoo.elide.annotation.Include;
+import com.yahoo.elide.annotation.LifeCycleHookBinding;
 import com.yahoo.elide.core.RequestScope;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.UPDATE;

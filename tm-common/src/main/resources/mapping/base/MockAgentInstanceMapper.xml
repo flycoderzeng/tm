@@ -3,6 +3,7 @@
 <mapper namespace="com.tm.common.base.mapper.MockAgentInstanceMapper" >
     <resultMap id="BaseResultMap" type="com.tm.common.base.model.MockAgentInstance" >
         <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="application_name" property="applicationName" jdbcType="VARCHAR" />
         <result column="ip" property="ip" jdbcType="VARCHAR" />
         <result column="port" property="port" jdbcType="INTEGER" />
         <result column="name" property="name" jdbcType="VARCHAR" />
@@ -42,6 +43,9 @@
             <if test="id != null" >
                 id,
             </if>
+            <if test="applicationName != null" >
+                application_name,
+            </if>
             <if test="ip != null" >
                 ip,
             </if>
@@ -67,6 +71,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
                 #{id,jdbcType=INTEGER},
+            </if>
+            <if test="applicationName != null" >
+                #{applicationName,jdbcType=VARCHAR},
             </if>
             <if test="ip != null" >
                 #{ip,jdbcType=VARCHAR},
@@ -95,6 +102,9 @@
     <update id="updateBySelective" parameterType="com.tm.common.base.model.MockAgentInstance">
         update mock_agent_instances
         <set >
+            <if test="applicationName != null" >
+                application_name = #{applicationName,jdbcType=VARCHAR},
+            </if>
             <if test="ip != null" >
                 ip = #{ip,jdbcType=VARCHAR},
             </if>

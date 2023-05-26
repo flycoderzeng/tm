@@ -5,7 +5,6 @@ import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.utils.ExpressionUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,9 +25,8 @@ public class OperationExpressionNode extends FunctionNode {
     private static final String OUT_3 = "result_3";
     private static final String OUT_4 = "result_4";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：表达式运算");
         AutoTestContext context = AutoTestContextService.getContext();

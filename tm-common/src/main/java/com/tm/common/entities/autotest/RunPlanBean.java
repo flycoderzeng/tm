@@ -10,6 +10,7 @@ public class RunPlanBean {
 
     private Integer runType;
     private Integer runEnvId;
+    private Integer planCronJobId;
     private Integer priority = 0;
     private PlanRunFromTypeEnum fromTypeEnum = PlanRunFromTypeEnum.CASE;
 }

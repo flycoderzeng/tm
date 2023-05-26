@@ -17,7 +17,8 @@ public class RootNode extends StepNodeBase {
     private List<AutoCaseVariable> userDefinedVariables;
     private List<KeyValueRow> cookies;
     @Override
-    public void run() {
+    public void run() throws Exception {
+        super.run();
         AutoTestContext autoTestContext = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = autoTestContext.getCaseVariables();
         caseVariables.updateAutoCaseVariables(userDefinedVariables);

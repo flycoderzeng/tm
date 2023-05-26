@@ -6,10 +6,9 @@ import com.tm.common.entities.autotest.CaseExecuteLogOperate;
 import com.tm.common.entities.autotest.enumerate.CaseExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.enumerate.LogOperateTypeEnum;
 import com.tm.common.utils.TableSuffixUtils;
-import com.tm.worker.core.task.TaskService;
-import com.tm.worker.service.CaseResultLogService;
 import com.tm.worker.core.task.CaseTask;
 import com.tm.worker.core.task.PlanTask;
+import com.tm.worker.core.task.TaskService;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import lombok.Data;
@@ -27,7 +26,7 @@ public class StepNodeBase {
 
     protected CaseStepExecuteResult caseStepExecuteResult;
 
-    public void run() {
+    public void run() throws Exception {
     }
 
     protected StringBuilder resultInfoBuilder;

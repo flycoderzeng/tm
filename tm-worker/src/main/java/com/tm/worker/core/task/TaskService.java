@@ -34,7 +34,10 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Type;
 import java.sql.Connection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 
@@ -111,7 +114,7 @@ public class TaskService {
 
     public void handleSubmitTask(PlanExecuteResult planExecuteResult,
                                  PlanRunningConfigSnapshot snapshot,
-                                 AutoTestVariables globalVariables) {
+                                 AutoTestVariables planVariables) {
         List<Integer> caseIdList = new ArrayList<>();
         if (!fillCaseIdList(planExecuteResult, caseIdList)) return;
 
@@ -123,7 +126,7 @@ public class TaskService {
             return;
         }
 
-        PlanTask planTask = new PlanTask(planExecuteResult, snapshot, globalVariables);
+        PlanTask planTask = new PlanTask(planExecuteResult, snapshot, planVariables);
         WorkerCaseTaskQueue caseTaskQueue = new WorkerCaseTaskQueue();
         int i = 0;
         for (Integer caseId : caseIdList) {

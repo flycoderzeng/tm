@@ -6,8 +6,8 @@ import com.tm.lc.models.CommonSixItemsElideModel;
 import com.yahoo.elide.annotation.*;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.UPDATE;

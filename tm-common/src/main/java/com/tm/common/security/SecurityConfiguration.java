@@ -1,5 +1,6 @@
 package com.tm.common.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,13 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.cors.CorsUtils;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)  //  启用方法级别的权限认证
 @Order(-1)
 public class SecurityConfiguration {
     public static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json;charset=utf-8";
@@ -28,11 +27,11 @@ public class SecurityConfiguration {
     public static final String LOGOUT_SUCCESS = "{\"code\": 0, \"message\": \"logout success\"}";
     public static final String JSESSIONID = "JSESSIONID";
     public static final String LOGIN_URI = "/login";
+    public static final String SESSION = "SESSION";
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        // 仅仅作为演示
-        return web -> web.ignoring().antMatchers("/tm/public/api/**");
+        return web -> web.ignoring().requestMatchers("/tm/public/api/**");
     }
 
     @Bean
@@ -45,6 +44,7 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()).and().authorizeRequests()
                 // 处理跨域请求中的Preflight请求
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .requestMatchers("/tm/public/api/**").permitAll()
                 .and().httpBasic()
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
@@ -61,8 +61,8 @@ public class SecurityConfiguration {
                         return o;
                     }
                 })
-                .antMatchers(LOGIN_URI).permitAll().antMatchers(HttpMethod.OPTIONS).permitAll()
-                .anyRequest().authenticated().and()   // 其他地址的访问均需验证权限
+                .requestMatchers(LOGIN_URI).permitAll().requestMatchers(HttpMethod.OPTIONS).permitAll()
+                .anyRequest().authenticated().and()  // 其他地址的访问均需验证权限
                 .formLogin().loginProcessingUrl(LOGIN_URI).failureHandler((request, response, authException) -> {
                     response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -89,7 +89,7 @@ public class SecurityConfiguration {
                     out.flush();
                     out.close();
                 }).permitAll().invalidateHttpSession(true)
-                .deleteCookies(JSESSIONID)
+                .deleteCookies(JSESSIONID, SESSION)
                 .and().sessionManagement().maximumSessions(10).and()
                 .and().build();
     }

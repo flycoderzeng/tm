@@ -2,20 +2,16 @@ package com.tm.worker.core.node.function.encoder;
 
 import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.utils.FunctionUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
-import java.net.URLEncoder;
 
 
 @Slf4j
 public class EncodeURIComponentNode extends FunctionNode {
     private static final String ARG_1 = "srcString";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：encodeURIComponent 编码");
         String srcString = getArgStringValue(ARG_1);

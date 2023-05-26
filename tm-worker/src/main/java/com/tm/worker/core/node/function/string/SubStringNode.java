@@ -3,7 +3,6 @@ package com.tm.worker.core.node.function.string;
 import cn.hutool.core.util.StrUtil;
 import com.tm.worker.core.node.function.FunctionNode;
 import com.tm.worker.utils.FunctionUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,9 +16,8 @@ public class SubStringNode extends FunctionNode {
     private static final String ARG_5 = "toStringExclude";
     private static final String ARG_6 = "length";
 
-    @SneakyThrows
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：截取字符串");
         String srcString = getArgStringValue(ARG_1);

@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GetEmailNode extends FunctionNode {
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：获取email");
         String generatedEmail = EmailAddressGenerator.getInstance().generate();

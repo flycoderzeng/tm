@@ -99,6 +99,7 @@ const ApiUrlConfig = {
     GET_CASE_VARIABLE_RESULT_LIST_URL: '/web/planresult/getCaseVariableResultList',
     GET_CASE_STEP_RESULT_LIST_URL: '/web/planresult/getCaseStepResultList',
     QUERY_MOCK_INSTANCE_LIST_URL: '/web/mock/queryInstanceList',
+    QUERY_MOCK_INSTANCE_LIST_LC_URL: '/lc/lc/json/api/mock_agent_instance',
     LOAD_MOCK_INSTANCE_URL: '/web/mock/load',
     QUERY_HTTP_MOCK_RULE_LIST_URL: '/web/mock/queryHttpMockRuleList',
     SAVE_HTTP_MOCK_RULE_URL: '/web/mock/saveHttpMockRule',

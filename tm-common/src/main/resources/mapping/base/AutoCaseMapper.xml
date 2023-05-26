@@ -52,7 +52,7 @@
             <if test="lastRunEnvId != null" >
                 #{lastRunEnvId,jdbcType=INTEGER},
             </if>
-            <if test="group_variables != null" >
+            <if test="groupVariables != null" >
                 #{groupVariables,jdbcType=LONGVARCHAR},
             </if>
         </trim>

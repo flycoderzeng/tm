@@ -1,11 +1,11 @@
 package com.tm.common.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class SecurityInterceptor implements HandlerInterceptor {
@@ -13,7 +13,8 @@ public class SecurityInterceptor implements HandlerInterceptor {
     public static final String HTTP_LOCALHOST_3000 = "http://localhost:3000";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response, Object handler) throws IOException {
         // 此处配置的是允许任意域名跨域请求，可根据需求指定
         response.setHeader("Access-Control-Allow-Origin", HTTP_LOCALHOST_3000);
         response.setHeader("Access-Control-Allow-Credentials", "true");

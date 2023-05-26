@@ -1,8 +1,8 @@
 package com.tm.lc.convert;
 
 import com.tm.common.utils.RSAUtils;
+import jakarta.persistence.AttributeConverter;
 
-import javax.persistence.AttributeConverter;
 
 public class EncryptDecrypt implements AttributeConverter<String, String> {
     @Override

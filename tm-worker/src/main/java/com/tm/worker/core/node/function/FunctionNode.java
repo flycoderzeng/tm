@@ -26,7 +26,7 @@ public class FunctionNode extends StepNodeBase {
     public static final String arg102 = "result_2";
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         parameterListToMap();
         setResultInfoBuilder(new StringBuilder());

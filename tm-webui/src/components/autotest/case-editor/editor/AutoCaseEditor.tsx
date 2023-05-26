@@ -74,8 +74,6 @@ const MenuKey = {
     'Loop': '803'
 };
 
-const platformApiTree: MenuItem[] = [];
-
 const whenClickLeafStepNodeDisabledMenuItems: string[] = [MenuKey.AddResource, MenuKey.AddPlatformApi,
     MenuKey.AddRecent, MenuKey.AddMostCommonlyUsed, MenuKey.AddLogic];
 
@@ -150,7 +148,6 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [visibleHistory, setVisibleHistory] = useState(false);
     const [running1, setRunning1] = useState(false);
     const [running2, setRunning2] = useState(false);
-    const [loadedPlatformApi, setLoadedPlatformApi] = useState(false);
     const [id, setId] = useState(props.id);
     const [expandedKeys, setExpandedKeys] = useState(['1', '2', '3', '4']);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -169,70 +166,66 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function loadPlatformApiTree() {
-        if (!loadedPlatformApi) {
-            axios.get(ApiUrlConfig.GET_PLATFORM_API_TREE_URL).then(resp => {
-                if (resp.status !== 200) {
-                    message.error('加载平台api失败');
-                } else {
-                    const ret = resp.data;
-                    if (ret.code !== 0) {
-                        message.error(ret.message);
-                    } else if (ret.data) {
-                        setLoadedPlatformApi(true);
-                        if (platformApiTree.length > 0) {
-                            return;
-                        }
-                        for (let i = 0; i < ret.data.length; i++) {
-                            const firstLevel: MenuItem = {
-                                key: 'platform_api_' + ret.data[i].id + '$' + ret.data[i].name,
-                                id: ret.data[i].id,
-                                title: ret.data[i].name,
-                                disabled: false, children: []
-                            };
-                            platformApiTree.push(firstLevel);
+        axios.get(ApiUrlConfig.GET_PLATFORM_API_TREE_URL).then(resp => {
+            if (resp.status !== 200) {
+                message.error('加载平台api失败');
+            } else {
+                const ret = resp.data;
+                if (ret.code !== 0) {
+                    message.error(ret.message);
+                } else if (ret.data) {
+                    const platformApiTree: MenuItem[] = [];
+                    for (let i = 0; i < ret.data.length; i++) {
+                        const firstLevel: MenuItem = {
+                            key: 'platform_api_' + ret.data[i].id + '$' + ret.data[i].name,
+                            id: ret.data[i].id,
+                            title: ret.data[i].name,
+                            disabled: false, children: []
+                        };
+                        platformApiTree.push(firstLevel);
 
-                            const children = ret.data[i].children || [];
-                            if (!children || children.length < 1) {
-                                continue;
-                            }
-                            for (let j = 0; j < children.length; j++) {
-                                firstLevel.children !== undefined && firstLevel.children.push({
-                                    key: 'platform_api_' + children[j].id + '$' + children[j].name,
-                                    id: children[j].id,
-                                    title: children[j].name,
-                                    disabled: false, children: []
-                                });
-                            }
+                        const children = ret.data[i].children || [];
+                        if (!children || children.length < 1) {
+                            continue;
                         }
-                        const rightMenuInitKeys: MenuItem[] = [
-                            {key: MenuKey.AddResource, title: '添加资源', icon: <PlusOutlined/>, disabled: false, children: []},
-                            {key: MenuKey.AddRecent, title: '添加最近', icon: <PlusOutlined/>, disabled: false, children: []},
-                            {
-                                key: MenuKey.AddMostCommonlyUsed, title: '添加常用', icon: <PlusOutlined/>, disabled: false, children: [
-                                    {key: MenuKey.AddHttpRequest, title: 'HTTP请求', disabled: false},
-                                    {key: MenuKey.AddJDBCRequest, title: 'JDBC请求', disabled: false},
-                                ]
-                            },
-                            {key: MenuKey.AddPlatformApi, title: '添加API', icon: <PlusOutlined/>, disabled: false, children: platformApiTree},
-                            {key: MenuKey.Remove, title: '删除', icon: <DeleteOutlined/>, disabled: false},
-                            {key: MenuKey.Copy, title: '复制', icon: <CopyOutlined/>, disabled: false},
-                            {key: MenuKey.Paste, title: '粘贴', icon: <SettingOutlined/>, disabled: false},
-                            {key: MenuKey.Enable, title: '启用', icon: <PlayCircleOutlined/>, disabled: false},
-                            {key: MenuKey.Disable, title: '禁用', icon: <PauseOutlined/>, disabled: false},
-                            {
-                                key: MenuKey.AddLogic, title: '添加逻辑', icon: <PlusOutlined/>, disabled: false, children: [
-                                    {key: MenuKey.If, title: 'if', icon: null, disabled: false},
-                                    {key: MenuKey.While, title: 'while', icon: null, disabled: false},
-                                    {key: MenuKey.Loop, title: 'loop', icon: null, disabled: false}
-                                ]
-                            }
-                        ];
-                        setRightMenuKeys(rightMenuInitKeys);
-                        setRightMenuList(renderRightMenu(rightMenuInitKeys));
+                        for (let j = 0; j < children.length; j++) {
+                            firstLevel.children !== undefined && firstLevel.children.push({
+                                key: 'platform_api_' + children[j].id + '$' + children[j].name,
+                                id: children[j].id,
+                                title: children[j].name,
+                                disabled: false, children: []
+                            });
+                        }
                     }
+
+                    const rightMenuInitKeys: MenuItem[] = [
+                        {key: MenuKey.AddResource, title: '添加资源', icon: <PlusOutlined/>, disabled: false, children: []},
+                        {key: MenuKey.AddRecent, title: '添加最近', icon: <PlusOutlined/>, disabled: false, children: []},
+                        {
+                            key: MenuKey.AddMostCommonlyUsed, title: '添加常用', icon: <PlusOutlined/>, disabled: false, children: [
+                                {key: MenuKey.AddHttpRequest, title: 'HTTP请求', disabled: false},
+                                {key: MenuKey.AddJDBCRequest, title: 'JDBC请求', disabled: false},
+                            ]
+                        },
+                        {key: MenuKey.AddPlatformApi, title: '添加API', icon: <PlusOutlined/>, disabled: false, children: platformApiTree},
+                        {key: MenuKey.Remove, title: '删除', icon: <DeleteOutlined/>, disabled: false},
+                        {key: MenuKey.Copy, title: '复制', icon: <CopyOutlined/>, disabled: false},
+                        {key: MenuKey.Paste, title: '粘贴', icon: <SettingOutlined/>, disabled: false},
+                        {key: MenuKey.Enable, title: '启用', icon: <PlayCircleOutlined/>, disabled: false},
+                        {key: MenuKey.Disable, title: '禁用', icon: <PauseOutlined/>, disabled: false},
+                        {
+                            key: MenuKey.AddLogic, title: '添加逻辑', icon: <PlusOutlined/>, disabled: false, children: [
+                                {key: MenuKey.If, title: 'if', icon: null, disabled: false},
+                                {key: MenuKey.While, title: 'while', icon: null, disabled: false},
+                                {key: MenuKey.Loop, title: 'loop', icon: null, disabled: false}
+                            ]
+                        }
+                    ];
+                    setRightMenuKeys(rightMenuInitKeys);
+                    setRightMenuList(renderRightMenu(rightMenuInitKeys));
                 }
-            });
-        }
+            }
+        });
     }
 
     function findStepNode(dataList: StepNode[], key: string, findParent: boolean, parentNode?: StepNode): StepNode|null {
@@ -297,9 +290,11 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     useEffect(() => {
         load();
-    }, [id]);// eslint-disable-line react-hooks/exhaustive-deps
+        loadPlatformApiTree();
+        return () => {
 
-    loadPlatformApiTree();
+        }
+    }, [id]);// eslint-disable-line react-hooks/exhaustive-deps
 
     function initStepSeq(steps: StepNode[]) {
         seq = 1;
@@ -928,7 +923,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     onViewResult();
                 }}>查看运行结果</Button>
                 <Button size="small" type="default">查看内置函数与变量</Button>
-                <Button size="small" type="default"onClick={() => {
+                <Button size="small" type="default" onClick={() => {
                     setVisibleHistory(true);
                 }}>恢复历史</Button>
             </div>

@@ -1,13 +1,15 @@
 package com.tm.web.controller.system;
 
 
-import com.tm.web.controller.BaseController;
 import com.tm.common.base.mapper.MenuMapper;
 import com.tm.common.base.model.Menu;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.utils.ResultUtils;
+import com.tm.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 

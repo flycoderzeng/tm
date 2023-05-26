@@ -3,13 +3,12 @@ package com.tm.mockagent.threads;
 import com.tm.mockagent.boot.MockAgentContext;
 import com.tm.mockagent.netty.MockNettyClient;
 import com.tm.mockagent.rule.MockRuleFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.concurrent.TimeUnit;
 
 public class MockNettyClientThread implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(MockNettyClientThread.class);
+    private static final Logger logger = Logger.getLogger(MockNettyClientThread.class);
 
     public static final Integer MAX_LOOP_NUMBER = Integer.MAX_VALUE;
     public static final Integer DEFAULT_SLEEP_TIME = 10;

@@ -22,6 +22,7 @@ interface IState {
         searchValue: string | null | undefined;
     },
     filteredValue: string[];
+    rows?: any[];
 }
 
 class CommonListPage extends React.Component<CommonProps, IState> {
@@ -57,8 +58,8 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         };
         this.columnFilters = [
             {text: '描述', value: 'description'},
-            {text: '添加者', value: 'addUser'},
-            {text: '添加时间', value: 'addTime'},
+            {text: '创建者', value: 'addUser'},
+            {text: '创建时间', value: 'addTime'},
             {text: '最后修改者', value: 'lastModifyUser'},
             {text: '最后修改时间', value: 'lastModifyTime'}
         ];

@@ -3,7 +3,6 @@ package com.tm.worker.core.function.random;
 import com.googlecode.aviator.runtime.type.AviatorObject;
 import com.googlecode.aviator.runtime.type.AviatorString;
 import com.tm.common.utils.DateUtils;
-import com.tm.worker.core.function.random.GetRandomInt;
 
 import java.util.Map;
 

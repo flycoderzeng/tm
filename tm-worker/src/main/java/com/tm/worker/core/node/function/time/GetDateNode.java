@@ -25,7 +25,7 @@ public class GetDateNode extends FunctionNode {
     private static final String ARG_4 = "baseTime";
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行平台api：获取时间");
         AutoTestContext context = AutoTestContextService.getContext();

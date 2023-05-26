@@ -19,6 +19,9 @@ public class AgentUtils {
             final String[] kv = args[i].split("=");
             if(kv.length == 2) {
                 switch (kv[0]) {
+                    case "applicationName":
+                        info.setApplicationName(kv[1]);
+                        break;
                     case "ip":
                         info.setIp(kv[1]);
                         break;

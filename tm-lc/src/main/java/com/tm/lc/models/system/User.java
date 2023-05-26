@@ -7,8 +7,7 @@ import com.yahoo.elide.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-
+import jakarta.persistence.*;
 import java.util.Set;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
@@ -27,6 +26,7 @@ import static com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase.P
 @CreatePermission(expression = "user is a common admin")
 public class User extends CommonSixItemsElideModel {
     private String username;
+    @Column(name = "chinese_name")
     private String chineseName;
     @ManyToMany
     @JoinTable(name = "project_user", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),

@@ -4,10 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tm.common.base.model.CaseExecuteResult;
 import com.tm.common.base.model.CaseVariableValueResult;
-import com.tm.common.entities.autotest.*;
+import com.tm.common.entities.autotest.CaseExecuteLogOperate;
 import com.tm.common.entities.autotest.enumerate.CaseExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.enumerate.LogOperateTypeEnum;
-import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.enumerate.StepNodeTypeDefineEnum;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
@@ -32,13 +31,13 @@ import com.tm.worker.core.node.function.encoder.Base64EncodeNode;
 import com.tm.worker.core.node.function.encoder.EncodeURIComponentNode;
 import com.tm.worker.core.node.function.extractor.JsonMultiExtractorNode;
 import com.tm.worker.core.node.function.extractor.XmlMultiExtractorNode;
+import com.tm.worker.core.node.function.operation.OperationExpressionNode;
+import com.tm.worker.core.node.function.randomizer.GetRandomIntNode;
 import com.tm.worker.core.node.function.secure.Md5Node;
 import com.tm.worker.core.node.function.string.SubStringNode;
 import com.tm.worker.core.node.function.time.GetDateNode;
-import com.tm.worker.core.node.function.randomizer.GetRandomIntNode;
 import com.tm.worker.core.node.function.time.GetTimestampNode;
 import com.tm.worker.core.node.function.time.SleepNode;
-import com.tm.worker.core.node.function.operation.OperationExpressionNode;
 import com.tm.worker.core.protocol.http.HttpSampler;
 import com.tm.worker.core.protocol.jdbc.JDBCRequest;
 import com.tm.worker.core.task.CaseTask;
@@ -151,7 +150,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         return null;
     }
 
-    private StepNode runStepNode(StepNode currStepNode) {
+    private StepNode runStepNode(StepNode currStepNode) throws Exception {
         currStepNode.getDefine().logStart(currStepNode.getKey());
         currStepNode.run();
         if ((currStepNode.getType().equals(StepNodeTypeDefineEnum.WHILE.value())
@@ -170,9 +169,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
 
     private void teardown() {
         log.info("用例id： {}，组合编号：{} 执行结束", caseTask.getAutoCase().getId(), caseTask.getGroupNo());
-        teardownPlanTask();
         teardownCaseTask();
-
         AutoTestContextService.removeContext();
     }
 
@@ -183,33 +180,6 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         // 用例变量值入库
         log.info("用例变量值入库, 用例id：{}", caseTask.getAutoCase().getId());
         saveAutoCaseVariableValueResult();
-    }
-
-    private void teardownPlanTask() {
-        planTask.increaseFinishedCount();
-        planTask.decreaseRunningCount();
-        // 最后一个用例执行完，设置计划结果状态为完成
-        if (planTask.getFinishedCount().equals(planTask.getTotalCases())) {
-            log.info("最后一个用例执行完，设置计划结果状态为完成, 计划结果id：{}", planTask.getPlanExecuteResultId());
-            taskService.setPlanExecuteEnd(planTask);
-            removePlanTask(planTask);
-        } else if (planTask.getRunningTotal().equals(0) && planTask.isStopped()) {
-            log.info("计划被用户停止，设置为停止状态, 计划结果id：{}", planTask.getPlanExecuteResultId());
-            taskService.setPlanExecuteResultStatus(planTask, PlanExecuteResultStatusEnum.CANCELED);
-            removePlanTask(planTask);
-        }
-        log.info("更新计划{}结果成功、失败数目", planTask.getPlanExecuteResultId());
-        // 更新计划结果成功、失败数目
-        if(error) {
-            taskService.addFailCount(planTask.getPlanExecuteResultId());
-        }else{
-            taskService.addSuccessCount(planTask.getPlanExecuteResultId());
-        }
-        // 用例失败 并且 计划设置失败后停止执行
-        if(error && planTask.getRunningConfigSnapshot().getFailContinue().equals(0)) {
-            log.info("用例失败，并且 计划设置失败后停止执行");
-            taskService.stopPlanTask(planTask.getPlanExecuteResultId());
-        }
     }
 
     private void saveCaseResultStatus() {
@@ -236,13 +206,6 @@ public class CaseTaskThread implements Callable<BaseResponse> {
             variableValueResult.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planTask.getPlanExecuteResult().getStartTimestamp()),
                     taskService.getSplitVariableTableType(), 0));
             taskService.putResultLog(new CaseExecuteLogOperate(LogOperateTypeEnum.INSERT, variableValueResult));
-        }
-    }
-
-    private void removePlanTask(PlanTask planTask) {
-        boolean removed = taskService.removePlanTask(planTask.getPlanExecuteResultId());
-        if (!removed) {
-            log.error("remove failed, {}", planTask.getPlanExecuteResultId());
         }
     }
 

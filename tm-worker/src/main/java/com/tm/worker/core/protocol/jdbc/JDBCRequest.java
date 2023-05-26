@@ -14,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -36,7 +39,7 @@ public class JDBCRequest extends StepNodeBase {
     private Integer retryIntervalSeconds = 10;
 
     @Override
-    public void run() {
+    public void run() throws Exception {
         super.run();
         log.info("执行jdbc request步骤，{}", getName());
         AutoTestContext context = AutoTestContextService.getContext();

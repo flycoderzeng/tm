@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class MockAgentInstanceInfo {
+    private String applicationName;
     private String ip;
     private Integer port;
     private String name;
@@ -11,7 +12,9 @@ public class MockAgentInstanceInfo {
 
     public MockAgentInstanceInfo() {}
 
-    public MockAgentInstanceInfo(String ip, Integer port, String name, String description) {
+    public MockAgentInstanceInfo(String applicationName,
+                                 String ip, Integer port, String name, String description) {
+        this.applicationName = applicationName;
         this.ip = ip;
         this.port = port;
         this.name = name;

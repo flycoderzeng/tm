@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
 
-import static org.jfree.chart.ChartUtils.*;
+import static org.jfree.chart.ChartUtils.saveChartAsJPEG;
+import static org.jfree.chart.ChartUtils.writeChartAsJPEG;
 
 public class PieUtils {
     public static final Integer DEFAULT_PIE_WIDTH = 800;

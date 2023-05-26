@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlanTask extends WorkerPlanTask {
     private PlanRunningConfigSnapshot runningConfigSnapshot;
-    private AutoTestVariables globalVariables;
+    private AutoTestVariables planVariables;
 
     private Integer totalCases = 0;
 
@@ -20,18 +20,18 @@ public class PlanTask extends WorkerPlanTask {
     private AtomicInteger runningCasesCount = new AtomicInteger(0);
 
     public PlanTask(Integer priority, PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot runningConfigSnapshot,
-                    AutoTestVariables globalVariables) {
+                    AutoTestVariables planVariables) {
         super(priority, planExecuteResult);
         this.runningConfigSnapshot = runningConfigSnapshot;
-        this.globalVariables = globalVariables;
+        this.planVariables = planVariables;
     }
 
     public PlanTask(PlanExecuteResult planExecuteResult,
                     PlanRunningConfigSnapshot runningConfigSnapshot,
-                    AutoTestVariables globalVariables) {
+                    AutoTestVariables planVariables) {
         super(planExecuteResult);
         this.runningConfigSnapshot = runningConfigSnapshot;
-        this.globalVariables = globalVariables;
+        this.planVariables = planVariables;
     }
 
     public void increaseRunningCount() {
@@ -62,8 +62,8 @@ public class PlanTask extends WorkerPlanTask {
         return runningConfigSnapshot;
     }
 
-    public AutoTestVariables getGlobalVariables() {
-        return globalVariables;
+    public AutoTestVariables getPlanVariables() {
+        return planVariables;
     }
 
     public Integer getRunningTotal() {

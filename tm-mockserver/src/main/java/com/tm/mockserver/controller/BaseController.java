@@ -3,11 +3,10 @@ package com.tm.mockserver.controller;
 import com.tm.common.base.model.User;
 import com.tm.mockserver.config.GlobalHandlerInterceptor;
 import com.tm.mockserver.ehcache.EhcacheService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 public class BaseController {
