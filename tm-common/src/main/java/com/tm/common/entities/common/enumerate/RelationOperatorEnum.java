@@ -5,7 +5,8 @@ public enum RelationOperatorEnum {
     LESS_EQUAL("4", "小于或等于"), MORE_THAN("5", "大于"), MORE_EQUAL("6", "大于或等于"),
     INCLUDE("7", "包含"), NOT_INCLUDE("8", "不包含"), START_WITH("9", "开始以"),
     END_WITH("10", "结束以"), IS_NULL("11", "是null"), IS_NOT_NULL("12", "不是null"),
-    IS_EMPTY("13", "是空的"), IS_NOT_EMPTY("14", "不是空的"), REGEX_PATTERN("15", "正则匹配");
+    IS_EMPTY("13", "是空的"), IS_NOT_EMPTY("14", "不是空的"), REGEX_PATTERN("15", "正则匹配"),
+    PATH_NOT_EXISTS("16", "路径不存在"), IS_NOT_BLANK("17", "不是空白"), IS_BLANK("18", "是空白");
     String value;
     String description;
     RelationOperatorEnum(String value, String description) {
@@ -53,6 +54,12 @@ public enum RelationOperatorEnum {
                 return IS_NOT_EMPTY;
             case "15":
                 return REGEX_PATTERN;
+            case "16":
+                return PATH_NOT_EXISTS;
+            case "17":
+                return IS_NOT_BLANK;
+            case "18":
+                return IS_BLANK;
             default:
                 return null;
         }

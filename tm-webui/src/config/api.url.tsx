@@ -61,6 +61,7 @@ const ApiUrlConfig = {
     UPDATE_NODE_URL: '/web/node/updateNode',
     SAVE_AUTO_CASE_URL: '/web/autocase/save',
     SAVE_AUTO_PLAN_URL: '/web/autoplan/save',
+    SAVE_AUTO_PLAN_VARIABLES_URL: '/web/autoplan/savePlanVariables',
     LOAD_AUTO_CASE_URL: '/web/autocase/load',
     LOAD_AUTO_PLAN_URL: '/web/autoplan/load',
     GET_RANDOM_SSQ_RESULT_URL: '/web/ssq/getRandomResultList',

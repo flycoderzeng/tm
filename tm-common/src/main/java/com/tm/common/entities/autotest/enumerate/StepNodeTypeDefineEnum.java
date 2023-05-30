@@ -12,7 +12,9 @@ public enum StepNodeTypeDefineEnum {
     __operationExpression("__operationExpression"),
     __getGlobalKeyValue("__getGlobalKeyValue"), __setGlobalKeyValue("__setGlobalKeyValue"),
     __assert("__assert"),
-    __encodeURIComponent("__encodeURIComponent"), __decodeURIComponent("__decodeURIComponent"), __base64Encode("__base64Encode"), __base64Decode("__base64Decode"),
+    __encodeURIComponent("__encodeURIComponent"), __decodeURIComponent("__decodeURIComponent"),
+    __base64Encode("__base64Encode"), __base64Decode("__base64Decode"),
+    __encodeCipherCredential("__encodeCipherCredential"),
     __subString("__subString"),
     __md5("__md5");
     String value;
@@ -70,6 +72,8 @@ public enum StepNodeTypeDefineEnum {
                 return StepNodeTypeDefineEnum.__base64Encode;
             case "__base64Decode":
                 return StepNodeTypeDefineEnum.__base64Decode;
+            case "__encodeCipherCredential":
+                return StepNodeTypeDefineEnum.__encodeCipherCredential;
             case "__subString":
                 return StepNodeTypeDefineEnum.__subString;
             case "__md5":

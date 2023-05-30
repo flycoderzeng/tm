@@ -28,9 +28,12 @@ import com.tm.worker.core.node.function.check.AssertNode;
 import com.tm.worker.core.node.function.decoder.Base64DecodeNode;
 import com.tm.worker.core.node.function.decoder.DecodeURIComponentNode;
 import com.tm.worker.core.node.function.encoder.Base64EncodeNode;
+import com.tm.worker.core.node.function.encoder.CipherCredentialEncodeNode;
 import com.tm.worker.core.node.function.encoder.EncodeURIComponentNode;
 import com.tm.worker.core.node.function.extractor.JsonMultiExtractorNode;
 import com.tm.worker.core.node.function.extractor.XmlMultiExtractorNode;
+import com.tm.worker.core.node.function.gvariables.GetGlobalKeyValueNode;
+import com.tm.worker.core.node.function.gvariables.SetGlobalKeyValueNode;
 import com.tm.worker.core.node.function.operation.OperationExpressionNode;
 import com.tm.worker.core.node.function.randomizer.GetRandomIntNode;
 import com.tm.worker.core.node.function.secure.Md5Node;
@@ -328,6 +331,15 @@ public class CaseTaskThread implements Callable<BaseResponse> {
                 return define;
             case __assert:
                 define = BeanUtils.mapToBean(AssertNode.class, defineMap);
+                return define;
+            case __getGlobalKeyValue:
+                define = BeanUtils.mapToBean(GetGlobalKeyValueNode.class, defineMap);
+                return define;
+            case __setGlobalKeyValue:
+                define = BeanUtils.mapToBean(SetGlobalKeyValueNode.class, defineMap);
+                return define;
+            case __encodeCipherCredential:
+                define = BeanUtils.mapToBean(CipherCredentialEncodeNode.class, defineMap);
                 return define;
             default:
                 log.info(type);

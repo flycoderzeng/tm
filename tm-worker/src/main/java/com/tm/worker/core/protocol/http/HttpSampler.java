@@ -1,8 +1,11 @@
 package com.tm.worker.core.protocol.http;
 
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.jayway.jsonpath.JsonPath;
+import com.tm.common.base.model.ApiIpPortConfig;
 import com.tm.common.entities.autotest.enumerate.BodyTypeNum;
 import com.tm.common.entities.autotest.enumerate.ExtractorTypeEnum;
 import com.tm.common.entities.autotest.enumerate.RawTypeNum;
@@ -229,13 +232,31 @@ public class HttpSampler extends StepNodeBase {
             throw new TMException("实际的请求地址不能为空");
         }
 
+        String path = URLUtil.getPath(actualUrl);
+        log.info(path);
+        AutoTestContext context = AutoTestContextService.getContext();
+        List<ApiIpPortConfig> apiIpPortConfigs = context.getTaskService().selectByUrlAndEnvId(path,
+                context.getPlanTask().getRunningConfigSnapshot().getEnvId());
+        if(apiIpPortConfigs != null && apiIpPortConfigs.size() > 1) {
+            throw new TMException("接口: " + path + ", 环境: "
+                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", 存在多条配置");
+        }
+
         // 拼装params
         String paramStr = getParamStr(caseVariables, params);
-        if(actualUrl.indexOf('?') > -1) {
+        if(actualUrl.indexOf('?') > -1 && StringUtils.isNoneBlank(paramStr)) {
             actualUrl += "&" + paramStr;
-        }else{
+        } else if(StringUtils.isNoneBlank(paramStr)) {
             actualUrl += "?" + paramStr;
         }
+
+        if(apiIpPortConfigs != null && !apiIpPortConfigs.isEmpty()) {
+            ApiIpPortConfig apiIpPortConfig = apiIpPortConfigs.get(0);
+            log.info("将接口路径中的ip和端口替换为环境配置的ip和端口");
+            actualUrl = ReUtil.replaceAll(actualUrl, "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}:[0-9]{1,4}",
+                    apiIpPortConfig.getIp() + ":" + apiIpPortConfig.getPort());
+        }
+
         log.info(actualUrl);
         addResultInfo("实际的请求地址: ").addResultInfoLine(actualUrl);
 
@@ -259,7 +280,8 @@ public class HttpSampler extends StepNodeBase {
     private String getParamStr(AutoTestVariables caseVariables, List<KeyValueRow> keyValueRows) throws UnsupportedEncodingException {
         StringBuilder builder = new StringBuilder("");
         if (keyValueRows != null) {
-            for (KeyValueRow param : keyValueRows) {
+            for (int i = 0; i < keyValueRows.size(); i++) {
+                KeyValueRow param = keyValueRows.get(i);
                 String paramName = param.getName();
                 if(StringUtils.isBlank(paramName)) {
                     throw new TMException("参数名称不能为空");
@@ -268,10 +290,13 @@ public class HttpSampler extends StepNodeBase {
                 if(StringUtils.isBlank(paramName)) {
                     throw new TMException("参数名称不能为空");
                 }
-                builder.append(FunctionUtils.encodeURIComponent(paramName)).append("&");
+                builder.append(FunctionUtils.encodeURIComponent(paramName)).append("=");
                 String value = param.getValue();
                 value = ExpressionUtils.replaceExpression(value, caseVariables.getVariables());
                 builder.append(FunctionUtils.encodeURIComponent(value));
+                if(i < keyValueRows.size() - 1) {
+                    builder.append("&");
+                }
             }
         }
 

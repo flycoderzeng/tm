@@ -18,4 +18,5 @@ public interface DataNodeMapper {
     int countSubLeafNode(GetNodesTreeBody body);
     List<DataNode> queryList(CommonTableQueryBody body);
     int countList(CommonTableQueryBody body);
+    List<DataNode> selectByDataTypeIdAndName(@Param("dataTypeId") Integer dataTypeId, @Param("name") String name);
 }

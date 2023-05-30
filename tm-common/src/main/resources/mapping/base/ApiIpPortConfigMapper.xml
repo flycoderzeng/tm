@@ -19,4 +19,13 @@
   <sql id="Base_Column_List" >
     id, name, url, ip, port, status, env_id, add_time, add_user, last_modify_time, last_modify_user
   </sql>
+
+  <select id="selectByUrlAndEnvId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from api_ip_port_config
+    where 1=1
+    and url=#{url,jdbcType=VARCHAR}
+    and env_id=#{envId,jdbcType=INTEGER}
+  </select>
 </mapper>

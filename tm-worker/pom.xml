@@ -148,6 +148,14 @@
             <version>5.8.15</version>
         </dependency>
 
+
+
+        <dependency>
+            <groupId>olym.tetch</groupId>
+            <artifactId>olymkgc</artifactId>
+            <version>4.0</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

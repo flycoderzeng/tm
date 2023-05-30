@@ -10,8 +10,10 @@ export interface IState {
     rows: KeyValueRow[];
     // form-data cookie response-assert response-extractor
     // jdbc-response-assert jdbc-response-extractor
+    // plan-variable
     type?: string;
     userDefinedVariables?: AutoCaseVariable[];
+    setRows?: any;
 }
 
 const relationOperatorList: any[] = [
@@ -22,7 +24,8 @@ const relationOperatorList: any[] = [
     {label: '开始以', value: '9'}, {label: '结束以', value: '10'},
     {label: '是null', value: '11'}, {label: '不是null', value: '12'},
     {label: '是空的', value: '13'}, {label: '不是空的', value: '14'},
-    {label: '正则匹配', value: '15'},
+    {label: '正则匹配', value: '15'}, {label: '路径不存在', value: '16'},
+    {label: '不是空白', value: '17'}, {label: '是空白', value: '18'},
 ];
 
 const KeyValueEditor: React.FC<IState> = (props) => {
@@ -142,11 +145,17 @@ const KeyValueEditor: React.FC<IState> = (props) => {
         row['key'] = RandomUtils.getKey();
         rows.push(row);
         setRows(rows);
+        if(props.setRows) {
+            props.setRows([...rows]);
+        }
     }
 
     function onRemove() {
         rows.splice(currIndex, 1);
         setRows(rows);
+        if(props.setRows) {
+            props.setRows(rows);
+        }
     }
 
     function onClickRow(index: number) {
@@ -311,11 +320,16 @@ const KeyValueEditor: React.FC<IState> = (props) => {
         setCurrKey(e.target.value);
     }
 
+    let detailBtn;
+    if(props.type !== 'plan-variable') {
+        detailBtn = <Button size="small" type="primary" onClick={onDetail}>详细</Button>;
+    }
+
     return (<div>
         <div className="variable-toolbar">
             <Button size="small" type="primary" onClick={add}>添加</Button>
             <Button size="small" type="primary" onClick={onRemove}>删除</Button>
-            <Button size="small" type="primary" onClick={onDetail}>详细</Button>
+            {detailBtn}
         </div>
         <Row className="common-header">
             {rowNumberThead}

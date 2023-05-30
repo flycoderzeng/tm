@@ -12,7 +12,7 @@ public class RunPlanBody {
     @NotNull(message = "运行类型不能为空")
     private Integer runType;
     private Integer runEnvId;
-    private Integer fromType;
+    private Integer fromType = 1;
     private Integer planCronJobId;
     @Min(0)
     private Integer priority = 0;

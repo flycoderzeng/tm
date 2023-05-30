@@ -3,6 +3,7 @@ package com.tm.worker.core.protocol.jdbc;
 import com.tm.common.base.model.DbConfig;
 import com.tm.common.base.model.PlanRunningConfigSnapshot;
 import com.tm.common.entities.common.KeyValueRow;
+import com.tm.common.entities.common.enumerate.DbTypeEnum;
 import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.StepNodeBase;
 import com.tm.worker.core.threads.AutoTestContext;
@@ -74,13 +75,21 @@ public class JDBCRequest extends StepNodeBase {
         addResultInfo("数据库名：").addResultInfoLine(dbName);
         addResultInfo("sql语句：").addResultInfoLine(content);
 
-        if(content.toLowerCase().startsWith("select")) {
-            List<Map<String, String>> list = execSelect(dbConfig, content);
-            addResultInfo("sql执行结果：").addResultInfoLine(list);
+        if(dbConfig.getType().equals(DbTypeEnum.MYSQL.value())) {
+            if (content.toLowerCase().startsWith("select")) {
+                List<Map<String, String>> list = execMySQLSelect(dbConfig, content);
+                addResultInfo("sql执行结果：").addResultInfoLine(list);
+            } else if (content.toLowerCase().startsWith("update")) {
+                execUpdate(dbConfig, content);
+            } else if (content.toLowerCase().startsWith("delete")) {
+                execDelete(dbConfig, content);
+            } else if (content.toLowerCase().startsWith("insert")) {
+                execInsert(dbConfig, content);
+            }
         }
     }
 
-    private List<Map<String, String>> execSelect(DbConfig dbConfig, String sql) {
+    private List<Map<String, String>> execMySQLSelect(DbConfig dbConfig, String sql) {
         AutoTestContext context = AutoTestContextService.getContext();
 
         if(sql.endsWith(";")) {
@@ -92,6 +101,24 @@ public class JDBCRequest extends StepNodeBase {
             sql += " limit 1";
         }
 
+        List<Map<String, String>> list = execSelect(dbConfig, sql, context);
+
+        return list;
+    }
+
+    private void execInsert(DbConfig dbConfig, String content) {
+
+    }
+
+    private void execDelete(DbConfig dbConfig, String content) {
+
+    }
+
+    private void execUpdate(DbConfig dbConfig, String content) {
+
+    }
+
+    private List<Map<String, String>> execSelect(DbConfig dbConfig, String sql, AutoTestContext context) {
         Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
         if(conn == null) {
             throw new TMException("获取数据库连接失败");

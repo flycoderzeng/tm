@@ -36,4 +36,13 @@ public class AutoPlanService extends BaseService {
         }
         return updateNode4CommonFields(user, autoPlan, DataTypeEnum.AUTO_PLAN);
     }
+
+    public BaseResponse savePlanVariables(AutoPlan autoPlan, User user) {
+        if(autoPlan.getId() != null || autoPlan.getId() > 0) {
+            autoPlanMapper.updateBySelective(autoPlan);
+            return ResultUtils.success();
+        }else{
+            return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
+        }
+    }
 }

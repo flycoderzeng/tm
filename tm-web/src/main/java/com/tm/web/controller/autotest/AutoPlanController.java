@@ -28,4 +28,10 @@ public class AutoPlanController extends BaseController {
         User user = getLoginUser();
         return autoPlanService.save(autoPlan, user);
     }
+
+    @PostMapping(value = "/savePlanVariables", produces = {"application/json;charset=UTF-8"})
+    public BaseResponse savePlanVariables(@RequestBody AutoPlan autoPlan) {
+        User user = getLoginUser();
+        return autoPlanService.savePlanVariables(autoPlan, user);
+    }
 }

@@ -5,9 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.tm.common.base.model.*;
-import com.tm.common.dao.AutoCaseDao;
-import com.tm.common.dao.PlanCaseDao;
-import com.tm.common.dao.PlanExecuteResultDao;
+import com.tm.common.dao.*;
 import com.tm.common.entities.autotest.CaseExecuteLogOperate;
 import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
@@ -26,6 +24,7 @@ import com.tm.worker.service.CaseResultLogService;
 import com.tm.worker.service.DbConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
@@ -67,9 +66,15 @@ public class TaskService {
     @Autowired
     private AutoCaseDao autoCaseDao;
     @Autowired
+    private GlobalVariableDao globalVariableDao;
+    @Autowired
+    private DataNodeDao dataNodeDao;
+    @Autowired
     private CaseResultLogService caseResultLogService;
     @Autowired
     private DbConfigService dbConfigService;
+    @Autowired
+    private ApiIpPortConfigDao apiIpPortConfigDao;
     @Autowired
     private JDBCDataSourceFactory jdbcDataSourceFactory;
 
@@ -288,5 +293,21 @@ public class TaskService {
             planTask.setIsUpdateRunning();
             setPlanExecuteResultStatus(planTask, PlanExecuteResultStatusEnum.RUNNING);
         }
+    }
+
+    public GlobalVariable selectGlobalVariableByPrimaryId(Integer id) {
+        return globalVariableDao.selectByPrimaryId(id);
+    }
+
+    public List<DataNode> selectByDataTypeIdAndName(Integer dataTypeId, String name) {
+        return dataNodeDao.selectByDataTypeIdAndName(dataTypeId, name);
+    }
+
+    public int updateGlobalVariable(GlobalVariable record) {
+        return globalVariableDao.updateBySelective(record);
+    }
+
+    public List<ApiIpPortConfig> selectByUrlAndEnvId(String url, Integer envId) {
+        return apiIpPortConfigDao.selectByUrlAndEnvId(url, envId);
     }
 }

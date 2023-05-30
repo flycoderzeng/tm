@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input, message, Select, Tabs, Tooltip, Radio} from "antd";
+import {Button, Form, Input, message, Select, Tabs, Tooltip, Radio, Modal} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
 import {DataTypeEnum} from "../../../entities/DataTypeEnum";
 import {CommonRemoteSearchMultiSelect} from "../../common/components/CommonRemoteSearchMultiSelect";
@@ -8,9 +8,10 @@ import {ApiUrlConfig} from "../../../config/api.url";
 import {RunEnvSelect} from "../../testmanage/runenv/RunEnvSelect";
 import {PlanCaseEdit} from "./PlanCaseEdit";
 import {ValueItem} from "../../../entities/common/ValueItem";
+import {KeyValueEditor} from "../case-editor/editor/KeyValueEditor";
+import {KeyValueRow} from "../case-editor/entities/KeyValueRow";
 
 const Option = Select.Option;
-const {TabPane} = Tabs;
 
 interface AutoPlanModel {
     name: string;
@@ -44,6 +45,8 @@ const initialValues: AutoPlanModel = {
 
 const AutoPlanEdit: React.FC<IState> = (props) => {
     const [saving, setSaving] = useState(false);
+    const [visiblePlanGlobalVariableModal, setVisiblePlanGlobalVariableModal] = useState(false);
+    const [planVariables, setPlanVariables] = useState<KeyValueRow[]>([]);
     const [projectId, setProjectId] = useState(props.projectId);
     const [mailList, setMailList] = useState<ValueItem[]>([]);
     const [id, setId] = useState(props.id);
@@ -106,18 +109,23 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                             type: ret.data.type.toString(),
                             maxOccurs: ret.data.maxOccurs || 100,
                             runs: ret.data.runs || 1,
-                            envId: ret.data.envId+'',
+                            envId: ret.data.envId == null ? '' : ret.data.envId + '',
                             failContinue: ret.data.failContinue === 0 ? 0 : 1
                         });
-                        setRunEnvId(ret.data.envId.toString() || undefined);
+                        setRunEnvId(ret.data.envId == null ? '': ret.data.envId.toString());
+                        if(ret.data.planVariables) {
+                            setPlanVariables(JSON.parse(ret.data.planVariables));
+                        }
                     }
-                    const tempList: string[] = ret.data.mailList?.split(';') || [];
-                    const tempValueItemList: ValueItem[] = [];
-                    tempList.map(row => {
-                        tempValueItemList.push({value: row, label: row});
-                    });
+                    if(ret.data.mailList !== '' && ret.data.mailList !== null && ret.data.mailList !== undefined) {
+                        const tempList: string[] = ret.data.mailList?.split(';') || [];
+                        const tempValueItemList: ValueItem[] = [];
+                        tempList.map(row => {
+                            tempValueItemList.push({value: row, label: row});
+                        });
 
-                    setMailList(tempValueItemList);
+                        setMailList(tempValueItemList);
+                    }
                 }
             }
         });
@@ -173,6 +181,21 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
         });
     }
 
+    function savePlanVariables() {
+        axios.post(ApiUrlConfig.SAVE_AUTO_PLAN_VARIABLES_URL, {id: id, planVariables: JSON.stringify(planVariables)}).then(resp => {
+            if (resp.status !== 200) {
+                message.error('操作失败');
+            } else {
+                const ret = resp.data;
+                if (ret.code !== 0) {
+                    message.error(ret.message);
+                } else {
+                    message.success('操作成功');
+                }
+            }
+        });
+    }
+
     return (<div className="card">
         <div className="card-header card-header-divider">
             编辑自动化计划
@@ -180,7 +203,9 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                 <Button onClick={back} type="primary" size="small" shape="circle" icon={<ArrowLeftOutlined/>}/>
             </Tooltip>
             <span style={{float: 'right'}}>
-                <Button type="primary" size="small">计划变量配置</Button>
+                <Button type="primary" size="small" onClick={() => {
+                    setVisiblePlanGlobalVariableModal(true);
+                }}>计划变量配置</Button>
                 <Button className="margin-left5" onClick={runPlan} loading={running1} type="default" size="small">运行计划</Button>
                 <Button className="margin-left5" onClick={runPlanWithGroup} loading={running2} type="primary" size="small">组合运行</Button>
                 <Button className="margin-left5" onClick={checkPlanResult} type="default" size="small">查看运行结果</Button>
@@ -280,6 +305,20 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
             ]}>
             </Tabs>
         </div>
+        <Modal
+            title="计划全局变量"
+            open={visiblePlanGlobalVariableModal}
+            onOk={() => {
+                setVisiblePlanGlobalVariableModal(false);
+                savePlanVariables();
+            }}
+            onCancel={() => setVisiblePlanGlobalVariableModal(false)}
+            width={900}
+        >
+            <div>
+                <KeyValueEditor rows={planVariables} type={'plan-variable'} setRows={setPlanVariables}></KeyValueEditor>
+            </div>
+        </Modal>
     </div>)
 }
 export {AutoPlanEdit}
