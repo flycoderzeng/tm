@@ -36,7 +36,7 @@ public class CaseTaskRunnerThread implements Runnable {
                 int index = 0;
                 for (; ; ) {
                     PlanTask planTask = taskService.getPlanTask(index);
-                    if (planTask == null || planTask.getFinishedCount().equals(planTask.getTotalCases())) {
+                    if (planTask == null || planTask.isFinished()) {
                         TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
                         index = 0;
                         continue;
@@ -94,7 +94,7 @@ public class CaseTaskRunnerThread implements Runnable {
         planTask.increaseFinishedCount();
         planTask.decreaseRunningCount();
         // 最后一个用例执行完，设置计划结果状态为完成
-        if (planTask.getFinishedCount().equals(planTask.getTotalCases())) {
+        if (planTask.isFinished()) {
             log.info("最后一个用例执行完，设置计划结果状态为完成, 计划结果id：{}", planTask.getPlanExecuteResultId());
             taskService.setPlanExecuteEnd(planTask);
             removePlanTask(planTask);

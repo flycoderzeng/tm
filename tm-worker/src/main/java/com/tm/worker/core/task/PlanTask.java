@@ -11,7 +11,7 @@ public class PlanTask extends WorkerPlanTask {
     private PlanRunningConfigSnapshot runningConfigSnapshot;
     private AutoTestVariables planVariables;
 
-    private Integer totalCases = 0;
+    private Integer totalCases = -1;
 
     private Boolean isUpdateRunning = false;
 
@@ -74,7 +74,7 @@ public class PlanTask extends WorkerPlanTask {
         this.totalCases = total;
     }
 
-    public Integer getTotalCases() {
-        return totalCases;
+    synchronized public boolean isFinished() {
+        return totalCases == finishedCasesCount.get();
     }
 }

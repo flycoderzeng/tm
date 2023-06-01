@@ -21,4 +21,7 @@ public class PlanExecuteResult {
     private Integer planCronJobId;
     private Integer fromType;
     private String submitDate;
+    private Integer planSetupResultId;
+    private Integer planTeardownResultId;
+    private Integer planCaseType = 0;
 }

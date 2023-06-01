@@ -2,10 +2,10 @@ package com.tm.web.controller.autotest;
 
 import com.tm.common.entities.autotest.request.AddCaseToPlanBody;
 import com.tm.common.entities.autotest.request.ChangePlanCaseSeqBody;
+import com.tm.common.entities.autotest.request.ClearPlanCaseBody;
 import com.tm.common.entities.autotest.request.DeletePlanCaseBody;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.CommonTableQueryBody;
-import com.tm.common.entities.common.CommonIdBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.service.PlanCaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,19 +35,19 @@ public class PlanCaseController {
 
     @PostMapping(value = "/deletePlanCase", produces = {"application/json;charset=UTF-8"})
     public BaseResponse deletePlanCase(@RequestBody @Valid DeletePlanCaseBody body) {
-        planCaseService.deletePlanCase(body.getPlanId(), body.getIdList());
+        planCaseService.deletePlanCase(body);
         return ResultUtils.success();
     }
 
     @PostMapping(value = "/clearPlanCase", produces = {"application/json;charset=UTF-8"})
-    public BaseResponse clearPlanCase(@RequestBody @Valid CommonIdBody body) {
-        planCaseService.clearPlanCase(body.getId());
+    public BaseResponse clearPlanCase(@RequestBody @Valid ClearPlanCaseBody body) {
+        planCaseService.clearPlanCase(body);
         return ResultUtils.success();
     }
 
     @PostMapping(value = "/changeCaseSeq", produces = {"application/json;charset=UTF-8"})
     public BaseResponse changeCaseSeq(@RequestBody @Valid ChangePlanCaseSeqBody body) {
-        planCaseService.changeCaseSeq(body.getPlanId(), body.getCaseId(), body.getSeq());
+        planCaseService.changeCaseSeq(body.getPlanId(), body.getCaseId(), body.getSeq(), body.getType());
         return ResultUtils.success();
     }
 }

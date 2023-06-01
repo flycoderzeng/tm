@@ -444,7 +444,31 @@ CREATE TABLE `plan_case` (
   `case_id` int(11) DEFAULT NULL,
   `seq` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for plan_case_setup
+-- ----------------------------
+DROP TABLE IF EXISTS `plan_case_setup`;
+CREATE TABLE `plan_case_setup` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `plan_id` int(11) DEFAULT NULL,
+  `case_id` int(11) DEFAULT NULL,
+  `seq` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for plan_case_teardown
+-- ----------------------------
+DROP TABLE IF EXISTS `plan_case_teardown`;
+CREATE TABLE `plan_case_teardown` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `plan_id` int(11) DEFAULT NULL,
+  `case_id` int(11) DEFAULT NULL,
+  `seq` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for plan_cron_jobs
@@ -486,8 +510,11 @@ CREATE TABLE `plan_execute_result` (
   `plan_cron_job_id` int(11) DEFAULT NULL,
   `from_type` int(11) DEFAULT '1' COMMENT '1-计划2-用例3-定时计划',
   `submit_date` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '年月日yyyyMMdd',
+  `plan_setup_result_id` int DEFAULT NULL,
+  `plan_teardown_result_id` int DEFAULT NULL,
+  `plan_case_type` int DEFAULT '0' COMMENT '0-计划用例1-计划前用例2-计划后用例',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2095 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for plan_running_config_snapshot
@@ -502,9 +529,9 @@ CREATE TABLE `plan_running_config_snapshot` (
   `env_id` int(11) DEFAULT NULL,
   `env_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `fail_continue` int(11) DEFAULT '1' COMMENT '用例失败后计划是否继续执行，0-停止执行1-继续执行',
-  `global_variables` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `plan_variables` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2093 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for platform_api
@@ -514,7 +541,7 @@ CREATE TABLE `platform_api` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `define_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10031 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for projects
@@ -531,7 +558,7 @@ CREATE TABLE `projects` (
   `status` int(11) DEFAULT '0' COMMENT '0 正常 1 已删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for project_user
@@ -546,7 +573,7 @@ CREATE TABLE `project_user` (
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `last_modify_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for project_user_role
@@ -562,7 +589,7 @@ CREATE TABLE `project_user_role` (
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `last_modify_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for province
@@ -574,7 +601,7 @@ CREATE TABLE `province` (
   `url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `finish` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for release_plans
@@ -608,7 +635,7 @@ CREATE TABLE `rights` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `uri` (`uri`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for roles

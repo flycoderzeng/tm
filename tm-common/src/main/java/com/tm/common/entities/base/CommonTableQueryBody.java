@@ -1,5 +1,6 @@
 package com.tm.common.entities.base;
 
+import com.tm.common.retention.EnumValue;
 import lombok.Data;
 
 import javax.validation.constraints.Pattern;
@@ -28,6 +29,7 @@ public class CommonTableQueryBody extends PagingBody {
     private Integer parentId;
     private Integer planOrCaseId;
     private Integer fromType;
+    private Integer planCaseType;
 
     public List<FilterCondition> getFilterConditionList() {
         return filterConditionList;

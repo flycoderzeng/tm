@@ -11,6 +11,7 @@ import {CaseResultPage} from "./CaseResultPage";
 interface IState {
     planOrCaseId: number|null|undefined;
     fromType: number|null|undefined;
+    planCaseType: number|null|undefined;
     planResultId: number|null|undefined;
 }
 const { TabPane } = Tabs;
@@ -18,8 +19,11 @@ const { TabPane } = Tabs;
 const PlanResultPage: React.FC<IState> = (props) => {
     const planOrCaseId = (props as any).match.params.planOrCaseId;
     const fromType = (props as any).match.params.fromType;
+    const planCaseType = (props as any).match.params.planCaseType;
     let resultId = (props as any).match.params.planResultId;
     const [planResultId, setPlanResultId] = useState(resultId);
+    const [planSetupResultId, setPlanSetupResultId] = useState<number|null>(-1);
+    const [planTeardownResultId, setTeardownSetupResultId] = useState<number|null>(-1);
 
     const [planOrCaseName, setPlanOrCaseName] = useState('');
     const [submitInfo, setSubmitInfo] = useState('');
@@ -41,6 +45,8 @@ const PlanResultPage: React.FC<IState> = (props) => {
     function renderBasicInfo(data: any) {
         setPlanResultId(data.id);
         setPlanOrCaseName(data.planOrCaseName);
+        setPlanSetupResultId(data.planSetupResultId);
+        setTeardownSetupResultId(data.planTeardownResultId);
         let submitInfoTemp = data.submitter;
         submitInfoTemp += " 提交于 " + DateUtils.format(data.submitTimestamp);
         setSubmitInfo(submitInfoTemp);
@@ -145,12 +151,36 @@ const PlanResultPage: React.FC<IState> = (props) => {
         setActiveKey(activeKey);
     }
 
+    function checkSetupResult() {
+        if(!planSetupResultId) {
+            message.info('没有计划前执行结果');
+            return ;
+        }
+        window.open("/planresult/" + planOrCaseId + "/" + fromType + "/1/" + planSetupResultId);
+    }
+
+    function checkTeardownResult() {
+        if(!planTeardownResultId) {
+            message.info('没有计划后执行结果');
+            return ;
+        }
+        window.open("/planresult/" + planOrCaseId + "/" + fromType + "/2/" + planTeardownResultId);
+    }
+
+    let checkHistoryResultBtn;
+    if(planCaseType === 0 || planCaseType === '0') {
+        checkHistoryResultBtn = <Button type="primary" size="small" onClick={()=>{setVisible(true);}}>查看历史结果</Button>
+    }
+
     return (<div className="card">
         <div className="card-header card-header-divider">
             计划运行结果
         </div>
         <div className="card-body">
-            <Descriptions size="small" title="基本信息" extra={<div className="tool-bar"><Button type="dashed" size="small" onClick={()=>{setVisible(true);}}>查看历史结果</Button>
+            <Descriptions size="small" title="基本信息" extra={<div className="tool-bar">
+                {checkHistoryResultBtn}
+                <Button type="default" size="small" onClick={()=>{checkSetupResult();}}>查看计划前执行结果</Button>
+                <Button type="dashed" size="small" onClick={()=>{checkTeardownResult();}}>查看计划后执行结果</Button>
                 {/*<Button type="default" size="small">发送邮件</Button>*/}
                 {/*<Button type="primary" size="small">再次执行</Button>*/}
             </div>} bordered>

@@ -5,6 +5,7 @@ import {ApiUrlConfig} from "../../../config/api.url";
 import {CommonNodeListPage} from "../../common/CommonNodeListPage";
 import {DataTypeEnum} from "../../../entities/DataTypeEnum";
 import moment from "moment";
+import {MathUtils} from "../../../utils/MathUtils";
 
 export interface PlanCaseModel {
     id: number;
@@ -16,6 +17,7 @@ export interface PlanCaseModel {
 interface IState {
     planId: number | null | undefined;
     projectId: number | null;
+    planCaseType: number;
 }
 
 const PlanCaseEdit: React.FC<IState> = (props) => {
@@ -60,7 +62,8 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
         const data = {
             pageNum: pagination.pageNum,
             pageSize: pagination.pageSize,
-            order: 'seq', sort: 'asc', planId: planId
+            order: 'seq', sort: 'asc', planId: planId,
+            planCaseType: props.planCaseType
         };
         if (searchValue.trim() !== '') {
             data['filterConditionList'] = filterConditionList;
@@ -119,7 +122,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
         }
         setConfirmLoading(true);
         axios.post(ApiUrlConfig.ADD_CASE_TO_PLAN_URL,
-            {planId: planId, caseIdList: selectedResourceIdList}).then(resp => {
+            {planId: planId, caseIdList: selectedResourceIdList, type: props.planCaseType}).then(resp => {
             if (resp.status !== 200) {
                 message.error('加载失败');
             } else {
@@ -207,7 +210,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
         if (!window.confirm('确定清空吗?')) {
             return;
         }
-        axios.post(ApiUrlConfig.CLEAR_PLAN_CASE_URL, {id: planId}).then(resp => {
+        axios.post(ApiUrlConfig.CLEAR_PLAN_CASE_URL, {planId: planId, type: props.planCaseType}).then(resp => {
             if (resp.status !== 200) {
                 message.error('清空失败');
             } else {
@@ -231,7 +234,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
             return;
         }
         axios.post(ApiUrlConfig.DELETE_PLAN_CASE_URL,
-            {planId: planId, idList: selectedRowKeys}).then(resp => {
+            {planId: planId, idList: selectedRowKeys, type: props.planCaseType}).then(resp => {
             if (resp.status !== 200) {
                 message.error('删除失败');
             } else {
@@ -247,8 +250,12 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
     }
 
     function handleOkChangeCaseSeq() {
+        if(!MathUtils.isNumberSequence(seqValue)) {
+            message.info('请输入数字序号');
+            return ;
+        }
         axios.post(ApiUrlConfig.CHANGE_CASE_SEQ_URL,
-            {planId: planId, caseId: currPlanCase?.caseId, seq: seqValue}).then(resp => {
+            {planId: planId, caseId: currPlanCase?.caseId, seq: seqValue, type: props.planCaseType}).then(resp => {
             if (resp.status !== 200) {
                 message.error('调整失败');
             } else {
@@ -261,6 +268,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
                 }
             }
         });
+        handleCancelChangeCaseSeq();
     }
 
     function handleCancelChangeCaseSeq() {
@@ -309,7 +317,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
         <Modal title="调整用例位置" open={isChangeCaseSeqModalVisible}
                onOk={handleOkChangeCaseSeq}
                onCancel={handleCancelChangeCaseSeq}>
-            <Input placeholder="输入用例位置" value={seqValue} onChange={onChangeSeqValue}/>
+            <Input placeholder="输入用例位置" type="number" value={seqValue} onChange={onChangeSeqValue}/>
         </Modal>
     </div>)
 }

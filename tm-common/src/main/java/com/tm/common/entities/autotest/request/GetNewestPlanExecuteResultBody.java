@@ -15,4 +15,6 @@ public class GetNewestPlanExecuteResultBody {
     @Min(1)
     @Max(3)
     private Integer fromType;
+
+    private Integer planCaseType = 0;
 }

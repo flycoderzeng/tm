@@ -140,11 +140,11 @@ const routes = [
                 component: DbConfigEdit
             },
             {
-                path: "/planresult/:planOrCaseId/:fromType/:planResultId",
+                path: "/planresult/:planOrCaseId/:fromType/:planCaseType/:planResultId",
                 component: PlanResultPage
             },
             {
-                path: "/planresult/:planOrCaseId/:fromType",
+                path: "/planresult/:planOrCaseId/:fromType/:planCaseType",
                 component: PlanResultPage
             },
             {

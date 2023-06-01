@@ -132,7 +132,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
     }
 
     function checkPlanResult() {
-        window.open("/planresult/" + id + "/" + "1");
+        window.open("/planresult/" + id + "/1/0");
     }
 
     function runPlan() {
@@ -301,7 +301,9 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                             </Form.Item>
                         </Form>
                     </div>)},
-                {label: '计划用例', key: '2', children: (<PlanCaseEdit projectId={projectId} planId={id}></PlanCaseEdit>)}
+                {label: '计划用例', key: '2', children: (<PlanCaseEdit projectId={projectId} planId={id} planCaseType={0}></PlanCaseEdit>)},
+                {label: '计划执行前用例', key: '3', children: (<PlanCaseEdit projectId={projectId} planId={id} planCaseType={1}></PlanCaseEdit>)},
+                {label: '计划执行后用例', key: '4', children: (<PlanCaseEdit projectId={projectId} planId={id} planCaseType={2}></PlanCaseEdit>)}
             ]}>
             </Tabs>
         </div>

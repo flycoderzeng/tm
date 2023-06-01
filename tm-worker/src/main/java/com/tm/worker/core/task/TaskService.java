@@ -7,16 +7,20 @@ import com.googlecode.aviator.AviatorEvaluator;
 import com.tm.common.base.model.*;
 import com.tm.common.dao.*;
 import com.tm.common.entities.autotest.CaseExecuteLogOperate;
+import com.tm.common.entities.autotest.enumerate.PlanCaseEnum;
 import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
 import com.tm.common.entities.autotest.enumerate.PlanRunTypeEnum;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.common.KeyValueRow;
+import com.tm.common.utils.DateUtils;
+import com.tm.common.utils.LocalHostUtils;
 import com.tm.worker.core.function.date.GetDate;
-import com.tm.worker.core.function.random.GetRandomInt;
-import com.tm.worker.core.function.random.GetRandomInt_1;
-import com.tm.worker.core.function.random.GetRandomInt_2;
+import com.tm.worker.core.function.date.GetTimestamp;
+import com.tm.worker.core.function.extractor.JsonExtractor;
+import com.tm.worker.core.function.random.*;
+import com.tm.worker.core.function.secure.GetMd5;
 import com.tm.worker.core.protocol.jdbc.JDBCDataSourceFactory;
 import com.tm.worker.core.threads.CaseResultLogProcessRunnerThread;
 import com.tm.worker.core.threads.CaseTaskThread;
@@ -47,7 +51,7 @@ public class TaskService {
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().registerTypeAdapter(new TypeToken<Map<String, Object>>() {
             }.getType(),
             new DataTypeAdapter()).create();
-    private static final Integer MAX_PLAN_CASE_TOTAL = 100;
+    private static final Integer MAX_PLAN_CASE_TOTAL = 100000;
 
     private ExecutorService executorService;
     private ThreadPoolExecutor threadPoolExecutor;
@@ -66,6 +70,8 @@ public class TaskService {
     private PlanCaseDao planCaseDao;
     @Autowired
     private PlanExecuteResultDao planExecuteResultDao;
+    @Autowired
+    private PlanRunningConfigSnapshotDao planRunningConfigSnapshotDao;
     @Autowired
     private AutoCaseDao autoCaseDao;
     @Autowired
@@ -93,6 +99,14 @@ public class TaskService {
         AviatorEvaluator.addFunction(new GetRandomInt_1());
         AviatorEvaluator.addFunction(new GetRandomInt_2());
         AviatorEvaluator.addFunction(new GetDate());
+        AviatorEvaluator.addFunction(new GetTimestamp());
+        AviatorEvaluator.addFunction(new JsonExtractor());
+        AviatorEvaluator.addFunction(new GetChineseAddress());
+        AviatorEvaluator.addFunction(new GetChineseIdCardNo());
+        AviatorEvaluator.addFunction(new GetEmail());
+        AviatorEvaluator.addFunction(new GetEnglishName());
+        AviatorEvaluator.addFunction(new GetMobile());
+        AviatorEvaluator.addFunction(new GetMd5());
     }
 
     private void initThreadPool() {
@@ -108,9 +122,9 @@ public class TaskService {
     public void submitPlanTask(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
         log.info("接收到任务，计划结果id：{}，开始初始化", planExecuteResult.getId());
         if (!canSubmitPlanTask()) {
-            log.info("任务队列已满，任务id：{}提交失败。", planExecuteResult.getId());
+            log.info("任务队列已满，任务id：{} 提交失败。", planExecuteResult.getId());
             planExecuteResultDao.setPlanExecuteResultEndStatus(planExecuteResult,
-                    PlanExecuteResultStatusEnum.EXCEPTION, "任务队列已满");
+                    PlanExecuteResultStatusEnum.TASK_OVERFLOW, "任务队列已满");
             return;
         }
         AutoTestVariables planVariables = null;
@@ -119,7 +133,103 @@ public class TaskService {
             log.info("加载全局变量");
             planVariables = initPlanVariables(snapshot.getPlanVariables());
         }
-        handleSubmitTask(planExecuteResult, snapshot, planVariables);
+        log.info("检查计划是否存在计划执行前用例");
+        CommonTableQueryBody body = new CommonTableQueryBody();
+        body.setPageSize(MAX_PLAN_CASE_TOTAL);
+        body.setOrder("seq");
+        body.setSort("asc");
+        body.setPlanId(planExecuteResult.getPlanOrCaseId());
+
+        int countSetupCaseList = planCaseDao.countSetupCaseList(body);
+        if(countSetupCaseList > 0) {
+            PlanTask planSetupTask = execPlanSetupCases(planExecuteResult, snapshot, planVariables);
+            waitForTaskFinish(planSetupTask);
+        }
+
+        PlanTask planTask = handleSubmitTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value());
+        waitForTaskFinish(planTask);
+
+        int countTeardownCaseList = planCaseDao.countTeardownCaseList(body);
+        if(countTeardownCaseList > 0) {
+            execPlanTeardownCases(planExecuteResult, snapshot, planVariables);
+        }
+    }
+
+    private void execPlanTeardownCases(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot, AutoTestVariables planVariables) {
+        log.info("计划id: {} 配置了teardown用例", planExecuteResult.getPlanOrCaseId());
+        log.info("初始化 teardown PlanExecuteResult");
+        PlanExecuteResult planTeardownExecuteResult = copyPlanExecuteResult(planExecuteResult, PlanCaseEnum.TEARDOWN.value());
+        planExecuteResultDao.insertBySelective(planTeardownExecuteResult);
+
+        log.info("更新planExecuteResult的 teardown plan result id");
+        planExecuteResult.setPlanTeardownResultId(planTeardownExecuteResult.getId());
+        planExecuteResultDao.updateBySelective(planExecuteResult);
+
+        log.info("初始化 teardown PlanRunningConfigSnapshot");
+        PlanRunningConfigSnapshot planTeardownSnapshot = copyPlanRunningConfigSnapshot(snapshot, planTeardownExecuteResult);
+        planRunningConfigSnapshotDao.insertBySelective(planTeardownSnapshot);
+        handleSubmitTask(planTeardownExecuteResult, planTeardownSnapshot, planVariables, PlanCaseEnum.TEARDOWN.value());
+    }
+
+    private void waitForTaskFinish(PlanTask planSetupTask) {
+        while (true) {
+            if(planSetupTask.isFinished()) {
+                break;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException e) {
+                log.info("", e);
+            }
+        }
+    }
+
+    private PlanTask execPlanSetupCases(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot, AutoTestVariables planVariables) {
+        log.info("计划id: {} 配置了setup用例", planExecuteResult.getPlanOrCaseId());
+        log.info("初始化 setup PlanExecuteResult");
+        PlanExecuteResult planSetupExecuteResult = copyPlanExecuteResult(planExecuteResult, PlanCaseEnum.SETUP.value());
+        planExecuteResultDao.insertBySelective(planSetupExecuteResult);
+
+        log.info("更新planExecuteResult的 setup plan result id");
+        planExecuteResult.setPlanSetupResultId(planSetupExecuteResult.getId());
+        planExecuteResultDao.updateBySelective(planExecuteResult);
+
+        log.info("初始化 setup PlanRunningConfigSnapshot");
+        PlanRunningConfigSnapshot planSetupSnapshot = copyPlanRunningConfigSnapshot(snapshot, planSetupExecuteResult);
+        planRunningConfigSnapshotDao.insertBySelective(planSetupSnapshot);
+
+        return handleSubmitTask(planSetupExecuteResult, planSetupSnapshot, planVariables, PlanCaseEnum.SETUP.value());
+    }
+
+    private PlanRunningConfigSnapshot copyPlanRunningConfigSnapshot(PlanRunningConfigSnapshot snapshot, PlanExecuteResult planSetupExecuteResult) {
+        PlanRunningConfigSnapshot planSetupSnapshot = new PlanRunningConfigSnapshot();
+        planSetupSnapshot.setEnvId(snapshot.getEnvId());
+        planSetupSnapshot.setEnvName(snapshot.getEnvName());
+        planSetupSnapshot.setPlanVariables(snapshot.getPlanVariables());
+        planSetupSnapshot.setPlanResultId(planSetupExecuteResult.getId());
+        planSetupSnapshot.setFailContinue(0);
+        // 计划前\后 用例默认只执行一次
+        planSetupSnapshot.setRuns(1);
+        // 计划前\后 用例 按顺序一个一个执行
+        planSetupSnapshot.setMaxOccurs(1);
+        planSetupSnapshot.setRunType(PlanRunTypeEnum.DEFAULT.value());
+        return planSetupSnapshot;
+    }
+
+    private PlanExecuteResult copyPlanExecuteResult(PlanExecuteResult planExecuteResult, Integer planCaseType) {
+        PlanExecuteResult planSetupExecuteResult = new PlanExecuteResult();
+        planSetupExecuteResult.setPlanOrCaseId(planExecuteResult.getPlanOrCaseId());
+        planSetupExecuteResult.setPlanOrCaseName(planExecuteResult.getPlanOrCaseName());
+        planSetupExecuteResult.setSubmitter(planExecuteResult.getSubmitter());
+        planSetupExecuteResult.setSubmitTimestamp(System.currentTimeMillis());
+        planSetupExecuteResult.setWorkerIp(LocalHostUtils.getLocalIp());
+        planSetupExecuteResult.setPlanCronJobId(planExecuteResult.getPlanCronJobId());
+        planSetupExecuteResult.setSubmitDate(DateUtils.parseTimestampToFormatDate(System.currentTimeMillis(), DateUtils.DATE_PATTERN_YMD));
+        planSetupExecuteResult.setTotal(1);
+        planSetupExecuteResult.setFromType(planExecuteResult.getFromType());
+        planSetupExecuteResult.setPlanCronJobId(planExecuteResult.getPlanCronJobId());
+        planSetupExecuteResult.setPlanCaseType(planCaseType);
+        return planSetupExecuteResult;
     }
 
     private AutoTestVariables initPlanVariables(String planVariables) {
@@ -135,18 +245,19 @@ public class TaskService {
         return new AutoTestVariables(map);
     }
 
-    public void handleSubmitTask(PlanExecuteResult planExecuteResult,
-                                 PlanRunningConfigSnapshot snapshot,
-                                 AutoTestVariables planVariables) {
+    public PlanTask handleSubmitTask(PlanExecuteResult planExecuteResult,
+                                     PlanRunningConfigSnapshot snapshot,
+                                     AutoTestVariables planVariables,
+                                     Integer planCaseType) {
         List<Integer> caseIdList = new ArrayList<>();
-        if (!fillCaseIdList(planExecuteResult, caseIdList)) return;
+        if (!fillCaseIdList(planExecuteResult, caseIdList, planCaseType)) return null;
 
         if (caseIdList.isEmpty()) {
             log.info("计划没有关联用例， 计划id：{}，计划运行来源类型：{}", planExecuteResult.getPlanOrCaseId(),
                     planExecuteResult.getFromType());
             planExecuteResultDao.setPlanExecuteResultEndStatus(planExecuteResult,
                     PlanExecuteResultStatusEnum.EXCEPTION, "计划没有关联用例");
-            return;
+            return null;
         }
 
         PlanTask planTask = new PlanTask(planExecuteResult, snapshot, planVariables);
@@ -154,10 +265,9 @@ public class TaskService {
         int i = 0;
         for (Integer caseId : caseIdList) {
             AutoCase autoCase = autoCaseDao.selectByPrimaryId(caseId);
-            // 判断是否有组合配置
             String groupVariablesStr = autoCase.getGroupVariables();
-            // 组合配置不为空，并且是组合运行方式
-            if (StringUtils.isNotBlank(groupVariablesStr) && PlanRunTypeEnum.GROUP.value().equals(snapshot.getRunType())) {
+            // 是组合运行方式 并且 组合配置不为空
+            if (PlanRunTypeEnum.GROUP.value().equals(snapshot.getRunType()) && StringUtils.isNotBlank(groupVariablesStr)) {
                 HashMap<String, String>[] groups = gson.fromJson(groupVariablesStr, groupVariablesTypeToken);
                 log.info("组合方式运行， 用例id: {}", caseId);
                 for (int j = 0; j < groups.length; j++) {
@@ -194,9 +304,11 @@ public class TaskService {
         planTask.setTotalCases(caseTaskQueue.size());
         planTaskList.add(planTask);
         planTaskList.sort();
+
+        return planTask;
     }
 
-    private boolean fillCaseIdList(PlanExecuteResult planExecuteResult, List<Integer> caseIdList) {
+    private boolean fillCaseIdList(PlanExecuteResult planExecuteResult, List<Integer> caseIdList, Integer planCaseType) {
         // 如果不是调试用例，查询计划用例关联列表
         if (!planExecuteResult.getFromType().equals(PlanRunFromTypeEnum.CASE.value())) {
             log.info("执行计划");
@@ -205,10 +317,17 @@ public class TaskService {
             body.setOrder("seq");
             body.setSort("asc");
             body.setPlanId(planExecuteResult.getPlanOrCaseId());
-            int total = planCaseDao.countList(body);
+            int total = 0;
+            if (planCaseType == PlanCaseEnum.DEFAULT.value()) {
+                total = planCaseDao.countCaseList(body);
+            }else if(planCaseType == PlanCaseEnum.SETUP.value()) {
+                total = planCaseDao.countSetupCaseList(body);
+            }else if(planCaseType == PlanCaseEnum.TEARDOWN.value()) {
+                total = planCaseDao.countTeardownCaseList(body);
+            }
             if (total < 1) {
-                log.info("计划没有关联用例， 计划id：{}，计划运行来源类型：{}", planExecuteResult.getPlanOrCaseId(),
-                        planExecuteResult.getFromType());
+                log.info("计划没有关联用例， 计划id：{}，计划运行来源类型：{}, 计划用例类型: {}", planExecuteResult.getPlanOrCaseId(),
+                        planExecuteResult.getFromType(), planCaseType);
                 planExecuteResultDao.setPlanExecuteResultEndStatus(planExecuteResult,
                         PlanExecuteResultStatusEnum.EXCEPTION, "计划没有关联用例");
                 return false;
@@ -216,12 +335,20 @@ public class TaskService {
             //更新将运行的用例总数
             planExecuteResultDao.setTotal(planExecuteResult, total);
 
-            List<PlanCase> planCases = planCaseDao.queryList(body);
+            List<PlanCase> planCases = new ArrayList<>();
+            if (planCaseType == PlanCaseEnum.DEFAULT.value()) {
+                planCases = planCaseDao.queryCaseList(body);
+            }else if(planCaseType == PlanCaseEnum.SETUP.value()) {
+                planCases = planCaseDao.querySetupCaseList(body);
+            }else if(planCaseType == PlanCaseEnum.TEARDOWN.value()) {
+                planCases = planCaseDao.queryTeardownCaseList(body);
+            }
+
             for (PlanCase planCase : planCases) {
                 caseIdList.add(planCase.getCaseId());
             }
         } else {
-            log.info("调试用例");
+            log.info("---调试用例----");
             caseIdList.add(planExecuteResult.getPlanOrCaseId());
         }
 
@@ -321,8 +448,8 @@ public class TaskService {
         return dataNodeDao.selectByDataTypeIdAndName(dataTypeId, name);
     }
 
-    public int updateGlobalVariable(GlobalVariable record) {
-        return globalVariableDao.updateBySelective(record);
+    public int updateGlobalVariable(GlobalVariable globalVariable) {
+        return globalVariableDao.updateBySelective(globalVariable);
     }
 
     public List<ApiIpPortConfig> selectByUrlAndEnvId(String url, Integer envId) {

@@ -5,6 +5,7 @@ import com.tm.common.base.model.CaseStepExecuteResult;
 import com.tm.common.base.model.CaseVariableValueResult;
 import com.tm.common.base.model.PlanExecuteResult;
 import com.tm.common.dao.PlanExecuteResultDao;
+import com.tm.common.entities.autotest.enumerate.PlanCaseEnum;
 import com.tm.common.entities.autotest.request.GetNewestPlanExecuteResultBody;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.CommonTableQueryBody;
@@ -42,6 +43,7 @@ public class PlanResultService {
         if(StringUtils.isBlank(body.getOrder())) {
             body.setOrder("id");
         }
+        body.setPlanCaseType(PlanCaseEnum.DEFAULT.value());
         CommonTableQueryResponse response = new CommonTableQueryResponse<PlanExecuteResult>();
         Integer c = planExecuteResultDao.getPlanHistoryExecuteResultListCount(body);
         response.setTotal(c);
