@@ -101,7 +101,7 @@ public class AutoTestService {
         if(body.getFromTypeEnum() == PlanRunFromTypeEnum.PLAN || body.getFromTypeEnum() == PlanRunFromTypeEnum.CRON_JOB) {
             snapshot.setMaxOccurs(autoPlan.getMaxOccurs());
             snapshot.setFailContinue(autoPlan.getFailContinue());
-            snapshot.setGlobalVariables(autoPlan.getPlanVariables());
+            snapshot.setPlanVariables(autoPlan.getPlanVariables());
         }
         snapshot.setRunType(body.getRunType());
 

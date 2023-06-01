@@ -12,6 +12,7 @@ import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
 import com.tm.common.entities.autotest.enumerate.PlanRunTypeEnum;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.CommonTableQueryBody;
+import com.tm.common.entities.common.KeyValueRow;
 import com.tm.worker.core.function.date.GetDate;
 import com.tm.worker.core.function.random.GetRandomInt;
 import com.tm.worker.core.function.random.GetRandomInt_1;
@@ -22,9 +23,9 @@ import com.tm.worker.core.threads.CaseTaskThread;
 import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.service.CaseResultLogService;
 import com.tm.worker.service.DbConfigService;
+import com.tm.worker.utils.DataTypeAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
@@ -43,7 +44,9 @@ import java.util.concurrent.*;
 @Slf4j
 @Component
 public class TaskService {
-    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().registerTypeAdapter(new TypeToken<Map<String, Object>>() {
+            }.getType(),
+            new DataTypeAdapter()).create();
     private static final Integer MAX_PLAN_CASE_TOTAL = 100;
 
     private ExecutorService executorService;
@@ -110,11 +113,26 @@ public class TaskService {
                     PlanExecuteResultStatusEnum.EXCEPTION, "任务队列已满");
             return;
         }
+        AutoTestVariables planVariables = null;
         // 如果不是调试用例，需要加载全局变量
         if (!planExecuteResult.getFromType().equals(PlanRunFromTypeEnum.CASE.value())) {
             log.info("加载全局变量");
+            planVariables = initPlanVariables(snapshot.getPlanVariables());
         }
-        handleSubmitTask(planExecuteResult, snapshot, null);
+        handleSubmitTask(planExecuteResult, snapshot, planVariables);
+    }
+
+    private AutoTestVariables initPlanVariables(String planVariables) {
+        if(StringUtils.isBlank(planVariables)) {
+            return null;
+        }
+        Type type = new TypeToken<ArrayList<KeyValueRow>>(){}.getType();
+        List<KeyValueRow> rows = gson.fromJson(planVariables, type);
+        Map<String, String> map = new HashMap<>();
+        for (KeyValueRow row : rows) {
+            map.put(row.getName(), row.getValue());
+        }
+        return new AutoTestVariables(map);
     }
 
     public void handleSubmitTask(PlanExecuteResult planExecuteResult,

@@ -12,6 +12,6 @@ public class PlanRunningConfigSnapshot {
     private Integer envId;
     private String envName;
     private Integer failContinue = 1;
-    private String globalVariables;
+    private String planVariables;
     private Integer maxOccurs = 10;
 }

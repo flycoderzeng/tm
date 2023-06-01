@@ -145,7 +145,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                     name="port"
                     rules={[{required: true, message: '请输入端口!'}]}
                 >
-                    <Input style={{width: '150px'}} placeholder="如：8080"/>
+                    <Input style={{width: '150px'}} placeholder="如：3306"/>
                 </Form.Item>
 
                 <Form.Item

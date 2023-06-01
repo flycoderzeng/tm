@@ -27,6 +27,11 @@ public class RootNode extends StepNodeBase {
         if(groupVariables != null) {
             caseVariables.replace(groupVariables);
         }
+        // 将计划变量的值更新到用例变量
+        AutoTestVariables planVariables = autoTestContext.getPlanTask().getPlanVariables();
+        if(planVariables != null) {
+            caseVariables.replace(planVariables);
+        }
 
         autoTestContext.setAutoTestCookie(new AutoTestCookie(cookies));
     }

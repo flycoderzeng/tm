@@ -125,10 +125,14 @@ public class HttpSampler extends StepNodeBase {
     private Object extractLeftOperand(HttpResponse httpResponse, KeyValueRow keyValueRow, String name) {
         Document document;
         final String body = httpResponse.body();
-        Object leftOperand = "";
+        Object leftOperand = null;
         if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_BODY.val())) {
             if(name.startsWith("$.")) {
-                leftOperand = JsonPath.read(body, name);
+                try {
+                    leftOperand = JsonPath.read(body, name);
+                } catch (Exception e) {
+                    leftOperand = e;
+                }
             }else if(name.startsWith("/")) {
                 document = XMLUtils.parseXmlString(body);
                 if(document == null) {
@@ -139,7 +143,7 @@ public class HttpSampler extends StepNodeBase {
                     leftOperand = nodes.get(0).getStringValue();
                 }
             }else{
-                throw new TMException("参数路径不能为空");
+                leftOperand = body;
             }
         }else if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_HEADER.val())) {
             leftOperand = httpResponse.header(name);
