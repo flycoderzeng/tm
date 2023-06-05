@@ -227,7 +227,8 @@ public class DataNodeService {
 
     private BaseResponse setParentI(DataNode dataNode, DataNode parentDataNode) {
         Class dataNodeClass = dataNode.getClass();
-        for(int i=1;i<11;i++) {
+        int i = 1;
+        for(;i < 11; i++) {
             String setMethodName = "setParent" + i;
             String getMethodName = "getParent" + i;
             try {
@@ -252,6 +253,22 @@ public class DataNodeService {
                 return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
             }
         }
+        String setMethodName = "setParent" + parentDataNode.getLevel();
+        Method setMethod = null;
+        try {
+            setMethod = dataNodeClass.getMethod(setMethodName, new Class[]{Integer.class});
+            setMethod.invoke(dataNode, parentDataNode.getId());
+        } catch (NoSuchMethodException e) {
+            log.error("get method error: {}", e);
+            return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
+        } catch (InvocationTargetException e) {
+            log.error("set method error: {}", e);
+            return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
+        } catch (IllegalAccessException e) {
+            log.error("set method error: {}", e);
+            return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
+        }
+
         return ResultUtils.success();
     }
 

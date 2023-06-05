@@ -93,6 +93,7 @@ const ApiUrlConfig = {
     SAVE_DB_CONFIG_URL: '/lc/lc/json/api/db_config',
     DELETE_DB_CONFIG_URL: '/lc/lc/json/api/db_config/',
     LOAD_DB_CONFIG_URL: '/lc/lc/json/api/db_config/',
+    GET_ALL_DATABASE_NAMES_URL: '/web/dbconfig/getAllDatabaseNames',
     GET_NEWEST_PLAN_EXECUTE_RESULT_URL: '/web/planresult/getNewestPlanExecuteResult',
     GET_SINGLE_PLAN_EXECUTE_RESULT_URL: '/web/planresult/getSinglePlanExecuteResult',
     GET_PLAN_HISTORY_EXECUTE_RESULT_LIST_URL: '/web/planresult/getPlanHistoryExecuteResultList',

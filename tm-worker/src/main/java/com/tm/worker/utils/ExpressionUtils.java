@@ -10,8 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ExpressionUtils {
-    private ExpressionUtils() {}
+    public static final String __PLATFORM_PRIVATE_NULL = "__NULL__";
+
     public static final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
+
+    private ExpressionUtils() {}
+
     public static String replaceExpression(String expression, Map envMap) {
         if(StringUtils.isBlank(expression)) {
             return expression;
@@ -25,8 +29,12 @@ public final class ExpressionUtils {
             if(StringUtils.isBlank(expr)) {
                 continue;
             }
-            String result = AviatorEvaluator.execute(expr, envMap).toString();
-            expression = expression.replace("${" + expr + "}", result);
+            String result = (String)AviatorEvaluator.execute(expr, envMap);
+            expression = expression.replace("${" + expr + "}", result+"");
+        }
+
+        if(StringUtils.equals(__PLATFORM_PRIVATE_NULL, expression)) {
+            return null;
         }
 
         return expression;

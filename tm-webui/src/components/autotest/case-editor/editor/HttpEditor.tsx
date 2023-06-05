@@ -5,6 +5,7 @@ import {Input, Tabs, Select, Radio} from "antd";
 import {HttpNode} from "../entities/HttpNode";
 import {KeyValueEditor} from "./KeyValueEditor";
 import {ContentEditor} from "./ContentEditor";
+import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
 
 const { TabPane } = Tabs;
 
@@ -18,6 +19,10 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [requestType, setRequestType] = useState(props.define.requestType);
     const [rawLanguage, setRawLanguage] = useState('json');
     const [activeKey, setActiveKey] = useState('1');
+
+    if(!WindowTopUtils.getWindowTopObject('activeTabJson')) {
+        WindowTopUtils.setWindowTopObject('activeTabJson', {});
+    }
 
     if(bodyType !== props.define.bodyType) {
         setBodyType(props.define.bodyType);
@@ -40,7 +45,13 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
         setContent(props.define.content);
     }
 
+    if(WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key] &&
+        WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key] !== activeKey) {
+        setActiveKey(WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key]);
+    }
+
     function onChangeTab(key) {
+        WindowTopUtils.getWindowTopObject(WindowTopUtils.object_activeTabJson)[props.stepNode.key] = key;
         setActiveKey(key);
     }
 

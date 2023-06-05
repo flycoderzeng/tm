@@ -3,7 +3,7 @@ package com.tm.common.base.model;
 import lombok.Data;
 
 @Data
-public class AutoPlan extends CommonNameDescriptionModel {
+public class AutoPlan extends DataNode {
     private Integer id;
     private Integer type = 1;
     private String mailList;

@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import {ApiUrlConfig} from "../../../config/api.url";
+import {WindowTopUtils} from "../../../utils/WindowTopUtils";
 
 interface IProps {}
 
@@ -71,6 +72,7 @@ class GlobalVariableEdit extends React.Component<GlobalVariableProps, IState> {
                         description: ret.data.description,
                         modifyFlag: ret.data.modifyFlag,
                     });
+                    WindowTopUtils.expandLeftTree(ret.data);
                 }
             }
         });

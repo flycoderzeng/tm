@@ -1,5 +1,8 @@
 package com.tm.worker.core.variable;
 
+import com.tm.worker.utils.ExpressionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +55,9 @@ public class AutoTestVariables {
     private String get(String key) {
         Object o = this.variables.get(key);
         if (o instanceof String) {
+            if(StringUtils.equals((String)o, ExpressionUtils.__PLATFORM_PRIVATE_NULL)) {
+                return null;
+            }
             return (String)o;
         } else {
             return o != null ? o.toString() : null;

@@ -29,4 +29,11 @@
         where env_id = #{envId,jdbcType=INTEGER} and db_name = #{dbName,jdbcType=VARCHAR}
         limit 1
     </select>
+
+  <select id="getAllDatabaseNames" resultMap="BaseResultMap">
+    select
+    distinct db_name
+    from db_config
+    limit 10000
+  </select>
 </mapper>

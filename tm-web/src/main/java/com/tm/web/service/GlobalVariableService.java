@@ -1,6 +1,8 @@
 package com.tm.web.service;
 
+import com.tm.common.base.mapper.DataNodeMapper;
 import com.tm.common.base.mapper.GlobalVariableMapper;
+import com.tm.common.base.model.DataNode;
 import com.tm.common.base.model.GlobalVariable;
 import com.tm.common.base.model.User;
 import com.tm.common.entities.autotest.request.SaveNodeBody;
@@ -16,13 +18,18 @@ import org.springframework.stereotype.Service;
 public class GlobalVariableService extends BaseService {
     @Autowired
     private GlobalVariableMapper globalVariableMapper;
+    @Autowired
+    private DataNodeMapper dataNodeMapper;
 
     public BaseResponse copy(SaveNodeBody body) {
         return ResultUtils.success();
     }
 
     public GlobalVariable load(Integer id) {
-        return globalVariableMapper.selectByPrimaryId(id);
+        GlobalVariable globalVariable = globalVariableMapper.selectByPrimaryId(id);
+        DataNode dataNode = dataNodeMapper.selectByPrimaryKey(id, DataTypeEnum.GLOBAL_VARIABLE.value());
+        setDataNodeInfo(globalVariable, dataNode);
+        return globalVariable;
     }
 
     public BaseResponse update(GlobalVariable globalVariable, User user) {

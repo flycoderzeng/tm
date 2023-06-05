@@ -10,6 +10,7 @@ import {PlanCaseEdit} from "./PlanCaseEdit";
 import {ValueItem} from "../../../entities/common/ValueItem";
 import {KeyValueEditor} from "../case-editor/editor/KeyValueEditor";
 import {KeyValueRow} from "../case-editor/entities/KeyValueRow";
+import {WindowTopUtils} from "../../../utils/WindowTopUtils";
 
 const Option = Select.Option;
 
@@ -116,6 +117,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                         if(ret.data.planVariables) {
                             setPlanVariables(JSON.parse(ret.data.planVariables));
                         }
+                        WindowTopUtils.expandLeftTree(ret.data);
                     }
                     if(ret.data.mailList !== '' && ret.data.mailList !== null && ret.data.mailList !== undefined) {
                         const tempList: string[] = ret.data.mailList?.split(';') || [];

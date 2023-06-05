@@ -10,9 +10,12 @@ interface IState {
     size?: any;
 }
 
+let loaded = false;
+let allEnvs: any[] = [];
+
 const RunEnvSelect: React.FC<IState> = (props) => {
     const [value, setValue] = useState(props.value);
-    const [options, setOptions] = useState([]);
+    const [options, setOptions] = useState(allEnvs);
     const {onChange} = props;
     const {size} = props;
 
@@ -20,8 +23,10 @@ const RunEnvSelect: React.FC<IState> = (props) => {
         setValue(props.value);
     }
 
-    if(options.length < 1) {
+    if(!loaded) {
+        loaded = true;
         renderOptions().then(values => {
+            allEnvs = values;
             setOptions(values);
         });
     }

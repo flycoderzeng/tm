@@ -68,4 +68,28 @@ public class BaseService {
         body.setLoginUserId(loginUser.getId());
         body.setLoginUsername(loginUser.getUsername());
     }
+
+    protected void setDataNodeInfo(DataNode dataNode, DataNode dataNode2) {
+        dataNode.setDataTypeId(dataNode2.getDataTypeId());
+        dataNode.setProjectId(dataNode2.getProjectId());
+        dataNode.setIsFolder(dataNode2.getIsFolder());
+        dataNode.setParentId(dataNode2.getParentId());
+        dataNode.setLevel(dataNode2.getLevel());
+        dataNode.setSeq(dataNode2.getSeq());
+        dataNode.setAddTime(dataNode2.getAddTime());
+        dataNode.setAddUserId(dataNode2.getAddUserId());
+        dataNode.setLastModifyTime(dataNode2.getLastModifyTime());
+        dataNode.setLastModifyUserId(dataNode2.getLastModifyUserId());
+        dataNode.setParent1(dataNode2.getParent1());
+        dataNode.setParent2(dataNode2.getParent2());
+        dataNode.setParent3(dataNode2.getParent3());
+        dataNode.setParent4(dataNode2.getParent4());
+        dataNode.setParent5(dataNode2.getParent5());
+        dataNode.setParent6(dataNode2.getParent6());
+        dataNode.setParent7(dataNode2.getParent7());
+        dataNode.setParent8(dataNode2.getParent8());
+        dataNode.setParent9(dataNode2.getParent9());
+        dataNode.setParent10(dataNode2.getParent10());
+        dataNode.setStatus(dataNode2.getStatus());
+    }
 }

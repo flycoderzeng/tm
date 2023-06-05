@@ -3,8 +3,10 @@ package com.tm.web.service;
 
 import com.tm.common.base.mapper.AutoCaseHistoryMapper;
 import com.tm.common.base.mapper.AutoCaseMapper;
+import com.tm.common.base.mapper.DataNodeMapper;
 import com.tm.common.base.model.AutoCase;
 import com.tm.common.base.model.AutoCaseHistory;
+import com.tm.common.base.model.DataNode;
 import com.tm.common.base.model.User;
 import com.tm.common.entities.autotest.request.SaveNodeBody;
 import com.tm.common.entities.base.BaseResponse;
@@ -23,7 +25,8 @@ import java.util.Date;
 public class AutoCaseService extends BaseService {
     @Autowired
     private AutoCaseMapper autoCaseMapper;
-
+    @Autowired
+    private DataNodeMapper dataNodeMapper;
     @Autowired
     private AutoCaseHistoryMapper autoCaseHistoryMapper;
 
@@ -64,6 +67,10 @@ public class AutoCaseService extends BaseService {
     }
 
     public BaseResponse loadAutoCase(Integer id) {
-        return ResultUtils.success(autoCaseMapper.selectByPrimaryId(id));
+        AutoCase autoCase = autoCaseMapper.selectByPrimaryId(id);
+        DataNode dataNode = dataNodeMapper.selectByPrimaryKey(id, DataTypeEnum.AUTO_CASE.value());
+        setDataNodeInfo(autoCase, dataNode);
+
+        return ResultUtils.success(autoCase);
     }
 }

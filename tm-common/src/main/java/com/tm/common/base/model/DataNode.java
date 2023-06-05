@@ -5,11 +5,9 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class DataNode {
+public class DataNode extends CommonNameDescriptionModel {
     private Integer id;
     private Integer dataTypeId;
-    private String name;
-    private String description;
     private Integer projectId;
     private Integer isFolder;
     private Integer parentId;

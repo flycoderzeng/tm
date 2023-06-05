@@ -1,7 +1,9 @@
 package com.tm.web.service;
 
 import com.tm.common.base.mapper.AutoPlanMapper;
+import com.tm.common.base.mapper.DataNodeMapper;
 import com.tm.common.base.model.AutoPlan;
+import com.tm.common.base.model.DataNode;
 import com.tm.common.base.model.User;
 import com.tm.common.entities.autotest.request.SaveNodeBody;
 import com.tm.common.entities.base.BaseResponse;
@@ -18,6 +20,8 @@ public class AutoPlanService extends BaseService {
 
     @Autowired
     private AutoPlanMapper autoPlanMapper;
+    @Autowired
+    private DataNodeMapper dataNodeMapper;
 
     public BaseResponse copy(SaveNodeBody body) {
         return ResultUtils.success();
@@ -25,6 +29,9 @@ public class AutoPlanService extends BaseService {
 
     public BaseResponse load(Integer id) {
         AutoPlan autoPlan = autoPlanMapper.selectByPrimaryId(id);
+        DataNode dataNode = dataNodeMapper.selectByPrimaryKey(id, DataTypeEnum.AUTO_PLAN.value());
+        setDataNodeInfo(autoPlan, dataNode);
+
         return ResultUtils.success(autoPlan);
     }
 

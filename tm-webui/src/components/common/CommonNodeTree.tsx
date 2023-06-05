@@ -6,6 +6,7 @@ import {AntDataNode} from "../../entities/AntDataNode";
 import {FormInstance} from "antd/lib/form";
 import {DataTypeEnum} from "../../entities/DataTypeEnum";
 import {ApiUrlConfig} from "../../config/api.url";
+import {WindowTopUtils} from "../../utils/WindowTopUtils";
 
 interface IState {
     projectId ?: number|null;
@@ -67,6 +68,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
     const [isFolderFormItemHidden, setIsFolderFormItemHidden] = useState(false);
     const [copyNode, setCopyNode] = useState({} as AntDataNode);
     const [expandedKeys, setExpandedKeys] = useState(['1-1']);
+    const [selectedKeys, setSelectedKeys] = useState(['1-1']);
     const [initialValues, setInitialValues] = useState({isFolder: 0, name: '', description: ''});
     if(projectId !== props.projectId) {
         setProjectId(props.projectId);
@@ -79,6 +81,10 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         onLoadData({key: '1-1', children: undefined}).then(() => {});
     }
     const [ref] = useState(React.createRef<FormInstance>());
+
+    if(!WindowTopUtils.getWindowTopObject(WindowTopUtils.object_setExpandedKeys)) {
+        WindowTopUtils.setWindowTopObject(WindowTopUtils.object_setExpandedKeys, setExpandedKeys);
+    }
 
     function onLoadData(node: any) {
         return new Promise<void>(resolve => {
@@ -103,14 +109,14 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                             n.title = <Tooltip overlayClassName="small-font-size" title={v.name} color="#2db7f5" placement="rightTop">
                                 <span>{v.name}</span>
                             </Tooltip>;
-                            n.key = v.id + '-' + v.dataTypeId + '-' + new Date().getTime();
+                            n.key = v.id + '-' + v.dataTypeId;
                             n.isLeaf = v.isFolder === 1 ? false : true;
                             n.dataNode = v;
                             n.parentNode = node;
                             return n;
                         });
                         setTreeData(origin =>
-                            updateTreeData(origin, node.key, children),
+                            updateTreeData(origin, node.key, [...children]),
                         );
                         if(expandedKeys.indexOf(node.key) < 0) {
                             setExpandedKeys([...expandedKeys, node.key]);
@@ -207,6 +213,10 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         } else {
             setRenderRightFlag(DataTypeEnum.ALL);
         }
+        if(e.node.dataNode) {
+            setSelectedKeys([e.node.dataNode.id + '-' + Number(dataTypeId)]);
+        }
+        WindowTopUtils.setWindowTopObject(WindowTopUtils.object_expandedKeys, expandedKeys);
     }
 
     function onDrop(info) {
@@ -517,6 +527,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                 onDragEnter={onDragEnter}
                 onDrop={onDrop}
                 onSelect={onSelect}
+                selectedKeys={selectedKeys}
                 allowDrop={allowDrop}
                 treeData={treeData}
             />

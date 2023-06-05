@@ -26,6 +26,7 @@ import {JDBCRequestEditor} from "./JDBCRequestEditor";
 import {LocalStorageUtils} from "../../../../utils/LocalStorageUtils";
 import {CaseHistoryList} from "../CaseHistoryList";
 import {ScriptActionNodeEditor} from "./ScriptActionNodeEditor";
+import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
 
 
 interface IState {
@@ -351,6 +352,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     setRootNode(steps[0]);
                     setRunEnvId(ret.data.lastRunEnvId == null ? '' : (ret.data.lastRunEnvId + ''));
                     setGroupVariables(ret.data.groupVariables);
+                    WindowTopUtils.expandLeftTree(ret.data);
                 }
             }
         });
