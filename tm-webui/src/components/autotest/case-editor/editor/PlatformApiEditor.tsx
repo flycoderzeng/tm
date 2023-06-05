@@ -187,7 +187,7 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
                 <Col flex="100px">参数值</Col>
                 <Col flex="auto">
                     <div>
-                        <ContentEditor userDefinedVariables={props.userDefinedVariables} language={'sql'} content={currValue} refreshContent={refreshContent}></ContentEditor>
+                        <ContentEditor userDefinedVariables={props.userDefinedVariables} language={'shell'} content={currValue} refreshContent={refreshContent}></ContentEditor>
                     </div>
                 </Col>
             </Row>

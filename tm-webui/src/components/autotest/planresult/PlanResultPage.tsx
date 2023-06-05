@@ -10,6 +10,7 @@ import {CaseResultPage} from "./CaseResultPage";
 
 interface IState {
     planOrCaseId: number|null|undefined;
+    //1-计划 2-用例 3-定时计划
     fromType: number|null|undefined;
     planCaseType: number|null|undefined;
     planResultId: number|null|undefined;

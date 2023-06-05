@@ -3,6 +3,7 @@ package com.tm.worker.utils;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -116,9 +117,14 @@ public class AssertUtils {
                 return StringUtils.isBlank(leftOperandString);
             case IS_NOT_BLANK:
                 if(leftOperand == null) {
-                    return true;
+                    return false;
                 }
                 return StringUtils.isNoneBlank(leftOperandString);
+            case IS_NUMBER:
+                if(leftOperand == null) {
+                    return false;
+                }
+                return StrUtil.isNumeric(leftOperandString);
             default:
                 break;
         }

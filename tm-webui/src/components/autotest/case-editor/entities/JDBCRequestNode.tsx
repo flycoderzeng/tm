@@ -14,4 +14,6 @@ export interface JDBCRequestNode extends BaseNode {
     checkErrorList: KeyValueRow[];
     // 查询列结果输出到变量
     responseExtractorList: KeyValueRow[];
+    // 自增主键值输出到变量
+    autoIncrementPrimaryKeyVariableName?: string;
 }

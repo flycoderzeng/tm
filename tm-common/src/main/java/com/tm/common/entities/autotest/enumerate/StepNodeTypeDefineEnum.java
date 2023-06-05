@@ -4,7 +4,7 @@ public enum StepNodeTypeDefineEnum {
     ROOT("root"), SETUP("setUp"), ACTION("action"), TEARDOWN("teardown"),
     HTTP("http"),
     HTTP_REQUEST("http request"),
-    JDBC("jdbc"), JDBC_REQUEST("jdbc request"),
+    JDBC("jdbc"), JDBC_REQUEST("jdbc request"), SCRIPT_ACTION_NODE("shell script"),
     IF("if"), WHILE("while"), LOOP("loop"),
     __getRandomInt("__getRandomInt"),
     __jsonMultiExtractor("__jsonMultiExtractor"), __xmlMultiExtractor("__xmlMultiExtractor"),
@@ -40,6 +40,8 @@ public enum StepNodeTypeDefineEnum {
                 return StepNodeTypeDefineEnum.JDBC;
             case "jdbc request":
                 return StepNodeTypeDefineEnum.JDBC_REQUEST;
+            case "shell script":
+                return StepNodeTypeDefineEnum.SCRIPT_ACTION_NODE;
             case "if":
                 return StepNodeTypeDefineEnum.IF;
             case "while":

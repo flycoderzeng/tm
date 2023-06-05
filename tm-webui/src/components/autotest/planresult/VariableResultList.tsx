@@ -47,7 +47,7 @@ const VariableResultList: React.FC<IState> = (props) => {
     }
 
     function load() {
-        if(!planResultId || !caseId || !groupNo) {
+        if(!planResultId || !caseId || (groupNo === null || groupNo === undefined)) {
             return ;
         }
         setLoading(true);
@@ -79,7 +79,7 @@ const VariableResultList: React.FC<IState> = (props) => {
 
     const columns: any[] = [
         {
-            width: 150,
+            width: 200,
             title: '变量名称',
             dataIndex: 'variableName',
             key: 'id',

@@ -1,14 +1,21 @@
 package com.tm.worker.core.protocol.jdbc;
 
+import cn.hutool.http.HttpResponse;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.tm.common.base.model.DbConfig;
 import com.tm.common.base.model.PlanRunningConfigSnapshot;
 import com.tm.common.entities.common.KeyValueRow;
 import com.tm.common.entities.common.enumerate.DbTypeEnum;
+import com.tm.common.entities.common.enumerate.RelationOperatorEnum;
 import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.StepNodeBase;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.core.variable.AutoTestVariables;
+import com.tm.worker.utils.AssertUtils;
+import com.tm.worker.utils.DataTypeAdapter;
 import com.tm.worker.utils.ExpressionUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +31,10 @@ import java.util.Map;
 @Slf4j
 @Data
 public class JDBCRequest extends StepNodeBase {
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().registerTypeAdapter(new TypeToken<Map<String, Object>>() {
+            }.getType(),
+            new DataTypeAdapter()).create();
+
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     private String dbName;
@@ -38,6 +49,8 @@ public class JDBCRequest extends StepNodeBase {
     private Integer retryTimes = 0;
     // 重试间隔时间（秒）
     private Integer retryIntervalSeconds = 10;
+    // 自增主键保存至变量
+    private String autoIncrementPrimaryKeyVariableName;
 
     @Override
     public void run() throws Exception {
@@ -46,8 +59,9 @@ public class JDBCRequest extends StepNodeBase {
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
         if(StringUtils.isBlank(dbName)) {
-            throw new TMException("数据库名不能为空");
+            throw new TMException("数据库名称不能为空");
         }
+
         PlanRunningConfigSnapshot runningConfigSnapshot = context.getPlanTask().getRunningConfigSnapshot();
         if(runningConfigSnapshot.getEnvId() == null) {
             throw new TMException("运行环境不能为空");
@@ -78,7 +92,10 @@ public class JDBCRequest extends StepNodeBase {
         if(dbConfig.getType().equals(DbTypeEnum.MYSQL.value())) {
             if (content.toLowerCase().startsWith("select")) {
                 List<Map<String, String>> list = execMySQLSelect(dbConfig, content);
-                addResultInfo("sql执行结果：").addResultInfoLine(list);
+                String resultValue = gson.toJson(list);
+                addResultInfo("sql结果: ").addResultInfoLine(resultValue);
+                checkError(list);
+                extractResult(list);
             } else if (content.toLowerCase().startsWith("update")) {
                 execUpdate(dbConfig, content);
             } else if (content.toLowerCase().startsWith("delete")) {
@@ -86,6 +103,109 @@ public class JDBCRequest extends StepNodeBase {
             } else if (content.toLowerCase().startsWith("insert")) {
                 execInsert(dbConfig, content);
             }
+        }
+    }
+
+    private void extractResult(List<Map<String, String>> list) {
+        AutoTestContext context = AutoTestContextService.getContext();
+        AutoTestVariables caseVariables = context.getCaseVariables();
+        countVariableName = ExpressionUtils.extractVariable(countVariableName);
+        if(StringUtils.isNoneBlank(countVariableName)) {
+            addResultInfo("保存行数到变量: ").addResultInfoLine(countVariableName);
+            if(list != null) {
+                caseVariables.put(countVariableName, list.size() + "");
+            }else{
+                caseVariables.put(countVariableName, "0");
+            }
+        }
+        if(list == null || list.isEmpty()) {
+            addResultInfoLine("sql结果是空");
+            return ;
+        }
+        resultSetVariableName = ExpressionUtils.extractVariable(resultSetVariableName);
+        if(StringUtils.isNoneBlank(resultSetVariableName)) {
+            String resultValue = gson.toJson(list);
+            caseVariables.put(resultSetVariableName, resultValue);
+        }
+
+        if (responseExtractorList == null || responseExtractorList.isEmpty()) {
+            addResultInfoLine("没有配置响应提取");
+            return ;
+        }
+        for (KeyValueRow keyValueRow : responseExtractorList) {
+            Integer rowNumber = getRowNumber(keyValueRow);
+            if(rowNumber >= list.size()) {
+                break;
+            }
+            extractValueToVariable(list, caseVariables, keyValueRow, rowNumber);
+        }
+    }
+
+    private void extractValueToVariable(List<Map<String, String>> list, AutoTestVariables caseVariables, KeyValueRow keyValueRow, Integer rowNumber) {
+        String name = keyValueRow.getName();
+        name = ExpressionUtils.replaceExpression(name, caseVariables.getVariables());
+        if (StringUtils.isBlank(name)) {
+            return;
+        }
+        String value = keyValueRow.getValue();
+        value = ExpressionUtils.extractVariable(value);
+        if (StringUtils.isBlank(value)) {
+            return;
+        }
+
+        Map<String, String> map = list.get(rowNumber);
+        addResultInfo("将列: ").addResultInfo(name).addResultInfo(" 的值保存到变量: ").addResultInfoLine(value);
+        caseVariables.putObject(value, map.get(name));
+    }
+
+    private void checkError(List<Map<String, String>> list) {
+        AutoTestContext context = AutoTestContextService.getContext();
+        AutoTestVariables caseVariables = context.getCaseVariables();
+        if(checkErrorList == null || checkErrorList.isEmpty()) {
+            addResultInfoLine("没有配置断言");
+            return;
+        }
+        boolean checkResult = true;
+        for (KeyValueRow keyValueRow : checkErrorList) {
+            Integer rowNumber = getRowNumber(keyValueRow);
+            if(rowNumber >= list.size()) {
+                break;
+            }
+            Map<String, String> map = list.get(rowNumber);
+            checkResult = checkResult && checkResponse(caseVariables, map, keyValueRow);
+        }
+        if(!checkResult) {
+            throw new TMException("响应断言失败");
+        }
+    }
+
+    private Integer getRowNumber(KeyValueRow keyValueRow) {
+        Integer rowNumber = keyValueRow.getRowNumber();
+        if (rowNumber == null || rowNumber < 0) {
+            rowNumber = 0;
+        }
+        if (rowNumber > 0) {
+            rowNumber--;
+        }
+        return rowNumber;
+    }
+
+    private boolean checkResponse(AutoTestVariables caseVariables, Map<String, String> map, KeyValueRow keyValueRow) {
+        final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
+        if (StringUtils.isBlank(name)) {
+            return true;
+        }
+        Object leftOperand = map.get(name);
+        final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
+        final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
+        addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand.toString()).addResultInfo("] ")
+                .addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
+        if(AssertUtils.compare(leftOperand.toString(), relationOperator, value)) {
+            addResultInfoLine("[成功]");
+            return true;
+        }else{
+            addResultInfoLine("[失败]");
+            return false;
         }
     }
 

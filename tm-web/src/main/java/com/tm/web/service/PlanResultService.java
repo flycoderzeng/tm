@@ -64,7 +64,7 @@ public class PlanResultService {
         if(planExecuteResult == null) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
-        body.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planExecuteResult.getStartTimestamp()),
+        body.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planExecuteResult.getSubmitTimestamp()),
                 splitCaseResultTableType, 0));
         if(StringUtils.isBlank(body.getOrder())) {
             body.setOrder("result_status");
@@ -84,7 +84,7 @@ public class PlanResultService {
         if(planExecuteResult == null) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
-        body.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planExecuteResult.getStartTimestamp()),
+        body.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planExecuteResult.getSubmitTimestamp()),
                 splitVariableTableType, 0));
         List<CaseVariableValueResult> results = planExecuteResultDao.getCaseVariableResultList(body);
 
@@ -96,7 +96,7 @@ public class PlanResultService {
         if(planExecuteResult == null) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
-        body.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planExecuteResult.getStartTimestamp()),
+        body.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planExecuteResult.getSubmitTimestamp()),
                 splitVariableTableType, 0));
         if(StringUtils.isBlank(body.getOrder())) {
             body.setOrder("id");

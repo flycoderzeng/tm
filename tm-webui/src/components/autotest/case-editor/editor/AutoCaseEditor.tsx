@@ -24,10 +24,9 @@ import {RunEnvSelect} from "../../../testmanage/runenv/RunEnvSelect";
 import {RandomUtils} from "../../../../utils/RandomUtils";
 import {JDBCRequestEditor} from "./JDBCRequestEditor";
 import {LocalStorageUtils} from "../../../../utils/LocalStorageUtils";
-import {PlanResultList} from "../../planresult/PlanResultList";
 import {CaseHistoryList} from "../CaseHistoryList";
+import {ScriptActionNodeEditor} from "./ScriptActionNodeEditor";
 
-const {SubMenu} = Menu;
 
 interface IState {
     id?: number | null,
@@ -63,6 +62,7 @@ const MenuKey = {
     'AddPlatformApiGetRandom': '10001',
     'AddHttpRequest': '202',
     'AddJDBCRequest': '203',
+    'AddScriptAction': '204',
     'Remove': '300',
     'Copy': '400',
     'Paste': '500',
@@ -205,6 +205,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                             key: MenuKey.AddMostCommonlyUsed, title: '添加常用', icon: <PlusOutlined/>, disabled: false, children: [
                                 {key: MenuKey.AddHttpRequest, title: 'HTTP请求', disabled: false},
                                 {key: MenuKey.AddJDBCRequest, title: 'JDBC请求', disabled: false},
+                                {key: MenuKey.AddScriptAction, title: 'Shell脚本', disabled: false},
                             ]
                         },
                         {key: MenuKey.AddPlatformApi, title: '添加API', icon: <PlusOutlined/>, disabled: false, children: platformApiTree},
@@ -560,6 +561,12 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 name: '执行数据库操作', comments: '', enabled: true, dbName: '',
                 resultSetVariableName: '',
                 content: '', checkErrorList: [], responseExtractorList: [],
+                autoIncrementPrimaryKeyVariableName: '',
+            };
+        }  else if (type === 'shell script') {
+            define = {
+                name: '执行shell脚本命令', comments: '', enabled: true,
+                content: '', scriptResultVariableName: ''
             };
         } else if (type.startsWith('调用平台API(')) {
             define = {name: type, comments: '', parametricList: [], platformApiId: -1, enabled: true};
@@ -585,6 +592,10 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     function onAddJDBCRequestNode() {
         addNode('jdbc request', true);
+    }
+
+    function onAddScriptActionNode() {
+        addNode('shell script', true);
     }
 
     function onAddPlatformApi(key: string) {
@@ -756,6 +767,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
             case MenuKey.AddJDBCRequest:
                 onAddJDBCRequestNode();
                 break;
+            case MenuKey.AddScriptAction:
+                onAddScriptActionNode();
+                break;
             case MenuKey.Copy:
                 onCopyNode();
                 break;
@@ -849,6 +863,11 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                                            refreshTree={refreshTree}
                                            stepNode={currStepNode} define={currStepNode.define}>
                 </JDBCRequestEditor>);
+            case 'shell script':
+                return (<ScriptActionNodeEditor userDefinedVariables={rootNode.define.userDefinedVariables}
+                                           refreshTree={refreshTree}
+                                           stepNode={currStepNode} define={currStepNode.define}>
+                </ScriptActionNodeEditor>);
             default:
                 if (currStepNode.type.startsWith('调用平台API(')) {
                     return (<PlatformApiEditor userDefinedVariables={rootNode.define.userDefinedVariables}
@@ -904,7 +923,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function onViewResult() {
-        window.open("/planresult/" + id + "/2");
+        window.open("/planresult/" + id + "/2/0");
     }
 
     return (

@@ -34,13 +34,13 @@ const CommonNameComments: React.FC<EditorIState<BaseNode>> = (props) => {
         <div>
             <h3>{type}</h3>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="120px">名称</Col>
+                <Col flex="130px">名称</Col>
                 <Col flex="auto">
                     <Input placeholder="步骤名称" value={name} onChange={onChangeName}/>
                 </Col>
             </Row>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="120px">描述</Col>
+                <Col flex="130px">描述</Col>
                 <Col flex="auto">
                     <Input placeholder="步骤描述" value={comments} onChange={onChangeComments}/>
                 </Col>

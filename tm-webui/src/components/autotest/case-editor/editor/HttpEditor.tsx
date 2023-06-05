@@ -17,6 +17,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [url, setUrl] = useState(props.define.url);
     const [requestType, setRequestType] = useState(props.define.requestType);
     const [rawLanguage, setRawLanguage] = useState('json');
+    const [activeKey, setActiveKey] = useState('1');
 
     if(bodyType !== props.define.bodyType) {
         setBodyType(props.define.bodyType);
@@ -40,7 +41,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     }
 
     function onChangeTab(key) {
-
+        setActiveKey(key);
     }
 
     function onChangeBodyType(e) {
@@ -128,7 +129,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
             </Input.Group>
         </div>
         <div style={{paddingTop: '5px'}}>
-            <Tabs defaultActiveKey="1" onChange={onChangeTab} items={[{label: 'Params', key: '1', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+            <Tabs defaultActiveKey="1" activeKey={activeKey} onChange={onChangeTab} items={[{label: 'Params', key: '1', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
                                                                                                                              rows={props.define.params}
                                                                                                                              type={''}>
                 </KeyValueEditor>)}, {label: 'Headers', key: '2', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}

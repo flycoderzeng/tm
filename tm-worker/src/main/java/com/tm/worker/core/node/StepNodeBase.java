@@ -66,7 +66,7 @@ public class StepNodeBase {
         caseStepExecuteResult.setStartTimestamp(System.currentTimeMillis());
         caseStepExecuteResult.setStepKey(stepKey);
         caseStepExecuteResult.setResultStatus(CaseExecuteResultStatusEnum.RUNNING.value());
-        caseStepExecuteResult.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planTask.getPlanExecuteResult().getStartTimestamp()),
+        caseStepExecuteResult.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planTask.getPlanExecuteResult().getSubmitTimestamp()),
                 taskService.getSplitCaseStepResultTableType(), 0));
         CaseExecuteLogOperate caseExecuteLogOperate = new CaseExecuteLogOperate(LogOperateTypeEnum.INSERT, caseStepExecuteResult);
         taskService.putResultLog(caseExecuteLogOperate);

@@ -43,6 +43,7 @@ import com.tm.worker.core.node.function.time.GetTimestampNode;
 import com.tm.worker.core.node.function.time.SleepNode;
 import com.tm.worker.core.protocol.http.HttpSampler;
 import com.tm.worker.core.protocol.jdbc.JDBCRequest;
+import com.tm.worker.core.protocol.shell.ScriptActionNode;
 import com.tm.worker.core.task.CaseTask;
 import com.tm.worker.core.task.PlanTask;
 import com.tm.worker.core.task.TaskService;
@@ -206,7 +207,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
             variableValueResult.setGroupNo(caseTask.getGroupNo());
             variableValueResult.setVariableName(entry.getKey());
             variableValueResult.setVariableValue(caseVariables.getVariableString(entry.getKey()));
-            variableValueResult.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planTask.getPlanExecuteResult().getStartTimestamp()),
+            variableValueResult.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planTask.getPlanExecuteResult().getSubmitTimestamp()),
                     taskService.getSplitVariableTableType(), 0));
             taskService.putResultLog(new CaseExecuteLogOperate(LogOperateTypeEnum.INSERT, variableValueResult));
         }
@@ -280,6 +281,9 @@ public class CaseTaskThread implements Callable<BaseResponse> {
             case JDBC:
             case JDBC_REQUEST:
                 define = BeanUtils.mapToBean(JDBCRequest.class, defineMap);
+                return define;
+            case SCRIPT_ACTION_NODE:
+                define = BeanUtils.mapToBean(ScriptActionNode.class, defineMap);
                 return define;
             case IF:
                 define = BeanUtils.mapToBean(IfController.class, defineMap);
@@ -371,7 +375,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         executeResult.setName(caseTask.getAutoCase().getName());
         executeResult.setDescription(caseTask.getAutoCase().getDescription());
         executeResult.setSteps(caseTask.getAutoCase().getSteps());
-        executeResult.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planTask.getPlanExecuteResult().getStartTimestamp()),
+        executeResult.setTableSuffix(TableSuffixUtils.getTableSuffix(new Date(planTask.getPlanExecuteResult().getSubmitTimestamp()),
                 taskService.getSplitCaseResultTableType(), 0));
         taskService.putResultLog(new CaseExecuteLogOperate(LogOperateTypeEnum.INSERT, executeResult));
         this.caseExecuteResult = executeResult;

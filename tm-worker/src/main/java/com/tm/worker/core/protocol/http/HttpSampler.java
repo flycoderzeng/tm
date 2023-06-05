@@ -70,13 +70,13 @@ public class HttpSampler extends StepNodeBase {
         final AutoTestCookie autoTestCookie = context.getAutoTestCookie();
         final List<HttpCookie> cookies = autoTestCookie.getCookies(actualUrl);
 
+        addResultInfo("Cookie: ").addResultInfoLine(cookies.toString());
+
         HttpResponse response = executeHttp(caseVariables, actualUrl, headerMap, cookies);
         if(!headerMap.isEmpty()) {
             addResultInfoLine("Request Headers: ");
             headerMap.forEach((k, v) -> addResultInfo("    ").addResultInfo(k).addResultInfo(": ").addResultInfoLine(v));
         }
-        addResultInfo("Cookie: ").addResultInfoLine(cookies.toString());
-        addResultInfoLine("请求报文: ").addResultInfoLine(content);
         if(response == null) {
             throw new TMException("发送http请求异常");
         }
@@ -161,7 +161,7 @@ public class HttpSampler extends StepNodeBase {
         final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
         addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand.toString()).addResultInfo("] ")
                 .addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
-        if(AssertUtils.compare(leftOperand.toString(), relationOperator, value)) {
+        if(AssertUtils.compare(leftOperand, relationOperator, value)) {
             addResultInfoLine("[成功]");
             return true;
         }else{
@@ -187,6 +187,8 @@ public class HttpSampler extends StepNodeBase {
                 content = getParamStr(caseVariables, formUrlencoded);
             }
             caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_REQUEST, content);
+
+            addResultInfoLine("请求报文: ").addResultInfoLine(content);
 
             httpResponse = HttpRequest.post(actualUrl).headerMap(headerMap, true)
                     .cookie(cookies).timeout(60000).body(content).execute();

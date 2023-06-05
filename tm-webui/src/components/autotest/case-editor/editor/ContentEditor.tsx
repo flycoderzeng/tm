@@ -53,7 +53,7 @@ const ContentEditor: React.FC<IState> = (props) => {
             detail: '上一个请求的响应码',
         });
         const builtInFunctions: any = [{
-            label: 'max',
+            label: 'rand',
             insertText: '${rand()}',
             kind: monaco.languages.CompletionItemKind.Function,
             detail: '随机数',
