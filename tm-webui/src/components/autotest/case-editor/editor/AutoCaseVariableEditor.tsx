@@ -19,10 +19,10 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     const [variableValue, setVariableValue] = useState("");
 
     if (JSON.stringify(userDefinedVariables) !== JSON.stringify(props.userDefinedVariables)) {
-        for (let i = 0; i < userDefinedVariables.length; i++) {
-            userDefinedVariables[i]['key'] = RandomUtils.getKey();
+        for (let i = 0; i < props.userDefinedVariables.length; i++) {
+            props.userDefinedVariables[i]['key'] = RandomUtils.getKey();
         }
-        setUserDefinedVariables(props.userDefinedVariables);
+        setUserDefinedVariables([...props.userDefinedVariables]);
     }
 
     function onClickRow(index: number) {
@@ -31,6 +31,10 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
 
     function onChangeName(value: any, index: number) {
         userDefinedVariables[index].name = value.target.value;
+    }
+
+    function onChangeDescription(value: any, index: number) {
+        userDefinedVariables[index].description = value.target.value;
     }
 
     function onChangeValue(value: any, index: number) {
@@ -48,13 +52,16 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                          onClick={() => {
                              onClickRow(index)
                          }}>
-                <Col span={8} style={{paddingRight: '5px'}}>
+                <Col span={6} style={{paddingRight: '5px'}}>
                     <Input defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
                 </Col>
-                <Col span={8} style={{paddingRight: '5px'}}>
+                <Col span={6} style={{paddingRight: '5px'}}>
+                    <Input defaultValue={value.description} onChange={(v) => {onChangeDescription(v, index);}}/>
+                </Col>
+                <Col span={6} style={{paddingRight: '5px'}}>
                     <Input defaultValue={value.value} onChange={(v) => {onChangeValue(v, index);}}/>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                     <Input defaultValue={value.planVariableName} onChange={(v) => {onChangePlanVariableName(v, index);}}/>
                 </Col>
             </Row>)
@@ -62,7 +69,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     }
 
     function addVariable() {
-        const v = {name: '', type: 'string', value: '', planVariableName: ''};
+        const v = {name: '', type: 'string', value: '', planVariableName: '', description: ''};
         v['key'] = RandomUtils.getKey();
         userDefinedVariables.push(v);
         setUserDefinedVariables(userDefinedVariables);
@@ -145,7 +152,14 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
         }
         const temp = userDefinedVariables[tempIndex];
         userDefinedVariables[tempIndex] = userDefinedVariables[currIndex];
+        userDefinedVariables[tempIndex]['key'] = RandomUtils.getKey();
+        props.userDefinedVariables[tempIndex] = userDefinedVariables[currIndex];
+        props.userDefinedVariables[tempIndex]['key'] = userDefinedVariables[tempIndex]['key']
         userDefinedVariables[currIndex] = temp;
+        userDefinedVariables[currIndex]['key'] = RandomUtils.getKey();
+        props.userDefinedVariables[currIndex] = temp;
+        props.userDefinedVariables[currIndex]['key'] = userDefinedVariables[currIndex]['key'];
+
         setUserDefinedVariables(userDefinedVariables);
         setCurrIndex(tempIndex);
     }
@@ -172,15 +186,18 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                     <Button size="small" type="primary" onClick={() => onMove(3)}>置顶</Button>
                 </div>
                 <Row style={{paddingTop: '5px'}}>
-                    <Col span={8} style={{fontWeight: 600, color: '#6e6e6e'}}>变量名称</Col>
-                    <Col span={8} style={{fontWeight: 600, color: '#6e6e6e'}}>
+                    <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>变量名称</Col>
+                    <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>变量描述</Col>
+                    <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>
                         变量值
                     </Col>
-                    <Col span={8} style={{fontWeight: 600, color: '#6e6e6e'}}>
+                    <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>
                         计划变量
                     </Col>
                 </Row>
+                <div style={{maxHeight: 'calc(100vh - 300px)', overflow: 'auto'}}>
                 {renderRows()}
+                </div>
             </div>
             <Modal width={700} title="变量详细" open={isVariableDetailModalVisible} onOk={handleOk}
                    onCancel={handleCancel}>

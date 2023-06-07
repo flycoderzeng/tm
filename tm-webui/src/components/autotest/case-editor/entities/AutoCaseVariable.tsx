@@ -3,4 +3,5 @@ export interface AutoCaseVariable {
     type: string;
     value: string;
     planVariableName: string;
+    description: string;
 }

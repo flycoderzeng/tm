@@ -124,6 +124,7 @@ const CronJobEdit: React.FC<IState> = (props) => {
                     } else {
                         const ret = resp.data;
                         value.id = ret.data.id;
+                        setPlanRows([...planRows]);
                     }
                 });
             } else {

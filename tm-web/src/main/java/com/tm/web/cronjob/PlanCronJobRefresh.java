@@ -27,6 +27,7 @@ public class PlanCronJobRefresh {
         final List<PlanCronJob> allPlanCronJobs = planCronJobMapper.getAllPlanCronJobs();
         for (PlanCronJob cronJob : allPlanCronJobs) {
             if(cronJob.getStatus() == null || cronJob.getStatus() != 0) {
+                log.info("删除已经被删除的定时任务");
                 try {
                     planQuartzJobManager.deleteScheduleJob(cronJob.getId());
                 } catch (Exception e) {
@@ -35,7 +36,14 @@ public class PlanCronJobRefresh {
             }else{
                 //检查cron表达式是否有变化
                 final CronTrigger cronTrigger = planQuartzJobManager.getCronTrigger(planQuartzJobManager.getScheduler(), cronJob.getId());
-                if(!StringUtils.equals(cronTrigger.getCronExpression(), cronJob.getCronExpression())) {
+                if(cronTrigger == null) {
+                    log.info("有新的定时任务创建, 创建定时任务id： {}", cronJob.getId());
+                    try {
+                        planQuartzJobManager.createScheduleJob(cronJob);
+                    } catch (Exception e) {
+                        log.error("{}", e);
+                    }
+                } else if (!StringUtils.equals(cronTrigger.getCronExpression(), cronJob.getCronExpression())) {
                     log.info("定时任务id： {}， cron表达式有变化，重新创建定时任务", cronJob.getId());
                     try {
                         planQuartzJobManager.deleteScheduleJob(cronJob.getId());

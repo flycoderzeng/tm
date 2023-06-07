@@ -38,7 +38,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
     const [pagination, setPagination] = useState({
         current: 1,
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         total: 0,
     });
     const [isModalVisible, setIsModalVisible] = useState(false);

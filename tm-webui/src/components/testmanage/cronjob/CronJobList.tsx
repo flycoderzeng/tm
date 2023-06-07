@@ -52,7 +52,7 @@ class CronJobList extends CommonListPage {
                 title: 'ID',
                 dataIndex: 'id',
                 render: text => <span>{text}</span>,
-            },{
+            }, {
                 title: '名称',
                 dataIndex: 'name',
                 render: (text, record) => <Button
@@ -60,16 +60,26 @@ class CronJobList extends CommonListPage {
                     size="small"
                     type="link"
                     onClick={() => this.edit(record.id)}>{text}</Button>,
-            },{
+            }, {
                 title: '定时表达式',
                 dataIndex: 'cronExpression',
                 render: text => <span>{text}</span>,
-            },{
+            }, {
+                title: '创建者',
+                dataIndex: 'addUser',
+                render: text => <span>{text}</span>,
+            }, {
+                title: '创建时间',
+                dataIndex: 'addTime',
+                key: 'add_time',
+                sorter: ()=>{},
+                render: text => <span>{text}</span>,
+            }, {
                 title: '最近运行时间',
                 dataIndex: 'lastRunTime',
                 key: 'last_run_time',
                 render: text => <span>{text}</span>,
-            },{
+            }, {
                 title: '操作',
                 fixed: 'right',
                 filters: this.columnFilters,

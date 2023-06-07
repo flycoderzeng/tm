@@ -27,7 +27,7 @@ const CaseResultList: React.FC<IState> = (props) => {
     const [pagination, setPagination] = useState({
         current: 1,
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         total: 0,
     });
 
@@ -106,6 +106,8 @@ const CaseResultList: React.FC<IState> = (props) => {
         const status = PlanResultStatusUtils.getCaseResultStatusDescription(record.resultStatus);
         if(record.resultStatus === CaseResultStatusEnum.FAIL) {
             return <Tag color="#f50">{status}</Tag>
+        }else if(record.resultStatus === CaseResultStatusEnum.RUNNING) {
+            return <Tag color="#108ee9">{status}</Tag>
         }else{
             return <Tag color="#87d068">{status}</Tag>
         }

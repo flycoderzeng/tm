@@ -148,7 +148,7 @@ const PlanResultPage: React.FC<IState> = (props) => {
                 return ;
             }
         }
-        panes.push({closable: true, key: key, title: record.caseId + "-" + record.groupNo, record: record});
+        panes.push({closable: true, key: key, title: record.caseId + "-" + record.groupNo + '-' + record.name, record: record});
         setActiveKey(key);
     }
 

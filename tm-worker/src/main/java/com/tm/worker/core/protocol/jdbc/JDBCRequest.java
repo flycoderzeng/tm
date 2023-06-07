@@ -238,16 +238,23 @@ public class JDBCRequest extends StepNodeBase {
     private void execUpdate(DbConfig dbConfig, String content) throws Exception {
         AutoTestContext context = AutoTestContextService.getContext();
         Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
-        if(content.indexOf("where") < 0 && content.indexOf("WHERE") < 0) {
-            throw new TMException("SQL语句中必须有where条件");
-        }
-        if(conn == null) {
-            throw new TMException("获取数据库连接失败");
-        }
-        int i = JDBCUtils.doExecuteUpdate(conn, content);
+        try {
+            if (content.indexOf("where") < 0 && content.indexOf("WHERE") < 0) {
+                throw new TMException("SQL语句中必须有where条件");
+            }
+            if (conn == null) {
+                throw new TMException("获取数据库连接失败");
+            }
+            int i = JDBCUtils.doExecuteUpdate(conn, content);
 
-        AutoTestVariables caseVariables = context.getCaseVariables();
-        saveAffectedRowsValueToVariable(i, caseVariables);
+            AutoTestVariables caseVariables = context.getCaseVariables();
+            saveAffectedRowsValueToVariable(i, caseVariables);
+        } finally {
+            if(conn != null) {
+                log.info("归还数据库连接, {}", dbConfig.getDataSourceKey());
+                context.getTaskService().closeJDBCConnection(dbConfig, conn);
+            }
+        }
     }
 
     private List<Map<String, String>> execSelect(DbConfig dbConfig, String sql, AutoTestContext context) {
@@ -293,6 +300,7 @@ public class JDBCRequest extends StepNodeBase {
             }
 
             if(conn != null) {
+                log.info("归还数据库连接, {}", dbConfig.getDataSourceKey());
                 context.getTaskService().closeJDBCConnection(dbConfig, conn);
             }
         }

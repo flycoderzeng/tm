@@ -126,16 +126,16 @@ const KeyValueEditor: React.FC<IState> = (props) => {
         setType(props.type);
     }
 
-    if(JSON.stringify(rows) !== JSON.stringify(props.rows||[])) {
+    if(JSON.stringify(rows) !== JSON.stringify(props.rows)) {
         for (let i = 0; i < props.rows.length; i++) {
             props.rows[i]['key'] = RandomUtils.getKey();
         }
-        setRows(props.rows||[]);
+        setRows([...props.rows]);
     }else if(rows.length > 0 && !rows[0]['key']) {
         for (let i = 0; i < rows.length; i++) {
             rows[i]['key'] = RandomUtils.getKey();
         }
-        setRows(rows);
+        setRows([...rows]);
     }
 
     function add() {

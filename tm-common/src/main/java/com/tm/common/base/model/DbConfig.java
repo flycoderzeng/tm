@@ -15,4 +15,8 @@ public class DbConfig extends Common6ItemsModel {
     private Integer envId;
     private String envName;
     private Integer type;
+
+    public String getDataSourceKey() {
+        return this.dbName + "-" + this.envId;
+    }
 }

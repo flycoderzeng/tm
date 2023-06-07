@@ -25,7 +25,7 @@ public class CaseResultLogProcessRunnerThread implements Runnable {
             logOperate = queue.poll();
             if(logOperate == null) {
                 try {
-                    TimeUnit.MILLISECONDS.sleep(100);
+                    TimeUnit.MILLISECONDS.sleep(500);
                     continue;
                 } catch (InterruptedException e) {
                     log.error("sleep error, ", e);

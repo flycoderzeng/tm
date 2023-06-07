@@ -1,7 +1,7 @@
 export class StrUtils {
     public static getCamelCase(str: string): string {
         if(!str) return str;
-        return str.replace(/-([a-z])/g, function(all, i) {
+        return str.replace(/([a-z])/g, function(all, i) {
             return i.toUpperCase();
         });
     }

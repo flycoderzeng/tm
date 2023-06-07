@@ -26,7 +26,7 @@ public class JDBCDataSource {
         dataSource.setPassword(dbConfig.getPassword());
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setInitialSize(3);
-        dataSource.setMaxActive(10);
+        dataSource.setMaxActive(30);
         dataSource.setMinIdle(1);
         // 配置获取连接等待超时的时间，单位毫秒。
         dataSource.setMaxWait(60000);

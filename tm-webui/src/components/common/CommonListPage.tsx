@@ -37,7 +37,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             pagination: {
                 current: 1,
                 pageNum: 1,
-                pageSize: 10,
+                pageSize: 20,
                 linkOperator: 'or',
                 total: 0,
                 filterConditionList: []
@@ -235,8 +235,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         if(!sort) {
             sort = 'id';
         }
-        sort = StrUtils.getCamelCase(sort);
-        if(pagination.sort === 'ascend') {
+        if(!pagination.sort || pagination.sort === 'descend') {
             sort = '-' + sort;
         }
         data['sort'] = sort;
@@ -252,7 +251,11 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             if(MathUtils.isNumberSequence(pagination.searchValue)) {
                 filter += 'id==' + pagination.searchValue + ',';
             }
-            filter += 'name==*' + pagination.searchValue + '*';
+            if(this.modelType === 'db_config') {
+                filter += 'dbName==*' + pagination.searchValue + '*';
+            }else {
+                filter += 'name==*' + pagination.searchValue + '*';
+            }
             if(this.modelType === 'api_ip_port_config') {
                 filter += ',url==*' + pagination.searchValue + '*';
             }
