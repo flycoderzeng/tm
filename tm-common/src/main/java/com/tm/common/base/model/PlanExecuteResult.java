@@ -3,7 +3,7 @@ package com.tm.common.base.model;
 import lombok.Data;
 
 @Data
-public class PlanExecuteResult {
+public class PlanExecuteResult extends PlanRunningConfigSnapshot {
     private Integer id;
     private Integer planOrCaseId;
     private String planOrCaseName;
@@ -24,4 +24,5 @@ public class PlanExecuteResult {
     private Integer planSetupResultId;
     private Integer planTeardownResultId;
     private Integer planCaseType = 0;
+    private String envName;
 }

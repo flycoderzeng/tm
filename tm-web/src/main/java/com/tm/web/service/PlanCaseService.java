@@ -1,8 +1,10 @@
 package com.tm.web.service;
 
+import com.tm.common.base.mapper.DataNodeMapper;
 import com.tm.common.base.mapper.PlanCaseMapper;
 import com.tm.common.base.mapper.PlanCaseSetupMapper;
 import com.tm.common.base.mapper.PlanCaseTeardownMapper;
+import com.tm.common.base.model.DataNode;
 import com.tm.common.base.model.Menu;
 import com.tm.common.base.model.PlanCase;
 import com.tm.common.entities.autotest.request.AddCaseToPlanBody;
@@ -10,10 +12,12 @@ import com.tm.common.entities.autotest.request.ClearPlanCaseBody;
 import com.tm.common.entities.autotest.request.DeletePlanCaseBody;
 import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.base.CommonTableQueryResponse;
+import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service(value = "planCaseService")
@@ -24,6 +28,8 @@ public class PlanCaseService {
     private PlanCaseSetupMapper planCaseSetupMapper;
     @Resource
     private PlanCaseTeardownMapper planCaseTeardownMapper;
+    @Resource
+    private DataNodeMapper dataNodeMapper;
 
 
     public CommonTableQueryResponse queryList(CommonTableQueryBody body) {
@@ -156,5 +162,31 @@ public class PlanCaseService {
                 planCaseTeardownMapper.updateBySelective(planCase);
             }
         }
+    }
+
+    public void addCaseTreeToPlan(AddCaseToPlanBody body) {
+        if(body.getCaseIdList() == null || body.getCaseIdList().isEmpty()) {
+            return ;
+        }
+        HashMap<Integer, Boolean> caseHashMap = new HashMap<>();
+        for (int i = 0; i < body.getCaseIdList().size(); i++) {
+            Integer caseId = body.getCaseIdList().get(i);
+            if(caseId <= 1) {
+                continue;
+            }
+            DataNode dataNode = dataNodeMapper.selectByPrimaryKey(caseId, DataTypeEnum.AUTO_CASE.value());
+            if(dataNode != null && dataNode.getIsFolder() >= 1) {
+                // 获取子用例
+                List<DataNode> childNodes = dataNodeMapper.getChildNodesWithParentI(DataTypeEnum.AUTO_CASE.value(), dataNode.getId(), dataNode.getLevel());
+                for (DataNode childNode : childNodes) {
+                    caseHashMap.put(childNode.getId(), true);
+                }
+            }else if(dataNode != null) {
+                caseHashMap.put(dataNode.getId(), true);
+            }
+        }
+
+        body.setCaseIdList(caseHashMap.keySet().stream().toList());
+        addCaseToPlan(body);
     }
 }

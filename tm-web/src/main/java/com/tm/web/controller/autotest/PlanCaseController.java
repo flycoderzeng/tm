@@ -33,6 +33,12 @@ public class PlanCaseController {
         return ResultUtils.success();
     }
 
+    @PostMapping(value = "/addCaseTreeToPlan", produces = {"application/json;charset=UTF-8"})
+    public BaseResponse addCaseTreeToPlan(@RequestBody @Valid AddCaseToPlanBody body) {
+        planCaseService.addCaseTreeToPlan(body);
+        return ResultUtils.success();
+    }
+
     @PostMapping(value = "/deletePlanCase", produces = {"application/json;charset=UTF-8"})
     public BaseResponse deletePlanCase(@RequestBody @Valid DeletePlanCaseBody body) {
         planCaseService.deletePlanCase(body);

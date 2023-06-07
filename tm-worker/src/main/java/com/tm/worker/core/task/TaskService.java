@@ -142,6 +142,8 @@ public class TaskService {
 
         int countSetupCaseList = planCaseDao.countSetupCaseList(body);
         if(countSetupCaseList > 0) {
+            planExecuteResult.setResultStatus(PlanExecuteResultStatusEnum.SETUP_PLAN_RUNNING.value());
+            planExecuteResultDao.updateBySelective(planExecuteResult);
             PlanTask planSetupTask = execPlanSetupCases(planExecuteResult, snapshot, planVariables);
             waitForTaskFinish(planSetupTask);
         }

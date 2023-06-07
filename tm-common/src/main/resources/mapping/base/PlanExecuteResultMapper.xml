@@ -22,10 +22,21 @@
         <result column="plan_setup_result_id" property="planSetupResultId" jdbcType="INTEGER" />
         <result column="plan_teardown_result_id" property="planTeardownResultId" jdbcType="INTEGER" />
         <result column="plan_case_type" property="planCaseType" jdbcType="INTEGER" />
+
+        <result column="max_occurs" property="maxOccurs" jdbcType="INTEGER" />
+        <result column="run_type" property="runType" jdbcType="INTEGER" />
+        <result column="runs" property="runs" jdbcType="INTEGER" />
+        <result column="env_id" property="envId" jdbcType="INTEGER" />
+        <result column="env_name" property="envName" jdbcType="VARCHAR" />
+        <result column="fail_continue" property="failContinue" jdbcType="INTEGER" />
+        <result column="plan_variables" property="planVariables" jdbcType="VARCHAR" />
     </resultMap>
 
     <select id="selectByPrimaryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select * from plan_execute_result where id=#{id,jdbcType=INTEGER}
+        select
+               t1.*, t2.max_occurs, t2.run_type, t2.runs, t2.env_id, t2.env_name, t2.fail_continue, t2.plan_variables
+        from plan_execute_result t1, plan_running_config_snapshot t2
+        where t1.id=#{id,jdbcType=INTEGER} and t1.id=t2.plan_result_id
     </select>
 
     <insert id="insertBySelective"
@@ -235,26 +246,20 @@
     </update>
 
     <select id="getNewestPlanExecuteResult" resultMap="BaseResultMap" parameterType="com.tm.common.entities.autotest.request.GetNewestPlanExecuteResultBody">
-        select * from plan_execute_result where plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and from_type=#{fromType,jdbcType=INTEGER} and plan_case_type=#{planCaseType,jdbcType=INTEGER} order by id desc limit 1
+        select
+               *
+        from plan_execute_result
+        where plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and from_type=#{fromType,jdbcType=INTEGER} and plan_case_type=#{planCaseType,jdbcType=INTEGER}
+        order by id desc limit 1
     </select>
 
     <select id="getPlanHistoryExecuteResultList" resultMap="BaseResultMap" parameterType="com.tm.common.entities.base.CommonTableQueryBody">
-        select * from plan_execute_result
-        where plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and from_type=#{fromType,jdbcType=INTEGER} and plan_case_type=#{planCaseType,jdbcType=INTEGER}
-        <if test="filterConditionList != null and filterConditionList.size() > 0">
-            and
-            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
-                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
-                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
-                </foreach>
-            </if>
-            <if test="linkOperator != null and linkOperator == 'or'">
-                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
-                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
-                </foreach>
-            </if>
-        </if>
-
+        select
+               t1.*, t2.max_occurs, t2.run_type, t2.runs, t2.env_id, t2.env_name, t2.fail_continue
+        from plan_execute_result t1, plan_running_config_snapshot t2
+        where
+              t1.plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and t1.from_type=#{fromType,jdbcType=INTEGER}
+          and t1.plan_case_type=#{planCaseType,jdbcType=INTEGER} and t1.id=t2.plan_result_id
         <if test="order != null and order != '' and sort != null and sort != ''">
             order by ${order} ${sort}
         </if>
@@ -264,18 +269,5 @@
     <select id="getPlanHistoryExecuteResultListCount" resultType="java.lang.Integer" parameterType="com.tm.common.entities.autotest.request.GetNewestPlanExecuteResultBody">
         select count(*) from plan_execute_result
         where plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and from_type=#{fromType,jdbcType=INTEGER} and plan_case_type=#{planCaseType,jdbcType=INTEGER}
-        <if test="filterConditionList != null and filterConditionList.size() > 0">
-            and
-            <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
-                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="and">
-                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
-                </foreach>
-            </if>
-            <if test="linkOperator != null and linkOperator == 'or'">
-                <foreach collection="filterConditionList" index="index" item="item" open="(" close=")" separator="or">
-                    ${item.columnName} ${item.operator} #{item.value, jdbcType=VARCHAR}
-                </foreach>
-            </if>
-        </if>
     </select>
 </mapper>

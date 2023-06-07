@@ -50,7 +50,7 @@ const StepResultPage: React.FC<IState> = (props) => {
                         }}>复制结果信息</Button>
                     </div>
                     <div style={{overflow: "auto"}}>
-                        <pre style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>{stepResult?.resultInfo}</pre>
+                        <pre style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word', width: 'calc(100vw - 600px)'}}>{stepResult?.resultInfo}</pre>
                     </div>
                 </div>
             </Descriptions.Item></Descriptions>)

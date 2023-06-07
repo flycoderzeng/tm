@@ -7,6 +7,7 @@ package com.tm.common.entities.autotest.enumerate;
 public enum PlanExecuteResultStatusEnum {
     INIT(1),INIT_END(2),RUNNING(3),FINISHED(4),
     PAUSED(5),CANCELED(6),TASK_OVERFLOW(7),SETUP_FAIL(8),
+    SETUP_PLAN_RUNNING(9),
     EXCEPTION(99);
     Integer value;
     PlanExecuteResultStatusEnum(int value) {this.value = value;}

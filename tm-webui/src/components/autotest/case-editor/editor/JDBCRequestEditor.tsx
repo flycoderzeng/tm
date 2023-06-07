@@ -82,9 +82,9 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
         setContent(value);
     }
 
-    function onChangeDbName(el: any) {
-        setDbName(el.target.value);
-        props.define.dbName = el.target.value;
+    function onChangeDbName(v: any) {
+        setDbName(v);
+        props.define.dbName = v;
     }
 
     function onChangeRetryTimes(el: any) {

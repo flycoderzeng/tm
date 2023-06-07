@@ -39,13 +39,17 @@ const PlanResultPage: React.FC<IState> = (props) => {
     const [activeKey, setActiveKey] = useState('1');
     const [panes, setPanes] = useState([{ title: '用例列表', key: '1', closable: false, record: {} }]);
 
+    if(resultId && resultId !== planResultId) {
+        setPlanResultId(resultId);
+    }
+
     useEffect(() => {
         load();
     }, [planOrCaseId, fromType, planResultId]);
 
     function renderBasicInfo(data: any) {
         setPlanResultId(data.id);
-        setPlanOrCaseName(data.planOrCaseName);
+        setPlanOrCaseName(data.planOrCaseName + '---' + data.envName + '环境');
         setPlanSetupResultId(data.planSetupResultId);
         setTeardownSetupResultId(data.planTeardownResultId);
         let submitInfoTemp = data.submitter;

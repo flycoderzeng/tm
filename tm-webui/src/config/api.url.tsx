@@ -80,6 +80,7 @@ const ApiUrlConfig = {
     LOAD_ALL_RUN_ENV_URL: '/lc/lc/json/api/run_env?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Brun_env%5D=status%3D%3D0&sort=name&page%5Bsize%5D=100',
     QUERY_PLAN_CASE_LIST_URL: '/web/plancase/queryList',
     ADD_CASE_TO_PLAN_URL: '/web/plancase/addCaseToPlan',
+    ADD_CASE_TREE_TO_PLAN_URL: '/web/plancase/addCaseTreeToPlan',
     DELETE_PLAN_CASE_URL: '/web/plancase/deletePlanCase',
     CLEAR_PLAN_CASE_URL: '/web/plancase/clearPlanCase',
     CHANGE_CASE_SEQ_URL: '/web/plancase/changeCaseSeq',

@@ -104,7 +104,7 @@ const PlanResultList: React.FC<IState> = (props) => {
     }
 
     function viewPlanResult(record: any) {
-        window.open("/planresult/" + record.planOrCaseId + "/" + record.fromType + "/" + record.id);
+        window.open("/planresult/" + record.planOrCaseId + "/" + record.fromType + "/0/" + record.id);
     }
 
     const columns: any[] = [
@@ -125,6 +125,12 @@ const PlanResultList: React.FC<IState> = (props) => {
             dataIndex: 'resultStatus',
             key: 'resultStatus',
             render: text => <span>{PlanResultStatusUtils.getPlanResultStatusDescription(text)}</span>,
+        },
+        {
+            ellipsis: true,
+            title: '环境',
+            dataIndex: 'envName',
+            key: 'envName',
         },
         {
             title: '提交者',

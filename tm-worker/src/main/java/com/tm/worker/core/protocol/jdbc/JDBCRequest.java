@@ -17,6 +17,7 @@ import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.utils.AssertUtils;
 import com.tm.worker.utils.DataTypeAdapter;
 import com.tm.worker.utils.ExpressionUtils;
+import com.tm.worker.utils.JDBCUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -109,15 +110,7 @@ public class JDBCRequest extends StepNodeBase {
     private void extractResult(List<Map<String, String>> list) {
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
-        countVariableName = ExpressionUtils.extractVariable(countVariableName);
-        if(StringUtils.isNoneBlank(countVariableName)) {
-            addResultInfo("保存行数到变量: ").addResultInfoLine(countVariableName);
-            if(list != null) {
-                caseVariables.put(countVariableName, list.size() + "");
-            }else{
-                caseVariables.put(countVariableName, "0");
-            }
-        }
+        saveAffectedRowsValueToVariable(list == null ? 0 : list.size(), caseVariables);
         if(list == null || list.isEmpty()) {
             addResultInfoLine("sql结果是空");
             return ;
@@ -138,6 +131,14 @@ public class JDBCRequest extends StepNodeBase {
                 break;
             }
             extractValueToVariable(list, caseVariables, keyValueRow, rowNumber);
+        }
+    }
+
+    private void saveAffectedRowsValueToVariable(int affectedRowsCount, AutoTestVariables caseVariables) {
+        countVariableName = ExpressionUtils.extractVariable(countVariableName);
+        if(StringUtils.isNoneBlank(countVariableName)) {
+            addResultInfo("保存行数到变量: ").addResultInfoLine(countVariableName);
+            caseVariables.put(countVariableName, affectedRowsCount + "");
         }
     }
 
@@ -198,7 +199,7 @@ public class JDBCRequest extends StepNodeBase {
         Object leftOperand = map.get(name);
         final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
         final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
-        addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand.toString()).addResultInfo("] ")
+        addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand).addResultInfo("] ")
                 .addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
         if(AssertUtils.compare(leftOperand.toString(), relationOperator, value)) {
             addResultInfoLine("[成功]");
@@ -234,8 +235,19 @@ public class JDBCRequest extends StepNodeBase {
 
     }
 
-    private void execUpdate(DbConfig dbConfig, String content) {
+    private void execUpdate(DbConfig dbConfig, String content) throws Exception {
+        AutoTestContext context = AutoTestContextService.getContext();
+        Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
+        if(content.indexOf("where") < 0 && content.indexOf("WHERE") < 0) {
+            throw new TMException("SQL语句中必须有where条件");
+        }
+        if(conn == null) {
+            throw new TMException("获取数据库连接失败");
+        }
+        int i = JDBCUtils.doExecuteUpdate(conn, content);
 
+        AutoTestVariables caseVariables = context.getCaseVariables();
+        saveAffectedRowsValueToVariable(i, caseVariables);
     }
 
     private List<Map<String, String>> execSelect(DbConfig dbConfig, String sql, AutoTestContext context) {

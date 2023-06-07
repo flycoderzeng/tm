@@ -86,6 +86,10 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         WindowTopUtils.setWindowTopObject(WindowTopUtils.object_setExpandedKeys, setExpandedKeys);
     }
 
+    if(!WindowTopUtils.getWindowTopObject(WindowTopUtils.object_setSelectedKeys)) {
+        WindowTopUtils.setWindowTopObject(WindowTopUtils.object_setSelectedKeys, setSelectedKeys);
+    }
+
     function onLoadData(node: any) {
         return new Promise<void>(resolve => {
             if(!projectId || !dataTypeId) {

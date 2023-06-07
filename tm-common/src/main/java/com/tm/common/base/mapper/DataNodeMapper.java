@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface DataNodeMapper {
     List<DataNode> getNodesTree(GetNodesTreeBody body);
+    List<DataNode> getChildNodesWithParentI(@Param("dataTypeId") Integer dataTypeId, @Param("parentId") Integer parentId, @Param("parentI") Integer parentI);
     int insertBySelective(DataNode record);
     int updateBySelective(DataNode record);
     DataNode selectByPrimaryKey(@Param("id") Integer id, @Param("dataTypeId") Integer dataTypeId);

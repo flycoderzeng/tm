@@ -129,10 +129,10 @@ const ContentEditor: React.FC<IState> = (props) => {
     }
 
     return (<div>
-        <div style={{width: '100%', height: '400px'}} >
+        <div style={{width: '100%', height: '600px'}} >
             <MonacoEditor
                 width={'100%'}
-                height={400}
+                height={600}
                 theme="vs-dark"
                 language={language}
                 value={content}

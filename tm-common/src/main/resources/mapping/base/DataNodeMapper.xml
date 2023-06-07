@@ -45,6 +45,16 @@
         and data_type_id=#{dataTypeId,jdbcType=INTEGER}
     </select>
 
+    <select id="getChildNodesWithParentI" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from data_nodes
+        where
+        parent${parentI} = #{parentId,jdbcType=INTEGER}
+        and data_type_id=#{dataTypeId,jdbcType=INTEGER}
+        and is_folder = 0
+    </select>
+
     <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         update
             data_nodes set status=1

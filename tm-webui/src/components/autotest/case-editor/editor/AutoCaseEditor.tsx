@@ -141,7 +141,7 @@ const initTreeData: StepNode[] = [{
     ]
 }];
 
-let seq = 4;
+let seq = 5;
 
 const AutoCaseEditor: React.FC<IState> = (props) => {
     //let history = useHistory();
@@ -684,6 +684,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 }
             }
         }
+        data.seq = seq;
+        seq = seq + 1;
         return data;
     }
 
@@ -890,6 +892,27 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         return true;
     }
 
+    function refreshStepSeq() {
+        seq = 1;
+        const stack: StepNode[] = [treeData[0]];
+        while (true) {
+            const stepNode: StepNode|undefined = stack.shift();
+            if(stepNode) {
+                stepNode.seq = seq;
+                seq = seq + 1;
+            }
+            if(stepNode && stepNode.children) {
+                for (let i = 0; i < stepNode.children.length; i++) {
+                    stack.push(stepNode.children[i]);
+                }
+            }
+            if(!stepNode) {
+                break;
+            }
+        }
+        setTreeData([...treeData]);
+    }
+
     function onRun(runType) {
         if (!window.confirm('确定运行吗？')) {
             return;
@@ -947,6 +970,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 <Button size="small" type="default" onClick={() => {
                     setVisibleHistory(true);
                 }}>恢复历史</Button>
+                <Button size="small" type="primary" onClick={() => {
+                    refreshStepSeq();
+                }}>刷新步骤序号</Button>
             </div>
             <div className="case-editor-main-content">
                 <div className="case-editor-step-tree">

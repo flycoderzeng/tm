@@ -106,7 +106,7 @@ public class AutoTestService {
         snapshot.setRunType(body.getRunType());
 
         if(snapshot.getEnvId() != null) {
-            RunEnv runEnv = runEnvMapper.findById(body.getRunEnvId());
+            RunEnv runEnv = runEnvMapper.findById(snapshot.getEnvId());
             if(runEnv != null) {
                 snapshot.setEnvName(runEnv.getName());
             }

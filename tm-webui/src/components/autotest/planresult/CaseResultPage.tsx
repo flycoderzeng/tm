@@ -239,7 +239,7 @@ const CaseResultPage: React.FC<IState> = (props) => {
     }
 
     return (<div style={{display: 'flex', flexWrap: 'nowrap'}}>
-        <div style={{width: 300}}>
+        <div style={{width: 400, overflow: 'auto'}}>
             <Tree
                 style={{background: 'aliceblue'}}
                 expandedKeys={expandedKeys}
@@ -249,7 +249,7 @@ const CaseResultPage: React.FC<IState> = (props) => {
                 treeData={steps}
             />
         </div>
-        <div style={{paddingLeft: 5, width: "calc(100vw - 370px)"}}>
+        <div style={{paddingLeft: 5, width: "calc(100vw - 450px)"}}>
             {renderRight()}
         </div>
         <Modal

@@ -6,6 +6,7 @@ import {CommonNodeListPage} from "../../common/CommonNodeListPage";
 import {DataTypeEnum} from "../../../entities/DataTypeEnum";
 import moment from "moment";
 import {MathUtils} from "../../../utils/MathUtils";
+import {DataNodeTreeSelect} from "../../common/DataNodeTreeSelect";
 
 export interface PlanCaseModel {
     id: number;
@@ -23,6 +24,7 @@ interface IState {
 const PlanCaseEdit: React.FC<IState> = (props) => {
     const ref = useRef<{ setSelectedList, setTotalSelect }>(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [confirmLoading2, setConfirmLoading2] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [rows, setRows] = useState<PlanCaseModel[]>([]);
     const [total, setTotal] = useState(0);
@@ -40,6 +42,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
         total: 0,
     });
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalVisible2, setIsModalVisible2] = useState(false);
     const [isChangeCaseSeqModalVisible, setIsChangeCaseSeqModalVisible] = useState(false);
     const [projectId, setProjectId] = useState(props.projectId);
 
@@ -140,8 +143,38 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
         });
     }
 
+    function handleOk2() {
+        if (selectedResourceIdList.length < 1) {
+            setIsModalVisible2(false);
+            return;
+        }
+        setConfirmLoading2(true);
+        axios.post(ApiUrlConfig.ADD_CASE_TREE_TO_PLAN_URL,
+            {planId: planId, caseIdList: selectedResourceIdList, type: props.planCaseType}).then(resp => {
+            if (resp.status !== 200) {
+                message.error('加载失败');
+            } else {
+                const ret = resp.data;
+                if (ret.code !== 0) {
+                    message.error(ret.message);
+                } else {
+                    message.success('操作成功');
+                    setIsModalVisible2(false);
+                    onSearch();
+                }
+            }
+        }).finally(() => {
+            setConfirmLoading2(false);
+        });
+    }
+
     function handleCancel() {
         setIsModalVisible(false);
+        setSelectedResourceIdList([]);
+    }
+
+    function handleCancel2() {
+        setIsModalVisible2(false);
         setSelectedResourceIdList([]);
     }
 
@@ -204,6 +237,10 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
             ref.current?.setSelectedList([]);
             ref.current?.setTotalSelect(0);
         }
+    }
+
+    function onAddCase2() {
+        setIsModalVisible2(true);
     }
 
     function onClearPlanCase() {
@@ -283,6 +320,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
             <Button className="margin-left5" type="primary" onClick={onAddCase}>添加用例</Button>
             <Button className="margin-left5" type="primary" danger={true} onClick={onDeletePlanCase}>删除用例</Button>
             <Button className="margin-left5" type="primary" danger={true} onClick={onClearPlanCase}>清空用例</Button>
+            <Button className="margin-left5" type="primary" onClick={onAddCase2}>树形选择</Button>
         </div>
         <div>
             <Table columns={columns}
@@ -313,6 +351,18 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
                 projectId={projectId}
                 dataTypeId={DataTypeEnum.AUTO_CASE}>
             </CommonNodeListPage>
+        </Modal>
+        <Modal width={800}
+               title="用例选择"
+               confirmLoading={confirmLoading2}
+               open={isModalVisible2}
+               onOk={handleOk2}
+               onCancel={handleCancel2}>
+            <DataNodeTreeSelect
+                onChange={setSelectedResourceIdList}
+                projectId={projectId}
+                dataTypeId={DataTypeEnum.AUTO_CASE}>
+            </DataNodeTreeSelect>
         </Modal>
         <Modal title="调整用例位置" open={isChangeCaseSeqModalVisible}
                onOk={handleOkChangeCaseSeq}
