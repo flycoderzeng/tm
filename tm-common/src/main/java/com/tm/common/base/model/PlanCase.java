@@ -12,6 +12,7 @@ public class PlanCase {
     private Integer seq;
     private String caseName;
     private Date caseCreateTime;
+    private Date addTime = new Date();
     private String caseCreateUsername;
     private Date caseModifyTime;
     private String caseModifyUsername;

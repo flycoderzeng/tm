@@ -7,6 +7,7 @@ import {DataTypeEnum} from "../../../entities/DataTypeEnum";
 import moment from "moment";
 import {MathUtils} from "../../../utils/MathUtils";
 import {DataNodeTreeSelect} from "../../common/DataNodeTreeSelect";
+import {DateUtils} from "../../../utils/DateUtils";
 
 export interface PlanCaseModel {
     id: number;
@@ -87,7 +88,10 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
                         respRows[i].key = respRows[i].id;
                         respRows[i].caseCreateTime =
                             respRows[i].caseCreateTime
-                            && moment(new Date(respRows[i].caseCreateTime)).format('YYYY-MM-DD HH:mm:ss');
+                            && DateUtils.format(new Date(respRows[i].caseCreateTime));
+                        respRows[i].addTime =
+                            respRows[i].addTime
+                            && DateUtils.format(new Date(respRows[i].addTime));
                     }
                     setRows(respRows);
                     setTotal(ret.data.total);
@@ -200,8 +204,12 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
             dataIndex: 'caseCreateUsername',
             render: text => <span>{text}</span>,
         }, {
-            title: '创建时间',
+            title: '用例创建时间',
             dataIndex: 'caseCreateTime',
+            render: text => <span>{text}</span>,
+        }, {
+            title: '添加到计划时间',
+            dataIndex: 'addTime',
             render: text => <span>{text}</span>,
         }, {
             title: '操作',

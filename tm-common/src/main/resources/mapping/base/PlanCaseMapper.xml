@@ -6,6 +6,7 @@
         <result column="plan_id" property="planId" jdbcType="INTEGER" />
         <result column="case_id" property="caseId" jdbcType="INTEGER" />
         <result column="seq" property="seq" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
         <result column="case_name" property="caseName" jdbcType="VARCHAR"/>
         <result column="case_create_time" property="caseCreateTime" jdbcType="TIMESTAMP" />
         <result column="case_create_username" property="caseCreateUsername" jdbcType="VARCHAR" />
@@ -30,6 +31,9 @@
             <if test="seq != null" >
                 seq,
             </if>
+            <if test="addTime != null" >
+                add_time,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -43,6 +47,9 @@
             </if>
             <if test="seq != null" >
                 #{seq,jdbcType=INTEGER},
+            </if>
+            <if test="addTime != null" >
+                #{addTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
@@ -59,6 +66,9 @@
             <if test="seq != null" >
                 seq = #{seq,jdbcType=INTEGER},
             </if>
+            <if test="addTime != null" >
+                add_time = #{addTime,jdbcType=TIMESTAMP},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -66,10 +76,10 @@
 
     <update id="batchInsert" parameterType="com.tm.common.base.model.PlanCase">
         INSERT INTO plan_case
-        (id, plan_id, case_id, seq)
+        (id, plan_id, case_id, seq, add_time)
         VALUES
         <foreach collection ="planCaseList" item="planCase" separator =",">
-            (null, #{planCase.planId}, #{planCase.caseId}, #{planCase.seq})
+            (null, #{planCase.planId}, #{planCase.caseId}, #{planCase.seq}, #{planCase.addTime})
         </foreach >
     </update>
 

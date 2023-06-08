@@ -166,6 +166,9 @@ public class JDBCRequest extends StepNodeBase {
             addResultInfoLine("没有配置断言");
             return;
         }
+        if(list == null || list.isEmpty()) {
+            throw new TMException("没有sql结果,断言失败");
+        }
         boolean checkResult = true;
         for (KeyValueRow keyValueRow : checkErrorList) {
             Integer rowNumber = getRowNumber(keyValueRow);

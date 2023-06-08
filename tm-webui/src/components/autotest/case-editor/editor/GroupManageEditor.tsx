@@ -146,7 +146,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
     rows = renderData();
 
     const maxWidth = window.innerWidth - 630;
-    const maxHeight = window.outerHeight - 250;
+    const maxHeight = window.outerHeight - 450;
 
     function renderOptions() {
         if(!headers) {
