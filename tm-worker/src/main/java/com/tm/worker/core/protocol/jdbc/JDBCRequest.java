@@ -176,7 +176,7 @@ public class JDBCRequest extends StepNodeBase {
             checkResult = checkResult && checkResponse(caseVariables, map, keyValueRow);
         }
         if(!checkResult) {
-            throw new TMException("响应断言失败");
+            throw new TMException("数据库操作断言失败");
         }
     }
 
