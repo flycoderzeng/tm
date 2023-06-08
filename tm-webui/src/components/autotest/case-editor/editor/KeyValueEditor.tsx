@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {KeyValueRow} from "../entities/KeyValueRow";
 import {AutoComplete, Button, Col, Input, Modal, Row, Select} from "antd";
 import {ContentEditor} from "./ContentEditor";
@@ -122,9 +122,10 @@ const KeyValueEditor: React.FC<IState> = (props) => {
         descriptionSpanSize = 8;
     }
 
-    if(type !== props.type) {
+    useEffect(() => {
         setType(props.type);
-    }
+    }, [props.type]);
+
 
     if(JSON.stringify(rows) !== JSON.stringify(props.rows)) {
         for (let i = 0; i < props.rows.length; i++) {

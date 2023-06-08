@@ -23,9 +23,11 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
     if(JSON.stringify(parametricList) !== JSON.stringify(props.define.parametricList)) {
         setParametricList(props.define.parametricList);
     }
-    if(id !== props.define.platformApiId) {
+
+    useEffect(() => {
         setId(props.define.platformApiId);
-    }
+    }, [props.define.platformApiId]);
+
     useEffect(() => {
         load();
     }, [id]);

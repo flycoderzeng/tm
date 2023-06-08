@@ -23,13 +23,13 @@ const CaseHistoryList: React.FC<IState> = (props) => {
         total: 0,
     });
 
-    if(caseId !== props.caseId) {
+    useEffect(() => {
         setCaseId(props.caseId);
-    }
+    }, [props.caseId]);
 
     useEffect(() => {
         load();
-    }, [caseId]);
+    }, [caseId, pagination.pageNum, pagination.pageSize]);
 
     function load() {
         setLoading(true);
@@ -80,12 +80,13 @@ const CaseHistoryList: React.FC<IState> = (props) => {
     }
 
     function onChangePagination(pagination) {
-        setPagination({
-            ...pagination,
+        const newVar = {
+            total: pagination.total,
             pageNum: pagination.current,
             pageSize: pagination.pageSize,
             current: pagination.current,
-        });
+        };
+        setPagination(prevState => {return {...prevState, ...newVar};});
     }
 
     const columns: any[] = [{

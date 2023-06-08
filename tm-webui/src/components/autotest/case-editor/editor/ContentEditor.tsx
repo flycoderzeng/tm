@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import MonacoEditor from "react-monaco-editor";
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 
@@ -13,12 +13,12 @@ interface IState {
 const ContentEditor: React.FC<IState> = (props) => {
     const [language, setLanguage] = useState(props.language);
     const [content, setContent] = useState(props.content);
-    if(content !== props.content) {
+
+    useEffect(() => {
         setContent(props.content);
-    }
-    if(language !== props.language) {
         setLanguage(props.language);
-    }
+    }, [props.content, props.language]);
+
     const options = {
         selectOnLineNumbers: true,
         renderSideBySide: false,

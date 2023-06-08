@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {EditorIState} from "../entities/EditorIState";
 import {JDBCRequestNode} from "../entities/JDBCRequestNode";
 import {CommonNameComments} from "./CommonNameComments";
@@ -22,18 +22,12 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
     const [autoIncrementPrimaryKeyVariableName, setAutoIncrementPrimaryKeyVariableName] = useState(props.define.autoIncrementPrimaryKeyVariableName);
     const [databaseNames, setDatabaseNames] = useState<any[]>(databaseNamesAll);
 
-    if(dbName !== props.define.dbName) {
+    useEffect(() => {
         setDbName(props.define.dbName);
-    }
-    if(content !== props.define.content) {
         setContent(props.define.content);
-    }
-    if(resultSetVariableName !== props.define.resultSetVariableName) {
         setResultSetVariableName(props.define.resultSetVariableName);
-    }
-    if(countVariableName !== props.define.countVariableName) {
         setCountVariableName(props.define.countVariableName);
-    }
+    }, [props.define.dbName, props.define.content, props.define.resultSetVariableName, props.define.countVariableName]);
 
     if(!loadedDatabaseNames) {
         loadedDatabaseNames = true;

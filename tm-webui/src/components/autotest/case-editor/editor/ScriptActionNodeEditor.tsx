@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {EditorIState} from "../entities/EditorIState";
 import {ScriptActionNode} from "../entities/ScriptActionNode";
 import {CommonNameComments} from "./CommonNameComments";
@@ -9,13 +9,11 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
     const [content, setContent] = useState(props.define.content);
     const [scriptResultVariableName, setScriptResultVariableName] = useState(props.define.scriptResultVariableName);
 
-    if(content !== props.define.content) {
+    useEffect(() => {
         setContent(props.define.content);
-    }
-
-    if(scriptResultVariableName !== props.define.scriptResultVariableName) {
         setScriptResultVariableName(props.define.scriptResultVariableName);
-    }
+    }, [props.define.content, props.define.scriptResultVariableName]);
+
     function refreshContent(value) {
         props.define.content = value;
         setContent(value);

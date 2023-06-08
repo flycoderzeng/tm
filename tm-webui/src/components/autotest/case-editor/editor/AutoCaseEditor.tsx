@@ -360,6 +360,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     function onRightClick({event, node}: any) {
         setCurrStepNode(node);
+        setSelectedKeys([node.key]);
         if (node.key === '1') {
             hideRightMenu(event);
             return;

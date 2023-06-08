@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Input} from "antd";
 import { Row, Col } from 'antd';
 import {BaseNode} from "../entities/BaseNode";
@@ -10,15 +10,11 @@ const CommonNameComments: React.FC<EditorIState<BaseNode>> = (props) => {
     const [type, setType] = useState(props.stepNode.type);
     const [name, setName] = useState(props.define.name);
     const [comments, setComments] = useState(props.define.comments);
-    if(type !== props.stepNode.type) {
+    useEffect(() => {
         setType(props.stepNode.type);
-    }
-    if(name !== props.define.name) {
         setName(props.define.name);
-    }
-    if(comments !== props.define.comments) {
         setComments(props.define.comments);
-    }
+    }, [props.stepNode.type, props.define.name, props.define.comments]);
 
     function onChangeName(el: any) {
         setName(el.target.value);

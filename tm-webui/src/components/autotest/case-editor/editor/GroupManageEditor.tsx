@@ -23,6 +23,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
     if(groupVariables !== props.groupVariables) {
         setGroupVariables(props.groupVariables);
     }
+
     if (JSON.stringify(userDefinedVariables) !== JSON.stringify(props.userDefinedVariables)) {
         setUserDefinedVariables(props.userDefinedVariables);
     }

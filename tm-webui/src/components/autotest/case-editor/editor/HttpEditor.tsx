@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {EditorIState} from "../entities/EditorIState";
 import {CommonNameComments} from "./CommonNameComments";
 import {Input, Tabs, Select, Radio} from "antd";
@@ -7,9 +7,7 @@ import {KeyValueEditor} from "./KeyValueEditor";
 import {ContentEditor} from "./ContentEditor";
 import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
 
-const { TabPane } = Tabs;
-
-const { Option } = Select;
+const {Option} = Select;
 
 const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [bodyType, setBodyType] = useState(props.define.bodyType);
@@ -20,32 +18,20 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [rawLanguage, setRawLanguage] = useState('json');
     const [activeKey, setActiveKey] = useState('1');
 
-    if(!WindowTopUtils.getWindowTopObject('activeTabJson')) {
+    if (!WindowTopUtils.getWindowTopObject('activeTabJson')) {
         WindowTopUtils.setWindowTopObject('activeTabJson', {});
     }
 
-    if(bodyType !== props.define.bodyType) {
+    useEffect(() => {
         setBodyType(props.define.bodyType);
-    }
-
-    if(rawType !== props.define.rawType) {
         setRawType(props.define.rawType);
         setRawLanguage(props.define.rawType);
-    }
-
-    if(url !== props.define.url) {
         setUrl(props.define.url);
-    }
-
-    if(requestType !== props.define.requestType) {
         setRequestType(props.define.requestType);
-    }
-
-    if(content !== props.define.content) {
         setContent(props.define.content);
-    }
+    }, [props.define.bodyType, props.define.rawType, props.define.url, props.define.requestType, props.define.content]);
 
-    if(WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key] &&
+    if (WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key] &&
         WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key] !== activeKey) {
         setActiveKey(WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key]);
     }
@@ -62,9 +48,9 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
 
     function onChangeRawType(value) {
         setRawType(value);
-        if(value === 'text') {
+        if (value === 'text') {
             setRawLanguage('plaintext');
-        }else{
+        } else {
             setRawLanguage(value);
         }
 
@@ -88,24 +74,25 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
 
     function renderBodyArea() {
         let rawTypeSelect;
-        if(bodyType === 'raw') {
-            rawTypeSelect = <Select value={rawType} defaultValue={rawType} style={{ width: 120 }} onChange={onChangeRawType}>
-                <Option value="text">text</Option>
-                <Option value="json">json</Option>
-                <Option value="xml">xml</Option>
-            </Select>
+        if (bodyType === 'raw') {
+            rawTypeSelect =
+                <Select value={rawType} defaultValue={rawType} style={{width: 120}} onChange={onChangeRawType}>
+                    <Option value="text">text</Option>
+                    <Option value="json">json</Option>
+                    <Option value="xml">xml</Option>
+                </Select>
         }
         let contentArea;
-        if(bodyType === 'raw') {
+        if (bodyType === 'raw') {
             contentArea = (<ContentEditor userDefinedVariables={props.userDefinedVariables}
                                           refreshContent={refreshContent}
                                           language={rawLanguage}
                                           content={content}>
             </ContentEditor>)
-        }else if(bodyType === 'form-data') {
+        } else if (bodyType === 'form-data') {
             contentArea = (<KeyValueEditor rows={props.define.formData} type={'form-data'}>
             </KeyValueEditor>)
-        }else if(bodyType === 'x-www-form-urlencoded') {
+        } else if (bodyType === 'x-www-form-urlencoded') {
             contentArea = (<KeyValueEditor rows={props.define.formUrlencoded} type={''}>
             </KeyValueEditor>)
         }
@@ -132,7 +119,8 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
         </CommonNameComments>
         <div style={{paddingTop: '5px'}}>
             <Input.Group compact style={{display: "flex"}}>
-                <Select defaultValue={requestType} value={requestType} style={{width: '200px'}} onChange={onChangeRequestType}>
+                <Select defaultValue={requestType} value={requestType} style={{width: '200px'}}
+                        onChange={onChangeRequestType}>
                     <Option value="POST">POST</Option>
                     <Option value="GET">GET</Option>
                 </Select>
@@ -140,21 +128,31 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
             </Input.Group>
         </div>
         <div style={{paddingTop: '5px'}}>
-            <Tabs defaultActiveKey="1" activeKey={activeKey} onChange={onChangeTab} items={[{label: 'Params', key: '1', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                                                                                                             rows={props.define.params}
-                                                                                                                             type={''}>
-                </KeyValueEditor>)}, {label: 'Headers', key: '2', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                                                                             rows={props.define.headers}
-                                                                                             type={''}>
-                </KeyValueEditor>)}, {label: 'Body', key: '3', children: renderBodyArea()}, {
-                label: '响应断言', key: '4', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                                                        rows={props.define.checkErrorList}
-                                                                        type={'response-assert'}>
+            <Tabs defaultActiveKey="1" activeKey={activeKey} onChange={onChangeTab} items={[{
+                label: 'Params', key: '1', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+                                                                      rows={props.define.params}
+                                                                      type={''}>
                 </KeyValueEditor>)
-            }, {label: '响应提取', key:'5', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                                                       rows={props.define.responseExtractorList}
-                                                                       type={'response-extractor'}>
-                </KeyValueEditor>)}]}>
+            }, {
+                label: 'Headers', key: '2', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+                                                                       rows={props.define.headers}
+                                                                       type={''}>
+                </KeyValueEditor>)
+            }, {label: 'Body', key: '3', children: renderBodyArea()}, {
+                label: '响应断言',
+                key: '4',
+                children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+                                           rows={props.define.checkErrorList}
+                                           type={'response-assert'}>
+                </KeyValueEditor>)
+            }, {
+                label: '响应提取',
+                key: '5',
+                children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
+                                           rows={props.define.responseExtractorList}
+                                           type={'response-extractor'}>
+                </KeyValueEditor>)
+            }]}>
             </Tabs>
         </div>
     </div>)
