@@ -7,13 +7,15 @@ import {EditorIState} from "../entities/EditorIState";
 
 const LoopControllerEditor: React.FC<EditorIState<LoopNode>> = (props) => {
     const [content, setContent] = useState(props.define.condition);
+    const {onChange} = props;
+    const {stepNode} = props;
     function refreshContent(value) {
-        props.define.condition = value;
         setContent(value);
+        onChange('condition', value);
     }
 
     return (<div>
-        <CommonNameComments refreshTree={props.refreshTree} stepNode={props.stepNode} define={props.define}></CommonNameComments>
+        <CommonNameComments refreshTree={props.refreshTree} stepNode={stepNode} define={stepNode.define} onChange={onChange}></CommonNameComments>
         <Row style={{paddingTop: '5px'}}>
             <Col flex="100px">循环次数</Col>
             <Col flex="auto">

@@ -19,6 +19,9 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
     const [currRow, setCurrRow] = useState<ParameterDefineRow|null>(null);
     const [currKey, setCurrKey] = useState('');
     const [currValue, setCurrValue] = useState('');
+    const {onChange} = props;
+    const {stepNode} = props;
+
 
     if(JSON.stringify(parametricList) !== JSON.stringify(props.define.parametricList)) {
         setParametricList(props.define.parametricList);
@@ -168,7 +171,7 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
         });
     }
     return (<div>
-        <CommonNameComments refreshTree={props.refreshTree} stepNode={props.stepNode} define={props.define}></CommonNameComments>
+        <CommonNameComments refreshTree={props.refreshTree} stepNode={stepNode} define={stepNode.define} onChange={onChange}></CommonNameComments>
         <div style={{paddingTop: '5px'}}>
             <Table
                 columns={columns}

@@ -440,6 +440,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         //console.log(event);
         //console.log(node);
         setCurrNode(node);
+        setSelectedKeys([node.key]);
 
         setRightMenuStatus(node);
         const x = event.clientX + 'px';

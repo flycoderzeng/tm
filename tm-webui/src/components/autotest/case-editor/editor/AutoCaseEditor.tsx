@@ -836,52 +836,56 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         });
     }
 
+    function onChangeDefine(key: string, value: any) {
+        currStepNode.define[key] = value;
+    }
+
     function renderRightPanel() {
         switch (currStepNode.type) {
             case "root":
                 return (<RootNodeEditor refreshTree={refreshTree} stepNode={currStepNode} groupVariables={groupVariables} onChangeGroupVariables={setGroupVariables}
-                                        define={currStepNode.define}>
+                                        define={currStepNode.define} onChange={onChangeDefine}>
                 </RootNodeEditor>);
             case "if":
                 return (<IfControllerEditor refreshTree={refreshTree} stepNode={currStepNode}
-                                            define={currStepNode.define}>
+                                            define={currStepNode.define} onChange={onChangeDefine}>
                 </IfControllerEditor>);
             case "while":
                 return (<WhileControllerEditor refreshTree={refreshTree} stepNode={currStepNode}
-                                               define={currStepNode.define}>
+                                               define={currStepNode.define} onChange={onChangeDefine}>
                 </WhileControllerEditor>);
             case 'loop':
                 return (<LoopControllerEditor refreshTree={refreshTree}
                                               stepNode={currStepNode}
-                                              define={currStepNode.define}>
+                                              define={currStepNode.define} onChange={onChangeDefine}>
                 </LoopControllerEditor>);
             case 'http':
             case 'http request':
                 return (
                     <HttpEditor userDefinedVariables={rootNode.define.userDefinedVariables}
                                 refreshTree={refreshTree}
-                                stepNode={currStepNode} define={currStepNode.define}>
+                                stepNode={currStepNode} define={currStepNode.define} onChange={onChangeDefine}>
                     </HttpEditor>);
             case 'jdbc':
             case 'jdbc request':
                 return (<JDBCRequestEditor userDefinedVariables={rootNode.define.userDefinedVariables}
                                            refreshTree={refreshTree}
-                                           stepNode={currStepNode} define={currStepNode.define}>
+                                           stepNode={currStepNode} define={currStepNode.define} onChange={onChangeDefine}>
                 </JDBCRequestEditor>);
             case 'shell script':
                 return (<ScriptActionNodeEditor userDefinedVariables={rootNode.define.userDefinedVariables}
                                            refreshTree={refreshTree}
-                                           stepNode={currStepNode} define={currStepNode.define}>
+                                           stepNode={currStepNode} define={currStepNode.define} onChange={onChangeDefine}>
                 </ScriptActionNodeEditor>);
             default:
                 if (currStepNode.type.startsWith('调用平台API(')) {
                     return (<PlatformApiEditor userDefinedVariables={rootNode.define.userDefinedVariables}
                                                stepNode={currStepNode} define={currStepNode.define}
-                                               refreshTree={refreshTree}>
+                                               refreshTree={refreshTree} onChange={onChangeDefine}>
                     </PlatformApiEditor>);
                 }
                 return (<CommonNameComments refreshTree={refreshTree} stepNode={currStepNode}
-                                            define={currStepNode.define}>
+                                            define={currStepNode.define} onChange={onChangeDefine}>
                 </CommonNameComments>)
         }
     }
@@ -915,6 +919,10 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function onRun(runType) {
+        if (!runEnvId) {
+            message.info('请选择环境');
+            return;
+        }
         if (!window.confirm('确定运行吗？')) {
             return;
         }

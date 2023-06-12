@@ -29,7 +29,13 @@ public final class ExpressionUtils {
             if(StringUtils.isBlank(expr)) {
                 continue;
             }
-            String result = (String)AviatorEvaluator.execute(expr, envMap);
+            Object object = AviatorEvaluator.execute(expr, envMap);
+            String result = "";
+            if(object instanceof String) {
+                result = (String)object;
+            }else{
+                result = object + "";
+            }
             expression = expression.replace("${" + expr + "}", result+"");
         }
 

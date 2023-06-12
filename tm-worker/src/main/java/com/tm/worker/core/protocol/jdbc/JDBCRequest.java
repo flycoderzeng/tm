@@ -204,7 +204,7 @@ public class JDBCRequest extends StepNodeBase {
         final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
         addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand).addResultInfo("] ")
                 .addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
-        if(AssertUtils.compare(leftOperand.toString(), relationOperator, value)) {
+        if(AssertUtils.compare(leftOperand, relationOperator, value)) {
             addResultInfoLine("[成功]");
             return true;
         }else{

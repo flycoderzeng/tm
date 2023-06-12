@@ -22,6 +22,12 @@ interface IState {
     planCaseType: number;
 }
 
+const initialPagination: any = {
+    current: 1,
+    pageNum: 1,
+    pageSize: 20,
+    total: 0,
+};
 const PlanCaseEdit: React.FC<IState> = (props) => {
     const ref = useRef<{ setSelectedList, setTotalSelect }>(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -47,12 +53,14 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
     const [isChangeCaseSeqModalVisible, setIsChangeCaseSeqModalVisible] = useState(false);
     const [projectId, setProjectId] = useState(props.projectId);
 
-    if (planId !== props.planId) {
+    useEffect(() => {
         setPlanId(props.planId);
-    }
-    if (projectId !== props.projectId) {
         setProjectId(props.projectId);
-    }
+    }, [props.planId, props.projectId]);
+
+    useEffect(() => {
+        setPagination(prevState => {return {...prevState, ...initialPagination};});
+    }, [props.planId, props.projectId]);
 
     useEffect(() => {
         onSearch();

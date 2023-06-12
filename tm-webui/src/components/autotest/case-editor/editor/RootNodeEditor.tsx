@@ -9,6 +9,7 @@ import {GroupManageEditor} from "./GroupManageEditor";
 
 const RootNodeEditor: React.FC<EditorIState<RootNode>> = (props) => {
     const {onChangeGroupVariables} = props;
+    const {onChange} = props;
     if(!props.define.cookies) {
         props.define.cookies = [];
     }
@@ -19,7 +20,7 @@ const RootNodeEditor: React.FC<EditorIState<RootNode>> = (props) => {
 
     return (
         <div>
-            <CommonNameComments refreshTree={props.refreshTree} stepNode={props.stepNode} define={props.define}></CommonNameComments>
+            <CommonNameComments refreshTree={props.refreshTree} stepNode={props.stepNode} define={props.define} onChange={onChange}></CommonNameComments>
             <Tabs defaultActiveKey="1" onChange={onChangeTab} items={[{label: '用例变量', key: '1',
                 children: (<AutoCaseVariableEditor userDefinedVariables={props.define.userDefinedVariables}></AutoCaseVariableEditor>)},
                 {label: 'cookies', key: '2', children: (<KeyValueEditor userDefinedVariables={props.define.userDefinedVariables} rows={props.define.cookies} type={'cookie'}></KeyValueEditor>)},

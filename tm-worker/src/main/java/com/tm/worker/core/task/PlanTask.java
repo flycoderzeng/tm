@@ -19,6 +19,8 @@ public class PlanTask extends WorkerPlanTask {
 
     private AtomicInteger runningCasesCount = new AtomicInteger(0);
 
+    private AtomicInteger polledCount = new AtomicInteger(0);
+
     public PlanTask(Integer priority, PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot runningConfigSnapshot,
                     AutoTestVariables planVariables) {
         super(priority, planExecuteResult);
@@ -68,6 +70,14 @@ public class PlanTask extends WorkerPlanTask {
 
     public Integer getRunningTotal() {
         return runningCasesCount.get();
+    }
+
+    public void increasePolledCount() {
+        polledCount.incrementAndGet();
+    }
+
+    public Integer getPolledCount() {
+        return polledCount.get();
     }
 
     public void setTotalCases(Integer total) {

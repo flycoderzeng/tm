@@ -10,6 +10,10 @@ const CommonNameComments: React.FC<EditorIState<BaseNode>> = (props) => {
     const [type, setType] = useState(props.stepNode.type);
     const [name, setName] = useState(props.define.name);
     const [comments, setComments] = useState(props.define.comments);
+    const {onChange} = props;
+    const {refreshTree} = props;
+    const {stepNode} = props;
+
     useEffect(() => {
         setType(props.stepNode.type);
         setName(props.define.name);
@@ -18,13 +22,13 @@ const CommonNameComments: React.FC<EditorIState<BaseNode>> = (props) => {
 
     function onChangeName(el: any) {
         setName(el.target.value);
-        props.define.name = el.target.value;
-        props.refreshTree(ActionType.SetName, props.stepNode.key, el.target.value);
+        onChange('name', el.target.value);
+        refreshTree(ActionType.SetName, stepNode.key, el.target.value);
     }
 
     function onChangeComments(el: any) {
         setComments(el.target.value);
-        props.define.comments = el.target.value;
+        onChange('comments', el.target.value);
     }
     return (
         <div>

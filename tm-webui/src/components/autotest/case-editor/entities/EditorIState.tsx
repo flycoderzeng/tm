@@ -8,4 +8,5 @@ export interface EditorIState<T> {
     userDefinedVariables?: AutoCaseVariable[];
     groupVariables?: string|null;
     onChangeGroupVariables?: any;
+    onChange?: any;
 }

@@ -21,6 +21,8 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
     const [countVariableName, setCountVariableName] = useState(props.define.countVariableName);
     const [autoIncrementPrimaryKeyVariableName, setAutoIncrementPrimaryKeyVariableName] = useState(props.define.autoIncrementPrimaryKeyVariableName);
     const [databaseNames, setDatabaseNames] = useState<any[]>(databaseNamesAll);
+    const {onChange} = props;
+    const {stepNode} = props;
 
     useEffect(() => {
         setDbName(props.define.dbName);
@@ -58,32 +60,32 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
 
     function onChangeResultSetVariableName(v: any) {
         setResultSetVariableName(v);
-        props.define.resultSetVariableName = v;
+        onChange('resultSetVariableName', v);
     }
 
     function onChangeCountVariableName(v: any) {
         setCountVariableName(v);
-        props.define.countVariableName = v;
+        onChange('countVariableName', v);
     }
 
     function onChangeAutoIncrementPrimaryKeyVariableName(v: any) {
         setAutoIncrementPrimaryKeyVariableName(v);
-        props.define.autoIncrementPrimaryKeyVariableName = v;
+        onChange('autoIncrementPrimaryKeyVariableName', v);
     }
 
     function refreshContent(value) {
-        props.define.content = value;
         setContent(value);
+        onChange('content', value);
     }
 
     function onChangeDbName(v: any) {
         setDbName(v);
-        props.define.dbName = v;
+        onChange('dbName', v);
     }
 
     function onChangeRetryTimes(el: any) {
         setRetryTimes(el.target.value);
-        props.define.retryTimes = el.target.value;
+        onChange('retryTimes', el.target.value);
     }
 
     function onChangeTab(key) {
@@ -96,7 +98,7 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
     }) as any[];
 
     return (<div>
-        <CommonNameComments refreshTree={props.refreshTree} stepNode={props.stepNode} define={props.define}>
+        <CommonNameComments refreshTree={props.refreshTree} stepNode={stepNode} define={stepNode.define} onChange={onChange}>
         </CommonNameComments>
         <div>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
@@ -155,10 +157,10 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
                                                                                                                                      language={'sql'}
                                                                                                                                      content={content}>
                 </ContentEditor>)}, {label: '结果断言', key: '2', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                                                                             rows={props.define.checkErrorList}
+                                                                                             rows={stepNode.define.checkErrorList}
                                                                                              type={'jdbc-response-assert'}>
                 </KeyValueEditor>)}, {label: '变量保存', key: '3', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                                                                              rows={props.define.responseExtractorList}
+                                                                                              rows={stepNode.define.responseExtractorList}
                                                                                               type={'jdbc-response-extractor'}>
                 </KeyValueEditor>)}]}>
             </Tabs>

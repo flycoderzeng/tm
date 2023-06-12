@@ -33,6 +33,7 @@ import org.springframework.http.MediaType;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpCookie;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -229,23 +230,45 @@ public class HttpSampler extends StepNodeBase {
     }
 
     private String getActualUrl(AutoTestVariables caseVariables) throws UnsupportedEncodingException {
+        AutoTestContext context = AutoTestContextService.getContext();
         if(StringUtils.isBlank(url)) {
             throw new TMException("请求地址不能为空");
         }
-        addResultInfo("请求地址: ").addResultInfoLine(url);
-        String actualUrl = ExpressionUtils.replaceExpression(url, caseVariables.getVariables());
-        if(StringUtils.isBlank(actualUrl)) {
-            throw new TMException("实际的请求地址不能为空");
-        }
+        log.info(url);
 
-        String path = URLUtil.getPath(actualUrl);
-        log.info(path);
-        AutoTestContext context = AutoTestContextService.getContext();
-        List<ApiIpPortConfig> apiIpPortConfigs = context.getTaskService().selectByUrlAndEnvId(path,
-                context.getPlanTask().getRunningConfigSnapshot().getEnvId());
+        String path = "";
+
+        addResultInfo("请求地址: ").addResultInfoLine(url);
+
+        List<ApiIpPortConfig> apiIpPortConfigs = new ArrayList<>();
+
+
+        String actualUrl = "";
+
+        String pathParams = ReUtil.get("/\\$\\{(.*?)\\}", url, 0);
+        if(StringUtils.isNoneBlank(pathParams)) {
+            path = ReUtil.replaceAll(url, ".*://[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}:[0-9]{1,4}", "");
+            log.info(path);
+            int index = path.indexOf("?");
+            if(index > -1) {
+                path = path.substring(0, index);
+                log.info(path);
+            }
+            actualUrl = ExpressionUtils.replaceExpression(url, caseVariables.getVariables());
+        }else {
+            actualUrl = ExpressionUtils.replaceExpression(url, caseVariables.getVariables());
+            path = URLUtil.getPath(actualUrl);
+            log.info(path);
+        }
+        apiIpPortConfigs = context.getTaskService().selectByUrlAndEnvId(path, context.getPlanTask().getRunningConfigSnapshot().getEnvId());
         if(apiIpPortConfigs != null && apiIpPortConfigs.size() > 1) {
             throw new TMException("接口: " + path + ", 环境: "
                     + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", 存在多条配置");
+        }
+
+
+        if(StringUtils.isBlank(actualUrl)) {
+            throw new TMException("实际的请求地址不能为空");
         }
 
         // 拼装params

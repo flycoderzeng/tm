@@ -8,20 +8,22 @@ import {ContentEditor} from "./ContentEditor";
 const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props) => {
     const [content, setContent] = useState(props.define.content);
     const [scriptResultVariableName, setScriptResultVariableName] = useState(props.define.scriptResultVariableName);
+    const {onChange} = props;
+    const {stepNode} = props;
 
     useEffect(() => {
-        setContent(props.define.content);
-        setScriptResultVariableName(props.define.scriptResultVariableName);
-    }, [props.define.content, props.define.scriptResultVariableName]);
+        setContent(stepNode.define.content);
+        setScriptResultVariableName(stepNode.define.scriptResultVariableName);
+    }, [stepNode.define.content, stepNode.define.scriptResultVariableName]);
 
     function refreshContent(value) {
-        props.define.content = value;
         setContent(value);
+        onChange('content', value);
     }
 
     function onChangeScriptResultVariableName(v: any) {
         setScriptResultVariableName(v);
-        props.define.scriptResultVariableName = v;
+        onChange('scriptResultVariableName', v);
     }
 
     const options = props.userDefinedVariables?.map(v => {
@@ -29,7 +31,7 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
     }) as any[];
 
     return (<div>
-        <CommonNameComments refreshTree={props.refreshTree} stepNode={props.stepNode} define={props.define}>
+        <CommonNameComments refreshTree={props.refreshTree} stepNode={stepNode} define={stepNode.define} onChange={onChange}>
         </CommonNameComments>
         <div>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>

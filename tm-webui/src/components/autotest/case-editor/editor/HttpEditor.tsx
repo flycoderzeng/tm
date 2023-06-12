@@ -17,33 +17,35 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [requestType, setRequestType] = useState(props.define.requestType);
     const [rawLanguage, setRawLanguage] = useState('json');
     const [activeKey, setActiveKey] = useState('1');
+    const {onChange} = props;
+    const {stepNode} = props;
 
     if (!WindowTopUtils.getWindowTopObject('activeTabJson')) {
         WindowTopUtils.setWindowTopObject('activeTabJson', {});
     }
 
     useEffect(() => {
-        setBodyType(props.define.bodyType);
-        setRawType(props.define.rawType);
-        setRawLanguage(props.define.rawType);
-        setUrl(props.define.url);
-        setRequestType(props.define.requestType);
-        setContent(props.define.content);
-    }, [props.define.bodyType, props.define.rawType, props.define.url, props.define.requestType, props.define.content]);
+        setBodyType(stepNode.define.bodyType);
+        setRawType(stepNode.define.rawType);
+        setRawLanguage(stepNode.define.rawType);
+        setUrl(stepNode.define.url);
+        setRequestType(stepNode.define.requestType);
+        setContent(stepNode.define.content);
+    }, [stepNode.define.bodyType, stepNode.define.rawType, stepNode.define.url, stepNode.define.requestType, stepNode.define.content]);
 
-    if (WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key] &&
-        WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key] !== activeKey) {
-        setActiveKey(WindowTopUtils.getWindowTopObject('activeTabJson')[props.stepNode.key]);
+    if (WindowTopUtils.getWindowTopObject('activeTabJson')[stepNode.key] &&
+        WindowTopUtils.getWindowTopObject('activeTabJson')[stepNode.key] !== activeKey) {
+        setActiveKey(WindowTopUtils.getWindowTopObject('activeTabJson')[stepNode.key]);
     }
 
     function onChangeTab(key) {
-        WindowTopUtils.getWindowTopObject(WindowTopUtils.object_activeTabJson)[props.stepNode.key] = key;
+        WindowTopUtils.getWindowTopObject(WindowTopUtils.object_activeTabJson)[stepNode.key] = key;
         setActiveKey(key);
     }
 
     function onChangeBodyType(e) {
         setBodyType(e.target.value);
-        props.define.bodyType = e.target.value;
+        onChange('bodyType', e.target.value);
     }
 
     function onChangeRawType(value) {
@@ -54,22 +56,22 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
             setRawLanguage(value);
         }
 
-        props.define.rawType = value;
+        onChange('rawType', value);
     }
 
     function refreshContent(value) {
-        props.define.content = value;
         setContent(value);
+        onChange('content', value);
     }
 
     function onChangeUrl(value: any) {
-        props.define.url = value.target.value;
         setUrl(value.target.value);
+        onChange('url', value);
     }
 
     function onChangeRequestType(value) {
-        props.define.requestType = value;
         setRequestType(value);
+        onChange('requestType', value);
     }
 
     function renderBodyArea() {
@@ -114,8 +116,8 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
 
     return (<div>
         <CommonNameComments refreshTree={props.refreshTree}
-                            stepNode={props.stepNode}
-                            define={props.define}>
+                            stepNode={stepNode}
+                            define={stepNode.define} onChange={onChange}>
         </CommonNameComments>
         <div style={{paddingTop: '5px'}}>
             <Input.Group compact style={{display: "flex"}}>

@@ -61,13 +61,23 @@ public class CaseTaskRunnerThread implements Runnable {
                         index++;
                         continue;
                     }
-                    // 取case task 执行用例
-                    CaseTask caseTask = caseTaskQueue.poll();
+                    CaseTask caseTask = null;
+                    if(maxOccurs == 1) {
+                        if(planTask.getFinishedCount() >= planTask.getPolledCount()) {
+                            // 取case task 执行用例
+                            caseTask = caseTaskQueue.poll();
+                        }
+                    }else{
+                        caseTask = caseTaskQueue.poll();
+                    }
+
                     if (caseTask == null) {
                         TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
                         index++;
                         continue;
                     }
+                    planTask.increasePolledCount();
+
                     runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
                         if(baseResponse != null) {
                             teardownPlanTask(planTask, baseResponse);
