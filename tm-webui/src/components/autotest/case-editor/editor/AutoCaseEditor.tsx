@@ -143,6 +143,8 @@ const initTreeData: StepNode[] = [{
 
 let seq = 5;
 
+let FUCK_CURR_STEP_NODE: StepNode;
+
 const AutoCaseEditor: React.FC<IState> = (props) => {
     //let history = useHistory();
     const [saving, setSaving] = useState(false);
@@ -349,6 +351,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     initStepSeq(steps);
                     setTreeData(steps);
                     setCurrStepNode(steps[0]);
+                    FUCK_CURR_STEP_NODE = steps[0];
                     setRootNode(steps[0]);
                     setRunEnvId(ret.data.lastRunEnvId == null ? '' : (ret.data.lastRunEnvId + ''));
                     setGroupVariables(ret.data.groupVariables||null);
@@ -360,6 +363,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     function onRightClick({event, node}: any) {
         setCurrStepNode(node);
+        FUCK_CURR_STEP_NODE = node;
         setSelectedKeys([node.key]);
         if (node.key === '1') {
             hideRightMenu(event);
@@ -472,7 +476,11 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     function onSelect(selectedKeys, e: { selected: boolean, selectedNodes, node, event }) {
         setSelectedKeys(selectedKeys);
-        setCurrStepNode(Object.assign({}, e.node));
+        setCurrStepNode(prevState => {
+            const n: any = Object.assign({}, currStepNode, e.node);
+            return n;
+        });
+        FUCK_CURR_STEP_NODE = e.node;
         if (e.node.isLeaf) {
 
         } else {
@@ -837,13 +845,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function onChangeDefine(key: string, value: any) {
-        setCurrStepNode(prevState => {
-            const a: any = {};
-             a[key] = value;
-            return {...prevState, define: {
-                ...prevState.define, ...a
-            }};
-        });
+        if(FUCK_CURR_STEP_NODE) {
+            FUCK_CURR_STEP_NODE.define[key] = value;
+        }
     }
 
     function renderRightPanel() {
