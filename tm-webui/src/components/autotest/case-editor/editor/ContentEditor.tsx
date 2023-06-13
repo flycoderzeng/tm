@@ -13,6 +13,7 @@ interface IState {
 const ContentEditor: React.FC<IState> = (props) => {
     const [language, setLanguage] = useState(props.language);
     const [content, setContent] = useState(props.content);
+    const {refreshContent} = props;
 
     useEffect(() => {
         setContent(props.content);
@@ -125,7 +126,7 @@ const ContentEditor: React.FC<IState> = (props) => {
 
     function onChangeHandle(value, e) {
         setContent(value);
-        props.refreshContent(value);
+        refreshContent(value);
     }
 
     return (<div>

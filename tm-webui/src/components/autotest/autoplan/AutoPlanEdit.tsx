@@ -116,6 +116,8 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                         setRunEnvId(ret.data.envId == null ? '': ret.data.envId.toString());
                         if(ret.data.planVariables) {
                             setPlanVariables(JSON.parse(ret.data.planVariables));
+                        }else{
+                            setPlanVariables([]);
                         }
                         WindowTopUtils.expandLeftTree(ret.data);
                     }

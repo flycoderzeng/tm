@@ -20,7 +20,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
     let rows: any[];
     let options: any[]|undefined;
 
-    if(groupVariables !== props.groupVariables) {
+    if(JSON.stringify(groupVariables) !== JSON.stringify(props.groupVariables)) {
         setGroupVariables(props.groupVariables);
     }
 
@@ -72,6 +72,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
                 "width": 120,
                 dataIndex: "__variableName",
                 key: "__variableName",
+                fixed: 'left',
                 render: (text: string) => {
                     if(text === '__runFlag') {
                         return '是否运行';

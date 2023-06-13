@@ -125,6 +125,8 @@ public class CaseTaskRunnerThread implements Runnable {
                 && planTask.getRunningConfigSnapshot().getFailContinue().equals(0)) {
             log.info("用例失败，并且 计划设置失败后停止执行");
             taskService.stopPlanTask(planTask.getPlanExecuteResultId());
+            taskService.setPlanExecuteResultStatus(planTask, PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN);
+            removePlanTask(planTask);
         }
     }
 

@@ -66,7 +66,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
 
     function onChangeUrl(value: any) {
         setUrl(value.target.value);
-        onChange('url', value);
+        onChange('url', value.target.value);
     }
 
     function onChangeRequestType(value) {

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
 import {Button, Menu, message, Modal, Tree} from "antd";
 import {RootNodeEditor} from "./RootNodeEditor";
 import {
@@ -157,7 +157,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [currStepNode, setCurrStepNode] = useState<StepNode>(treeData[0]);
     const [rootNode, setRootNode] = useState<StepNode>(treeData[0]);
     const [runEnvId, setRunEnvId] = useState('');
-    const [groupVariables, setGroupVariables] = useState(null);
+    const [groupVariables, setGroupVariables] = useState<string|null>(null);
     const [copyNodeData, setCopyNodeData] = useState<StepNode|null>(null);
     const [rightMenuKeys, setRightMenuKeys] = useState<MenuItem[]>([]);
     const [rightMenuList, setRightMenuList] = useState<any[]>([]);
@@ -351,7 +351,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     setCurrStepNode(steps[0]);
                     setRootNode(steps[0]);
                     setRunEnvId(ret.data.lastRunEnvId == null ? '' : (ret.data.lastRunEnvId + ''));
-                    setGroupVariables(ret.data.groupVariables);
+                    setGroupVariables(ret.data.groupVariables||null);
                     WindowTopUtils.expandLeftTree(ret.data);
                 }
             }
@@ -472,7 +472,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     function onSelect(selectedKeys, e: { selected: boolean, selectedNodes, node, event }) {
         setSelectedKeys(selectedKeys);
-        setCurrStepNode(e.node);
+        setCurrStepNode(Object.assign({}, e.node));
         if (e.node.isLeaf) {
 
         } else {
@@ -807,7 +807,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     function onSaveAutoCase(steps?: string|null, groups ?: string|null, loading ?: boolean) {
         setSaving(true);
         const data: any = {id: id, type: 1, steps: null,
-            groupVariables: groupVariables};
+            groupVariables: groupVariables || ''};
         if(steps !== undefined) {
             data.steps = steps;
         }else{
@@ -837,7 +837,13 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function onChangeDefine(key: string, value: any) {
-        currStepNode.define[key] = value;
+        setCurrStepNode(prevState => {
+            const a: any = {};
+             a[key] = value;
+            return {...prevState, define: {
+                ...prevState.define, ...a
+            }};
+        });
     }
 
     function renderRightPanel() {
