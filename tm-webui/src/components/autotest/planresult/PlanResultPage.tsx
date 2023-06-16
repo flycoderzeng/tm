@@ -221,7 +221,7 @@ const PlanResultPage: React.FC<IState> = (props) => {
             open={visible}
             onOk={() => setVisible(false)}
             onCancel={() => setVisible(false)}
-            width={1300}
+            width={'80%'}
             footer={null}
         >
             <div>

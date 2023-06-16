@@ -31,12 +31,11 @@ public class GetDate extends AbstractFunction {
 
     private Integer getOffset(Map<String, Object> env,  AviatorObject arg) {
         Integer offset = 0;
-        Object offsetObject = FunctionUtils.getJavaObject(arg, env);
-        if(offsetObject == null) {
+        if(arg == null) {
             return offset;
         }
-        if(offsetObject instanceof String) {
-            String offsetString = offsetObject.toString();
+        if(arg instanceof AviatorString) {
+            String offsetString = arg.toString();
             if(!StringUtils.isNotBlank(offsetString) && !offsetString.startsWith("-") && !StringUtils.isNumeric(offsetString)) {
                 throw new TMException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + offsetString);
             }
@@ -52,11 +51,10 @@ public class GetDate extends AbstractFunction {
 
     private Integer getUnit(Map<String, Object> env,  AviatorObject arg) {
         Integer unit = DAY.val();
-        Object unitObject = FunctionUtils.getJavaObject(arg, env);
-        if(unitObject == null) {
+        if(arg == null) {
             return unit;
         }
-        if(unitObject instanceof String) {
+        if(arg instanceof AviatorString) {
             String unitString = FunctionUtils.getStringValue(arg, env);
             if(!StringUtils.isNotBlank(unitString) && !StringUtils.isNumeric(unitString)) {
                 throw new TMException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + unitString);
