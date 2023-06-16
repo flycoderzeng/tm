@@ -9,4 +9,5 @@ export interface EditorIState<T> {
     groupVariables?: string|null;
     onChangeGroupVariables?: any;
     onChange?: any;
+    key?: string;
 }

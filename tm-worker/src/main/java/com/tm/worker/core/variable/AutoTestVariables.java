@@ -1,5 +1,6 @@
 package com.tm.worker.core.variable;
 
+import cn.hutool.core.util.ReUtil;
 import com.tm.worker.utils.ExpressionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,6 +21,7 @@ public class AutoTestVariables {
     public static final String BUILTIN_VARIABLE_NAME_ENV_NAME = "__env_name";
     public static final String BUILTIN_VARIABLE_NAME_WORKER_IP = "__worker_ip";
     public static final String BUILTIN_VARIABLE_NAME_PLAN_RESULT_ID = "__plan_result_id";
+    public static final String BUILTIN_VARIABLE_NAME_GROUP_NO = "__group_no";
 
 
 
@@ -57,6 +59,8 @@ public class AutoTestVariables {
         if (o instanceof String) {
             if(StringUtils.equals((String)o, ExpressionUtils.__PLATFORM_PRIVATE_NULL)) {
                 return null;
+            }else if(ReUtil.isMatch(ExpressionUtils.pattern, (String)o)) {
+                return ExpressionUtils.replaceExpression((String) o, variables);
             }
             return (String)o;
         } else {
@@ -100,5 +104,6 @@ public class AutoTestVariables {
         put(BUILTIN_VARIABLE_NAME_ENV_NAME, "");
         put(BUILTIN_VARIABLE_NAME_WORKER_IP, "");
         put(BUILTIN_VARIABLE_NAME_PLAN_RESULT_ID, null);
+        putObject(BUILTIN_VARIABLE_NAME_GROUP_NO, 0);
     }
 }

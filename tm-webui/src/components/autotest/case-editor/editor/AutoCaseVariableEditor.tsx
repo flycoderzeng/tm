@@ -7,7 +7,8 @@ import {RandomUtils} from "../../../../utils/RandomUtils";
 const {TextArea} = Input;
 
 interface IState {
-    userDefinedVariables: AutoCaseVariable[]
+    userDefinedVariables: AutoCaseVariable[];
+    onChange: any;
 }
 
 
@@ -17,6 +18,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     const [currIndex, setCurrIndex] = useState(-1);
     const [variableName, setVariableName] = useState("");
     const [variableValue, setVariableValue] = useState("");
+    const {onChange} = props;
 
     if (JSON.stringify(userDefinedVariables) !== JSON.stringify(props.userDefinedVariables)) {
         for (let i = 0; i < props.userDefinedVariables.length; i++) {
@@ -72,7 +74,8 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
         const v = {name: '', type: 'string', value: '', planVariableName: '', description: ''};
         v['key'] = RandomUtils.getKey();
         userDefinedVariables.push(v);
-        setUserDefinedVariables(userDefinedVariables);
+        onChange('userDefinedVariables', userDefinedVariables);
+        setUserDefinedVariables([...userDefinedVariables]);
     }
 
     function onRemove() {

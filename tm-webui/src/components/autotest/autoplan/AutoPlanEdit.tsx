@@ -322,7 +322,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
             width={900}
         >
             <div>
-                <KeyValueEditor rows={planVariables} type={'plan-variable'} setRows={setPlanVariables}></KeyValueEditor>
+                <KeyValueEditor rows={planVariables} type={'plan-variable'} onChange={setPlanVariables}></KeyValueEditor>
             </div>
         </Modal>
     </div>)

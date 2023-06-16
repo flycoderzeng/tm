@@ -6,6 +6,7 @@ import {HttpNode} from "../entities/HttpNode";
 import {KeyValueEditor} from "./KeyValueEditor";
 import {ContentEditor} from "./ContentEditor";
 import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
+import {KeyValueRow} from "../entities/KeyValueRow";
 
 const {Option} = Select;
 
@@ -17,6 +18,12 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [requestType, setRequestType] = useState(props.define.requestType);
     const [rawLanguage, setRawLanguage] = useState('json');
     const [activeKey, setActiveKey] = useState('1');
+
+    const [params, setParams] = useState(props.define.params);
+    const [headers, setHeaders] = useState(props.define.headers);
+    const [checkErrorList, setCheckErrorList] = useState(props.define.checkErrorList);
+    const [responseExtractorList, setResponseExtractorList] = useState(props.define.responseExtractorList);
+
     const {onChange} = props;
     const {stepNode} = props;
 
@@ -31,7 +38,11 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
         setUrl(stepNode.define.url);
         setRequestType(stepNode.define.requestType);
         setContent(stepNode.define.content);
-    }, [stepNode.define.bodyType, stepNode.define.rawType, stepNode.define.url, stepNode.define.requestType, stepNode.define.content]);
+        setParams(props.define.params);
+        setHeaders(props.define.headers);
+        setCheckErrorList(props.define.checkErrorList);
+        setResponseExtractorList(props.define.responseExtractorList);
+    }, [props.key]);
 
     if (WindowTopUtils.getWindowTopObject('activeTabJson')[stepNode.key] &&
         WindowTopUtils.getWindowTopObject('activeTabJson')[stepNode.key] !== activeKey) {
@@ -72,6 +83,26 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     function onChangeRequestType(value) {
         setRequestType(value);
         onChange('requestType', value);
+    }
+
+    function onChangeParams(params: KeyValueRow[]) {
+        setParams(params);
+        onChange('params', params);
+    }
+
+    function onChangeHeaders(headers: KeyValueRow[]) {
+        setHeaders(headers);
+        onChange('headers', headers);
+    }
+
+    function onChangeCheckErrorList(checkErrorList: KeyValueRow[]) {
+        setCheckErrorList(checkErrorList);
+        onChange('checkErrorList', checkErrorList);
+    }
+
+    function onChangeResponseExtractorList(responseExtractorList: KeyValueRow[]) {
+        setResponseExtractorList(responseExtractorList);
+        onChange('responseExtractorList', responseExtractorList);
     }
 
     function renderBodyArea() {
@@ -115,7 +146,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     }
 
     return (<div>
-        <CommonNameComments refreshTree={props.refreshTree}
+        <CommonNameComments refreshTree={props.refreshTree} key={props.key}
                             stepNode={stepNode}
                             define={stepNode.define} onChange={onChange}>
         </CommonNameComments>
@@ -132,26 +163,30 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
         <div style={{paddingTop: '5px'}}>
             <Tabs defaultActiveKey="1" activeKey={activeKey} onChange={onChangeTab} items={[{
                 label: 'Params', key: '1', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                                                      rows={props.define.params}
+                                                                      rows={params}
+                                                                      onChange={onChangeParams}
                                                                       type={''}>
                 </KeyValueEditor>)
             }, {
                 label: 'Headers', key: '2', children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                                                       rows={props.define.headers}
+                                                                       rows={headers}
+                                                                       onChange={onChangeHeaders}
                                                                        type={''}>
                 </KeyValueEditor>)
             }, {label: 'Body', key: '3', children: renderBodyArea()}, {
                 label: '响应断言',
                 key: '4',
                 children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                           rows={props.define.checkErrorList}
+                                           rows={checkErrorList}
+                                           onChange={onChangeCheckErrorList}
                                            type={'response-assert'}>
                 </KeyValueEditor>)
             }, {
                 label: '响应提取',
                 key: '5',
                 children: (<KeyValueEditor userDefinedVariables={props.userDefinedVariables}
-                                           rows={props.define.responseExtractorList}
+                                           rows={responseExtractorList}
+                                           onChange={onChangeResponseExtractorList}
                                            type={'response-extractor'}>
                 </KeyValueEditor>)
             }]}>

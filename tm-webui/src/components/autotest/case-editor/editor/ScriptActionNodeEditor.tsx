@@ -14,7 +14,7 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
     useEffect(() => {
         setContent(stepNode.define.content);
         setScriptResultVariableName(stepNode.define.scriptResultVariableName);
-    }, [stepNode.define.content, stepNode.define.scriptResultVariableName]);
+    }, [props.key]);
 
     function refreshContent(value) {
         setContent(value);

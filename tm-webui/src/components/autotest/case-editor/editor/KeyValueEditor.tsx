@@ -13,7 +13,7 @@ export interface IState {
     // plan-variable
     type?: string;
     userDefinedVariables?: AutoCaseVariable[];
-    setRows?: any;
+    onChange?: any;
 }
 
 const relationOperatorList: any[] = [
@@ -36,6 +36,7 @@ const KeyValueEditor: React.FC<IState> = (props) => {
     const [isDetailVisible, setIsDetailVisible] = useState(false);
     const [currKey, setCurrKey] = useState('');
     const [currValue, setCurrValue] = useState('');
+    const {onChange} = props;
 
     let nameTheadName = 'Name';
     let valueTheadName = 'Value';
@@ -146,17 +147,17 @@ const KeyValueEditor: React.FC<IState> = (props) => {
             path: '', relationOperator: '1', assertLevel: 'error'};
         row['key'] = RandomUtils.getKey();
         rows.push(row);
-        setRows(rows);
-        if(props.setRows) {
-            props.setRows([...rows]);
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
         }
     }
 
     function onRemove() {
         rows.splice(currIndex, 1);
-        setRows(rows);
-        if(props.setRows) {
-            props.setRows(rows);
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
         }
     }
 
@@ -166,42 +167,82 @@ const KeyValueEditor: React.FC<IState> = (props) => {
 
     function onChangeName(value: any) {
         rows[currIndex].name = value.target.value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangeDomain(value: any) {
         rows[currIndex].domain = value.target.value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangeRowNumber(value: any) {
         rows[currIndex].rowNumber = value.target.value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangeValue(value: any) {
         rows[currIndex].value = value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangePath(value: any) {
         rows[currIndex].path = value.target.value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangeDescription(value: any) {
         rows[currIndex].description = value.target.value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangeType(value) {
         rows[currIndex].type = value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangeExtractorType(value) {
         rows[currIndex].extractorType = value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangeRelationOperatorType(value) {
         rows[currIndex].relationOperator = value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function onChangeAssertLevel(value) {
         rows[currIndex].assertLevel = value;
+        setRows([...rows]);
+        if(onChange) {
+            onChange([...rows]);
+        }
     }
 
     function renderRelationOperator() {

@@ -7,6 +7,7 @@ import {FormInstance} from "antd/lib/form";
 import {DataTypeEnum} from "../../entities/DataTypeEnum";
 import {ApiUrlConfig} from "../../config/api.url";
 import {WindowTopUtils} from "../../utils/WindowTopUtils";
+import {RandomUtils} from "../../utils/RandomUtils";
 
 interface IState {
     projectId ?: number|null;
@@ -37,7 +38,7 @@ const rightMenuInitStyle = {
 
 // It's just a simple demo. You can use tree map to optimize update perf.
 function updateTreeData(list: AntDataNode[], key: React.Key, children: AntDataNode[]): AntDataNode[] {
-    return list.map(node => {
+    const nodes = list.map(node => {
         if (node.key === key) {
             return {
                 ...node,
@@ -51,6 +52,7 @@ function updateTreeData(list: AntDataNode[], key: React.Key, children: AntDataNo
         }
         return node;
     });
+    return [...nodes];
 }
 
 const CommonNodeTree: React.FC<IState> = (props) => {
@@ -77,7 +79,8 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         setDataTypeId(props.dataTypeId);
     }
     if(projectId !== props.projectId || dataTypeId !== props.dataTypeId) {
-        setTreeData(props.initTreeData);
+        setTreeData([...props.initTreeData]);
+        setExpandedKeys(['1-1'])
         onLoadData({key: '1-1', children: undefined}).then(() => {});
     }
     const [ref] = useState(React.createRef<FormInstance>());
@@ -113,7 +116,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                             n.title = <Tooltip overlayClassName="small-font-size" title={v.name} color="#2db7f5" placement="rightTop">
                                 <span>{v.name}</span>
                             </Tooltip>;
-                            n.key = v.id + '-' + v.dataTypeId;
+                            n.key = v.id + '-' + v.dataTypeId + '-'  + RandomUtils.getKey();
                             n.isLeaf = v.isFolder === 1 ? false : true;
                             n.dataNode = v;
                             n.parentNode = node;
@@ -218,7 +221,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
             setRenderRightFlag(DataTypeEnum.ALL);
         }
         if(e.node.dataNode) {
-            setSelectedKeys([e.node.dataNode.id + '-' + Number(dataTypeId)]);
+            setSelectedKeys([e.node.key]);
         }
         WindowTopUtils.setWindowTopObject(WindowTopUtils.object_expandedKeys, expandedKeys);
     }
@@ -433,7 +436,14 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                 expandedKeys.shift(ind, 1);
             }
         }
-        setExpandedKeys(expandedKeys);
+        setExpandedKeys([...expandedKeys]);
+        // if(bool) {
+        //     onLoadData(node).then(resp => {
+        //
+        //     }).finally(() => {
+        //
+        //     });
+        // }
     }
 
     function onRightClick({event, node}: any) {

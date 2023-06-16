@@ -22,10 +22,9 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
     const {onChange} = props;
     const {stepNode} = props;
 
-
-    if(JSON.stringify(parametricList) !== JSON.stringify(props.define.parametricList)) {
+    useEffect(() => {
         setParametricList(props.define.parametricList);
-    }
+    }, [props.key]);
 
     useEffect(() => {
         setId(props.define.platformApiId);

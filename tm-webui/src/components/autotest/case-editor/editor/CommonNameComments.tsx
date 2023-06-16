@@ -18,7 +18,7 @@ const CommonNameComments: React.FC<EditorIState<BaseNode>> = (props) => {
         setType(props.stepNode.type);
         setName(props.define.name);
         setComments(props.define.comments);
-    }, [props.stepNode.type, props.define.name, props.define.comments]);
+    }, [props.key]);
 
     function onChangeName(el: any) {
         setName(el.target.value);

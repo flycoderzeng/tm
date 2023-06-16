@@ -29,7 +29,7 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
         setContent(props.define.content);
         setResultSetVariableName(props.define.resultSetVariableName);
         setCountVariableName(props.define.countVariableName);
-    }, [props.define.dbName, props.define.content, props.define.resultSetVariableName, props.define.countVariableName]);
+    }, [props.key]);
 
     if(!loadedDatabaseNames) {
         loadedDatabaseNames = true;

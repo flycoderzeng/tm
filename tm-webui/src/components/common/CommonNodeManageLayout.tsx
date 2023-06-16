@@ -126,10 +126,11 @@ class CommonNodeManageLayout extends React.Component<CommonNodeListProps, IState
 
     handleProjectChange = (e) => {
         const projectId = this.state.projectId;
+        const rows = [{ title: rootTitle[this.state.dataTypeId || 6], key: '1-1' }];
         this.setState({
             prevProjectId: projectId,
             projectId: e,
-            initTreeData: [{ title: rootTitle[this.state.dataTypeId || 6], key: '1-1' }],
+            initTreeData: [...rows],
         });
         window.localStorage.setItem("_LAST_USED_PROJECT_ID", e);
     }

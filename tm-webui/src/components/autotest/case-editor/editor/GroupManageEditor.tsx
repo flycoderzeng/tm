@@ -69,7 +69,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
         let headers: any[] = [
             {
                 "title": "变量名称",
-                "width": 120,
+                "width": 150,
                 dataIndex: "__variableName",
                 key: "__variableName",
                 fixed: 'left',
@@ -95,7 +95,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
                 const dataIndex = "__group_" + ind;
                 return {
                     "title": name,
-                    "width": 120,
+                    "width": 280,
                     dataIndex: dataIndex,
                     key: dataIndex,
                     render: (text: string, record: any) => {

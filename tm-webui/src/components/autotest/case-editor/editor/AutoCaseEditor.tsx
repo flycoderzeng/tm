@@ -853,48 +853,48 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     function renderRightPanel() {
         switch (currStepNode.type) {
             case "root":
-                return (<RootNodeEditor refreshTree={refreshTree} stepNode={currStepNode} groupVariables={groupVariables} onChangeGroupVariables={setGroupVariables}
+                return (<RootNodeEditor key={currStepNode.key} refreshTree={refreshTree} stepNode={currStepNode} groupVariables={groupVariables} onChangeGroupVariables={setGroupVariables}
                                         define={currStepNode.define} onChange={onChangeDefine}>
                 </RootNodeEditor>);
             case "if":
-                return (<IfControllerEditor refreshTree={refreshTree} stepNode={currStepNode}
+                return (<IfControllerEditor key={currStepNode.key} refreshTree={refreshTree} stepNode={currStepNode}
                                             define={currStepNode.define} onChange={onChangeDefine}>
                 </IfControllerEditor>);
             case "while":
-                return (<WhileControllerEditor refreshTree={refreshTree} stepNode={currStepNode}
+                return (<WhileControllerEditor key={currStepNode.key} refreshTree={refreshTree} stepNode={currStepNode}
                                                define={currStepNode.define} onChange={onChangeDefine}>
                 </WhileControllerEditor>);
             case 'loop':
-                return (<LoopControllerEditor refreshTree={refreshTree}
+                return (<LoopControllerEditor key={currStepNode.key} refreshTree={refreshTree}
                                               stepNode={currStepNode}
                                               define={currStepNode.define} onChange={onChangeDefine}>
                 </LoopControllerEditor>);
             case 'http':
             case 'http request':
                 return (
-                    <HttpEditor userDefinedVariables={rootNode.define.userDefinedVariables}
+                    <HttpEditor key={currStepNode.key} userDefinedVariables={rootNode.define.userDefinedVariables}
                                 refreshTree={refreshTree}
                                 stepNode={currStepNode} define={currStepNode.define} onChange={onChangeDefine}>
                     </HttpEditor>);
             case 'jdbc':
             case 'jdbc request':
-                return (<JDBCRequestEditor userDefinedVariables={rootNode.define.userDefinedVariables}
+                return (<JDBCRequestEditor key={currStepNode.key} userDefinedVariables={rootNode.define.userDefinedVariables}
                                            refreshTree={refreshTree}
                                            stepNode={currStepNode} define={currStepNode.define} onChange={onChangeDefine}>
                 </JDBCRequestEditor>);
             case 'shell script':
-                return (<ScriptActionNodeEditor userDefinedVariables={rootNode.define.userDefinedVariables}
+                return (<ScriptActionNodeEditor key={currStepNode.key} userDefinedVariables={rootNode.define.userDefinedVariables}
                                            refreshTree={refreshTree}
                                            stepNode={currStepNode} define={currStepNode.define} onChange={onChangeDefine}>
                 </ScriptActionNodeEditor>);
             default:
                 if (currStepNode.type.startsWith('调用平台API(')) {
-                    return (<PlatformApiEditor userDefinedVariables={rootNode.define.userDefinedVariables}
+                    return (<PlatformApiEditor key={currStepNode.key} userDefinedVariables={rootNode.define.userDefinedVariables}
                                                stepNode={currStepNode} define={currStepNode.define}
                                                refreshTree={refreshTree} onChange={onChangeDefine}>
                     </PlatformApiEditor>);
                 }
-                return (<CommonNameComments refreshTree={refreshTree} stepNode={currStepNode}
+                return (<CommonNameComments key={currStepNode.key} refreshTree={refreshTree} stepNode={currStepNode}
                                             define={currStepNode.define} onChange={onChangeDefine}>
                 </CommonNameComments>)
         }

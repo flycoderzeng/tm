@@ -402,5 +402,6 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         caseVariables.putObject(AutoTestVariables.BUILTIN_VARIABLE_NAME_PLAN_RESULT_ID, caseTask.getPlanTask().getPlanExecuteResult().getId());
         caseVariables.putObject(AutoTestVariables.BUILTIN_VARIABLE_NAME_ENV_ID, caseTask.getPlanTask().getRunningConfigSnapshot().getEnvId());
         caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_ENV_NAME, caseTask.getPlanTask().getRunningConfigSnapshot().getEnvName());
+        caseVariables.putObject(AutoTestVariables.BUILTIN_VARIABLE_NAME_GROUP_NO, caseTask.getGroupNo());
     }
 }
