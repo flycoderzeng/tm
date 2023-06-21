@@ -1,5 +1,6 @@
 package com.tm.worker.core.protocol.jdbc;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -126,23 +127,11 @@ public class JDBCRequest extends StepNodeBase {
             return ;
         }
         for (KeyValueRow keyValueRow : responseExtractorList) {
-            Integer rowNumber = getRowNumber(keyValueRow);
-            if(rowNumber >= list.size()) {
-                break;
-            }
-            extractValueToVariable(list, caseVariables, keyValueRow, rowNumber);
+            extractValueToVariable(list, caseVariables, keyValueRow);
         }
     }
 
-    private void saveAffectedRowsValueToVariable(int affectedRowsCount, AutoTestVariables caseVariables) {
-        countVariableName = ExpressionUtils.extractVariable(countVariableName);
-        if(StringUtils.isNoneBlank(countVariableName)) {
-            addResultInfo("保存行数到变量: ").addResultInfoLine(countVariableName);
-            caseVariables.put(countVariableName, affectedRowsCount + "");
-        }
-    }
-
-    private void extractValueToVariable(List<Map<String, String>> list, AutoTestVariables caseVariables, KeyValueRow keyValueRow, Integer rowNumber) {
+    private void extractValueToVariable(List<Map<String, String>> list, AutoTestVariables caseVariables, KeyValueRow keyValueRow) {
         String name = keyValueRow.getName();
         name = ExpressionUtils.replaceExpression(name, caseVariables.getVariables());
         if (StringUtils.isBlank(name)) {
@@ -153,10 +142,39 @@ public class JDBCRequest extends StepNodeBase {
         if (StringUtils.isBlank(value)) {
             return;
         }
+        if(!StrUtil.isNumeric(keyValueRow.getRowNumber())) {
+            joinFields(list, keyValueRow.getRowNumber(), name, value, caseVariables);
+        }else{
+            Integer rowNumber = getRowNumber(keyValueRow);
+            if(rowNumber >= list.size()) {
+                return;
+            }
+            Map<String, String> map = list.get(rowNumber);
+            addResultInfo("将列: ").addResultInfo(name).addResultInfo(" 的值保存到变量: ").addResultInfoLine(value);
+            caseVariables.putObject(value, map.get(name));
+        }
+    }
 
-        Map<String, String> map = list.get(rowNumber);
-        addResultInfo("将列: ").addResultInfo(name).addResultInfo(" 的值保存到变量: ").addResultInfoLine(value);
-        caseVariables.putObject(value, map.get(name));
+    private void joinFields(List<Map<String, String>> list, String splitChar, String fieldName, String outputVariableName, AutoTestVariables caseVariables) {
+        if(StringUtils.isBlank(splitChar) || StrUtil.isNumeric(splitChar)) {
+            return;
+        }
+        List<String> arr = new ArrayList<>();
+        for (Map<String, String> map : list) {
+            arr.add(map.get(fieldName));
+        }
+        String joinResult = StrUtil.join(splitChar, arr);
+        log.info(joinResult);
+        addResultInfo("将列: ").addResultInfo(fieldName).addResultInfo(" 的join值保存到变量: ").addResultInfoLine(outputVariableName);
+        caseVariables.putObject(outputVariableName, joinResult);
+    }
+
+    private void saveAffectedRowsValueToVariable(int affectedRowsCount, AutoTestVariables caseVariables) {
+        countVariableName = ExpressionUtils.extractVariable(countVariableName);
+        if(StringUtils.isNoneBlank(countVariableName)) {
+            addResultInfo("保存行数到变量: ").addResultInfoLine(countVariableName);
+            caseVariables.put(countVariableName, affectedRowsCount + "");
+        }
     }
 
     private void checkError(List<Map<String, String>> list) {
@@ -184,13 +202,20 @@ public class JDBCRequest extends StepNodeBase {
     }
 
     private Integer getRowNumber(KeyValueRow keyValueRow) {
-        Integer rowNumber = keyValueRow.getRowNumber();
+        Integer rowNumber = null;
+        String rowNumberStr = keyValueRow.getRowNumber();
+        if(StrUtil.isNumeric(rowNumberStr)) {
+            rowNumber = Integer.parseInt(rowNumberStr);
+        }
+
         if (rowNumber == null || rowNumber < 0) {
             rowNumber = 0;
         }
+
         if (rowNumber > 0) {
             rowNumber--;
         }
+
         return rowNumber;
     }
 

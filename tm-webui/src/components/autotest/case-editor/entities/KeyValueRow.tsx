@@ -8,5 +8,5 @@ export interface KeyValueRow extends BaseNameValue {
     path?: string;
     relationOperator?: string;
     assertLevel?: string;
-    rowNumber?: number;
+    rowNumber?: number|string;
 }

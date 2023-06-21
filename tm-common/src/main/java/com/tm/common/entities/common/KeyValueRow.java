@@ -15,5 +15,5 @@ public class KeyValueRow extends BaseNameValue {
     // error warning
     private String assertLevel;
 
-    private Integer rowNumber;
+    private String rowNumber;
 }

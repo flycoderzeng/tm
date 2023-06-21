@@ -26,7 +26,7 @@ const relationOperatorList: any[] = [
     {label: '是空的', value: '13'}, {label: '不是空的', value: '14'},
     {label: '正则匹配', value: '15'}, {label: '路径不存在', value: '16'},
     {label: '不是空白', value: '17'}, {label: '是空白', value: '18'},
-    {label: '是数字', value: '19'},
+    {label: '是数字', value: '19'}
 ];
 
 const KeyValueEditor: React.FC<IState> = (props) => {
@@ -305,7 +305,7 @@ const KeyValueEditor: React.FC<IState> = (props) => {
 
             if(type === 'jdbc-response-extractor' || type === 'jdbc-response-assert') {
                 countNumberCol = <Col span={2} style={{paddingRight: '5px'}}>
-                    <Input type="number" defaultValue={value.rowNumber} onChange={onChangeRowNumber} placeholder="默认第一行"/>
+                    <Input defaultValue={value.rowNumber} onChange={onChangeRowNumber} placeholder="默认第一行"/>
                 </Col>;
             }
 
