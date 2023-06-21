@@ -91,7 +91,7 @@ const VariableResultList: React.FC<IState> = (props) => {
             key: 'id',
         },
         {
-            width: 80,
+            width: 120,
             fixed: 'right',
             title: '操作',
             key: 'action',
