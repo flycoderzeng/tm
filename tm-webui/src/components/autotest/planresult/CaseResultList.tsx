@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {PlanResultStatusUtils} from "../../../utils/PlanResultStatusUtils";
-import {Button, message, Modal, Space, Table, Tag} from "antd";
+import {Button, Input, message, Modal, Space, Table, Tag} from "antd";
 import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
 import {DateUtils} from "../../../utils/DateUtils";
 import {CaseResultStatusEnum} from "../../../entities/CaseResultStatusEnum";
 import {VariableResultList} from "./VariableResultList";
 import copy from "copy-to-clipboard";
-
+const { Search } = Input;
 interface IState {
     planResultId: number|null|undefined;
     viewCaseResult: any
@@ -23,20 +23,18 @@ const CaseResultList: React.FC<IState> = (props) => {
     const [groupNo, setGroupNo] = useState(-1);
     const [resultInfo, setResultInfo] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
-
     const [pagination, setPagination] = useState({
         current: 1,
         pageNum: 1,
         pageSize: 20,
         total: 0,
     });
+    let searchValue;
 
-    if(planResultId !== props.planResultId) {
-        setPlanResultId(props.planResultId);
-    }
     useEffect(() => {
-        load();
-    }, [planResultId, pagination.pageNum, pagination.pageSize]);
+        setPlanResultId(props.planResultId);
+        load(props.planResultId);
+    }, [props.planResultId]);
 
     function renderRows(data: any) {
         if (!data) {
@@ -62,14 +60,19 @@ const CaseResultList: React.FC<IState> = (props) => {
         setTotal(data.total);
     }
 
-    function load() {
-        if(!planResultId) {
+    function load(currentPlanResultId) {
+        let filterConditionList = getFilterConditionList(searchValue);
+        if(!currentPlanResultId) {
             return ;
         }
+        if(!filterConditionList) {
+            filterConditionList = [];
+        }
         setLoading(true);
-        axios.post(ApiUrlConfig.GET_PLAN_CASE_EXECUTE_RESULT_LIST_URL, {planResultId: planResultId,
+        axios.post(ApiUrlConfig.GET_PLAN_CASE_EXECUTE_RESULT_LIST_URL, {planResultId: currentPlanResultId,
             pageNum: pagination.pageNum,
-            pageSize: pagination.pageSize}).then(resp => {
+            linkOperator: 'or',
+            pageSize: pagination.pageSize, filterConditionList: filterConditionList}).then(resp => {
             if (resp.status !== 200) {
                 message.error('加载失败');
             } else {
@@ -90,7 +93,7 @@ const CaseResultList: React.FC<IState> = (props) => {
     }
 
     function refresh() {
-        load();
+        load(planResultId);
     }
 
     function onChangePagination(pagination) {
@@ -100,6 +103,7 @@ const CaseResultList: React.FC<IState> = (props) => {
             pageSize: pagination.pageSize,
             current: pagination.current,
         });
+        load(planResultId);
     }
 
     function renderResultStatus(record: any) {
@@ -133,6 +137,22 @@ const CaseResultList: React.FC<IState> = (props) => {
         }else{
             message.error('复制失败');
         }
+    }
+
+    function getFilterConditionList(value) {
+        let filterConditionList =
+            [
+                {"columnName": "name", "value": value},
+                {"columnName": "case_id", "operator": "=", "value": value}];
+        if (!value) {
+            filterConditionList = [];
+        }
+        return filterConditionList;
+    }
+
+    function onSearch(value) {
+        searchValue = value;
+        load(planResultId);
     }
 
     const columns: any[] = [
@@ -213,7 +233,8 @@ const CaseResultList: React.FC<IState> = (props) => {
     ];
 
     return (<div>
-        <div style={{paddingBottom: '5px'}}>
+        <div className="list-toolbar" style={{paddingBottom: '5px'}}>
+            <Search placeholder="Id或者名称" onSearch={onSearch} enterButton style={{ width: 400,}}/>
             <Button type="primary" onClick={()=>{refresh();}} >刷新</Button>
         </div>
         <Table
