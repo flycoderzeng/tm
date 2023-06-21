@@ -8,6 +8,7 @@ import com.tm.common.entities.autotest.request.SaveNodeBody;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.base.CommonTableQueryResponse;
+import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
@@ -35,6 +36,9 @@ public class DataNodeController extends BaseController {
 
     @PostMapping(value = "/getNodesTree", produces = {"application/json;charset=UTF-8"})
     public BaseResponse getNodesTree(@RequestBody @Valid GetNodesTreeBody body) {
+        if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
+            body.setProjectId(57);
+        }
         return ResultUtils.success(dataNodeMapper.getNodesTree(body));
     }
 
@@ -50,6 +54,9 @@ public class DataNodeController extends BaseController {
         if(body.getParentId() == null) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
+        if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
+            body.setProjectId(57);
+        }
         return dataNodeService.saveNode(body, user);
     }
 
@@ -57,6 +64,9 @@ public class DataNodeController extends BaseController {
     public BaseResponse deleteNode(@RequestBody @Valid SaveNodeBody body) {
         if(body.getId() == null) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
+        }
+        if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
+            body.setProjectId(57);
         }
         User user = getLoginUser();
         log.info("user {} delete node {}", user.getUsername(), body.getId());
@@ -70,6 +80,9 @@ public class DataNodeController extends BaseController {
         }
         if(StringUtils.isBlank(body.getName())) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
+        }
+        if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
+            body.setProjectId(57);
         }
         User user = this.getLoginUser();
         return dataNodeService.saveNode(body, user);
@@ -86,6 +99,9 @@ public class DataNodeController extends BaseController {
         if(body.getParentId() == null) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
+        if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
+            body.setProjectId(57);
+        }
         User user = this.getLoginUser();
         log.info("user {} move node {}, parentId: {}, prevId: {}", user.getUsername(), body.getId(), body.getParentId(), body.getPrevId());
         return dataNodeService.moveNode(body, user);
@@ -96,6 +112,9 @@ public class DataNodeController extends BaseController {
         if(body.getId() == null || (body.getPrevId() == null && body.getParentId() == null)) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
+        if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
+            body.setProjectId(57);
+        }
         User user = this.getLoginUser();
         log.info("user {} copy node {}", user.getUsername(), body.getId());
         return dataNodeService.copyNode(body, user);
@@ -103,6 +122,9 @@ public class DataNodeController extends BaseController {
 
     @PostMapping(value = "/queryNodeList", produces = {"application/json;charset=UTF-8"})
     public BaseResponse queryNodeList(@RequestBody @Valid CommonTableQueryBody body) {
+        if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
+            body.setProjectId(57);
+        }
         CommonTableQueryResponse response = new CommonTableQueryResponse<Menu>();
         response.setRows(dataNodeMapper.queryList(body));
         response.setTotal(dataNodeMapper.countList(body));
