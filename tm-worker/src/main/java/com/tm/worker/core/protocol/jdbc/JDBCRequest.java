@@ -142,7 +142,7 @@ public class JDBCRequest extends StepNodeBase {
         if (StringUtils.isBlank(value)) {
             return;
         }
-        if(!StrUtil.isNumeric(keyValueRow.getRowNumber())) {
+        if(!StringUtils.isBlank(keyValueRow.getRowNumber()) && !StrUtil.isNumeric(keyValueRow.getRowNumber())) {
             joinFields(list, keyValueRow.getRowNumber(), name, value, caseVariables);
         }else{
             Integer rowNumber = getRowNumber(keyValueRow);

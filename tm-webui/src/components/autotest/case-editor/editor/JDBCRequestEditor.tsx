@@ -97,12 +97,14 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
         return {label: v.name, value: '${' + v.name + '}'};
     }) as any[];
 
+    let width = '160px';
+
     return (<div>
         <CommonNameComments refreshTree={props.refreshTree} stepNode={stepNode} define={stepNode.define} onChange={onChange}>
         </CommonNameComments>
         <div>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="130px">数据库名称</Col>
+                <Col flex={width}>数据库名称</Col>
                 <Col flex="auto">
                     <AutoComplete placeholder="数据库名称，如：test" value={dbName}
                                   style={{width: '100%'}} options={databaseNames} onChange={onChangeDbName}/>
@@ -110,7 +112,7 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
             </Row>
 
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="130px">结果集输出到变量</Col>
+                <Col flex={width}>结果集输出到变量</Col>
                 <Col flex="auto">
                     <AutoComplete
                         placeholder="变量名"
@@ -122,7 +124,7 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
             </Row>
 
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="130px">总行数输出到变量</Col>
+                <Col flex={width}>总行数输出到变量</Col>
                 <Col flex="auto">
                     <AutoComplete
                         placeholder="变量名"
@@ -134,7 +136,7 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
             </Row>
 
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="130px">自增主键值输出到变量</Col>
+                <Col flex={width}>自增主键值输出到变量</Col>
                 <Col flex="auto">
                     <AutoComplete
                         placeholder="变量名"
@@ -146,7 +148,7 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
             </Row>
 
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="130px">重试次数</Col>
+                <Col flex={width}>重试次数</Col>
                 <Col flex="auto">
                     <Input type="number" placeholder="当出现连接超时、断言失败等情况时的重试次数" value={retryTimes} onChange={onChangeRetryTimes}/>
                 </Col>

@@ -36,15 +36,23 @@ const CaseResultList: React.FC<IState> = (props) => {
         load(props.planResultId);
     }, [props.planResultId]);
 
-    function renderRows(data: any) {
+    function renderRows(data: any, newPagination?: any) {
+        if(!newPagination) {
+            newPagination = pagination;
+        }
         if (!data) {
             setRows([]);
-            pagination.total = 0;
-            setPagination(pagination);
+            setPagination({
+                ...newPagination,
+                total: 0
+            });
             return;
         }
-        pagination.total = data.total || 0;
-        setPagination(pagination);
+        setPagination({
+            ...newPagination,
+            total: data.total || 0
+        });
+
         data.rows?.map((r: any) => {
             r.key = r.id;
             if(r.endTimestamp) {
@@ -60,7 +68,10 @@ const CaseResultList: React.FC<IState> = (props) => {
         setTotal(data.total);
     }
 
-    function load(currentPlanResultId) {
+    function load(currentPlanResultId, newPagination?: any) {
+        if(!newPagination) {
+            newPagination = pagination;
+        }
         let filterConditionList = getFilterConditionList(searchValue);
         if(!currentPlanResultId) {
             return ;
@@ -69,10 +80,11 @@ const CaseResultList: React.FC<IState> = (props) => {
             filterConditionList = [];
         }
         setLoading(true);
-        axios.post(ApiUrlConfig.GET_PLAN_CASE_EXECUTE_RESULT_LIST_URL, {planResultId: currentPlanResultId,
-            pageNum: pagination.pageNum,
+        axios.post(ApiUrlConfig.GET_PLAN_CASE_EXECUTE_RESULT_LIST_URL, {
+            planResultId: currentPlanResultId,
+            pageNum: newPagination.pageNum,
             linkOperator: 'or',
-            pageSize: pagination.pageSize, filterConditionList: filterConditionList}).then(resp => {
+            pageSize: newPagination.pageSize, filterConditionList: filterConditionList}).then(resp => {
             if (resp.status !== 200) {
                 message.error('加载失败');
             } else {
@@ -80,7 +92,7 @@ const CaseResultList: React.FC<IState> = (props) => {
                 if (ret.code !== 0) {
                     message.error(ret.message);
                 } else {
-                    renderRows(ret.data);
+                    renderRows(ret.data, newPagination);
                 }
             }
         }).finally(() => {
@@ -96,14 +108,14 @@ const CaseResultList: React.FC<IState> = (props) => {
         load(planResultId);
     }
 
-    function onChangePagination(pagination) {
-        setPagination({
+    function onChangePagination(pagination2) {
+        const newPagination = {
             ...pagination,
-            pageNum: pagination.current,
-            pageSize: pagination.pageSize,
-            current: pagination.current,
-        });
-        load(planResultId);
+            pageNum: pagination2.current,
+            pageSize: pagination2.pageSize,
+            current: pagination2.current,
+        };
+        load(planResultId, newPagination);
     }
 
     function renderResultStatus(record: any) {
