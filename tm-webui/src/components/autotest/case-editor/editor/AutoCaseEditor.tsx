@@ -970,6 +970,10 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         window.open("/planresult/" + id + "/2/0");
     }
 
+    function showBuiltinInfo() {
+        window.open("https://github.com/flycoderzeng/tm/wiki/%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0%E4%B8%8E%E5%8F%98%E9%87%8F#%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F");
+    }
+
     return (
         <div className="case-editor-parent">
             <div className="case-editor-toolbar">
@@ -985,7 +989,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 <Button size="small" type="primary" onClick={() => {
                     onViewResult();
                 }}>查看运行结果</Button>
-                <Button size="small" type="default">查看内置函数与变量</Button>
+                <Button size="small" type="default" onClick={() => {
+                    showBuiltinInfo();
+                }}>查看内置变量与函数</Button>
                 <Button size="small" type="default" onClick={() => {
                     setVisibleHistory(true);
                 }}>恢复历史</Button>

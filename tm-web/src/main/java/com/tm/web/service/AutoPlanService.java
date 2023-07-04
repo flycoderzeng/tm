@@ -24,6 +24,12 @@ public class AutoPlanService extends BaseService {
     private DataNodeMapper dataNodeMapper;
 
     public BaseResponse copy(SaveNodeBody body) {
+        AutoPlan autoPlan = autoPlanMapper.selectByPrimaryId(body.getCopyId());
+        if(autoPlan == null) {
+            return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
+        }
+        autoPlan.setId(body.getId());
+        autoPlanMapper.updateBySelective(autoPlan);
         return ResultUtils.success();
     }
 

@@ -351,7 +351,7 @@ public class DataNodeService {
         if(copyNode == null || (body.getPrevId() == null && body.getParentId() == null)) {
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
-        // 最多复制100个节点
+
         GetNodesTreeBody getNodesTreeBody = new GetNodesTreeBody();
         getNodesTreeBody.setProjectId(body.getProjectId());
         getNodesTreeBody.setDataTypeId(body.getDataTypeId());
@@ -359,7 +359,7 @@ public class DataNodeService {
             getNodesTreeBody.setParentId(copyNode.getId());
             getNodesTreeBody.setLevel(copyNode.getLevel());
             int count = dataNodeMapper.countSubLeafNode(getNodesTreeBody);
-            if(count > 100) {
+            if(count > 500) {
                 return ResultUtils.error(ResultCodeEnum.COPY_NODE_OVERFLOW_ERROR);
             }
         }
