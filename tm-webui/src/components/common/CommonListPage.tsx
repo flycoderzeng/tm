@@ -112,7 +112,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             columns.splice(-1, 0,{
                 title: '创建者',
                 dataIndex: 'addUser',
-                key: 'add_user',
+                key: 'addUser',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             });
@@ -121,7 +121,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             columns.splice(-1, 0, {
                 title: '创建时间',
                 dataIndex: 'addTime',
-                key: 'add_time',
+                key: 'addTime',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             });
@@ -130,7 +130,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             columns.splice(-1, 0, {
                 title: '最后修改者',
                 dataIndex: 'lastModifyUser',
-                key: 'last_modify_user',
+                key: 'lastModifyUser',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             });
@@ -139,7 +139,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             columns.splice(-1, 0, {
                 title: '最后修改时间',
                 dataIndex: 'lastModifyTime',
-                key: 'last_modify_time',
+                key: 'lastModifyTime',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             });

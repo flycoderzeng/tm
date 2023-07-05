@@ -21,13 +21,10 @@ public enum HttpMethod {
     }
 
     public static HttpMethod get(String value) {
-        switch (value) {
-            case "GET":
-                return HttpMethod.GET;
-            case "POST":
-                return HttpMethod.POST;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case "GET" -> HttpMethod.GET;
+            case "POST" -> HttpMethod.POST;
+            default -> null;
+        };
     }
 }

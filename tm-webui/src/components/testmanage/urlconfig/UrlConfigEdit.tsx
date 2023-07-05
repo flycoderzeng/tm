@@ -125,14 +125,14 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                     name="name"
                     rules={[{required: true, message: '请输入接口名称!'}]}
                 >
-                    <Input style={{width: '300px'}} placeholder="如：开户"/>
+                    <Input style={{width: '500px'}} placeholder="如：开户"/>
                 </Form.Item>
                 <Form.Item
                     label="路径"
                     name="url"
                     rules={[{required: true, message: '请输入接口路径!'}]}
                 >
-                    <Input style={{width: '300px'}} placeholder="如：/user/save"/>
+                    <Input style={{width: '500px'}} placeholder="如：/user/save"/>
                 </Form.Item>
 
                 <Form.Item

@@ -24,47 +24,27 @@ public enum RelationOperatorEnum {
     }
 
     public static RelationOperatorEnum get(String value) {
-        switch (value) {
-            case "1":
-                return EQUAL;
-            case "2":
-                return NOT_EQUAL;
-            case "3":
-                return LESS_THAN;
-            case "4":
-                return LESS_EQUAL;
-            case "5":
-                return GREATER_THAN;
-            case "6":
-                return GREATER_EQUAL;
-            case "7":
-                return INCLUDE;
-            case "8":
-                return NOT_INCLUDE;
-            case "9":
-                return START_WITH;
-            case "10":
-                return END_WITH;
-            case "11":
-                return IS_NULL;
-            case "12":
-                return IS_NOT_NULL;
-            case "13":
-                return IS_EMPTY;
-            case "14":
-                return IS_NOT_EMPTY;
-            case "15":
-                return REGEX_PATTERN;
-            case "16":
-                return PATH_NOT_EXISTS;
-            case "17":
-                return IS_NOT_BLANK;
-            case "18":
-                return IS_BLANK;
-            case "19":
-                return IS_NUMBER;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case "1" -> EQUAL;
+            case "2" -> NOT_EQUAL;
+            case "3" -> LESS_THAN;
+            case "4" -> LESS_EQUAL;
+            case "5" -> GREATER_THAN;
+            case "6" -> GREATER_EQUAL;
+            case "7" -> INCLUDE;
+            case "8" -> NOT_INCLUDE;
+            case "9" -> START_WITH;
+            case "10" -> END_WITH;
+            case "11" -> IS_NULL;
+            case "12" -> IS_NOT_NULL;
+            case "13" -> IS_EMPTY;
+            case "14" -> IS_NOT_EMPTY;
+            case "15" -> REGEX_PATTERN;
+            case "16" -> PATH_NOT_EXISTS;
+            case "17" -> IS_NOT_BLANK;
+            case "18" -> IS_BLANK;
+            case "19" -> IS_NUMBER;
+            default -> null;
+        };
     }
 }

@@ -175,21 +175,18 @@ public class DateUtils {
         if(date == null) {
             return null;
         }
-        switch (timeType) {
-            case YEAR:
-                return addYears(date, diff);
-            case MONTH:
-                return addMonths(date, diff);
-            case DAY:
-                return addDays(date, diff);
-            case HOUR:
-                return addHours(date, diff);
-            case MINUTE:
-                return addMinutes(date, diff);
-            case SECOND:
-                return addSeconds(date, diff);
-            default:
-                break;
+        if (timeType == TimeType.YEAR) {
+            return addYears(date, diff);
+        } else if (timeType == TimeType.MONTH) {
+            return addMonths(date, diff);
+        } else if (timeType == TimeType.DAY) {
+            return addDays(date, diff);
+        } else if (timeType == TimeType.HOUR) {
+            return addHours(date, diff);
+        } else if (timeType == TimeType.MINUTE) {
+            return addMinutes(date, diff);
+        } else if (timeType == TimeType.SECOND) {
+            return addSeconds(date, diff);
         }
         return null;
     }
@@ -202,29 +199,15 @@ public class DateUtils {
         if(baseDate == null) {
             baseDate = new Date();
         }
-        Date resultDate = null;
-        switch (unitTypeNum) {
-            case SECOND:
-                resultDate = DateUtils.addSeconds(baseDate, offset);
-                break;
-            case MINUTE:
-                resultDate = DateUtils.addMinutes(baseDate, offset);
-                break;
-            case HOUR:
-                resultDate = DateUtils.addHours(baseDate, offset);
-                break;
-            case DAY:
-                resultDate = DateUtils.addDays(baseDate, offset);
-                break;
-            case MONTH:
-                resultDate = DateUtils.addMonths(baseDate, offset);
-                break;
-            case YEAR:
-                resultDate = DateUtils.addYears(baseDate, offset);
-                break;
-            default:
-                resultDate = baseDate;
-        }
+        Date resultDate = switch (unitTypeNum) {
+            case SECOND -> DateUtils.addSeconds(baseDate, offset);
+            case MINUTE -> DateUtils.addMinutes(baseDate, offset);
+            case HOUR -> DateUtils.addHours(baseDate, offset);
+            case DAY -> DateUtils.addDays(baseDate, offset);
+            case MONTH -> DateUtils.addMonths(baseDate, offset);
+            case YEAR -> DateUtils.addYears(baseDate, offset);
+            default -> baseDate;
+        };
         return resultDate;
     }
 

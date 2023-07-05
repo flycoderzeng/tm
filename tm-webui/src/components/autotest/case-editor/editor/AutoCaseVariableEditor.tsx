@@ -32,7 +32,11 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     }
 
     function onChangeName(value: any, index: number) {
-        userDefinedVariables[index].name = value.target.value;
+        let vName = value.target.value;
+        if(!vName.startsWith('v_')) {
+            return;
+        }
+        userDefinedVariables[index].name = vName;
     }
 
     function onChangeDescription(value: any, index: number) {
@@ -55,7 +59,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                              onClickRow(index)
                          }}>
                 <Col span={6} style={{paddingRight: '5px'}}>
-                    <Input defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
+                    <Input placeholder="变量名称必须以 v_ 开始" defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
                 </Col>
                 <Col span={6} style={{paddingRight: '5px'}}>
                     <Input defaultValue={value.description} onChange={(v) => {onChangeDescription(v, index);}}/>
@@ -83,14 +87,16 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
             return;
         }
         userDefinedVariables.splice(currIndex, 1);
-        setUserDefinedVariables(userDefinedVariables);
+        onChange('userDefinedVariables', userDefinedVariables);
+        setUserDefinedVariables([...userDefinedVariables]);
     }
 
     function handleOk() {
         userDefinedVariables[currIndex].name = variableName;
         userDefinedVariables[currIndex].value = variableValue;
         userDefinedVariables[currIndex]['key'] = RandomUtils.getKey();
-        setUserDefinedVariables(userDefinedVariables);
+        onChange('userDefinedVariables', userDefinedVariables);
+        setUserDefinedVariables([...userDefinedVariables]);
         setVariableDetailModalVisible(false);
     }
 

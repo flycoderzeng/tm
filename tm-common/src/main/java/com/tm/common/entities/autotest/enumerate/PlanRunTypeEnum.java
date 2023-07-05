@@ -8,13 +8,10 @@ public enum PlanRunTypeEnum {
     PlanRunTypeEnum() {}
     public Integer value() {return value;}
     public static PlanRunTypeEnum get(int value) {
-        switch (value) {
-            case 1:
-                return PlanRunTypeEnum.DEFAULT;
-            case 2:
-                return PlanRunTypeEnum.GROUP;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 1 -> PlanRunTypeEnum.DEFAULT;
+            case 2 -> PlanRunTypeEnum.GROUP;
+            default -> null;
+        };
     }
 }

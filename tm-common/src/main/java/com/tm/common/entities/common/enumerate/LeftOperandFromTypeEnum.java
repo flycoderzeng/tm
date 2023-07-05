@@ -22,21 +22,14 @@ public enum LeftOperandFromTypeEnum {
     }
 
     public static LeftOperandFromTypeEnum get(int value) {
-        switch (value) {
-            case 1:
-                return LeftOperandFromTypeEnum.REQUEST_URI;
-            case 2:
-                return LeftOperandFromTypeEnum.REQUEST_BODY;
-            case 3:
-                return LeftOperandFromTypeEnum.REQUEST_HEADERS;
-            case 4:
-                return LeftOperandFromTypeEnum.COOKIES;
-            case 5:
-                return LeftOperandFromTypeEnum.RESPONSE_BODY;
-            case 6:
-                return LeftOperandFromTypeEnum.RESPONSE_HEADERS;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 1 -> LeftOperandFromTypeEnum.REQUEST_URI;
+            case 2 -> LeftOperandFromTypeEnum.REQUEST_BODY;
+            case 3 -> LeftOperandFromTypeEnum.REQUEST_HEADERS;
+            case 4 -> LeftOperandFromTypeEnum.COOKIES;
+            case 5 -> LeftOperandFromTypeEnum.RESPONSE_BODY;
+            case 6 -> LeftOperandFromTypeEnum.RESPONSE_HEADERS;
+            default -> null;
+        };
     }
 }

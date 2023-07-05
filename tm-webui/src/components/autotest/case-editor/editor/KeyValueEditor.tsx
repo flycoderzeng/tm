@@ -398,7 +398,7 @@ const KeyValueEditor: React.FC<IState> = (props) => {
             <Row style={{paddingBottom: '5px'}}>
                 <Col flex="100px">{valueTheadName}</Col>
                 <Col flex="auto">
-                    <ContentEditor userDefinedVariables={props.userDefinedVariables} language={'sql'} content={currValue} refreshContent={refreshContent}></ContentEditor>
+                    <ContentEditor userDefinedVariables={props.userDefinedVariables} language={'json'} content={currValue} refreshContent={refreshContent}></ContentEditor>
                 </Col>
             </Row>
         </Modal>

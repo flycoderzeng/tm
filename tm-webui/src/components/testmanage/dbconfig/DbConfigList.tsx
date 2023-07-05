@@ -83,7 +83,7 @@ class DbConfigList extends CommonListPage {
             },{
                 title: '创建时间',
                 dataIndex: 'addTime',
-                key: 'add_time',
+                key: 'addTime',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             },{
@@ -93,7 +93,7 @@ class DbConfigList extends CommonListPage {
             },{
                 title: '修改时间',
                 dataIndex: 'lastModifyTime',
-                key: 'last_modify_time',
+                key: 'lastModifyTime',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             },{

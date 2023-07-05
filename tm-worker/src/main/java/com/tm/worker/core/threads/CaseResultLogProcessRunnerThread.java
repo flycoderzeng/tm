@@ -33,14 +33,10 @@ public class CaseResultLogProcessRunnerThread implements Runnable {
                 }
             }
             switch (logOperate.getLogOperateTypeEnum()) {
-                case INSERT:
-                    caseResultLogService.insert(logOperate.getLogRow());
-                    break;
-                case UPDATE:
-                    caseResultLogService.update(logOperate.getLogRow());
-                    break;
-                default:
-                    break;
+                case INSERT -> caseResultLogService.insert(logOperate.getLogRow());
+                case UPDATE -> caseResultLogService.update(logOperate.getLogRow());
+                default -> {
+                }
             }
         }
     }

@@ -18,15 +18,11 @@ public enum ExtractorTypeEnum {
     }
 
     public static ExtractorTypeEnum get(String value) {
-        switch (value) {
-            case "1":
-                return ExtractorTypeEnum.RESPONSE_BODY;
-            case "2":
-                return ExtractorTypeEnum.COOKIE;
-            case "3":
-                return ExtractorTypeEnum.RESPONSE_HEADER;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case "1" -> ExtractorTypeEnum.RESPONSE_BODY;
+            case "2" -> ExtractorTypeEnum.COOKIE;
+            case "3" -> ExtractorTypeEnum.RESPONSE_HEADER;
+            default -> null;
+        };
     }
 }

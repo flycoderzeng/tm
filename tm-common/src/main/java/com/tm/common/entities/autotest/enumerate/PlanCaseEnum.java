@@ -8,15 +8,11 @@ public enum PlanCaseEnum {
     PlanCaseEnum() {}
     public Integer value() {return value;}
     public static PlanCaseEnum get(int value) {
-        switch (value) {
-            case 0:
-                return PlanCaseEnum.DEFAULT;
-            case 1:
-                return PlanCaseEnum.SETUP;
-            case 2:
-                return PlanCaseEnum.TEARDOWN;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 0 -> PlanCaseEnum.DEFAULT;
+            case 1 -> PlanCaseEnum.SETUP;
+            case 2 -> PlanCaseEnum.TEARDOWN;
+            default -> null;
+        };
     }
 }

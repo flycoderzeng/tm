@@ -9,19 +9,13 @@ public enum CaseExecuteResultStatusEnum {
     CaseExecuteResultStatusEnum() {}
     public int value() {return value;}
     public static CaseExecuteResultStatusEnum get(int value) {
-        switch (value) {
-            case 1:
-                return CaseExecuteResultStatusEnum.RUNNING;
-            case 2:
-                return CaseExecuteResultStatusEnum.SUCCESS;
-            case 3:
-                return CaseExecuteResultStatusEnum.FAIL;
-            case 4:
-                return CaseExecuteResultStatusEnum.TIMEOUT;
-            case 5:
-                return CaseExecuteResultStatusEnum.CANCELED;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 1 -> CaseExecuteResultStatusEnum.RUNNING;
+            case 2 -> CaseExecuteResultStatusEnum.SUCCESS;
+            case 3 -> CaseExecuteResultStatusEnum.FAIL;
+            case 4 -> CaseExecuteResultStatusEnum.TIMEOUT;
+            case 5 -> CaseExecuteResultStatusEnum.CANCELED;
+            default -> null;
+        };
     }
 }

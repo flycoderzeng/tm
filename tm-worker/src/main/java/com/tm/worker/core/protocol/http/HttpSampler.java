@@ -265,7 +265,10 @@ public class HttpSampler extends StepNodeBase {
             throw new TMException("接口: " + path + ", 环境: "
                     + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", 存在多条配置");
         }
-
+        if(apiIpPortConfigs == null || apiIpPortConfigs.isEmpty()) {
+            throw new TMException("接口: " + path + ", 环境: "
+                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", 没有对应的接口地址配置, 请去测试管理-接口地址配置 配置!");
+        }
 
         if(StringUtils.isBlank(actualUrl)) {
             throw new TMException("实际的请求地址不能为空");

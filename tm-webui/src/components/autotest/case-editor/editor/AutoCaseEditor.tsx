@@ -7,7 +7,8 @@ import {
     DeleteOutlined,
     CopyOutlined,
     PlayCircleOutlined,
-    PauseOutlined
+    PauseOutlined,
+    QuestionOutlined
 } from '@ant-design/icons';
 import axios from "axios";
 import {ApiUrlConfig} from "../../../../config/api.url";
@@ -967,7 +968,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function onViewResult() {
-        window.open("/planresult/" + id + "/2/0");
+        window.open("#/planresult/" + id + "/2/0");
     }
 
     function showBuiltinInfo() {
@@ -977,27 +978,28 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     return (
         <div className="case-editor-parent">
             <div className="case-editor-toolbar">
-                <Button size="small" type="primary" loading={saving} onClick={onSave}>保存</Button>
-                <Button size="small" type="primary" loading={running1} onClick={() => {
+                <Button type="primary" loading={saving} onClick={onSave}>保存</Button>
+                <Button type="primary" loading={running1} onClick={() => {
                     onRun(1);
                 }}>运行</Button>
-                <Button size="small" type="primary" loading={running2} onClick={() => {
+                <Button type="primary" loading={running2} onClick={() => {
                     onRun(2);
                 }}>运行组合</Button>
-                <Button size="small" type="primary" danger>停止</Button>
-                <RunEnvSelect size={'small'} onChange={setRunEnvId} style={{width: '150px', marginRight: '5px'}} value={runEnvId}></RunEnvSelect>
-                <Button size="small" type="primary" onClick={() => {
+                <Button type="primary" danger>停止</Button>
+                <RunEnvSelect onChange={setRunEnvId} style={{width: '150px', marginRight: '5px'}} value={runEnvId}></RunEnvSelect>
+                <Button type="primary" onClick={() => {
                     onViewResult();
                 }}>查看运行结果</Button>
-                <Button size="small" type="default" onClick={() => {
+                <Button type="default" onClick={() => {
                     showBuiltinInfo();
                 }}>查看内置变量与函数</Button>
-                <Button size="small" type="default" onClick={() => {
+                <Button type="default" onClick={() => {
                     setVisibleHistory(true);
                 }}>恢复历史</Button>
-                <Button size="small" type="primary" onClick={() => {
+                <Button type="primary" onClick={() => {
                     refreshStepSeq();
                 }}>刷新步骤序号</Button>
+                <Button icon={<QuestionOutlined />}>查看帮助文档</Button>
             </div>
             <div className="case-editor-main-content">
                 <div className="case-editor-step-tree">

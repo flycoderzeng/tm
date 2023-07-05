@@ -13,31 +13,19 @@ public enum PlanExecuteResultStatusEnum {
     PlanExecuteResultStatusEnum(int value) {this.value = value;}
     public Integer value() {return value;}
     public static PlanExecuteResultStatusEnum get(Integer value) {
-        switch (value) {
-            case 1:
-                return PlanExecuteResultStatusEnum.INIT;
-            case 2:
-                return PlanExecuteResultStatusEnum.INIT_END;
-            case 3:
-                return PlanExecuteResultStatusEnum.RUNNING;
-            case 4:
-                return PlanExecuteResultStatusEnum.FINISHED;
-            case 5:
-                return PlanExecuteResultStatusEnum.PAUSED;
-            case 6:
-                return PlanExecuteResultStatusEnum.CANCELED;
-            case 7:
-                return PlanExecuteResultStatusEnum.TASK_OVERFLOW;
-            case 8:
-                return PlanExecuteResultStatusEnum.SETUP_FAIL;
-            case 9:
-                return PlanExecuteResultStatusEnum.SETUP_PLAN_RUNNING;
-            case 10:
-                return PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN;
-            case 99:
-                return PlanExecuteResultStatusEnum.EXCEPTION;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 1 -> PlanExecuteResultStatusEnum.INIT;
+            case 2 -> PlanExecuteResultStatusEnum.INIT_END;
+            case 3 -> PlanExecuteResultStatusEnum.RUNNING;
+            case 4 -> PlanExecuteResultStatusEnum.FINISHED;
+            case 5 -> PlanExecuteResultStatusEnum.PAUSED;
+            case 6 -> PlanExecuteResultStatusEnum.CANCELED;
+            case 7 -> PlanExecuteResultStatusEnum.TASK_OVERFLOW;
+            case 8 -> PlanExecuteResultStatusEnum.SETUP_FAIL;
+            case 9 -> PlanExecuteResultStatusEnum.SETUP_PLAN_RUNNING;
+            case 10 -> PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN;
+            case 99 -> PlanExecuteResultStatusEnum.EXCEPTION;
+            default -> null;
+        };
     }
 }

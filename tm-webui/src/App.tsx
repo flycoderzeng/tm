@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { routes } from "./config/route.config";
 import { renderRoutes } from 'react-router-config';
 
@@ -10,9 +10,9 @@ class App extends Component {
   }
   render() {
     return (
-        <BrowserRouter>
+        <HashRouter>
           {renderRoutes(routes)}
-        </BrowserRouter>
+        </HashRouter>
     )
   }
 }

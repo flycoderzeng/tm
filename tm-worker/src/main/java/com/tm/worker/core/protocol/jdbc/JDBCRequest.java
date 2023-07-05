@@ -1,7 +1,6 @@
 package com.tm.worker.core.protocol.jdbc;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -20,6 +19,7 @@ import com.tm.worker.utils.DataTypeAdapter;
 import com.tm.worker.utils.ExpressionUtils;
 import com.tm.worker.utils.JDBCUtils;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +32,7 @@ import java.util.Map;
 
 @Slf4j
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class JDBCRequest extends StepNodeBase {
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().registerTypeAdapter(new TypeToken<Map<String, Object>>() {
             }.getType(),

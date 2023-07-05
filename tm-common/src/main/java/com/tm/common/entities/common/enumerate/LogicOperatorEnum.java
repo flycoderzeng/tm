@@ -20,13 +20,10 @@ public enum LogicOperatorEnum {
     }
 
     public static LogicOperatorEnum get(int value) {
-        switch (value) {
-            case 1:
-                return LogicOperatorEnum.AND;
-            case 2:
-                return LogicOperatorEnum.OR;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 1 -> LogicOperatorEnum.AND;
+            case 2 -> LogicOperatorEnum.OR;
+            default -> null;
+        };
     }
 }

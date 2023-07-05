@@ -25,21 +25,14 @@ public enum DateUnitTypeNum {
     }
 
     public static DateUnitTypeNum get(Integer value) {
-        switch (value) {
-            case 1:
-                return DateUnitTypeNum.SECOND;
-            case 2:
-                return DateUnitTypeNum.MINUTE;
-            case 3:
-                return DateUnitTypeNum.HOUR;
-            case 4:
-                return DateUnitTypeNum.DAY;
-            case 5:
-                return DateUnitTypeNum.MONTH;
-            case 6:
-                return DateUnitTypeNum.YEAR;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 1 -> DateUnitTypeNum.SECOND;
+            case 2 -> DateUnitTypeNum.MINUTE;
+            case 3 -> DateUnitTypeNum.HOUR;
+            case 4 -> DateUnitTypeNum.DAY;
+            case 5 -> DateUnitTypeNum.MONTH;
+            case 6 -> DateUnitTypeNum.YEAR;
+            default -> null;
+        };
     }
 }

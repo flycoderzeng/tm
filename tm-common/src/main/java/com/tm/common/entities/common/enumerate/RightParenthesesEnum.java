@@ -20,13 +20,10 @@ public enum RightParenthesesEnum {
     }
 
     public static RightParenthesesEnum get(int value) {
-        switch (value) {
-            case 1:
-                return RightParenthesesEnum.RIGHT_PARENTHESES;
-            case 2:
-                return RightParenthesesEnum.NONE;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 1 -> RightParenthesesEnum.RIGHT_PARENTHESES;
+            case 2 -> RightParenthesesEnum.NONE;
+            default -> null;
+        };
     }
 }

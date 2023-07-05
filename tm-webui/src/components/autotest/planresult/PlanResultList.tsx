@@ -104,7 +104,7 @@ const PlanResultList: React.FC<IState> = (props) => {
     }
 
     function viewPlanResult(record: any) {
-        window.open("/planresult/" + record.planOrCaseId + "/" + record.fromType + "/0/" + record.id);
+        window.open("#/planresult/" + record.planOrCaseId + "/" + record.fromType + "/0/" + record.id);
     }
 
     const columns: any[] = [

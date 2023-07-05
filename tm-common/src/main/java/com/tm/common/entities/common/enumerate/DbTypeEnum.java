@@ -7,11 +7,9 @@ public enum DbTypeEnum {
     DbTypeEnum() {}
     public int value() {return value;}
     public static DbTypeEnum get(int value) {
-        switch (value) {
-            case 1:
-                return DbTypeEnum.MYSQL;
-            default:
-                return null;
+        if (value == 1) {
+            return DbTypeEnum.MYSQL;
         }
+        return null;
     }
 }

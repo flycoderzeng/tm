@@ -65,12 +65,9 @@ public class UspMockAgent {
         for (Class<?> clz : allClasses) {
             final String name = clz.getName();
             String dotClassPath = name.replace("/", ".");
-            switch (dotClassPath) {
-                case SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH:
-                    logger.info("agentmain retransformClasses " + dotClassPath);
-                    inst.retransformClasses(clz);
-                default:
-                    break;
+            if (SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH.equals(dotClassPath)) {
+                logger.info("agentmain retransformClasses " + dotClassPath);
+                inst.retransformClasses(clz);
             }
         }
     }
@@ -86,12 +83,9 @@ public class UspMockAgent {
         }
 
         public static byte[] getBytes(String dotClassPath, ClassLoader loader, byte[] classfileBuffer) {
-            switch (dotClassPath) {
-                case SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH:
-                    logger.info("premain load class " + dotClassPath);
-                    return mockSpringRestTemplateHttp(loader, classfileBuffer);
-                default:
-                    break;
+            if (SPRING_REST_TEMPLATE_HTTP_MOCK_CLASS_PATH.equals(dotClassPath)) {
+                logger.info("premain load class " + dotClassPath);
+                return mockSpringRestTemplateHttp(loader, classfileBuffer);
             }
 
             return classfileBuffer;

@@ -18,13 +18,10 @@ public enum AssertLevelEnum {
     }
 
     public static AssertLevelEnum get(String value) {
-        switch (value) {
-            case "error":
-                return AssertLevelEnum.ERROR;
-            case "warning":
-                return AssertLevelEnum.WARNING;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case "error" -> AssertLevelEnum.ERROR;
+            case "warning" -> AssertLevelEnum.WARNING;
+            default -> null;
+        };
     }
 }

@@ -161,7 +161,7 @@ const PlanResultPage: React.FC<IState> = (props) => {
             message.info('没有计划前执行结果');
             return ;
         }
-        window.open("/planresult/" + planOrCaseId + "/" + fromType + "/1/" + planSetupResultId);
+        window.open("#/planresult/" + planOrCaseId + "/" + fromType + "/1/" + planSetupResultId);
     }
 
     function checkTeardownResult() {
@@ -169,7 +169,7 @@ const PlanResultPage: React.FC<IState> = (props) => {
             message.info('没有计划后执行结果');
             return ;
         }
-        window.open("/planresult/" + planOrCaseId + "/" + fromType + "/2/" + planTeardownResultId);
+        window.open("#/planresult/" + planOrCaseId + "/" + fromType + "/2/" + planTeardownResultId);
     }
 
     let checkHistoryResultBtn;

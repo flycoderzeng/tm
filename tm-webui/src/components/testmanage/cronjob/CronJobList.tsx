@@ -71,13 +71,13 @@ class CronJobList extends CommonListPage {
             }, {
                 title: '创建时间',
                 dataIndex: 'addTime',
-                key: 'add_time',
+                key: 'addTime',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             }, {
                 title: '最近运行时间',
                 dataIndex: 'lastRunTime',
-                key: 'last_run_time',
+                key: 'lastRunTime',
                 render: text => <span>{text}</span>,
             }, {
                 title: '操作',

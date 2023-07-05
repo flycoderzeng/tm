@@ -30,6 +30,7 @@ import com.tm.worker.core.node.function.decoder.DecodeURIComponentNode;
 import com.tm.worker.core.node.function.encoder.Base64EncodeNode;
 import com.tm.worker.core.node.function.encoder.CipherCredentialEncodeNode;
 import com.tm.worker.core.node.function.encoder.EncodeURIComponentNode;
+import com.tm.worker.core.node.function.encoder.MessagesDigestEncodeNode;
 import com.tm.worker.core.node.function.extractor.JsonMultiExtractorNode;
 import com.tm.worker.core.node.function.extractor.XmlMultiExtractorNode;
 import com.tm.worker.core.node.function.gvariables.GetGlobalKeyValueNode;
@@ -262,93 +263,40 @@ public class CaseTaskThread implements Callable<BaseResponse> {
             throw new TMException("未定义的节点类型："  + type);
         }
         switch (nodeTypeDefineEnum) {
-            case ROOT:
-                define = BeanUtils.mapToBean(RootNode.class, defineMap);
-                return define;
-            case SETUP:
-                define = BeanUtils.mapToBean(SetUp.class, defineMap);
-                return define;
-            case ACTION:
-                define = BeanUtils.mapToBean(Action.class, defineMap);
-                return define;
-            case TEARDOWN:
-                define = BeanUtils.mapToBean(TearDown.class, defineMap);
-                return define;
-            case HTTP:
-            case HTTP_REQUEST:
-                define = BeanUtils.mapToBean(HttpSampler.class, defineMap);
-                return define;
-            case JDBC:
-            case JDBC_REQUEST:
-                define = BeanUtils.mapToBean(JDBCRequest.class, defineMap);
-                return define;
-            case SCRIPT_ACTION_NODE:
-                define = BeanUtils.mapToBean(ScriptActionNode.class, defineMap);
-                return define;
-            case IF:
-                define = BeanUtils.mapToBean(IfController.class, defineMap);
-                return define;
-            case LOOP:
-                define = BeanUtils.mapToBean(LoopController.class, defineMap);
-                return define;
-            case WHILE:
-                define = BeanUtils.mapToBean(WhileController.class, defineMap);
-                return define;
-            case __getRandomInt:
-                define = BeanUtils.mapToBean(GetRandomIntNode.class, defineMap);
-                return define;
-            case __getDate:
-                define = BeanUtils.mapToBean(GetDateNode.class, defineMap);
-                return define;
-            case __getTimestamp:
-                define = BeanUtils.mapToBean(GetTimestampNode.class, defineMap);
-                return define;
-            case __sleep:
-                define = BeanUtils.mapToBean(SleepNode.class, defineMap);
-                return define;
-            case __jsonMultiExtractor:
-                define = BeanUtils.mapToBean(JsonMultiExtractorNode.class, defineMap);
-                return define;
-            case __xmlMultiExtractor:
-                define = BeanUtils.mapToBean(XmlMultiExtractorNode.class, defineMap);
-                return define;
-            case __operationExpression:
-                define = BeanUtils.mapToBean(OperationExpressionNode.class, defineMap);
-                return define;
-            case __encodeURIComponent:
-                define = BeanUtils.mapToBean(EncodeURIComponentNode.class, defineMap);
-                return define;
-            case __decodeURIComponent:
-                define = BeanUtils.mapToBean(DecodeURIComponentNode.class, defineMap);
-                return define;
-            case __base64Encode:
-                define = BeanUtils.mapToBean(Base64EncodeNode.class, defineMap);
-                return define;
-            case __base64Decode:
-                define = BeanUtils.mapToBean(Base64DecodeNode.class, defineMap);
-                return define;
-            case __md5:
-                define = BeanUtils.mapToBean(Md5Node.class, defineMap);
-                return define;
-            case __subString:
-                define = BeanUtils.mapToBean(SubStringNode.class, defineMap);
-                return define;
-            case __assert:
-                define = BeanUtils.mapToBean(AssertNode.class, defineMap);
-                return define;
-            case __getGlobalKeyValue:
-                define = BeanUtils.mapToBean(GetGlobalKeyValueNode.class, defineMap);
-                return define;
-            case __setGlobalKeyValue:
-                define = BeanUtils.mapToBean(SetGlobalKeyValueNode.class, defineMap);
-                return define;
-            case __encodeCipherCredential:
-                define = BeanUtils.mapToBean(CipherCredentialEncodeNode.class, defineMap);
-                return define;
-            default:
+            case ROOT -> define = BeanUtils.mapToBean(RootNode.class, defineMap);
+            case SETUP -> define = BeanUtils.mapToBean(SetUp.class, defineMap);
+            case ACTION -> define = BeanUtils.mapToBean(Action.class, defineMap);
+            case TEARDOWN -> define = BeanUtils.mapToBean(TearDown.class, defineMap);
+            case HTTP, HTTP_REQUEST -> define = BeanUtils.mapToBean(HttpSampler.class, defineMap);
+            case JDBC, JDBC_REQUEST -> define = BeanUtils.mapToBean(JDBCRequest.class, defineMap);
+            case SCRIPT_ACTION_NODE -> define = BeanUtils.mapToBean(ScriptActionNode.class, defineMap);
+            case IF -> define = BeanUtils.mapToBean(IfController.class, defineMap);
+            case LOOP -> define = BeanUtils.mapToBean(LoopController.class, defineMap);
+            case WHILE -> define = BeanUtils.mapToBean(WhileController.class, defineMap);
+            case GET_RANDOM_INT -> define = BeanUtils.mapToBean(GetRandomIntNode.class, defineMap);
+            case GET_DATE -> define = BeanUtils.mapToBean(GetDateNode.class, defineMap);
+            case GET_TIMESTAMP -> define = BeanUtils.mapToBean(GetTimestampNode.class, defineMap);
+            case SLEEP -> define = BeanUtils.mapToBean(SleepNode.class, defineMap);
+            case JSON_MULTI_EXTRACTOR -> define = BeanUtils.mapToBean(JsonMultiExtractorNode.class, defineMap);
+            case XML_MULTI_EXTRACTOR -> define = BeanUtils.mapToBean(XmlMultiExtractorNode.class, defineMap);
+            case OPERATION_EXPRESSION -> define = BeanUtils.mapToBean(OperationExpressionNode.class, defineMap);
+            case ENCODE_URI_COMPONENT -> define = BeanUtils.mapToBean(EncodeURIComponentNode.class, defineMap);
+            case DECODE_URI_COMPONENT -> define = BeanUtils.mapToBean(DecodeURIComponentNode.class, defineMap);
+            case BASE_64_ENCODE -> define = BeanUtils.mapToBean(Base64EncodeNode.class, defineMap);
+            case BASE_64_DECODE -> define = BeanUtils.mapToBean(Base64DecodeNode.class, defineMap);
+            case MD_5 -> define = BeanUtils.mapToBean(Md5Node.class, defineMap);
+            case SUB_STRING -> define = BeanUtils.mapToBean(SubStringNode.class, defineMap);
+            case ASSERT -> define = BeanUtils.mapToBean(AssertNode.class, defineMap);
+            case GET_GLOBAL_KEY_VALUE -> define = BeanUtils.mapToBean(GetGlobalKeyValueNode.class, defineMap);
+            case SET_GLOBAL_KEY_VALUE -> define = BeanUtils.mapToBean(SetGlobalKeyValueNode.class, defineMap);
+            case ENCODE_CIPHER_CREDENTIAL -> define = BeanUtils.mapToBean(CipherCredentialEncodeNode.class, defineMap);
+            case ENCODE_MESSAGES_DIGEST -> define = BeanUtils.mapToBean(MessagesDigestEncodeNode.class, defineMap);
+            default -> {
                 log.info(type);
-                throw new TMException("未定义处理类的节点类型："  + type);
+                throw new TMException("未定义处理类的节点类型：" + type);
+            }
         }
+        return define;
     }
 
     private void init() {

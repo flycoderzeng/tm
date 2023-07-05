@@ -64,6 +64,8 @@ class MenuList extends CommonListPage {
             },{
                 title: '创建时间',
                 dataIndex: 'addTime',
+                sorter: ()=>{},
+                key: 'addTime',
                 render: text => <span>{text}</span>,
             },{
                 title: '修改者',
@@ -72,7 +74,7 @@ class MenuList extends CommonListPage {
             },{
                 title: '修改时间',
                 dataIndex: 'lastModifyTime',
-                key: 'last_modify_time',
+                key: 'lastModifyTime',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             },{

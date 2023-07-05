@@ -8,14 +8,11 @@ public enum PlanRunFromTypeEnum {
     PlanRunFromTypeEnum() {}
     public Integer value() {return value;}
     public static PlanRunFromTypeEnum get(int value) {
-        switch (value) {
-            case 2:
-                return PlanRunFromTypeEnum.CASE;
-            case 3:
-                return PlanRunFromTypeEnum.CRON_JOB;
-            case 1:
-            default:
-                return PlanRunFromTypeEnum.PLAN;
-        }
+        return switch (value) {
+            case 2 -> PlanRunFromTypeEnum.CASE;
+            case 3 -> PlanRunFromTypeEnum.CRON_JOB;
+            case 1 -> PlanRunFromTypeEnum.PLAN;
+            default -> throw new IllegalStateException("Unexpected value: " + value);
+        };
     }
 }

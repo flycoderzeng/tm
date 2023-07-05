@@ -214,6 +214,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
     }
 
     function onSelect(selectedKeys, e:{selected: boolean, selectedNodes, node, event}) {
+        //setSelectedKeys(selectedKeys);
         if(e.node.isLeaf) {
             setRenderRightFlag(Number(dataTypeId));
             setNodeId(e.node.dataNode.id);
@@ -221,7 +222,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
             setRenderRightFlag(DataTypeEnum.ALL);
         }
         if(e.node.dataNode) {
-            setSelectedKeys([e.node.key]);
+            //setSelectedKeys([...e.node.key]);
         }
         WindowTopUtils.setWindowTopObject(WindowTopUtils.object_expandedKeys, expandedKeys);
     }
@@ -542,7 +543,6 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                 onDragEnter={onDragEnter}
                 onDrop={onDrop}
                 onSelect={onSelect}
-                selectedKeys={selectedKeys}
                 allowDrop={allowDrop}
                 treeData={treeData}
             />

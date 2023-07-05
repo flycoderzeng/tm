@@ -136,7 +136,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
     }
 
     function checkPlanResult() {
-        window.open("/planresult/" + id + "/1/0");
+        window.open("#/planresult/" + id + "/1/0");
     }
 
     function runPlan() {
