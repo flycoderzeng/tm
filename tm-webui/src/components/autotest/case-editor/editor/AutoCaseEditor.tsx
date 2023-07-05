@@ -971,7 +971,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function showBuiltinInfo() {
-        window.open("https://github.com/flycoderzeng/tm/wiki/%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0%E4%B8%8E%E5%8F%98%E9%87%8F#%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F");
+        window.open("https://github.com/flycoderzeng/tm/wiki/%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F%E4%B8%8E%E5%87%BD%E6%95%B0");
     }
 
     return (

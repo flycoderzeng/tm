@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.tm</groupId>
 	<artifactId>lc</artifactId>
-	<version>1.0.0</version>
+	<version>dev-3.0.0</version>
 	<name>tm-lc</name>
 	<description>lc</description>
 	<properties>
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>com.tm</groupId>
 			<artifactId>common</artifactId>
-			<version>1.0.0</version>
+			<version>dev-3.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -134,10 +134,35 @@
 	</dependencyManagement>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.yaml</include>
+					<include>**/*.yml</include>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.tm.lc.LcApplication</mainClass>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

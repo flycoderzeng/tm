@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.tm</groupId>
     <artifactId>worker</artifactId>
-    <version>1.0.0</version>
+    <version>dev-3.0.0</version>
     <name>tm-worker</name>
     <description>usp 自动化用例执行</description>
 
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>com.tm</groupId>
             <artifactId>common</artifactId>
-            <version>1.0.0</version>
+            <version>dev-3.0.0</version>
         </dependency>
 
         <dependency>
@@ -147,8 +147,6 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.18</version>
         </dependency>
-
-
 
         <dependency>
             <groupId>olym.tetch</groupId>
