@@ -319,7 +319,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                 savePlanVariables();
             }}
             onCancel={() => setVisiblePlanGlobalVariableModal(false)}
-            width={900}
+            width={'80%'}
         >
             <div>
                 <KeyValueEditor rows={planVariables} type={'plan-variable'} onChange={setPlanVariables}></KeyValueEditor>

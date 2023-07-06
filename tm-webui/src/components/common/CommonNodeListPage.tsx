@@ -53,7 +53,7 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
     const [pagination, setPagination] = useState({
         current: 1,
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         linkOperator: 'or',
         total: 0,
         filterConditionList: []
