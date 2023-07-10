@@ -15,6 +15,7 @@ public enum StepNodeTypeDefineEnum {
     ENCODE_URI_COMPONENT("__encodeURIComponent"), DECODE_URI_COMPONENT("__decodeURIComponent"),
     BASE_64_ENCODE("__base64Encode"), BASE_64_DECODE("__base64Decode"),
     ENCODE_CIPHER_CREDENTIAL("__encodeCipherCredential"), ENCODE_MESSAGES_DIGEST("__encodeMessagesDigest"),
+    ENCODE_ADMIN_USER_PASSWORD("__encodeAdminUserPassword"),
     SUB_STRING("__subString"),
     MD_5("__md5");
     String value;
@@ -52,6 +53,7 @@ public enum StepNodeTypeDefineEnum {
             case "__base64Decode" -> BASE_64_DECODE;
             case "__encodeCipherCredential" -> ENCODE_CIPHER_CREDENTIAL;
             case "__encodeMessagesDigest" -> ENCODE_MESSAGES_DIGEST;
+            case "__encodeAdminUserPassword" -> ENCODE_ADMIN_USER_PASSWORD;
             case "__subString" -> SUB_STRING;
             case "__md5" -> MD_5;
             case "__assert" -> ASSERT;

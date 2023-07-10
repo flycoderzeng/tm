@@ -27,10 +27,7 @@ import com.tm.worker.core.node.StepNodeBase;
 import com.tm.worker.core.node.function.check.AssertNode;
 import com.tm.worker.core.node.function.decoder.Base64DecodeNode;
 import com.tm.worker.core.node.function.decoder.DecodeURIComponentNode;
-import com.tm.worker.core.node.function.encoder.Base64EncodeNode;
-import com.tm.worker.core.node.function.encoder.CipherCredentialEncodeNode;
-import com.tm.worker.core.node.function.encoder.EncodeURIComponentNode;
-import com.tm.worker.core.node.function.encoder.MessagesDigestEncodeNode;
+import com.tm.worker.core.node.function.encoder.*;
 import com.tm.worker.core.node.function.extractor.JsonMultiExtractorNode;
 import com.tm.worker.core.node.function.extractor.XmlMultiExtractorNode;
 import com.tm.worker.core.node.function.gvariables.GetGlobalKeyValueNode;
@@ -291,6 +288,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
             case SET_GLOBAL_KEY_VALUE -> define = BeanUtils.mapToBean(SetGlobalKeyValueNode.class, defineMap);
             case ENCODE_CIPHER_CREDENTIAL -> define = BeanUtils.mapToBean(CipherCredentialEncodeNode.class, defineMap);
             case ENCODE_MESSAGES_DIGEST -> define = BeanUtils.mapToBean(MessagesDigestEncodeNode.class, defineMap);
+            case ENCODE_ADMIN_USER_PASSWORD -> define = BeanUtils.mapToBean(AdminUserPasswordEncodeNode.class, defineMap);
             default -> {
                 log.info(type);
                 throw new TMException("未定义处理类的节点类型：" + type);
@@ -351,5 +349,6 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         caseVariables.putObject(AutoTestVariables.BUILTIN_VARIABLE_NAME_ENV_ID, caseTask.getPlanTask().getRunningConfigSnapshot().getEnvId());
         caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_ENV_NAME, caseTask.getPlanTask().getRunningConfigSnapshot().getEnvName());
         caseVariables.putObject(AutoTestVariables.BUILTIN_VARIABLE_NAME_GROUP_NO, caseTask.getGroupNo());
+        caseVariables.putObject(AutoTestVariables.BUILTIN_VARIABLE_NAME_GROUP_NAME, caseTask.getGroupName());
     }
 }

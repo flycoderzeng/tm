@@ -21,16 +21,13 @@ public class RootNode extends StepNodeBase {
         super.run();
         AutoTestContext autoTestContext = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = autoTestContext.getCaseVariables();
-        caseVariables.updateAutoCaseVariables(userDefinedVariables);
+        // 将计划变量的值更新到用例变量
+        AutoTestVariables planVariables = autoTestContext.getPlanTask().getPlanVariables();
+        caseVariables.updateAutoCaseVariables(userDefinedVariables, planVariables);
         // 如果是组合方式运行，将组合变量值，初始化为用例变量值
         AutoTestVariables groupVariables = autoTestContext.getCaseTask().getGroupVariables();
         if(groupVariables != null) {
             caseVariables.replace(groupVariables);
-        }
-        // 将计划变量的值更新到用例变量
-        AutoTestVariables planVariables = autoTestContext.getPlanTask().getPlanVariables();
-        if(planVariables != null) {
-            caseVariables.replace(planVariables);
         }
 
         autoTestContext.setAutoTestCookie(new AutoTestCookie(cookies));

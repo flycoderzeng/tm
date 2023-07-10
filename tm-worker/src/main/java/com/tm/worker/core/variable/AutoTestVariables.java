@@ -22,17 +22,20 @@ public class AutoTestVariables {
     public static final String BUILTIN_VARIABLE_NAME_WORKER_IP = "__worker_ip";
     public static final String BUILTIN_VARIABLE_NAME_PLAN_RESULT_ID = "__plan_result_id";
     public static final String BUILTIN_VARIABLE_NAME_GROUP_NO = "__group_no";
-
+    public static final String BUILTIN_VARIABLE_NAME_GROUP_NAME = "__group_name";
 
 
     private final Map<String, Object> variables = new HashMap();
+    private final Map<String, AutoCaseVariable> caseVariableMap = new HashMap();
+    private AutoTestVariables planVariables;
 
     public AutoTestVariables() {
         initBuiltinVariables();
     }
 
-    public void updateAutoCaseVariables(List<AutoCaseVariable> autoCaseVariables) {
-        updateVariables(autoCaseVariables);
+    public void updateAutoCaseVariables(List<AutoCaseVariable> autoCaseVariables, AutoTestVariables planVariables) {
+        this.planVariables = planVariables;
+        updateVariables(autoCaseVariables, planVariables);
     }
 
     public AutoTestVariables(Map<String, String> variables) {
@@ -41,13 +44,36 @@ public class AutoTestVariables {
         }
     }
 
-    private void updateVariables(List<AutoCaseVariable> autoCaseVariables) {
+    private void updateVariables(List<AutoCaseVariable> autoCaseVariables, AutoTestVariables planVariables) {
         if(autoCaseVariables == null) {
             return;
         }
         for (int i = 0; i < autoCaseVariables.size(); i++) {
-            put(autoCaseVariables.get(i).getName(), autoCaseVariables.get(i).getValue());
+            AutoCaseVariable autoCaseVariable = autoCaseVariables.get(i);
+            caseVariableMap.put(autoCaseVariable.getName(), autoCaseVariable);
+            if(StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()) && planVariables != null
+                    && planVariables.exists(autoCaseVariable.getPlanVariableName())) {
+                put(autoCaseVariable.getName(), planVariables.get(autoCaseVariable.getPlanVariableName()));
+            } else {
+                put(autoCaseVariable.getName(), autoCaseVariable.getValue());
+            }
         }
+    }
+
+    public void replace(AutoTestVariables newVariables) {
+        for (Map.Entry<String, Object> entry : variables.entrySet()) {
+            String variableName = entry.getKey();
+            AutoCaseVariable autoCaseVariable = caseVariableMap.get(variableName);
+            // 如果计划变量不为空, 且用例变量配置了计划变量, 则 不用组合变量设置的值 做替换
+            if(!(planVariables != null && autoCaseVariable != null && StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()))
+                    && newVariables.getVariables().containsKey(variableName)) {
+                this.put(variableName, newVariables.get(variableName));
+            }
+        }
+    }
+
+    private boolean exists(String planVariableName) {
+        return variables.containsKey(planVariableName);
     }
 
     public String getVariableString(String key) {
@@ -56,13 +82,13 @@ public class AutoTestVariables {
 
     private String get(String key) {
         Object o = this.variables.get(key);
-        if (o instanceof String) {
-            if(StringUtils.equals((String)o, ExpressionUtils.__PLATFORM_PRIVATE_NULL)) {
+        if (o instanceof String string) {
+            if(StringUtils.equals(string, ExpressionUtils.__PLATFORM_PRIVATE_NULL)) {
                 return null;
-            }else if(ReUtil.isMatch(ExpressionUtils.pattern, (String)o)) {
+            }else if(ReUtil.isMatch(ExpressionUtils.pattern, string)) {
                 return ExpressionUtils.replaceExpression((String) o, variables);
             }
-            return (String)o;
+            return string;
         } else {
             return o != null ? o.toString() : null;
         }
@@ -84,14 +110,6 @@ public class AutoTestVariables {
         return variables;
     }
 
-    public void replace(AutoTestVariables newVariables) {
-        for (Map.Entry<String, Object> entry : variables.entrySet()) {
-            if(newVariables.getVariables().containsKey(entry.getKey())) {
-                this.put(entry.getKey(), newVariables.get(entry.getKey()));
-            }
-        }
-    }
-
     private void initBuiltinVariables() {
         put(BUILTIN_VARIABLE_NAME_REQUEST, "");
         put(BUILTIN_VARIABLE_NAME_RESPONSE, "");
@@ -105,5 +123,6 @@ public class AutoTestVariables {
         put(BUILTIN_VARIABLE_NAME_WORKER_IP, "");
         put(BUILTIN_VARIABLE_NAME_PLAN_RESULT_ID, null);
         putObject(BUILTIN_VARIABLE_NAME_GROUP_NO, 0);
+        putObject(BUILTIN_VARIABLE_NAME_GROUP_NAME, "");
     }
 }

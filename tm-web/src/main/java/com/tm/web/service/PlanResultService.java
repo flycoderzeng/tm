@@ -13,6 +13,7 @@ import com.tm.common.entities.base.CommonTableQueryResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
 import com.tm.common.utils.TableSuffixUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service(value = "planResultService")
 public class PlanResultService {
 
