@@ -9,9 +9,11 @@ import javax.validation.constraints.NotNull;
 public class RunPlanBody {
     @NotNull(message = "计划id不能为空")
     private Integer planId;
+    // 1-非组合 2-组合
     @NotNull(message = "运行类型不能为空")
     private Integer runType;
     private Integer runEnvId;
+    //1-计划 2-用例 3-定时计划
     private Integer fromType = 1;
     private Integer planCronJobId;
     @Min(0)

@@ -164,6 +164,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [copyNodeData, setCopyNodeData] = useState<StepNode|null>(null);
     const [rightMenuKeys, setRightMenuKeys] = useState<MenuItem[]>([]);
     const [rightMenuList, setRightMenuList] = useState<any[]>([]);
+    const [treeCheckEnable, setTreeCheckEnable] = useState<boolean>(false);
+    const [checkedKeys, setCheckedKeys] = useState<any[]>([]);
 
     if (id !== props.id) {
         setId(props.id);
@@ -379,7 +381,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     rightMenuKeys[i].disabled = false;
                 }
             }
-            setRightMenuKeys(rightMenuKeys);
+            setRightMenuKeys([...rightMenuKeys]);
+            setRightMenuList(renderRightMenu(rightMenuKeys));
         } else {
             for (let i = 0; i < rightMenuKeys.length; i++) {
                 rightMenuKeys[i].disabled = false;
@@ -390,6 +393,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     }
                 }
             }
+            setRightMenuKeys([...rightMenuKeys]);
+            setRightMenuList(renderRightMenu(rightMenuKeys));
         }
 
         const x = event.clientX + 'px';
@@ -975,6 +980,47 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         window.open("https://github.com/flycoderzeng/tm/wiki/%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F%E4%B8%8E%E5%87%BD%E6%95%B0");
     }
 
+    function refreshKey(steps: StepNode[]) {
+        const stack: StepNode[] = [steps[0]];
+        while (true) {
+            const stepNode: StepNode|undefined = stack.shift();
+            if(stepNode && stepNode.children) {
+                for (let i = 0; i < stepNode.children.length; i++) {
+                    stack.push(stepNode.children[i]);
+                }
+            }
+            if(stepNode && stepNode.key !== '1' && stepNode.key !== '2' && stepNode.key !== '3' && stepNode.key !== '4') {
+                stepNode.key = RandomUtils.getKey();
+            }
+            if(!stepNode) {
+                break;
+            }
+        }
+    }
+
+    function batchCopySteps() {
+        if(!treeCheckEnable) {
+            setTreeCheckEnable(true);
+            message.info('请选择步骤');
+            return;
+        }
+        if(checkedKeys.length < 1) {
+            message.info('请选择步骤');
+            return;
+        }
+        // 复制步骤
+
+        message.info('复制用例步骤成功');
+        refreshKey(treeData);
+        setTreeData([...treeData]);
+        setCheckedKeys([]);
+        setTreeCheckEnable(false);
+    }
+
+    function onCheck(checked, info) {
+        setCheckedKeys(checked);
+    }
+
     return (
         <div className="case-editor-parent">
             <div className="case-editor-toolbar">
@@ -999,11 +1045,17 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 <Button type="primary" onClick={() => {
                     refreshStepSeq();
                 }}>刷新步骤序号</Button>
+                <Button type="primary" onClick={() => {
+                    batchCopySteps();
+                }}>批量复制步骤</Button>
                 <Button icon={<QuestionOutlined />}>查看帮助文档</Button>
             </div>
             <div className="case-editor-main-content">
                 <div className="case-editor-step-tree">
                     <Tree
+                        checkable={treeCheckEnable}
+                        checkedKeys={checkedKeys}
+                        onCheck={onCheck}
                         className="draggable-tree"
                         onRightClick={onRightClick}
                         onExpand={onExpand}

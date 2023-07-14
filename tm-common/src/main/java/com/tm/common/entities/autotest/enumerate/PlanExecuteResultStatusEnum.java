@@ -6,7 +6,7 @@ package com.tm.common.entities.autotest.enumerate;
 // 99-异常结束
 public enum PlanExecuteResultStatusEnum {
     INIT(1),INIT_END(2),RUNNING(3),FINISHED(4),
-    PAUSED(5),CANCELED(6),TASK_OVERFLOW(7),SETUP_FAIL(8),
+    PAUSED(5),CANCELED(6),TASK_OVERFLOW(7), SETUP_FAIL(8),
     SETUP_PLAN_RUNNING(9), CASE_FAIL_STOP_PLAN(10),
     EXCEPTION(99);
     Integer value;

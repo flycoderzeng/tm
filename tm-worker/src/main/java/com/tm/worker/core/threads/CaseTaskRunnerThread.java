@@ -103,6 +103,9 @@ public class CaseTaskRunnerThread implements Runnable {
     private void teardownPlanTask(PlanTask planTask, BaseResponse baseResponse) {
         planTask.increaseFinishedCount();
         planTask.decreaseRunningCount();
+        if(baseResponse.getCode().equals(ResultCodeEnum.CASE_RUN_ERROR.getCode())) {
+            planTask.increaseFailedCasesCount();
+        }
         // 最后一个用例执行完，设置计划结果状态为完成
         if (planTask.isFinished()) {
             log.info("最后一个用例执行完，设置计划结果状态为完成, 计划结果id：{}", planTask.getPlanExecuteResultId());

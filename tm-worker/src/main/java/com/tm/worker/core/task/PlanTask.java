@@ -19,6 +19,8 @@ public class PlanTask extends WorkerPlanTask {
 
     private AtomicInteger runningCasesCount = new AtomicInteger(0);
 
+    private AtomicInteger failedCasesCount = new AtomicInteger(0);
+
     private AtomicInteger polledCount = new AtomicInteger(0);
 
     public PlanTask(Integer priority, PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot runningConfigSnapshot,
@@ -38,6 +40,14 @@ public class PlanTask extends WorkerPlanTask {
 
     public void increaseRunningCount() {
         runningCasesCount.incrementAndGet();
+    }
+
+    public void increaseFailedCasesCount() {
+        failedCasesCount.incrementAndGet();
+    }
+
+    public Integer getFailedCasesCount() {
+        return failedCasesCount.get();
     }
 
     public Boolean getIsUpdateRunning() {

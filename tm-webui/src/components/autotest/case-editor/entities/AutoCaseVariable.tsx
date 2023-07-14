@@ -4,4 +4,6 @@ export interface AutoCaseVariable {
     value: string;
     planVariableName: string;
     description: string;
+
+    checked?: boolean;
 }

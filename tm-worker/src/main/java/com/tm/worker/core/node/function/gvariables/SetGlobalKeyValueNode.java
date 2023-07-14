@@ -42,6 +42,10 @@ public class SetGlobalKeyValueNode extends FunctionNode {
         String globalKeyValue = getContent("globalKeyValue", caseVariables);
         addResultInfo("全局变量值: ").addResultInfoLine(globalKeyValue);
 
+        if(0 == globalVariable.getModifyFlag()) {
+            throw new TMException("该全局变量的配置是用例运行时不允许修改");
+        }
+
         globalVariable.setValue(globalKeyValue);
         context.getTaskService().updateGlobalVariable(globalVariable);
     }

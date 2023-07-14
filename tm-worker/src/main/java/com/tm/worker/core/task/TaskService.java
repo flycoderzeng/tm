@@ -146,6 +146,12 @@ public class TaskService {
             planExecuteResultDao.updateBySelective(planExecuteResult);
             PlanTask planSetupTask = execPlanSetupCases(planExecuteResult, snapshot, planVariables);
             waitForTaskFinish(planSetupTask);
+            if(planSetupTask.getFailedCasesCount() > 0) {
+                log.info("计划前执行用例失败");
+                planExecuteResult.setResultStatus(PlanExecuteResultStatusEnum.SETUP_FAIL.value());
+                planExecuteResultDao.updateBySelective(planExecuteResult);
+                return ;
+            }
         }
 
         PlanTask planTask = handleSubmitTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value());

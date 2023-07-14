@@ -24,6 +24,8 @@ public class FunctionNode extends StepNodeBase {
     public static final String arg100 = "result";
     public static final String arg101 = "result_1";
     public static final String arg102 = "result_2";
+    public static final String arg103 = "result_3";
+    public static final String arg104 = "result_4";
 
     @Override
     public void run() throws Exception {

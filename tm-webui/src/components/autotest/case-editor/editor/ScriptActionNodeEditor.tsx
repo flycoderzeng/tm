@@ -35,7 +35,7 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
         </CommonNameComments>
         <div>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="120px">shell脚本内容</Col>
+                <Col flex="150px">shell脚本内容</Col>
                 <Col flex="auto">
                     <ContentEditor userDefinedVariables={props.userDefinedVariables}
                                    refreshContent={refreshContent}
@@ -45,7 +45,7 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
                 </Col>
             </Row>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="120px">脚本结果输出到变量</Col>
+                <Col flex="150px">脚本结果输出到变量</Col>
                 <Col flex="auto">
                     <AutoComplete
                         placeholder="变量名"

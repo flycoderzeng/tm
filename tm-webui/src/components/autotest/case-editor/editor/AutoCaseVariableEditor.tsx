@@ -1,8 +1,10 @@
 import React, {useState} from "react";
-import {Button, Input, Modal} from "antd";
+import {Button, Input, Modal, Checkbox} from "antd";
 import {Row, Col, message} from 'antd';
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 import {RandomUtils} from "../../../../utils/RandomUtils";
+import {LocalStorageUtils} from "../../../../utils/LocalStorageUtils";
+import {exists} from "fs";
 
 const {TextArea} = Input;
 
@@ -19,12 +21,15 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     const [variableName, setVariableName] = useState("");
     const [variableValue, setVariableValue] = useState("");
     const {onChange} = props;
+    const [checkedAll, setCheckedAll] = useState(false);
 
     if (JSON.stringify(userDefinedVariables) !== JSON.stringify(props.userDefinedVariables)) {
         for (let i = 0; i < props.userDefinedVariables.length; i++) {
             props.userDefinedVariables[i]['key'] = RandomUtils.getKey();
+            props.userDefinedVariables[i]['checked'] = false;
         }
         setUserDefinedVariables([...props.userDefinedVariables]);
+        setCheckedAll(false);
     }
 
     function onClickRow(index: number) {
@@ -51,6 +56,12 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
         userDefinedVariables[index].planVariableName = value.target.value;
     }
 
+    function onChangeChecked(value: any, index: number) {
+        userDefinedVariables[index].checked = value.target.checked;
+        userDefinedVariables[index]['key'] = RandomUtils.getKey();
+        setUserDefinedVariables([...userDefinedVariables]);
+    }
+
     function renderRows() {
         return userDefinedVariables.map((value, index) => {
             const variableRowSelectedClass = index === currIndex ? "variable-row-selected" : "";
@@ -58,7 +69,8 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                          onClick={() => {
                              onClickRow(index)
                          }}>
-                <Col span={6} style={{paddingRight: '5px'}}>
+                <Col span={6} style={{paddingRight: '5px', display: 'flex', alignItems: 'flex-end'}}>
+                    <Checkbox style={{marginRight: '5px'}} defaultChecked={value.checked} value={value.checked} onChange={(v) => {onChangeChecked(v, index);}}></Checkbox>
                     <Input placeholder="变量名称必须以 v_ 开始" defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
                 </Col>
                 <Col span={6} style={{paddingRight: '5px'}}>
@@ -124,6 +136,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                 return 1;
             }
         });
+        onChange('userDefinedVariables', userDefinedVariables);
         setUserDefinedVariables(userDefinedVariables);
     }
 
@@ -137,7 +150,21 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                 return -1;
             }
         });
+        onChange('userDefinedVariables', userDefinedVariables);
         setUserDefinedVariables(userDefinedVariables);
+    }
+
+    function onTop() {
+        if (!userDefinedVariables[currIndex] || currIndex <= 0) {
+            message.info('请选择一个变量');
+            return;
+        }
+        const value: any[] = userDefinedVariables.splice(currIndex, 1);
+        if(value[0]) {
+            userDefinedVariables.splice(0, 0, value[0]);
+            onChange('userDefinedVariables', userDefinedVariables);
+            setUserDefinedVariables([...userDefinedVariables]);
+        }
     }
 
     function onMove(type: number) {
@@ -169,6 +196,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
         props.userDefinedVariables[currIndex] = temp;
         props.userDefinedVariables[currIndex]['key'] = userDefinedVariables[currIndex]['key'];
 
+        onChange('userDefinedVariables', userDefinedVariables);
         setUserDefinedVariables(userDefinedVariables);
         setCurrIndex(tempIndex);
     }
@@ -179,6 +207,66 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
 
     function onChangeValueInModal(e) {
         setVariableValue(e.target.value);
+    }
+
+    const onCheckAllVariables = (e: any) => {
+        const checked = e.target.checked;
+        setCheckedAll(checked);
+        for (let i = 0; i < userDefinedVariables.length; i++) {
+            userDefinedVariables[i].checked = checked;
+            userDefinedVariables[i]['key'] = RandomUtils.getKey();
+        }
+        setUserDefinedVariables([...userDefinedVariables]);
+    };
+
+    function onCopy() {
+        const values:any[] = [];
+        for (let i = 0; i < userDefinedVariables.length; i++) {
+            if(userDefinedVariables[i].checked) {
+                values.push(userDefinedVariables[i]);
+            }
+        }
+        if(values.length < 1) {
+            message.info('请选择用例变量');
+        } else {
+            LocalStorageUtils.copyVariables(JSON.stringify(values));
+            message.success('复制了' + values.length + '个用例变量');
+        }
+    }
+
+    function onPaste() {
+        const item = LocalStorageUtils.getItem(LocalStorageUtils.__COPY_VARIABLES);
+        let values: any[];
+        try {
+            values = JSON.parse(item);
+        } catch (e) {
+            values = []
+        }
+        if(!values || values.length < 1) {
+            return ;
+        }
+        if(!window.confirm('确定粘贴变量吗?')) {
+            return ;
+        }
+        const length = userDefinedVariables.length;
+        for (let i = 0; i < values.length; i++) {
+            let exists: boolean = false;
+            for (let j = 0; j < userDefinedVariables.length; j++) {
+                if(values[i].name === userDefinedVariables[j].name) {
+                    exists = true;
+                    break;
+                }
+            }
+            if(!exists) {
+                values[i]['key'] = RandomUtils.getKey();
+                userDefinedVariables.push(values[i]);
+            }
+        }
+        if(userDefinedVariables.length > length) {
+            onChange('userDefinedVariables', userDefinedVariables);
+            setUserDefinedVariables([...userDefinedVariables]);
+            message.success('粘贴用例变量成功');
+        }
     }
 
     return (
@@ -192,10 +280,14 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                     <Button size="small" type="primary" onClick={() => onMove(2)}>下移</Button>
                     <Button size="small" type="primary" onClick={onUpSort}>升序</Button>
                     <Button size="small" type="primary" onClick={onDownSort}>降序</Button>
-                    <Button size="small" type="primary" onClick={() => onMove(3)}>置顶</Button>
+                    <Button size="small" type="primary" onClick={() => onTop()}>置顶</Button>
+                    <Button size="small" type="primary" onClick={() => onCopy()}>复制变量</Button>
+                    <Button size="small" type="primary" onClick={() => onPaste()}>粘贴变量</Button>
                 </div>
                 <Row style={{paddingTop: '5px'}}>
-                    <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>变量名称</Col>
+                    <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>
+                        <Checkbox style={{marginRight: '5px'}} defaultChecked={checkedAll} checked={checkedAll} onChange={onCheckAllVariables}></Checkbox>
+                        变量名称</Col>
                     <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>变量描述</Col>
                     <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>
                         变量值
