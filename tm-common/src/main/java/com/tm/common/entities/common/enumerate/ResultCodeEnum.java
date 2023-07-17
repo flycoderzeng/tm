@@ -7,6 +7,9 @@ public enum ResultCodeEnum {
     NODE_TREE_LEVEL_OVERFLOW_ERROR(100003, "不能超过10层"),
     COPY_NODE_OVERFLOW_ERROR(100004, "复制的节点数超出500的限制"),
     COPY_TASK_OVERFLOW_ERROR(100005, "当前的计划任务太多，请稍后提交！"),
+    RUN_ENV_NOT_EXISTS(100006, "运行环境不存在！"),
+    AUTO_PLAN_NOT_EXISTS(100007, "计划不存在！"),
+    AUTO_CASE_NOT_EXISTS(100008, "用例不存在！"),
     CASE_RUN_ERROR(100006, "用例执行失败"),
     SYSTEM_ERROR(999999, "系统错误"),
     ;

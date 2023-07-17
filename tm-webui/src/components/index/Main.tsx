@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import {ApiUrlConfig} from "../../config/api.url";
 import {RandomUtils} from "../../utils/RandomUtils";
+import {LocalStorageUtils} from "../../utils/LocalStorageUtils";
 interface IProps {}
 type MainProps = IProps & RouteComponentProps;
 
@@ -52,6 +53,7 @@ class Main extends React.Component<MainProps, IState> {
     }
 
     onClickProject(id: number) {
+        window.localStorage.setItem("_LAST_USED_PROJECT_ID", id+"");
         window["__ROUTER__"].push('/nodemanage/6');
     }
 

@@ -1,6 +1,7 @@
 package com.tm.worker.controller;
 
 import com.tm.common.base.model.User;
+import com.tm.common.entities.autotest.request.GetPlanRunResultStatusBody;
 import com.tm.common.entities.autotest.request.RunCaseBody;
 import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;
@@ -30,6 +31,13 @@ public class AutoTestController extends BaseController {
     public BaseResponse runPlan(@RequestBody @Valid RunPlanBody body) {
         User user = getLoginUser();
         BaseResponse baseResponse = autoTestService.runAutoPlan(body, user);
+        return baseResponse;
+    }
+
+    @PostMapping(value = "/getPlanRunResultStatus", produces = {"application/json;charset=UTF-8"})
+    public BaseResponse getPlanRunResultStatus(@RequestBody @Valid GetPlanRunResultStatusBody body) {
+        User user = getLoginUser();
+        BaseResponse baseResponse = autoTestService.getPlanRunResultStatus(body, user);
         return baseResponse;
     }
 }

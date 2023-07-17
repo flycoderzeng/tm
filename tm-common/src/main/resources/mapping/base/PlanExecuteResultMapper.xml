@@ -30,6 +30,7 @@
         <result column="env_name" property="envName" jdbcType="VARCHAR" />
         <result column="fail_continue" property="failContinue" jdbcType="INTEGER" />
         <result column="plan_variables" property="planVariables" jdbcType="VARCHAR" />
+        <result column="run_description" property="runDescription" jdbcType="VARCHAR" />
     </resultMap>
 
     <select id="selectByPrimaryId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
@@ -104,6 +105,9 @@
             <if test="planCaseType != null" >
                 plan_case_type,
             </if>
+            <if test="runDescription != null" >
+                run_description,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -165,6 +169,9 @@
             </if>
             <if test="planCaseType != null" >
                 #{planCaseType,jdbcType=INTEGER},
+            </if>
+            <if test="runDescription != null" >
+                #{runDescription,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -228,6 +235,9 @@
             </if>
             <if test="planCaseType != null" >
                 plan_case_type = #{planCaseType,jdbcType=INTEGER},
+            </if>
+            <if test="runDescription != null" >
+                run_description = #{runDescription,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}

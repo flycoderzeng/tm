@@ -1,9 +1,11 @@
 package com.tm.common.entities.autotest.request;
 
+import com.tm.common.entities.common.KeyValueRow;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class RunPlanBody {
@@ -18,15 +20,8 @@ public class RunPlanBody {
     private Integer planCronJobId;
     @Min(0)
     private Integer priority = 0;
-    @Override
-    public String toString() {
-        return "RunPlanBody{" +
-                "planId=" + planId +
-                ", runType=" + runType +
-                ", runEnvId=" + runEnvId +
-                ", fromType=" + fromType +
-                ", planCronJobId=" + planCronJobId +
-                ", priority=" + priority +
-                '}';
-    }
+
+    private List<KeyValueRow> planVariables;
+
+    private String runDescription;
 }

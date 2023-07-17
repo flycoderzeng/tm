@@ -15,4 +15,5 @@ public class RunCaseBody {
     @Max(2)
     private Integer runType;
     private Integer runEnvId;
+    private String runDescription;
 }

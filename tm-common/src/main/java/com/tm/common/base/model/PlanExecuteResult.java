@@ -24,5 +24,6 @@ public class PlanExecuteResult extends PlanRunningConfigSnapshot {
     private Integer planSetupResultId;
     private Integer planTeardownResultId;
     private Integer planCaseType = 0;
+    private String runDescription;
     private String envName;
 }

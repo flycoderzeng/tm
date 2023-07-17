@@ -48,7 +48,7 @@ import java.util.concurrent.*;
 @Slf4j
 @Component
 public class TaskService {
-    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().registerTypeAdapter(new TypeToken<Map<String, Object>>() {
+    public static final Gson gson = new GsonBuilder().disableHtmlEscaping().serializeNulls().registerTypeAdapter(new TypeToken<Map<String, Object>>() {
             }.getType(),
             new DataTypeAdapter()).create();
     private static final Integer MAX_PLAN_CASE_TOTAL = 100000;
