@@ -1,6 +1,6 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {DataTypeEnumDescription} from "../../entities/DataTypeEnumDescription";
-import {Button, message, Table, Tag} from "antd";
+import {Button, Checkbox, message, Table, Tag} from "antd";
 import {
     CheckCircleOutlined, CheckCircleTwoTone
 } from '@ant-design/icons';
@@ -9,6 +9,7 @@ import axios from "axios";
 import moment from "moment";
 import {ApiUrlConfig} from "../../config/api.url";
 import {DataNodeModel} from "../../entities/DataNodeModel";
+import {WindowTopUtils} from "../../utils/WindowTopUtils";
 
 const {Search} = Input;
 
@@ -48,8 +49,10 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
     const [dataTypeId, setDataTypeId] = useState(props.dataTypeId);
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [currFolderChecked, setCurrFolderChecked] = useState<boolean>(false);
     const [totalSelect, setTotalSelect] = useState<number>(0);
     const [selectedIdList, setSelectedList] = useState<number[]>([]);
+
     const [pagination, setPagination] = useState({
         current: 1,
         pageNum: 1,
@@ -171,8 +174,13 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
             dataTypeId: dataTypeId,
             projectId: projectId,
             linkOperator: page.linkOperator,
+            parentId: null,
             filterConditionList: page.filterConditionList
         };
+        if(currFolderChecked) {
+            const currDataNode = WindowTopUtils.getWindowTopObject(WindowTopUtils.object_currDataNode);
+            data.parentId = currDataNode?.id || 1;
+        }
         axios.post(ApiUrlConfig.QUERY_NODE_LIST_URL, data).then(resp => {
             if (resp.status !== 200) {
                 message.error('加载列表失败');
@@ -211,6 +219,10 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
             selectTag = <CheckCircleTwoTone twoToneColor="#52c41a"/>
         }
         return selectTag;
+    }
+
+    function onChangeCurrFolder(e) {
+        setCurrFolderChecked(e.target.checked);
     }
 
     let operateColumn;
@@ -319,10 +331,12 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
 
     let cardHeader;
     let countTag;
+    let currFolderCheck;
     if (!props.isResourceSelect) {
         cardHeader =
             <div className="card-header card-header-divider">{title}<span className="card-subtitle">{subtitle}</span>
             </div>;
+        currFolderCheck = <Checkbox onChange={onChangeCurrFolder} checked={currFolderChecked}>当前目录下</Checkbox>
     } else {
         countTag = <Tag icon={<CheckCircleOutlined/>} color="success">
             选择了 {totalSelect} 项
@@ -333,12 +347,13 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
         <div className="card-body">
             <div className="list-toolbar">
                 <Search placeholder="Id或者名称" onSearch={onSearch} enterButton style={{width: 400,}}/>
+                {currFolderCheck}
                 {countTag}
             </div>
             <Table columns={columns}
                    dataSource={data}
                    size="small"
-                   footer={() => '共' + pagination.total + '条数据'}
+                   footer={() => '共' + pagination.total + '条数据(不包含目录)'}
                    loading={loading}
                    pagination={pagination}
                    onChange={onChange}

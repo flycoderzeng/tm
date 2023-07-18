@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button, Menu, message, Modal, Tree} from "antd";
 import {RootNodeEditor} from "./RootNodeEditor";
 import {
@@ -373,7 +373,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     setRootNode(steps[0]);
                     setRunEnvId(ret.data.lastRunEnvId == null ? '' : (ret.data.lastRunEnvId + ''));
                     setGroupVariables(ret.data.groupVariables||null);
-                    WindowTopUtils.expandLeftTree(ret.data);
+                    WindowTopUtils.expandLeftTree(ret.data, 1);
+                    WindowTopUtils.setWindowTopObject(WindowTopUtils.object_currDataNode, ret.data);
                 }
             }
         });

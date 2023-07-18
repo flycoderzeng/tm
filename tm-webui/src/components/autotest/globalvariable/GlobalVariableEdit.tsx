@@ -72,7 +72,7 @@ class GlobalVariableEdit extends React.Component<GlobalVariableProps, IState> {
                         description: ret.data.description,
                         modifyFlag: ret.data.modifyFlag,
                     });
-                    WindowTopUtils.expandLeftTree(ret.data);
+                    WindowTopUtils.expandLeftTree(ret.data, 1);
                 }
             }
         });

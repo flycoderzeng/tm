@@ -1,3 +1,5 @@
+import {AntDataNode} from "../entities/AntDataNode";
+
 export class WindowTopUtils {
 
     public static object_setExpandedKeys: string = 'setExpandedKeys';
@@ -5,6 +7,10 @@ export class WindowTopUtils {
     public static object_expandedKeys: string = 'expandedKeys';
 
     public static object_activeTabJson: string = 'activeTabJson';
+
+    public static object_leftTree: string = 'leftTree';
+
+    public static object_currDataNode: string = 'object_currDataNode';
 
     public static getWindowTopObject(objectName: string):any {
         // @ts-ignore
@@ -16,7 +22,8 @@ export class WindowTopUtils {
         window.top[objectName] = objectValue;
     }
 
-    public static expandLeftTree(dataNode: any): void {
+    public static expandLeftTree(dataNode: any, level: number): void {
+        if(level >= 11) return;
         let keys: string[] = ['1-1'];
         for(let i = 2;i < 11; i++) {
             if(dataNode['parent' + i] > 0) {
@@ -27,19 +34,40 @@ export class WindowTopUtils {
         if(!expandedKeys) {
             expandedKeys = []
         }
-        for (let i = 0; i < expandedKeys.length; i++) {
-            if(keys.indexOf(expandedKeys[i]) === -1) {
-                keys.push(expandedKeys[i]);
+
+        let treeData: AntDataNode[] = WindowTopUtils.getWindowTopObject(WindowTopUtils.object_leftTree);
+        if(treeData === null || treeData === undefined) {
+            treeData = [];
+        }
+        const stack: AntDataNode[] = [treeData[0]];
+        while (true) {
+            const node: AntDataNode|undefined = stack.shift();
+            for (let i = 0; i < keys.length; i++) {
+                if(node?.key.startsWith(keys[i]+"-") && expandedKeys.indexOf(node?.key) === -1) {
+                    expandedKeys.push(node?.key);
+                }
+                if(node && node.children) {
+                    for (let i = 0; i < node.children.length; i++) {
+                        stack.push(node.children[i]);
+                    }
+                }
+            }
+
+            if(!node) {
+                break;
             }
         }
-        if(WindowTopUtils.getWindowTopObject(WindowTopUtils.object_setExpandedKeys) && keys.length > 0) {
-            const windowTopObject = WindowTopUtils.getWindowTopObject(WindowTopUtils.object_setExpandedKeys) as any;
-            windowTopObject([...keys]);
+        if(expandedKeys.indexOf('1-1') === -1) {
+            expandedKeys.push('1-1');
         }
 
-        if(WindowTopUtils.getWindowTopObject(WindowTopUtils.object_setSelectedKeys) && keys.length > 0) {
-            const windowTopObject = WindowTopUtils.getWindowTopObject(WindowTopUtils.object_setSelectedKeys) as any;
-            windowTopObject([dataNode.id + '-' + dataNode.dataTypeId]);
+        if(WindowTopUtils.getWindowTopObject(WindowTopUtils.object_setExpandedKeys) && expandedKeys.length > 0) {
+            const windowTopObject = WindowTopUtils.getWindowTopObject(WindowTopUtils.object_setExpandedKeys) as any;
+            windowTopObject([...expandedKeys]);
         }
+
+        setTimeout(() => {
+            WindowTopUtils.expandLeftTree(dataNode, level + 1)
+        }, 500);
     }
 }

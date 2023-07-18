@@ -30,6 +30,7 @@ public class CommonTableQueryBody extends PagingBody {
     private Integer planOrCaseId;
     private Integer fromType;
     private Integer planCaseType;
+    private String parentX;
 
     public List<FilterCondition> getFilterConditionList() {
         return filterConditionList;

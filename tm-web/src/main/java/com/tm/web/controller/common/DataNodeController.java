@@ -1,6 +1,7 @@
 package com.tm.web.controller.common;
 
 import com.tm.common.base.mapper.DataNodeMapper;
+import com.tm.common.base.model.DataNode;
 import com.tm.common.base.model.Menu;
 import com.tm.common.base.model.User;
 import com.tm.common.entities.autotest.request.GetNodesTreeBody;
@@ -125,6 +126,20 @@ public class DataNodeController extends BaseController {
         if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
             body.setProjectId(57);
         }
+        if(body.getParentId() != null) {
+            if(body.getParentId() == 1) {
+                body.setParentX("parent1");
+            }else{
+                DataNode dataNode = dataNodeMapper.selectByPrimaryKey(body.getParentId(), body.getDataTypeId());
+                if(dataNode == null) {
+                    body.setParentX("parent1");
+                    body.setParentId(1);
+                }else{
+                    body.setParentX("parent" + dataNode.getLevel());
+                }
+            }
+        }
+
         CommonTableQueryResponse response = new CommonTableQueryResponse<Menu>();
         response.setRows(dataNodeMapper.queryList(body));
         response.setTotal(dataNodeMapper.countList(body));

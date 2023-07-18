@@ -58,7 +58,7 @@ function updateTreeData(list: AntDataNode[], key: React.Key, children: AntDataNo
 const CommonNodeTree: React.FC<IState> = (props) => {
     const {setRenderRightFlag} = props;
     const {setNodeId} = props;
-    const [treeData, setTreeData] = useState(props.initTreeData);
+    const [treeData, setTreeData] = useState<AntDataNode[]>(props.initTreeData);
     const [projectId, setProjectId] = useState(props.projectId);
     const [dataTypeId, setDataTypeId] = useState(props.dataTypeId);
     const [contextMenuPosition, setContextMenuPosition] = useState(rightMenuInitStyle);
@@ -70,7 +70,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
     const [isFolderFormItemHidden, setIsFolderFormItemHidden] = useState(false);
     const [copyNode, setCopyNode] = useState({} as AntDataNode);
     const [expandedKeys, setExpandedKeys] = useState(['1-1']);
-    const [selectedKeys, setSelectedKeys] = useState(['1-1']);
+    const [selectedKeys, setSelectedKeys] = useState<string[]>(['1-1']);
     const [initialValues, setInitialValues] = useState({isFolder: 0, name: '', description: ''});
     if(projectId !== props.projectId) {
         setProjectId(props.projectId);
@@ -93,7 +93,10 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         WindowTopUtils.setWindowTopObject(WindowTopUtils.object_setSelectedKeys, setSelectedKeys);
     }
 
+    WindowTopUtils.setWindowTopObject(WindowTopUtils.object_leftTree, treeData);
+
     function onLoadData(node: any) {
+        const globalRandomKey = RandomUtils.getKey();
         return new Promise<void>(resolve => {
             if(!projectId || !dataTypeId) {
                 resolve();
@@ -116,7 +119,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                             n.title = <Tooltip overlayClassName="small-font-size" title={v.name} color="#2db7f5" placement="rightTop">
                                 <span>{v.name}</span>
                             </Tooltip>;
-                            n.key = v.id + '-' + v.dataTypeId + '-'  + RandomUtils.getKey();
+                            n.key = v.id + '-' + v.dataTypeId + '-'  + globalRandomKey;
                             n.isLeaf = v.isFolder === 1 ? false : true;
                             n.dataNode = v;
                             n.parentNode = node;
@@ -127,6 +130,17 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                         );
                         if(expandedKeys.indexOf(node.key) < 0) {
                             setExpandedKeys([...expandedKeys, node.key]);
+                        }
+                        if(WindowTopUtils.getWindowTopObject(WindowTopUtils.object_currDataNode)) {
+                            const currDataNode: any = WindowTopUtils.getWindowTopObject(WindowTopUtils.object_currDataNode);
+                            for (let i = 0; i < children.length; i++) {
+                                if(children[i].key.startsWith(currDataNode.id + '-' + currDataNode.dataTypeId + '-')) {
+                                    setTimeout(() => {
+                                        setSelectedKeys([children[i].key]);
+                                    }, 500);
+                                    break;
+                                }
+                            }
                         }
                         resolve();
                     }
@@ -214,7 +228,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
     }
 
     function onSelect(selectedKeys, e:{selected: boolean, selectedNodes, node, event}) {
-        //setSelectedKeys(selectedKeys);
+        setSelectedKeys([...selectedKeys]);
         if(e.node.isLeaf) {
             setRenderRightFlag(Number(dataTypeId));
             setNodeId(e.node.dataNode.id);
@@ -223,6 +237,9 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         }
         if(e.node.dataNode) {
             //setSelectedKeys([...e.node.key]);
+            WindowTopUtils.setWindowTopObject(WindowTopUtils.object_currDataNode, e.node.dataNode);
+        }else{
+            WindowTopUtils.setWindowTopObject(WindowTopUtils.object_currDataNode, {id: 1});
         }
         WindowTopUtils.setWindowTopObject(WindowTopUtils.object_expandedKeys, expandedKeys);
     }
@@ -532,6 +549,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         <div>
             <Tree
                 className="draggable-tree"
+                selectedKeys={selectedKeys}
                 loadData={onLoadData}
                 onRightClick={onRightClick}
                 onExpand={onExpand}

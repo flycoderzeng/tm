@@ -353,6 +353,9 @@
         <if test="projectId != null">
           and t1.project_id=#{projectId,jdbcType=INTEGER}
         </if>
+        <if test="parentId != null">
+          and t1.${parentX}=#{parentId,jdbcType=INTEGER}
+        </if>
         <if test="filterConditionList != null and filterConditionList.size() > 0">
             and
             <if test="linkOperator == null or linkOperator == '' or linkOperator == 'and'">
@@ -377,6 +380,9 @@
         where 1=1 and status=0 and is_folder=0 and data_type_id=#{dataTypeId,jdbcType=INTEGER}
         <if test="projectId != null">
           and project_id=#{projectId,jdbcType=INTEGER}
+        </if>
+        <if test="parentId != null">
+            and ${parentX}=#{parentId,jdbcType=INTEGER}
         </if>
         <if test="filterConditionList != null and filterConditionList.size() > 0">
             and

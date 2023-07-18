@@ -4,7 +4,6 @@ import {Row, Col, message} from 'antd';
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 import {RandomUtils} from "../../../../utils/RandomUtils";
 import {LocalStorageUtils} from "../../../../utils/LocalStorageUtils";
-import {exists} from "fs";
 
 const {TextArea} = Input;
 
@@ -70,7 +69,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                              onClickRow(index)
                          }}>
                 <Col span={6} style={{paddingRight: '5px', display: 'flex', alignItems: 'flex-end'}}>
-                    <Checkbox style={{marginRight: '5px'}} defaultChecked={value.checked} value={value.checked} onChange={(v) => {onChangeChecked(v, index);}}></Checkbox>
+                    <Checkbox style={{marginRight: '5px'}} defaultChecked={value.checked} checked={value.checked} onChange={(v) => {onChangeChecked(v, index);}}></Checkbox>
                     <Input placeholder="变量名称必须以 v_ 开始" defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
                 </Col>
                 <Col span={6} style={{paddingRight: '5px'}}>
