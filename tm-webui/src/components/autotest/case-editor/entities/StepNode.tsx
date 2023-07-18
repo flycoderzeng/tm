@@ -4,6 +4,7 @@ export interface StepNode {
     level: number;
     title: string;
     key: string;
+    id: string;
     isLeaf: boolean;
     children: StepNode[];
     define: any;

@@ -17,7 +17,7 @@
   </sql>
 
   <select id="getUserProjects" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select t1.* from projects t1, project_user t2 where t1.id=t2.project_id and t2.user_id=#{id,jdbcType=INTEGER}
+        select t1.* from projects t1, project_user t2 where t1.id=t2.project_id and t2.user_id=#{id,jdbcType=INTEGER} order by t1.id asc
   </select>
 
 </mapper>

@@ -45,7 +45,7 @@ interface MenuItem {
     children?: MenuItem[]
 }
 
-const defaultExpandedKeys = ['1'];
+const defaultExpandedKeys: string[] = [];
 const rightMenuInitStyle = {
     width: 200,
     display: 'none',
@@ -92,6 +92,7 @@ const initTreeData: StepNode[] = [{
     },
     "title": "自动化用例",
     "key": "1",
+    id: "1",
     "isLeaf": false,
     disabled: false,
     seq: 1,
@@ -108,6 +109,7 @@ const initTreeData: StepNode[] = [{
             "isLeaf": false,
             "title": "setUp",
             "key": "2",
+            "id": "2",
             disabled: false,
             seq: 2
         }, {
@@ -122,6 +124,7 @@ const initTreeData: StepNode[] = [{
             "isLeaf": false,
             "title": "action",
             "key": "3",
+            "id": "3",
             disabled: false,
             seq: 3,
         }, {
@@ -136,6 +139,7 @@ const initTreeData: StepNode[] = [{
             "isLeaf": false,
             "title": "teardown",
             "key": "4",
+            "id": "4",
             disabled: false,
             seq: 4
         }
@@ -153,7 +157,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [running1, setRunning1] = useState(false);
     const [running2, setRunning2] = useState(false);
     const [id, setId] = useState(props.id);
-    const [expandedKeys, setExpandedKeys] = useState(['1', '2', '3', '4']);
+    const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const [contextMenuPosition, setContextMenuPosition] = useState(rightMenuInitStyle);
     const [treeData, setTreeData] = useState<StepNode[]>(initTreeData);
@@ -318,6 +322,14 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     stack.push(stepNode.children[i]);
                 }
             }
+            if(stepNode && !stepNode.id) {
+                stepNode.id = stepNode.key;
+            }
+            if(stepNode && stepNode.id && (stepNode.id === '1' || stepNode.id === '2'
+                || stepNode.id === '3' || stepNode.id === '4')) {
+                defaultExpandedKeys.push(stepNode?.key);
+                expandedKeys.push(stepNode?.key);
+            }
             if(stepNode && !init) {
                 stepNode.seq = seq;
                 seq = seq + 1;
@@ -352,6 +364,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                         steps = JSON.parse(JSON.stringify(initTreeData));
                     }
                     initStepSeq(steps);
+                    setExpandedKeys([...expandedKeys]);
+                    setCheckedKeys([]);
+                    setTreeCheckEnable(false);
                     setTreeData(steps);
                     setCurrStepNode(steps[0]);
                     FUCK_CURR_STEP_NODE = steps[0];
@@ -368,7 +383,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         setCurrStepNode(node);
         FUCK_CURR_STEP_NODE = node;
         setSelectedKeys([node.key]);
-        if (node.key === '1') {
+        if (node.id === '1') {
             hideRightMenu(event);
             return;
         }
@@ -386,8 +401,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         } else {
             for (let i = 0; i < rightMenuKeys.length; i++) {
                 rightMenuKeys[i].disabled = false;
-                if(node.key === '1' || node.key === '2'
-                    || node.key === '3' || node.key === '4') {
+                if(node.id === '1' || node.id === '2'
+                    || node.id === '3' || node.id === '4') {
                     if(rightMenuKeys[i].key === MenuKey.Remove) {
                         rightMenuKeys[i].disabled = true;
                     }
@@ -500,7 +515,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         if (dropNode.isLeaf && dropPosition === 0) {
             return false;
         }
-        if (dropNode.key === '1') {
+        if (dropNode.id === '1') {
             return false;
         }
         return true;
@@ -537,9 +552,11 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     function getNewTreeNode(define: any, type: string, isLeaf: boolean, title: string, parentLevel: number): StepNode {
         const node: StepNode = {
             type: type,
-            isLeaf: isLeaf, title: title,
+            isLeaf: isLeaf,
+            title: title,
             level: parentLevel + 1,
             key: RandomUtils.getKey(),
+            id: type + "_" + title,
             children: [], define: define,
             disabled: false,
             seq: seq,
@@ -656,79 +673,58 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     function onCopyNode() {
         const copyNodeData = getCopyNodeData(currStepNode);
         setCopyNodeData(copyNodeData);
-        localStorage.setItem(LocalStorageUtils.COPY_STEP_NODE, JSON.stringify(copyNodeData));
+        localStorage.setItem(LocalStorageUtils.COPY_STEP_NODE, JSON.stringify([copyNodeData]));
     }
 
-    function updateLevelAndKey(): StepNode | null {
+    function updateLevelAndKey(): (StepNode | null) [] {
         const item = localStorage.getItem(LocalStorageUtils.COPY_STEP_NODE);
-        let data: StepNode | null = copyNodeData;
+        let nodes: (StepNode|null)[] = [];
         if (item) {
             try {
-                data = JSON.parse(item);
+                nodes = JSON.parse(item);
             } catch (e) {
-                data = null;
+                nodes = [];
             }
         }
-        if (!data) {
-            data = copyNodeData;
+        if (nodes.length < 1 && copyNodeData !== null && copyNodeData !== undefined) {
+            nodes = [copyNodeData];
         }
-        if (!data) {
-            return null;
+        if (nodes.length < 1) {
+            return [];
         }
-        // 更新level和key
-        if (currStepNode.isLeaf) {
-            data.level = currStepNode.level;
-        } else {
-            data.level = currStepNode.level + 1;
-        }
-        data.key = RandomUtils.getKey();
-        const children: { node: StepNode, parentNode: StepNode } [] = [];
-        if (data.children && data.children.length > 0) {
-            for (let i = 0; i < data.children.length; i++) {
-                children.push({node: data.children[i], parentNode: data});
-            }
-        }
-        while (children.length > 0) {
-            const stepNode: { node: StepNode, parentNode: StepNode } = children[0];
-            children.shift();
-            stepNode.node.level = stepNode.parentNode.level + 1;
-            stepNode.node.key = RandomUtils.getKey();
-            if (stepNode.node.children && stepNode.node.children.length > 0) {
-                for (let i = 0; i < stepNode.node.children.length; i++) {
-                    children.push({node: stepNode.node.children[i], parentNode: stepNode.node});
-                }
-            }
-        }
-        data.seq = seq;
-        seq = seq + 1;
-        return data;
-    }
 
-    function onPasteNode() {
-        const data = updateLevelAndKey();
-        if(!data) {
-            message.info('请先复制步骤');
-            return;
-        }
-        if(currStepNode.isLeaf) {
-            const node: StepNode|null = findStepNode(treeData, currStepNode.key, true);
-            if (node === null) {
-                return;
+        for (let i = 0; i < nodes.length; i++) {
+            const node: StepNode | null = nodes[i];
+            if(node === null) {
+                continue;
             }
-            for (let i = 0; i < node.children.length; i++) {
-                if (node.children[i].key === currStepNode.key) {
-                    node.children.splice(i + 1, 0, data);
+            // 更新level和key
+            if (currStepNode.isLeaf) {
+                node.level = currStepNode.level;
+            } else {
+                node.level = currStepNode.level + 1;
+            }
+            node.key = RandomUtils.getKey();
+            const children: { node: StepNode, parentNode: StepNode } [] = [];
+            if (node.children && node.children.length > 0) {
+                for (let i = 0; i < node.children.length; i++) {
+                    children.push({node: node.children[i], parentNode: node});
                 }
             }
-        }else{
-            currStepNode.children.push(data);
+            while (children.length > 0) {
+                const stepNode: { node: StepNode, parentNode: StepNode } = children[0];
+                children.shift();
+                stepNode.node.level = stepNode.parentNode.level + 1;
+                stepNode.node.key = RandomUtils.getKey();
+                if (stepNode.node.children && stepNode.node.children.length > 0) {
+                    for (let i = 0; i < stepNode.node.children.length; i++) {
+                        children.push({node: stepNode.node.children[i], parentNode: stepNode.node});
+                    }
+                }
+            }
         }
-        setTreeData([...treeData]);
-        if (!data.isLeaf && expandedKeys.indexOf(data.key) < 0) {
-            expandedKeys.push(data.key);
-            setExpandedKeys([...expandedKeys]);
-        }
-        setSelectedKeys([data.key]);
+
+        return nodes;
     }
 
     function onEnableNode() {
@@ -907,7 +903,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function draggable(node: any) {
-        if (['1', '2', '3', '4'].indexOf(node.key) > -1) {
+        if (['1', '2', '3', '4'].indexOf(node.id) > -1) {
             return false;
         }
         return true;
@@ -980,7 +976,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         window.open("https://github.com/flycoderzeng/tm/wiki/%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F%E4%B8%8E%E5%87%BD%E6%95%B0");
     }
 
-    function refreshKey(steps: StepNode[]) {
+    function refreshKey(steps: StepNode[]): string[] {
+        const newExpandedKeys: string[] = [];
         const stack: StepNode[] = [steps[0]];
         while (true) {
             const stepNode: StepNode|undefined = stack.shift();
@@ -989,13 +986,77 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     stack.push(stepNode.children[i]);
                 }
             }
-            if(stepNode && stepNode.key !== '1' && stepNode.key !== '2' && stepNode.key !== '3' && stepNode.key !== '4') {
-                stepNode.key = RandomUtils.getKey();
+            if(stepNode) {
+                const key = RandomUtils.getKey();
+                if(expandedKeys.indexOf(stepNode.key) >-1) {
+                    newExpandedKeys.push(key);
+                }
+                stepNode.key = key;
             }
             if(!stepNode) {
                 break;
             }
         }
+        return newExpandedKeys;
+    }
+
+    function onPasteNode() {
+        const nodes: (StepNode|null)[] = updateLevelAndKey();
+        if(nodes.length < 1) {
+            message.info('请先复制步骤');
+            return;
+        }
+        if(currStepNode.isLeaf) {
+            const parentNode: StepNode|null = findStepNode(treeData, currStepNode.key, true);
+            if (parentNode === null) {
+                return;
+            }
+            for (let i = 0; i < parentNode.children.length; i++) {
+                if (parentNode.children[i].key === currStepNode.key) {
+                    for (let j = 0; j < nodes.length; j++) {
+                        const node2 = nodes[j];
+                        if(node2 !== null) {
+                            parentNode.children.splice(i + 1, 0, node2);
+                        }
+                    }
+                }
+            }
+        }else{
+            for (let j = 0; j < nodes.length; j++) {
+                const node1 = nodes[j];
+                if(node1 !== null) {
+                    currStepNode.children.push(node1);
+                }
+            }
+        }
+        refreshStepSeq();
+        for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i];
+            if (node !== null && !node.isLeaf && expandedKeys.indexOf(node.key) < 0) {
+                expandedKeys.push(node.key);
+            }
+            setExpandedKeys([...expandedKeys]);
+        }
+    }
+
+    function getCheckedStepNode(steps: StepNode[]): StepNode[] {
+        const checkedStepNodes: StepNode[] = [];
+        const stack: StepNode[] = [steps[0]];
+        while (true) {
+            const stepNode: StepNode|undefined = stack.shift();
+            if(stepNode && stepNode.children) {
+                for (let i = 0; i < stepNode.children.length; i++) {
+                    stack.push(stepNode.children[i]);
+                }
+            }
+            if(stepNode && checkedKeys.indexOf(stepNode.key) > -1) {
+                checkedStepNodes.push(stepNode);
+            }
+            if(!stepNode) {
+                break;
+            }
+        }
+        return checkedStepNodes;
     }
 
     function batchCopySteps() {
@@ -1005,16 +1066,47 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
             return;
         }
         if(checkedKeys.length < 1) {
-            message.info('请选择步骤');
+            setTreeCheckEnable(false);
             return;
         }
         // 复制步骤
+        const steps:StepNode[] = [];
+        //console.log(checkedKeys);
+        const checkedStepNodes: StepNode[] = getCheckedStepNode(treeData);
+
+        for (let i = 0; i < checkedStepNodes.length; i++) {
+            if(isParentChecked(checkedStepNodes[i])) {
+                checkedStepNodes[i] = null as any;
+            }
+        }
+        for (let i = 0; i < checkedStepNodes.length; i++) {
+            if(checkedStepNodes[i] === null) {
+                continue;
+            }
+            if(checkedStepNodes[i].level === 1) {
+                for (let j = 0; j < checkedStepNodes[i].children.length; j++) {
+                    steps.push(checkedStepNodes[i].children[j]);
+                }
+            }else{
+                steps.push(checkedStepNodes[i]);
+            }
+        }
+        localStorage.setItem(LocalStorageUtils.COPY_STEP_NODE, JSON.stringify(steps));
 
         message.info('复制用例步骤成功');
-        refreshKey(treeData);
+        const newExpandedKeys: string[] = refreshKey(treeData);
+        setExpandedKeys([...newExpandedKeys]);
         setTreeData([...treeData]);
         setCheckedKeys([]);
         setTreeCheckEnable(false);
+    }
+
+    function isParentChecked(stepNode: StepNode) {
+        const node: StepNode|null = findStepNode(treeData, stepNode.key, true);
+        if(node !== null && checkedKeys.indexOf(node.key) > -1) {
+            return true;
+        }
+        return false;
     }
 
     function onCheck(checked, info) {

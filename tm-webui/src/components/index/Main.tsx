@@ -5,7 +5,6 @@ import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import {ApiUrlConfig} from "../../config/api.url";
 import {RandomUtils} from "../../utils/RandomUtils";
-import {LocalStorageUtils} from "../../utils/LocalStorageUtils";
 interface IProps {}
 type MainProps = IProps & RouteComponentProps;
 
