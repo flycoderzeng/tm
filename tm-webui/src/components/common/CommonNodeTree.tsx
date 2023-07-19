@@ -471,8 +471,8 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         setSelectedKeys([node.key]);
 
         setRightMenuStatus(node);
-        const x = event.clientX + 'px';
-        const y = event.clientY + 'px';
+        const x = (event.clientX + 20) + 'px';
+        const y = (event.clientY - 65) + 'px';
         setTimeout(function () {
             setContextMenuPosition({
                 width: 170,
