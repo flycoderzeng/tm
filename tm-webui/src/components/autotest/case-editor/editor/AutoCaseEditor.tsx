@@ -28,6 +28,7 @@ import {LocalStorageUtils} from "../../../../utils/LocalStorageUtils";
 import {CaseHistoryList} from "../CaseHistoryList";
 import {ScriptActionNodeEditor} from "./ScriptActionNodeEditor";
 import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
+import {Resizable} from "re-resizable";
 
 
 interface IState {
@@ -170,6 +171,10 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [rightMenuList, setRightMenuList] = useState<any[]>([]);
     const [treeCheckEnable, setTreeCheckEnable] = useState<boolean>(false);
     const [checkedKeys, setCheckedKeys] = useState<any[]>([]);
+
+    useEffect(() => {
+
+    });
 
     if (id !== props.id) {
         setId(props.id);
@@ -337,7 +342,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 maxSeq = stepNode.seq;
             }
             if(!stepNode) {
-                 break;
+                break;
             }
         }
         if(init) {
@@ -887,8 +892,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 </JDBCRequestEditor>);
             case 'shell script':
                 return (<ScriptActionNodeEditor key={currStepNode.key} userDefinedVariables={rootNode.define.userDefinedVariables}
-                                           refreshTree={refreshTree}
-                                           stepNode={currStepNode} define={currStepNode.define} onChange={onChangeDefine}>
+                                                refreshTree={refreshTree}
+                                                stepNode={currStepNode} define={currStepNode.define} onChange={onChangeDefine}>
                 </ScriptActionNodeEditor>);
             default:
                 if (currStepNode.type.startsWith('调用平台API(')) {
@@ -973,8 +978,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         window.open("#/planresult/" + id + "/2/0");
     }
 
-    function showBuiltinInfo() {
-        window.open("https://github.com/flycoderzeng/tm/wiki/%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F%E4%B8%8E%E5%87%BD%E6%95%B0");
+    function showHelpPage() {
+        window.open("https://github.com/flycoderzeng/tm/wiki");
     }
 
     function refreshKey(steps: StepNode[]): string[] {
@@ -1130,9 +1135,6 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     onViewResult();
                 }}>查看运行结果</Button>
                 <Button type="default" onClick={() => {
-                    showBuiltinInfo();
-                }}>查看内置变量与函数</Button>
-                <Button type="default" onClick={() => {
                     setVisibleHistory(true);
                 }}>恢复历史</Button>
                 <Button type="primary" onClick={() => {
@@ -1144,7 +1146,16 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 <Button icon={<QuestionOutlined />}>查看帮助文档</Button>
             </div>
             <div className="case-editor-main-content">
-                <div className="case-editor-step-tree">
+                <Resizable
+                    defaultSize={{
+                        width: 310,
+                        height: '100%',
+                    }}
+                    minWidth={310}
+                    maxWidth={550}
+                    className="case-editor-step-tree"
+                    enable={{top:false, right:true, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false}}
+                >
                     <Tree
                         checkable={treeCheckEnable}
                         checkedKeys={checkedKeys}
@@ -1165,7 +1176,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                         allowDrop={allowDrop}
                         treeData={treeData}
                     />
-                </div>
+                </Resizable>
                 <div className="case-editor-right-panel">
                     {renderRightPanel()}
                 </div>

@@ -16,6 +16,8 @@ import HttpApiEdit from "../autotest/httpapi/HttpApiEdit";
 import {AutoCaseEditor} from "../autotest/case-editor/editor/AutoCaseEditor";
 import {ApiUrlConfig} from "../../config/api.url";
 import {AutoPlanEdit} from "../autotest/autoplan/AutoPlanEdit";
+import {Resizable} from "re-resizable";
+
 interface IProps {}
 const {Option} = Select;
 type CommonNodeListProps = IProps & RouteComponentProps;
@@ -179,7 +181,16 @@ class CommonNodeManageLayout extends React.Component<CommonNodeListProps, IState
         const route = this.state.route || {children: []};
         return (
         <div className="tree-main-div">
-            <div className="left-tree-panel">
+            <Resizable
+                defaultSize={{
+                    width: 310,
+                    height: '100%',
+                }}
+                minWidth={310}
+                maxWidth={550}
+                className="left-tree-panel"
+                enable={{top:false, right:true, bottom:false, left:false, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false}}
+            >
                 <div className="myprojects">
                     <Select
                         showSearch
@@ -195,7 +206,7 @@ class CommonNodeManageLayout extends React.Component<CommonNodeListProps, IState
                 <div className="node-tree-content">
                 {this.state.projectId && this.renderNodeTree()}
                 </div>
-            </div>
+            </Resizable>
             <div className="right-panel">
                 {this.state.projectId && this.renderRight()}
             </div>

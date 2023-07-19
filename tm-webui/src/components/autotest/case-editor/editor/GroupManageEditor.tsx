@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState} from "react";
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 import {Button, Switch, Table, Input, Modal, Select} from "antd";
 
