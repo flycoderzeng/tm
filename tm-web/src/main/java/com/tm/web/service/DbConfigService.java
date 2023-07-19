@@ -59,9 +59,7 @@ public class DbConfigService extends BaseService {
                     }
                 }
             }
-            if(existed) {
-                continue;
-            }else{
+            if(!existed) {
                 dbConfig.setId(null);
                 dbConfig.setStatus(0);
                 dbConfig.setEnvId(runEnv.getId());

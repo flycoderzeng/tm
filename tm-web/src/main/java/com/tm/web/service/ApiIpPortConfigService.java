@@ -50,9 +50,7 @@ public class ApiIpPortConfigService {
                     }
                 }
             }
-            if(existed) {
-                continue;
-            }else{
+            if(!existed) {
                 apiIpPortConfig.setId(null);
                 apiIpPortConfig.setEnvId(runEnv.getId());
                 apiIpPortConfig.setStatus(0);
