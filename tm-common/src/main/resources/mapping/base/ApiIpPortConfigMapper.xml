@@ -27,5 +27,27 @@
     where 1=1
     and url=#{url,jdbcType=VARCHAR}
     and env_id=#{envId,jdbcType=INTEGER}
+    and status=0
   </select>
+
+  <select id="selectByEnvId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from api_ip_port_config
+    where 1=1
+    and env_id=#{envId,jdbcType=INTEGER}
+    and status=0
+  </select>
+
+
+
+  <update id="batchInsert" parameterType="com.tm.common.base.model.ApiIpPortConfig">
+    INSERT INTO api_ip_port_config
+    (id, name, url, ip, port, status, env_id, add_time, add_user)
+    VALUES
+    <foreach collection ="apiIpPortConfigs" item="item" separator =",">
+      (null, #{item.name}, #{item.url}, #{item.ip}, #{item.port}, #{item.status}, #{item.envId}, #{item.addTime}, #{item.addUser})
+    </foreach >
+  </update>
+
 </mapper>

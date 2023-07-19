@@ -14,6 +14,7 @@ public class DbConfig extends Common6ItemsModel {
     private String port;
     private Integer envId;
     private String envName;
+    private Integer dcnId;
     private Integer type;
 
     public String getDataSourceKey() {

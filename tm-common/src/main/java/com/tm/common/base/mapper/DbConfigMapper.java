@@ -6,7 +6,16 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface DbConfigMapper {
-    DbConfig findByEnvIdAndDbName(@Param("envId") Integer envId,
-                                  @Param("dbName") String dbName);
+    DbConfig findByEnvIdDcnIdAndDbName(@Param("envId") Integer envId,
+                                       @Param("dcnId") Integer dcnId,
+                                       @Param("dbName") String dbName);
+
+    List<DbConfig> findByEnvIdAndDcnId(@Param("envId") Integer envId,
+                                       @Param("dcnId") Integer dcnId);
+
+    List<DbConfig> findByEnvId(@Param("envId") Integer envId);
+
     List<DbConfig> getAllDatabaseNames();
+
+    int batchInsert(@Param("dbConfigs") List<DbConfig> newList);
 }

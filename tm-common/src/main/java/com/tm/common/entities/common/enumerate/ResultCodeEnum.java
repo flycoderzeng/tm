@@ -11,6 +11,7 @@ public enum ResultCodeEnum {
     AUTO_PLAN_NOT_EXISTS(100007, "计划不存在！"),
     AUTO_CASE_NOT_EXISTS(100008, "用例不存在！"),
     CASE_RUN_ERROR(100006, "用例执行失败"),
+    SOURCE_ENV_RELATIVE_CONFIG_EMPTY(100007, "源环境相关配置为空"),
     SYSTEM_ERROR(999999, "系统错误"),
     ;
     private Integer code;

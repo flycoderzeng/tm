@@ -12,6 +12,7 @@ interface IState {
     planResultId: number|null|undefined;
     viewCaseResult: any
 }
+let searchValue;
 
 const CaseResultList: React.FC<IState> = (props) => {
     const [planResultId, setPlanResultId] = useState(props.planResultId);
@@ -29,7 +30,6 @@ const CaseResultList: React.FC<IState> = (props) => {
         pageSize: 20,
         total: 0,
     });
-    let searchValue;
 
     useEffect(() => {
         setPlanResultId(props.planResultId);

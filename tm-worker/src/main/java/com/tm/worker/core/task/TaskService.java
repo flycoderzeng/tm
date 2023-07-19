@@ -429,8 +429,8 @@ public class TaskService {
         return caseResultLogService.getSplitCaseStepResultTableType();
     }
 
-    public DbConfig findDbConfig(Integer envId, String dbName) {
-        return dbConfigService.findDbConfig(envId, dbName);
+    public DbConfig findDbConfig(Integer envId, Integer dcnId, String dbName) {
+        return dbConfigService.findDbConfig(envId, dcnId, dbName);
     }
 
     public Connection getJDBCConnection(DbConfig dbConfig) {

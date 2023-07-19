@@ -12,7 +12,7 @@ public class DbConfigService {
     @Autowired
     private DbConfigMapper dbConfigMapper;
 
-    public DbConfig findDbConfig(Integer envId, String dbName) {
-        return dbConfigMapper.findByEnvIdAndDbName(envId, dbName);
+    public DbConfig findDbConfig(Integer envId, Integer dcnId, String dbName) {
+        return dbConfigMapper.findByEnvIdDcnIdAndDbName(envId, dcnId, dbName);
     }
 }

@@ -22,18 +22,53 @@
     id, username, password, db_name, ip, port, status, env_id, type, add_time, add_user, last_modify_time, last_modify_user
   </sql>
 
-    <select id="findByEnvIdAndDbName" resultMap="BaseResultMap">
+    <select id="findByEnvIdDcnIdAndDbName" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from db_config
-        where env_id = #{envId,jdbcType=INTEGER} and db_name = #{dbName,jdbcType=VARCHAR}
+        where env_id = #{envId,jdbcType=INTEGER} and db_name = #{dbName,jdbcType=VARCHAR} and status=0
+        <if test="dcnId != null" >
+            and dcn_id=#{dcnId,jdbcType=INTEGER}
+        </if>
         limit 1
+    </select>
+
+    <select id="findByEnvIdAndDcnId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from db_config
+        where env_id = #{envId,jdbcType=INTEGER} and status=0
+        <if test="dcnId != null" >
+            and dcn_id=#{dcnId,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="findByEnvId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from db_config
+        where env_id = #{envId,jdbcType=INTEGER} and status=0
     </select>
 
   <select id="getAllDatabaseNames" resultMap="BaseResultMap">
     select
     distinct db_name
     from db_config
+    where status=0
     limit 10000
   </select>
+
+
+
+
+    <update id="batchInsert" parameterType="com.tm.common.base.model.DbConfig">
+        INSERT INTO db_config
+        (id, username, password, db_name, ip, port, status, env_id, dcn_id, type, add_time, add_user)
+        VALUES
+        <foreach collection ="dbConfigs" item="item" separator =",">
+            (null, #{item.username}, #{item.password}, #{item.dbName}, #{item.ip}, #{item.port}, #{item.status}, #{item.envId}, #{item.dcnId}, #{item.type}, #{item.addTime}, #{item.addUser})
+        </foreach >
+    </update>
+
+
 </mapper>

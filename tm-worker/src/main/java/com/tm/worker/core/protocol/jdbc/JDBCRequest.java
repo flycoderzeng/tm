@@ -41,6 +41,7 @@ public class JDBCRequest extends StepNodeBase {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     private String dbName;
+    private Integer dcnId;
     // 总行数输出到变量
     private String countVariableName;
     // 结果集输出到变量
@@ -75,10 +76,10 @@ public class JDBCRequest extends StepNodeBase {
             throw new TMException("数据库名不能为空");
         }
 
-        DbConfig dbConfig = context.getTaskService().findDbConfig(runningConfigSnapshot.getEnvId(), dbName);
+        DbConfig dbConfig = context.getTaskService().findDbConfig(runningConfigSnapshot.getEnvId(), dcnId, dbName);
         if(dbConfig == null) {
-            throw new TMException(String.format("不存在 数据库名: %s，环境: %s(id: %s) 的配置",
-                    dbName, runningConfigSnapshot.getEnvName(), runningConfigSnapshot.getEnvId()));
+            throw new TMException(String.format("不存在 环境: %s(id: %s)，DCN id: %s， 数据库名: %s 的配置",
+                    runningConfigSnapshot.getEnvName(), runningConfigSnapshot.getEnvId(), dcnId, dbName));
         }
 
         if(StringUtils.isBlank(content)) {
