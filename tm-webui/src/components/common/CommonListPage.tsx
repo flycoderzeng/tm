@@ -15,6 +15,7 @@ type CommonProps = IProps & RouteComponentProps;
 interface IState {
     data: any[];
     loading: boolean;
+    isModalVisible: boolean;
     pagination: any;
     sortedInfo: any;
     queryInfo: {
@@ -34,6 +35,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         this.state = {
             data: [],
             loading: false,
+            isModalVisible: false,
             pagination: {
                 current: 1,
                 pageNum: 1,
