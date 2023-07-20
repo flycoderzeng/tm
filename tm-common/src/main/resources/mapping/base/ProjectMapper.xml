@@ -20,4 +20,12 @@
         select t1.* from projects t1, project_user t2 where t1.id=t2.project_id and t2.user_id=#{id,jdbcType=INTEGER} order by t1.id asc
   </select>
 
+  <select id="getCountCase" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+    select count(*) from data_nodes where data_type_id=6 and is_folder=0 and status=0;
+  </select>
+
+  <select id="getCountPlan" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+    select count(*) from data_nodes where data_type_id=7 and is_folder=0 and status=0;
+  </select>
+
 </mapper>

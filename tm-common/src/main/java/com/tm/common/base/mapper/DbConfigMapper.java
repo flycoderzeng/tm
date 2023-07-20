@@ -18,4 +18,8 @@ public interface DbConfigMapper {
     List<DbConfig> getAllDatabaseNames();
 
     int batchInsert(@Param("dbConfigs") List<DbConfig> newList);
+
+    DbConfig selectByPrimaryId(Integer id);
+
+    int setDcnIdToNull(Integer id);
 }

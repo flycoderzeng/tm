@@ -43,7 +43,9 @@ public class JDBCDataSourceFactory {
     }
 
     public String getDataSourceKey(DbConfig dbConfig) {
-        return dbConfig.getDbName() + "-" + dbConfig.getEnvId();
+        int dcnId = dbConfig.getDcnId() == null? 0 : dbConfig.getDcnId();
+
+        return dbConfig.getDbName() + "-" + dbConfig.getEnvId() + "-" + dcnId;
     }
 
     private synchronized JDBCDataSource initDataSource(DbConfig dbConfig) {

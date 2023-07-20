@@ -70,12 +70,12 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
             title: '参数名称',
             dataIndex: 'name',
             width: '180px',
-            key: 'key',
+            key: 'name',
             render: (text, record) => <Input disabled={true} value={record.name} />,
         },
         {
             title: '描述',
-            key: 'key',
+            key: 'description',
             width: 300,
             dataIndex: 'description',
             render: (text, record) => <Input disabled={true} value={record.description} />,
@@ -84,7 +84,7 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
             title: '类型',
             dataIndex: 'type',
             width: '110px',
-            key: 'key',
+            key: 'type',
             render: (text, record) => <Select disabled={true} value={record.type} style={{ width: 100 }} >
                 <Option value="1" key={1}>字符串</Option>
                 <Option value="2" key={2}>数字</Option>
@@ -95,7 +95,7 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
             title: '输入输出',
             dataIndex: 'inout',
             width: '110px',
-            key: 'key',
+            key: 'inout',
             render: (text, record) => <Select disabled={true} value={record.inout} style={{ width: 100 }} >
                 <Option value="1" key={1}>输入参数</Option>
                 <Option value="2" key={2}>输出参数</Option>
@@ -103,7 +103,7 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
         },
         {
             title: '参数值',
-            key: 'key',
+            key: 'defaultValue',
             dataIndex: 'defaultValue',
             render: (text, record) => {
                 return <AutoComplete
@@ -118,7 +118,6 @@ const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {
         {
             title: '操作',
             fixed: 'right',
-            key: 'key',
             width: '60px',
             render: (text, record, index) => (
                 <Space size="middle">

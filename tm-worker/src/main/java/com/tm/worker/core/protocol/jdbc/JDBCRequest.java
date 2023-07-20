@@ -91,6 +91,8 @@ public class JDBCRequest extends StepNodeBase {
         }
         content = content.trim();
         addResultInfo("数据库名：").addResultInfoLine(dbName);
+        addResultInfo("数据库ip：").addResultInfoLine(dbConfig.getIp());
+        addResultInfo("数据库port：").addResultInfoLine(dbConfig.getPort());
         addResultInfo("sql语句：").addResultInfoLine(content);
 
         if(dbConfig.getType().equals(DbTypeEnum.MYSQL.value())) {
@@ -257,8 +259,23 @@ public class JDBCRequest extends StepNodeBase {
         return list;
     }
 
-    private void execInsert(DbConfig dbConfig, String content) {
+    private void execInsert(DbConfig dbConfig, String content) throws Exception {
+        AutoTestContext context = AutoTestContextService.getContext();
+        Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
+        try {
+            if (conn == null) {
+                throw new TMException("获取数据库连接失败");
+            }
+            int i = JDBCUtils.doExecuteUpdate(conn, content);
 
+            AutoTestVariables caseVariables = context.getCaseVariables();
+            saveAffectedRowsValueToVariable(i, caseVariables);
+        } finally {
+            if(conn != null) {
+                log.info("归还数据库连接, {}", dbConfig.getDataSourceKey());
+                context.getTaskService().closeJDBCConnection(dbConfig, conn);
+            }
+        }
     }
 
     private void execDelete(DbConfig dbConfig, String content) {

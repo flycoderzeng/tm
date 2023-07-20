@@ -8,6 +8,7 @@
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="VARCHAR" />
     <result column="env_id" property="envId" jdbcType="INTEGER" />
+    <result column="dcn_id" property="dcnId" jdbcType="INTEGER" />
     <result column="env_name" property="envName" jdbcType="VARCHAR" />
     <result column="db_name" property="dbName" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
@@ -19,8 +20,15 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, username, password, db_name, ip, port, status, env_id, type, add_time, add_user, last_modify_time, last_modify_user
+    id, username, password, db_name, ip, port, status, env_id, dcn_id, type, add_time, add_user, last_modify_time, last_modify_user
   </sql>
+
+    <select id="selectByPrimaryId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from db_config
+        where id=#{id,jdbcType=INTEGER}
+    </select>
 
     <select id="findByEnvIdDcnIdAndDbName" resultMap="BaseResultMap">
         select
@@ -70,5 +78,9 @@
         </foreach >
     </update>
 
+
+    <update id="setDcnIdToNull" parameterType="java.lang.Integer">
+        update db_config set dcn_id=null where id=#{id,jdbcType=INTEGER}
+    </update>
 
 </mapper>

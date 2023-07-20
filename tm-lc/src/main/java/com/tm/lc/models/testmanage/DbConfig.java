@@ -58,4 +58,21 @@ public class DbConfig extends CommonSixItemsElideModel {
     public Integer getEnvId(RequestScope requestScope) {
         return runEnv == null ? null : runEnv.getId();
     }
+
+
+    @OneToOne
+    @JoinColumn(name = "dcn_id", referencedColumnName="id")
+    private DcnConfig dcnConfig;
+
+    @Transient
+    @ComputedAttribute
+    public String getDcnName(RequestScope requestScope) {
+        return dcnConfig == null ? null : dcnConfig.getDcnName();
+    }
+
+    @Transient
+    @ComputedAttribute
+    public Integer getDcnId(RequestScope requestScope) {
+        return dcnConfig == null ? null : dcnConfig.getId();
+    }
 }

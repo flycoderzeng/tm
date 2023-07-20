@@ -28,6 +28,8 @@ import {PlanResultPage} from "../components/autotest/planresult/PlanResultPage";
 import MockInstancesList from "../components/mock/instances/MockInstancesList";
 import HttpMockRuleList from "../components/mock/rules/HttpMockRuleList";
 import {HttpMockRuleEdit} from "../components/mock/rules/HttpMockRuleEdit";
+import DcnConfigList from "../components/testmanage/dcnconfig/DcnConfigList";
+import {DcnConfigEdit} from "../components/testmanage/dcnconfig/DcnConfigEdit";
 
 const routes = [
     {
@@ -138,6 +140,14 @@ const routes = [
             {
                 path: "/dbconfigedit/:id",
                 component: DbConfigEdit
+            },
+            {
+                path: "/dcnlist",
+                component: DcnConfigList
+            },
+            {
+                path: "/dcnconfigedit/:id",
+                component: DcnConfigEdit
             },
             {
                 path: "/planresult/:planOrCaseId/:fromType/:planCaseType/:planResultId",

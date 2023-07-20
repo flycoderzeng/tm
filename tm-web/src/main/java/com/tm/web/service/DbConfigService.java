@@ -76,4 +76,14 @@ public class DbConfigService extends BaseService {
 
         return ResultUtils.success();
     }
+
+    public BaseResponse setDcnIdToNull(Integer id) {
+        DbConfig dbConfig = dbConfigMapper.selectByPrimaryId(id);
+        if(dbConfig == null) {
+            return ResultUtils.success();
+        }
+        dbConfigMapper.setDcnIdToNull(id);
+
+        return ResultUtils.success();
+    }
 }

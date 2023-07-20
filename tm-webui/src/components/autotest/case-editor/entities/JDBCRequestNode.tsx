@@ -3,6 +3,8 @@ import {KeyValueRow} from "./KeyValueRow";
 
 export interface JDBCRequestNode extends BaseNode {
     dbName: string;
+
+    dcnId?: number|string|null|undefined;
     // sql语句
     content: string;
     // 总行数输出到变量

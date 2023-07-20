@@ -173,12 +173,24 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [checkedKeys, setCheckedKeys] = useState<any[]>([]);
 
     useEffect(() => {
-
-    });
-
-    if (id !== props.id) {
         setId(props.id);
-    }
+    }, [props.id]);
+
+    useEffect(() => {
+        document.addEventListener('click', hideRightMenu);
+        return () => {
+            document.removeEventListener('click', () => {
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        load();
+        loadPlatformApiTree();
+        return () => {
+
+        }
+    }, [id]);// eslint-disable-line react-hooks/exhaustive-deps
 
     function loadPlatformApiTree() {
         axios.get(ApiUrlConfig.GET_PLATFORM_API_TREE_URL).then(resp => {
@@ -295,22 +307,6 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         });
         e.stopPropagation();
     }
-
-    useEffect(() => {
-        document.addEventListener('click', hideRightMenu);
-        return () => {
-            document.removeEventListener('click', () => {
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        load();
-        loadPlatformApiTree();
-        return () => {
-
-        }
-    }, [id]);// eslint-disable-line react-hooks/exhaustive-deps
 
     function initStepSeq(steps: StepNode[]) {
         seq = 1;

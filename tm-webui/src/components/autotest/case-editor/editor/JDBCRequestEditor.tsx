@@ -8,12 +8,14 @@ import {KeyValueEditor} from "./KeyValueEditor";
 import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
 import axios from "axios";
 import {ApiUrlConfig} from "../../../../config/api.url";
+import {DCNSelect} from "../../../testmanage/dcnconfig/DCNSelect";
 
 let loadedDatabaseNames = false;
 let databaseNamesAll: any[] = [];
 
 const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
     const [dbName, setDbName] = useState(props.define.dbName);
+    const [dcnId, setDcnId] = useState(props.define.dcnId);
     const [activeKey, setActiveKey] = useState('1');
     const [retryTimes, setRetryTimes] = useState(props.define.retryTimes);
     const [content, setContent] = useState(props.define.content);
@@ -26,6 +28,7 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
 
     useEffect(() => {
         setDbName(props.define.dbName);
+        setDcnId(!props.define.dcnId? null: props.define.dcnId + '');
         setContent(props.define.content);
         setResultSetVariableName(props.define.resultSetVariableName);
         setCountVariableName(props.define.countVariableName);
@@ -83,6 +86,11 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
         onChange('dbName', v);
     }
 
+    function onChangeDcnId(v: any) {
+        setDcnId(v);
+        onChange('dcnId', v);
+    }
+
     function onChangeRetryTimes(el: any) {
         setRetryTimes(el.target.value);
         onChange('retryTimes', el.target.value);
@@ -108,6 +116,13 @@ const JDBCRequestEditor: React.FC<EditorIState<JDBCRequestNode>> = (props) => {
                 <Col flex="auto">
                     <AutoComplete placeholder="数据库名称，如：test" value={dbName}
                                   style={{width: '100%'}} options={databaseNames} onChange={onChangeDbName}/>
+                </Col>
+            </Row>
+
+            <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
+                <Col flex={width}>DCN</Col>
+                <Col flex="auto">
+                    <DCNSelect value={dcnId} onChange={onChangeDcnId} style={{width: '200px'}}></DCNSelect>
                 </Col>
             </Row>
 
