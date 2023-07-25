@@ -2,7 +2,7 @@ import CommonListPage from "../../common/CommonListPage";
 import {withRouter} from "react-router-dom";
 import {CommonApiUrlModel} from "../../../entities/CommonApiUrlModel";
 import {ApiUrlConfig} from "../../../config/api.url";
-import {Button, Input, Radio, Table} from "antd";
+import {Button, Input, Modal, Radio, Table} from "antd";
 import {OptionsConfig} from "../../../config/options.config";
 import React from "react";
 const { Search } = Input;
@@ -40,6 +40,18 @@ class DbConfigList extends CommonListPage {
     onChange = (pagination, filters, sorter) => {
         this.loadDataListSort(pagination, filters, sorter);
         this.setState({sortedInfo: sorter});
+    }
+
+    handleOk = () => {
+
+    }
+
+    handleCancel = () => {
+        this.setState({isModalVisible: false});
+    }
+
+    openModal = () => {
+        this.setState({isModalVisible: true});
     }
 
     render() {
@@ -125,6 +137,7 @@ class DbConfigList extends CommonListPage {
                         style={{marginRight: '5px'}}
                     />
                     <Button type="primary" onClick={() => this.edit(0)}>添加配置</Button>
+                    <Button type="primary" onClick={() => this.openModal()}>复制配置到新环境</Button>
                 </div>
                 <Table columns={columns}
                        dataSource={this.state.data}
@@ -135,6 +148,12 @@ class DbConfigList extends CommonListPage {
                        onChange={this.onChange}
                 />
             </div>
+
+            <Modal title="复制数据库配置到新环境" open={this.state.isModalVisible}
+                   onOk={this.handleOk}
+                   onCancel={this.handleCancel}>
+
+            </Modal>
         </div>)
     }
 }
