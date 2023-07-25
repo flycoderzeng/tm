@@ -105,7 +105,13 @@ const CaseResultList: React.FC<IState> = (props) => {
     }
 
     function refresh() {
-        load(planResultId);
+        const newPagination = {
+            ...pagination,
+            pageNum: 1,
+            pageSize: pagination.pageSize,
+            current: 1,
+        };
+        load(planResultId, newPagination);
     }
 
     function onChangePagination(pagination2) {
@@ -164,7 +170,17 @@ const CaseResultList: React.FC<IState> = (props) => {
 
     function onSearch(value) {
         searchValue = value;
-        load(planResultId);
+        const newPagination = {
+            ...pagination,
+            pageNum: 1,
+            pageSize: pagination.pageSize,
+            current: 1,
+        };
+        load(planResultId, newPagination);
+    }
+
+    function onChange(e) {
+        searchValue = e.target.value;
     }
 
     const columns: any[] = [
@@ -246,7 +262,7 @@ const CaseResultList: React.FC<IState> = (props) => {
 
     return (<div>
         <div className="list-toolbar" style={{paddingBottom: '5px'}}>
-            <Search placeholder="Id或者名称" onSearch={onSearch} enterButton style={{ width: 400,}}/>
+            <Search placeholder="Id或者名称" onChange={onChange} onSearch={onSearch} enterButton style={{ width: 400,}}/>
             <Button type="primary" onClick={()=>{refresh();}} >刷新</Button>
         </div>
         <Table

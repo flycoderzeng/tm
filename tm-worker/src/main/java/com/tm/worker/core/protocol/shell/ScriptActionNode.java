@@ -24,8 +24,8 @@ public class ScriptActionNode extends StepNodeBase {
     private String content;
     private String scriptResultVariableName;
 
-    private String WINDOWS_TEMP_SCRIPT_PATH = "D:\\data\\temp\\scripts";
-    private String LINUX_TEMP_SCRIPT_PATH = "/data/ci/temp/scripts";
+    private String WINDOWS_TEMP_SCRIPT_PATH = "D:\\data\\ci\\autotest\\temp\\scripts";
+    private String LINUX_TEMP_SCRIPT_PATH = "/data/ci/autotest/temp/scripts";
 
     private String SHELL_RESULT_FLAG = "RESULT=";
 

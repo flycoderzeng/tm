@@ -352,7 +352,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
                    onChange={onChangePagination}
             />
         </div>
-        <Modal width={1200}
+        <Modal width={'80%'}
                title="用例选择"
                confirmLoading={confirmLoading}
                open={isModalVisible}

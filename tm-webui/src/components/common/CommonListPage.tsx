@@ -159,9 +159,9 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         }
 
         const data: any = {
-            pageNum: this.state.pagination.current,
+            pageNum: 1,
             pageSize: this.state.pagination.pageSize,
-            current: this.state.pagination.current,
+            current: 1,
             linkOperator: this.state.pagination.linkOperator,
             filterConditionList: filterConditionList,
             area: queryInfo.area || this.state.queryInfo.area,
