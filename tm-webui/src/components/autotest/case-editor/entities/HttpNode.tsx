@@ -5,6 +5,8 @@ import {KeyValueRow} from "./KeyValueRow";
 export interface HttpNode extends BaseNode {
     requestType: string;
     url: string;
+
+    saveFileName?: string;
     params: KeyValueRow[];
     headers: KeyValueRow[];
     checkErrorList: KeyValueRow[];

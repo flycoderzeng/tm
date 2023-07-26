@@ -136,7 +136,7 @@ class DbConfigList extends CommonListPage {
                         buttonStyle="solid"
                         style={{marginRight: '5px'}}
                     />
-                    <Button type="primary" onClick={() => this.edit(0)}>添加配置</Button>
+                    <Button type="primary" onClick={() => this.edit(0)} style={{ marginRight: '5px'}}>添加配置</Button>
                     <Button type="primary" onClick={() => this.openModal()}>复制配置到新环境</Button>
                 </div>
                 <Table columns={columns}

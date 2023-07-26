@@ -1,5 +1,6 @@
 package com.tm.worker.core.protocol.http;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
@@ -30,8 +31,7 @@ import org.dom4j.Node;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,9 +41,13 @@ import java.util.Map;
 @Slf4j
 @Data
 public class HttpSampler extends StepNodeBase {
+    private String WINDOWS_TEMP_DOWNLOAD_FILES_PATH = System.getProperty("user.home") + "/data/ci/autotest/temp/download-files";
+    private String LINUX_TEMP_DOWNLOAD_FILES_PATH = "/data/ci/autotest/temp/download-files";
+
     // GET POST etc.
     private String requestType;
     private String url;
+    private String saveFileName;
     private List<KeyValueRow> params;
     private List<KeyValueRow> headers;
     // none form-data x-www-urlencoded raw
@@ -55,6 +59,8 @@ public class HttpSampler extends StepNodeBase {
     private List<KeyValueRow> checkErrorList;
     private List<KeyValueRow> responseExtractorList;
     private String content;
+
+    private static String OS = System.getProperty("os.name").toLowerCase();
 
     @Override
     public void run() throws Exception {
@@ -82,6 +88,7 @@ public class HttpSampler extends StepNodeBase {
             throw new TMException("发送http请求异常");
         }
         log.info(response.toString());
+
         caseVariables.putObject(AutoTestVariables.BUILTIN_VARIABLE_NAME_RESPONSE_STATUS, response.getStatus());
         caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_RESPONSE, response.body());
 
@@ -89,6 +96,30 @@ public class HttpSampler extends StepNodeBase {
 
         checkError(caseVariables, response);
         extractResponse(caseVariables, response);
+
+        saveResponseFile(caseVariables, response);
+    }
+
+    private void saveResponseFile(AutoTestVariables caseVariables, HttpResponse response) throws IOException {
+        saveFileName = ExpressionUtils.replaceExpression(saveFileName, caseVariables.getVariables());
+        if(StringUtils.isNotBlank(saveFileName)) {
+            addResultInfo("保存的文件名: ").addResultInfoLine(saveFileName);
+            InputStream inputStream = response.bodyStream();
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+            String saveFilePath = "";
+            if(OS.indexOf("windows") > -1) {
+                FileUtil.mkdir(WINDOWS_TEMP_DOWNLOAD_FILES_PATH);
+                saveFilePath = WINDOWS_TEMP_DOWNLOAD_FILES_PATH + "/" + saveFileName;
+            }else{
+                FileUtil.mkdir(LINUX_TEMP_DOWNLOAD_FILES_PATH);
+                saveFilePath = LINUX_TEMP_DOWNLOAD_FILES_PATH + "/" +saveFileName;
+            }
+            File targetFile = new File(saveFilePath);
+            OutputStream outStream = new FileOutputStream(targetFile);
+            outStream.write(buffer);
+            outStream.close();
+        }
     }
 
     private void extractResponse(AutoTestVariables caseVariables, HttpResponse httpResponse) {
@@ -150,6 +181,8 @@ public class HttpSampler extends StepNodeBase {
             leftOperand = httpResponse.header(name);
         }else if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.COOKIE.val())) {
             leftOperand = httpResponse.getCookie(name).getValue();
+        }else if(StringUtils.equals(keyValueRow.getExtractorType(), ExtractorTypeEnum.RESPONSE_STATUS.val())) {
+            leftOperand = httpResponse.getStatus()+"";
         }
 
         return leftOperand;

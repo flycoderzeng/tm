@@ -299,6 +299,7 @@ const KeyValueEditor: React.FC<IState> = (props) => {
                         <Option value="1">响应体</Option>
                         <Option value="2">Cookie</Option>
                         <Option value="3">响应头</Option>
+                        <Option value="4">响应状态码</Option>
                     </Select>
                 </Col>
             }

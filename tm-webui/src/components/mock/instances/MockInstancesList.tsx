@@ -27,6 +27,7 @@ class MockInstancesList extends CommonListPage {
         this.state = {
             data: [],
             loading: false,
+            isModalVisible: false,
             pagination: {
                 current: 1,
                 pageNum: 1,

@@ -279,7 +279,7 @@ const CaseResultList: React.FC<IState> = (props) => {
             open={visible}
             onOk={() => setVisible(false)}
             onCancel={() => setVisible(false)}
-            width={1100}
+            width={'80%'}
             footer={null}
         >
             <div>
@@ -293,7 +293,7 @@ const CaseResultList: React.FC<IState> = (props) => {
             onCancel={() => setIsModalVisible(false)}
             open={isModalVisible}
             footer={null}
-            width={1100}>
+            width={'80%'}>
             <div style={{paddingBottom: 5}}>
                 <Button size="small" type="primary" onClick={() => {
                     onCopyResultInfo();
