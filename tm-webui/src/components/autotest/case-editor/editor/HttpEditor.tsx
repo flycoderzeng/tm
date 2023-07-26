@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {EditorIState} from "../entities/EditorIState";
 import {CommonNameComments} from "./CommonNameComments";
-import {Input, Tabs, Select, Radio} from "antd";
+import {Input, Tabs, Select, Radio, Col, AutoComplete, Row} from "antd";
 import {HttpNode} from "../entities/HttpNode";
 import {KeyValueEditor} from "./KeyValueEditor";
 import {ContentEditor} from "./ContentEditor";
@@ -15,6 +15,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [rawType, setRawType] = useState(props.define.rawType);
     const [content, setContent] = useState(props.define.content);
     const [url, setUrl] = useState(props.define.url);
+    const [saveFileName, setSaveFileName] = useState(props.define.saveFileName);
     const [requestType, setRequestType] = useState(props.define.requestType);
     const [rawLanguage, setRawLanguage] = useState('json');
     const [activeKey, setActiveKey] = useState('1');
@@ -78,6 +79,11 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     function onChangeUrl(value: any) {
         setUrl(value.target.value);
         onChange('url', value.target.value);
+    }
+
+    function onChangeSaveFileName(value: any) {
+        setSaveFileName(value);
+        onChange('saveFileName', value);
     }
 
     function onChangeRequestType(value) {
@@ -145,6 +151,11 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
         </div>
     }
 
+    const options = props.userDefinedVariables?.map(v => {
+        return {label: v.name, value: '${' + v.name + '}'};
+    }) as any[];
+    let width = '160px';
+
     return (<div>
         <CommonNameComments refreshTree={props.refreshTree} key={props.key}
                             stepNode={stepNode}
@@ -191,6 +202,15 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
                 </KeyValueEditor>)
             }]}>
             </Tabs>
+        </div>
+        <div style={{paddingTop: '5px'}}>
+            <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
+                <Col flex={width}>保存文件名</Col>
+                <Col flex="auto">
+                    <AutoComplete placeholder="保存文件的名称" value={saveFileName}
+                                  style={{width: '100%'}} options={options} onChange={onChangeSaveFileName}/>
+                </Col>
+            </Row>
         </div>
     </div>)
 }

@@ -29,7 +29,7 @@ public class UspMockAgent {
             if (vmd.displayName().indexOf("MockServerApplication") > -1) {
                 VirtualMachine virtualMachine = VirtualMachine.attach(vmd.id());
                 try {
-                    virtualMachine.loadAgent("C:\\Users\\zengb\\Documents\\java-workspace\\tm\\tm-mockagent\\target\\mockagent-1.0.0-jar-with-dependencies.jar", "applicationName=com.tm.mockserver.MockServerApplication+ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321");
+                    virtualMachine.loadAgent("C:\\mockagent-1.0.0-jar-with-dependencies.jar", "applicationName=com.tm.mockserver.MockServerApplication+ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321");
                 } finally {
                     virtualMachine.detach();
                 }

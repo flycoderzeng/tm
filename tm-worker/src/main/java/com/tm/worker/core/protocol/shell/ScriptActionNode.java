@@ -24,7 +24,7 @@ public class ScriptActionNode extends StepNodeBase {
     private String content;
     private String scriptResultVariableName;
 
-    private String WINDOWS_TEMP_SCRIPT_PATH = "D:\\data\\ci\\autotest\\temp\\scripts";
+    private String WINDOWS_TEMP_SCRIPT_PATH = System.getProperty("user.home") + "/data/ci/autotest/temp/scripts";
     private String LINUX_TEMP_SCRIPT_PATH = "/data/ci/autotest/temp/scripts";
 
     private String SHELL_RESULT_FLAG = "RESULT=";
@@ -96,8 +96,10 @@ public class ScriptActionNode extends StepNodeBase {
                 + "_" + context.getCaseTask().getAutoCase().getId() + "_" + context.getCaseTask().getGroupNo();
         String tempScriptPath;
         if(OS.indexOf("windows") > -1) {
+            FileUtil.mkdir(WINDOWS_TEMP_SCRIPT_PATH);
             tempScriptPath = WINDOWS_TEMP_SCRIPT_PATH + File.separator + tempScriptName + ".bat";
         }else{
+            FileUtil.mkdir(LINUX_TEMP_SCRIPT_PATH);
             tempScriptPath = LINUX_TEMP_SCRIPT_PATH + File.separator + tempScriptName + ".sh";
         }
         log.info(tempScriptPath);

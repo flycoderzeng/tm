@@ -33,6 +33,7 @@ public class GetGlobalKeyValueNode extends FunctionNode {
         if(dataNodes.size() > 1) {
             throw new TMException("找到多个全局变量: " + globalKeyName);
         }
+        addResultInfo("全局变量名称: ").addResultInfoLine(globalKeyName);
         DataNode dataNode = dataNodes.get(0);
         GlobalVariable globalVariable = context.getTaskService().selectGlobalVariableByPrimaryId(dataNode.getId());
         if(globalVariable == null) {
