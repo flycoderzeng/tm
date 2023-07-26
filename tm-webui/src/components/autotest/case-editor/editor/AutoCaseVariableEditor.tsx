@@ -272,9 +272,9 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
         <div>
             <div>
                 <div className="variable-toolbar">
-                    <Button size="small" type="primary" onClick={onClickDetail}>详细</Button>
+                    <Button size="small" type="default" onClick={onClickDetail}>详细</Button>
                     <Button size="small" type="primary" onClick={addVariable}>添加变量</Button>
-                    <Button size="small" type="primary" onClick={onRemove}>删除</Button>
+                    <Button size="small" type="primary" danger={true} onClick={onRemove}>删除</Button>
                     <Button size="small" type="primary" onClick={() => onMove(1)}>上移</Button>
                     <Button size="small" type="primary" onClick={() => onMove(2)}>下移</Button>
                     <Button size="small" type="primary" onClick={onUpSort}>升序</Button>
