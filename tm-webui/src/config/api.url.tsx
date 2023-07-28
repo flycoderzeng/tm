@@ -94,6 +94,7 @@ const ApiUrlConfig = {
     QUERY_DB_CONFIG_LIST_URL: '/lc/lc/json/api/db_config',
     QUERY_DCN_CONFIG_LIST_URL: '/lc/lc/json/api/dcn_config',
     SAVE_DB_CONFIG_URL: '/lc/lc/json/api/db_config',
+    BATCH_COPY_DB_CONFIG_URL: '/web/dbconfig/batchCopyDbConfig',
     SAVE_DB_CONFIG_DCN_ID_TO_NULL_URL: '/web/dbconfig/setDcnIdToNull',
     SAVE_DCN_CONFIG_URL: '/lc/lc/json/api/dcn_config',
     DELETE_DB_CONFIG_URL: '/lc/lc/json/api/db_config/',

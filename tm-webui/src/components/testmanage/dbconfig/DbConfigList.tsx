@@ -2,12 +2,15 @@ import CommonListPage from "../../common/CommonListPage";
 import {withRouter} from "react-router-dom";
 import {CommonApiUrlModel} from "../../../entities/CommonApiUrlModel";
 import {ApiUrlConfig} from "../../../config/api.url";
-import {Button, Input, Modal, Radio, Table} from "antd";
+import {Button, Form, Input, message, Modal, Radio, Table} from "antd";
 import {OptionsConfig} from "../../../config/options.config";
 import React from "react";
+import {CommonBatchCopyConfig} from "../../common/components/CommonBatchCopyConfig";
+import axios from "axios";
 const { Search } = Input;
 
 class DbConfigList extends CommonListPage {
+    batchCopyConfigValues = {srcEnvId: null, srcDcnId: null, desEnvId: null, ip: '', port: ''};
     constructor(props) {
         super(props);
         const commonApiUrlModel: CommonApiUrlModel = {
@@ -42,8 +45,28 @@ class DbConfigList extends CommonListPage {
         this.setState({sortedInfo: sorter});
     }
 
-    handleOk = () => {
+    onChangeBatchCopyConfigValues = (key, value) => {
+        this.batchCopyConfigValues[key] = value;
+    }
 
+    handleOk = () => {
+        if(!window.confirm('确定复制配置吗?')) {
+            return;
+        }
+        axios.post(ApiUrlConfig.BATCH_COPY_DB_CONFIG_URL, this.batchCopyConfigValues).then(resp => {
+            if (resp.status !== 200) {
+                message.error('操作失败');
+            } else {
+                const ret = resp.data;
+                if (ret.code !== 0) {
+                    message.error(ret.message);
+                } else {
+                    message.success('操作成功');
+                    this.loadDataList(this.state.pagination);
+                }
+            }
+        });
+        this.handleCancel();
     }
 
     handleCancel = () => {
@@ -152,7 +175,7 @@ class DbConfigList extends CommonListPage {
             <Modal title="复制数据库配置到新环境" open={this.state.isModalVisible}
                    onOk={this.handleOk}
                    onCancel={this.handleCancel}>
-
+                <CommonBatchCopyConfig onChange={this.onChangeBatchCopyConfigValues}></CommonBatchCopyConfig>
             </Modal>
         </div>)
     }
