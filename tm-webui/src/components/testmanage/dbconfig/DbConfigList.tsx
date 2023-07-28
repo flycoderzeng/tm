@@ -2,7 +2,7 @@ import CommonListPage from "../../common/CommonListPage";
 import {withRouter} from "react-router-dom";
 import {CommonApiUrlModel} from "../../../entities/CommonApiUrlModel";
 import {ApiUrlConfig} from "../../../config/api.url";
-import {Button, Form, Input, message, Modal, Radio, Table} from "antd";
+import {Button, Input, message, Modal, Radio, Table} from "antd";
 import {OptionsConfig} from "../../../config/options.config";
 import React from "react";
 import {CommonBatchCopyConfig} from "../../common/components/CommonBatchCopyConfig";
