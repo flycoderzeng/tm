@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {message, Select} from 'antd';
 import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
+import {RandomUtils} from "../../../utils/RandomUtils";
 
 interface IState {
     value: number|string|null;
@@ -10,10 +11,9 @@ interface IState {
     size?: any;
 }
 
-let loaded = false;
-let allEnvs: any[] = [];
-
 const RunEnvSelect: React.FC<IState> = (props) => {
+    let loaded = false;
+    let allEnvs: any[] = [];
     const [value, setValue] = useState(props.value);
     const [options, setOptions] = useState(allEnvs);
     const {onChange} = props;
@@ -39,7 +39,7 @@ const RunEnvSelect: React.FC<IState> = (props) => {
             const ret = resp.data;
             if(ret.data) {
                 return ret.data.map(v => {
-                    return {label: v.attributes.name, value: v.id};
+                    return {label: v.attributes.name, value: v.id, key: RandomUtils.getKey()};
                 });
             }
         }

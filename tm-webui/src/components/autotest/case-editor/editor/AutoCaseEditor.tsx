@@ -1126,7 +1126,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     onRun(2);
                 }}>运行组合</Button>
                 <Button type="primary" danger>停止</Button>
-                <RunEnvSelect onChange={setRunEnvId} style={{width: '150px', marginRight: '5px'}} value={runEnvId}></RunEnvSelect>
+                <RunEnvSelect onChange={setRunEnvId} style={{width: '180px', marginRight: '5px'}} value={runEnvId}></RunEnvSelect>
                 <Button type="primary" onClick={() => {
                     onViewResult();
                 }}>查看运行结果</Button>

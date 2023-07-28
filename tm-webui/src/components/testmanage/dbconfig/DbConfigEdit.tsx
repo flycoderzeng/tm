@@ -93,7 +93,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
         }else{
             if (id >= 1) {
                 axios.post(ApiUrlConfig.SAVE_DB_CONFIG_DCN_ID_TO_NULL_URL, {id: id},
-                    {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+                    {headers: {"Content-Type": "application/json"}}).then(resp => {
                     if (resp.status !== 200) {
                         message.error('操作失败');
                     }
