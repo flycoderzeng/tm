@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {message, Select} from 'antd';
 import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
@@ -10,26 +10,22 @@ interface IState {
     onChange?: any;
     size?: any;
 }
-
+let allEnvs: any[] = [];
 const RunEnvSelect: React.FC<IState> = (props) => {
-    let loaded = false;
-    let allEnvs: any[] = [];
+
     const [value, setValue] = useState(props.value);
     const [options, setOptions] = useState(allEnvs);
     const {onChange} = props;
     const {size} = props;
 
-    if(value !== props.value) {
+    useEffect(() => {
         setValue(props.value);
-    }
-
-    if(!loaded) {
-        loaded = true;
         renderOptions().then(values => {
             allEnvs = values;
             setOptions(values);
         });
-    }
+    },[props.value]);
+
 
     async function renderOptions() {
         const resp = await axios.get(ApiUrlConfig.LOAD_ALL_RUN_ENV_URL);

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Form, Input, Radio} from "antd";
+import {Form, Input} from "antd";
 import {RunEnvSelect} from "../../testmanage/runenv/RunEnvSelect";
 import {DCNSelect} from "../../testmanage/dcnconfig/DCNSelect";
 
