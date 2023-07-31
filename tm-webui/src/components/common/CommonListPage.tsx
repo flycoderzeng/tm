@@ -255,6 +255,8 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             }
             if(this.modelType === 'db_config') {
                 filter += 'dbName==*' + pagination.searchValue + '*';
+            }else if(this.modelType === 'menu') {
+                filter += 'menuName==*' + pagination.searchValue + '*';
             }else {
                 filter += 'name==*' + pagination.searchValue + '*';
             }
