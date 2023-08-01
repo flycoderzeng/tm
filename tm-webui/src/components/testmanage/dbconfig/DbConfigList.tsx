@@ -53,7 +53,7 @@ class DbConfigList extends CommonListPage {
         if(!window.confirm('确定复制配置吗?')) {
             return;
         }
-        axios.post(ApiUrlConfig.BATCH_COPY_DB_CONFIG_URL, this.batchCopyConfigValues).then(resp => {
+        axios.post(ApiUrlConfig.BATCH_COPY_URL_CONFIG_URL, this.batchCopyConfigValues).then(resp => {
             if (resp.status !== 200) {
                 message.error('操作失败');
             } else {
