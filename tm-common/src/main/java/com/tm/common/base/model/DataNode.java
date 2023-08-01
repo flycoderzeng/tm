@@ -30,4 +30,5 @@ public class DataNode extends CommonNameDescriptionModel {
     private Integer status;
     private String addUser;
     private String lastModifyUser;
+    private Integer childCasesCount;
 }

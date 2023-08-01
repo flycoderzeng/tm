@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -40,7 +41,18 @@ public class DataNodeController extends BaseController {
         if(DataTypeEnum.PLATFORM_API.value() == body.getDataTypeId()) {
             body.setProjectId(57);
         }
-        return ResultUtils.success(dataNodeMapper.getNodesTree(body));
+        List<DataNode> nodesTree = dataNodeMapper.getNodesTree(body);
+        for (DataNode dataNode : nodesTree) {
+            if(dataNode.getIsFolder().equals(1)) {
+                GetNodesTreeBody getNodesTreeBody = new GetNodesTreeBody();
+                getNodesTreeBody.setProjectId(dataNode.getProjectId());
+                getNodesTreeBody.setDataTypeId(dataNode.getDataTypeId());
+                getNodesTreeBody.setLevel(dataNode.getLevel());
+                getNodesTreeBody.setParentId(dataNode.getId());
+                dataNode.setChildCasesCount(dataNodeMapper.countSubLeafNode(getNodesTreeBody));
+            }
+        }
+        return ResultUtils.success(nodesTree);
     }
 
     @PostMapping(value = "/addNode", produces = {"application/json;charset=UTF-8"})

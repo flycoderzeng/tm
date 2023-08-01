@@ -268,7 +268,11 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         data['filter[' + this.modelType + ']'] = filter;
 
         if(this.modelType === 'db_config') {
-            data['fields[db_config]'] = 'addTime,addUser,lastModifyTime,lastModifyUser,ip,port,username,status,type,envId,envName,dbName';
+            data['fields[db_config]'] = 'addTime,addUser,lastModifyTime,lastModifyUser,ip,port,username,status,type,envId,envName,dbName,dcnId,dcnName';
+        }
+
+        if(this.modelType === 'api_ip_port_config') {
+            data['fields[api_ip_port_config]'] = 'addTime,addUser,lastModifyTime,lastModifyUser,name,url,ip,port,envId,envName,dcnId,dcnName';
         }
         axios.get(this.commonApiUrlModel.listUrl + '?' + StrUtils.getGetParams(data)).then(resp => {
             if (resp.status !== 200) {

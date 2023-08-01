@@ -29,6 +29,7 @@ import {CaseHistoryList} from "../CaseHistoryList";
 import {ScriptActionNodeEditor} from "./ScriptActionNodeEditor";
 import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
 import {Resizable} from "re-resizable";
+import copy from "copy-to-clipboard";
 
 
 interface IState {
@@ -158,6 +159,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [running1, setRunning1] = useState(false);
     const [running2, setRunning2] = useState(false);
     const [id, setId] = useState(props.id);
+    const [caseName, setCaseName] = useState('');
     const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const [contextMenuPosition, setContextMenuPosition] = useState(rightMenuInitStyle);
@@ -365,6 +367,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                         steps = JSON.parse(JSON.stringify(initTreeData));
                     }
                     initStepSeq(steps);
+                    setCaseName(ret.data.name);
                     setExpandedKeys([...expandedKeys]);
                     setCheckedKeys([]);
                     setTreeCheckEnable(false);
@@ -1115,6 +1118,14 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         setCheckedKeys(checked);
     }
 
+    function copyCaseId() {
+        if(copy(caseName + ' [' + id + ']')) {
+            message.success('复制成功');
+        }else{
+            message.error('复制失败');
+        }
+    }
+
     return (
         <div className="case-editor-parent">
             <div className="case-editor-toolbar">
@@ -1139,6 +1150,9 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 <Button type="primary" onClick={() => {
                     batchCopySteps();
                 }}>批量复制步骤</Button>
+                <Button type="default" onClick={() => {
+                    copyCaseId();
+                }}>复制用例id</Button>
                 <Button icon={<QuestionOutlined />}>查看帮助文档</Button>
             </div>
             <div className="case-editor-main-content">

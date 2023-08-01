@@ -154,14 +154,6 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label="DCN"
-                    name="dcnId"
-                    rules={[{required: false, message: '请选择DCN!'}]}
-                >
-                    <DCNSelect onChange={setDcnId} style={{width: '200px'}} value={dcnId}></DCNSelect>
-                </Form.Item>
-
-                <Form.Item
                     label="ip"
                     name="ip"
                     rules={[{required: true, message: '请输入ip!'}]}
@@ -183,6 +175,14 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                     rules={[{required: true, message: '请选择环境!'}]}
                 >
                     <RunEnvSelect onChange={setRunEnvId} style={{width: '200px'}} value={runEnvId}></RunEnvSelect>
+                </Form.Item>
+
+                <Form.Item
+                    label="DCN"
+                    name="dcnId"
+                    rules={[{required: false, message: '请选择DCN!'}]}
+                >
+                    <DCNSelect onChange={setDcnId} style={{width: '200px'}} value={dcnId}></DCNSelect>
                 </Form.Item>
 
                 <Form.Item

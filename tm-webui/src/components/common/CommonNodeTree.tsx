@@ -116,8 +116,14 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                     } else {
                         const children = ret.data.map(v => {
                             const n: AntDataNode = {title: null, dataNode: undefined, isLeaf: false, key: ''};
+                            let title = v.name;
+                            let suffix;
+                            if(v.childCasesCount) {
+                                const suffixText = ' (' + v.childCasesCount + ')';
+                                suffix = <span style={{color: '#1890ff'}}>{suffixText}</span>;
+                            }
                             n.title = <Tooltip overlayClassName="small-font-size" title={v.name} color="#2db7f5" placement="rightTop">
-                                <span>{v.name}</span>
+                                <span>{title}{suffix}</span>
                             </Tooltip>;
                             n.key = v.id + '-' + v.dataTypeId + '-'  + globalRandomKey;
                             n.isLeaf = v.isFolder === 1 ? false : true;

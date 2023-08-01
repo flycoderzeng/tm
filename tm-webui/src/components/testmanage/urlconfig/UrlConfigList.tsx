@@ -79,6 +79,10 @@ class UrlConfigList extends CommonListPage {
                 dataIndex: 'envName',
                 render: text => <span>{text}</span>,
             },{
+                title: 'DCN名称',
+                dataIndex: 'dcnName',
+                render: text => <span>{text}</span>,
+            },{
                 title: '创建者',
                 dataIndex: 'addUser',
                 render: text => <span>{text}</span>,
