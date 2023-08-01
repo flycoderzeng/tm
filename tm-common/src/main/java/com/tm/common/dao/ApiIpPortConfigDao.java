@@ -13,7 +13,7 @@ public class ApiIpPortConfigDao {
     @Autowired
     private ApiIpPortConfigMapper apiIpPortConfigMapper;
 
-    public List<ApiIpPortConfig> selectByUrlAndEnvId(@Param("url") String url, @Param("envId") Integer envId) {
-        return apiIpPortConfigMapper.selectByUrlAndEnvId(url, envId);
+    public List<ApiIpPortConfig> selectByUrlAndEnvId(@Param("url") String url, @Param("envId") Integer envId, @Param("dcnId") Integer dcnId) {
+        return apiIpPortConfigMapper.selectConfigByUrlEnvIdAndDcnId(url, envId, dcnId);
     }
 }

@@ -7,6 +7,7 @@ import {KeyValueEditor} from "./KeyValueEditor";
 import {ContentEditor} from "./ContentEditor";
 import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
 import {KeyValueRow} from "../entities/KeyValueRow";
+import {DCNSelect} from "../../../testmanage/dcnconfig/DCNSelect";
 
 const {Option} = Select;
 
@@ -19,6 +20,8 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     const [requestType, setRequestType] = useState(props.define.requestType);
     const [rawLanguage, setRawLanguage] = useState('json');
     const [activeKey, setActiveKey] = useState('1');
+
+    const [dcnId, setDcnId] = useState(props.define.dcnId);
 
     const [params, setParams] = useState(props.define.params);
     const [headers, setHeaders] = useState(props.define.headers);
@@ -53,6 +56,11 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
     function onChangeTab(key) {
         WindowTopUtils.getWindowTopObject(WindowTopUtils.object_activeTabJson)[stepNode.key] = key;
         setActiveKey(key);
+    }
+
+    function onChangeDcnId(v: any) {
+        setDcnId(v);
+        onChange('dcnId', v);
     }
 
     function onChangeBodyType(e) {
@@ -170,6 +178,14 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
                 </Select>
                 <Input defaultValue={url} value={url} placeholder="请求地址" onChange={onChangeUrl}/>
             </Input.Group>
+        </div>
+        <div style={{paddingTop: '5px'}}>
+            <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
+                <Col flex={width}>DCN</Col>
+                <Col flex="auto">
+                    <DCNSelect value={dcnId} onChange={onChangeDcnId} style={{width: '250px'}}></DCNSelect>
+                </Col>
+            </Row>
         </div>
         <div style={{paddingTop: '5px'}}>
             <Tabs defaultActiveKey="1" activeKey={activeKey} onChange={onChangeTab} items={[{

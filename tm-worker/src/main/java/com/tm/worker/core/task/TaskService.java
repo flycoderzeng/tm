@@ -460,7 +460,7 @@ public class TaskService {
         return globalVariableDao.updateBySelective(globalVariable);
     }
 
-    public List<ApiIpPortConfig> selectByUrlAndEnvId(String url, Integer envId) {
-        return apiIpPortConfigDao.selectByUrlAndEnvId(url, envId);
+    public List<ApiIpPortConfig> selectByUrlAndEnvId(String url, Integer envId, Integer dcnId) {
+        return apiIpPortConfigDao.selectByUrlAndEnvId(url, envId, dcnId);
     }
 }

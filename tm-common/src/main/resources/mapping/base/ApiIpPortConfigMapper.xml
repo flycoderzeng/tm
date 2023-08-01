@@ -8,6 +8,7 @@
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="VARCHAR" />
     <result column="env_id" property="envId" jdbcType="INTEGER" />
+    <result column="dcn_id" property="dcnId" jdbcType="INTEGER" />
     <result column="env_name" property="envName" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
@@ -17,20 +18,37 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, name, url, ip, port, status, env_id, add_time, add_user, last_modify_time, last_modify_user
+    id, name, url, ip, port, status, env_id, dcn_id, add_time, add_user, last_modify_time, last_modify_user
   </sql>
 
-  <select id="selectByUrlAndEnvId" resultMap="BaseResultMap">
+  <update id="setDcnIdToNull" parameterType="java.lang.Integer">
+    update api_ip_port_config set dcn_id=null where id=#{id,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="selectByPrimaryId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from api_ip_port_config
+    where id=#{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectConfigByUrlEnvIdAndDcnId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from api_ip_port_config
     where 1=1
     and url=#{url,jdbcType=VARCHAR}
     and env_id=#{envId,jdbcType=INTEGER}
+    <if test="dcnId != null" >
+      and dcn_id=#{dcnId,jdbcType=INTEGER}
+    </if>
     and status=0
   </select>
 
-  <select id="selectByEnvId" resultMap="BaseResultMap">
+  <select id="selectConfigByEnvId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from api_ip_port_config
@@ -40,13 +58,12 @@
   </select>
 
 
-
   <update id="batchInsert" parameterType="com.tm.common.base.model.ApiIpPortConfig">
     INSERT INTO api_ip_port_config
-    (id, name, url, ip, port, status, env_id, add_time, add_user)
+    (id, name, url, ip, port, status, env_id, dcn_id, add_time, add_user)
     VALUES
     <foreach collection ="apiIpPortConfigs" item="item" separator =",">
-      (null, #{item.name}, #{item.url}, #{item.ip}, #{item.port}, #{item.status}, #{item.envId}, #{item.addTime}, #{item.addUser})
+      (null, #{item.name}, #{item.url}, #{item.ip}, #{item.port}, #{item.status}, #{item.envId}, #{item.dcnId}, #{item.addTime}, #{item.addUser})
     </foreach >
   </update>
 

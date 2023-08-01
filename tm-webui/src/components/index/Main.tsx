@@ -57,10 +57,11 @@ class Main extends React.Component<MainProps, IState> {
     }
 
     renderMyProjects() {
-        const cards = this.state.myProjects.map(v => {
+        const cards = this.state.myProjects.map((v: any) => {
             const k = RandomUtils.getKey();
             return (<Card onClick={() => this.onClickProject(v.id)} className="project-card" title={v.name} bordered={false} style={{ width: 300 }} key={k}>
-                <p>{v.description}</p>
+                <p><span>自动化用例总数: </span><span style={{color: '#1890ff'}}>{v.projectStatisticsInfo.totalCase}</span></p>
+                <p><span>自动化计划总数: </span><span style={{color: '#1890ff'}}>{v.projectStatisticsInfo.totalPlan}</span></p>
             </Card>)
         });
         return cards;

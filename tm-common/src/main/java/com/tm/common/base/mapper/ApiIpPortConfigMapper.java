@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface ApiIpPortConfigMapper {
-    List<ApiIpPortConfig> selectByUrlAndEnvId(@Param("url") String url, @Param("envId") Integer envId);
-    List<ApiIpPortConfig> selectByEnvId(@Param("envId") Integer envId);
+    List<ApiIpPortConfig> selectConfigByUrlEnvIdAndDcnId(@Param("url") String url, @Param("envId") Integer envId, @Param("dcnId") Integer dcnId);
+    List<ApiIpPortConfig> selectConfigByEnvId(@Param("envId") Integer envId);
+    ApiIpPortConfig selectByPrimaryId(Integer id);
+    int setDcnIdToNull(Integer id);
     int batchInsert(@Param("apiIpPortConfigs") List<ApiIpPortConfig> apiIpPortConfigs);
 }

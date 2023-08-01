@@ -3,6 +3,7 @@ package com.tm.web.service;
 import com.tm.common.base.mapper.ApiIpPortConfigMapper;
 import com.tm.common.base.mapper.RunEnvMapper;
 import com.tm.common.base.model.ApiIpPortConfig;
+import com.tm.common.base.model.DbConfig;
 import com.tm.common.base.model.RunEnv;
 import com.tm.common.base.model.User;
 import com.tm.common.entities.base.BaseResponse;
@@ -27,7 +28,7 @@ public class ApiIpPortConfigService {
     private RunEnvMapper runEnvMapper;
 
     public BaseResponse batchCopyApiIpPortConfig(BatchCopyCommonConfigBody body, User loginUser) {
-        final List<ApiIpPortConfig> apiIpPortConfigs = apiIpPortConfigMapper.selectByEnvId(body.getSrcEnvId());
+        final List<ApiIpPortConfig> apiIpPortConfigs = apiIpPortConfigMapper.selectConfigByEnvId(body.getSrcEnvId());
         if(apiIpPortConfigs == null || apiIpPortConfigs.isEmpty()) {
             return ResultUtils.error(ResultCodeEnum.SOURCE_ENV_RELATIVE_CONFIG_EMPTY);
         }
@@ -36,7 +37,7 @@ public class ApiIpPortConfigService {
             return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
         }
 
-        final List<ApiIpPortConfig> desApiIpPortConfigs = apiIpPortConfigMapper.selectByEnvId(runEnv.getId());
+        final List<ApiIpPortConfig> desApiIpPortConfigs = apiIpPortConfigMapper.selectConfigByEnvId(runEnv.getId());
 
         List<ApiIpPortConfig> newList = new ArrayList<>();
 
@@ -64,6 +65,16 @@ public class ApiIpPortConfigService {
         if(!newList.isEmpty()) {
             apiIpPortConfigMapper.batchInsert(newList);
         }
+
+        return ResultUtils.success();
+    }
+
+    public BaseResponse setDcnIdToNull(Integer id) {
+        ApiIpPortConfig apiIpPortConfig = apiIpPortConfigMapper.selectByPrimaryId(id);
+        if(apiIpPortConfig == null) {
+            return ResultUtils.success();
+        }
+        apiIpPortConfigMapper.setDcnIdToNull(id);
 
         return ResultUtils.success();
     }

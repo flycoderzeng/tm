@@ -5,6 +5,7 @@ import {FormInstance} from "antd/lib/form";
 import {RunEnvSelect} from "../runenv/RunEnvSelect";
 import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
+import {DCNSelect} from "../dcnconfig/DCNSelect";
 const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
@@ -24,6 +25,7 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
     const [saving, setSaving] = useState(false);
     const [ref] = useState(React.createRef<FormInstance>());
     const [runEnvId, setRunEnvId] = useState<string>('');
+    const [dcnId, setDcnId] = useState<string|number|null|undefined>('');
 
     useEffect(() => {
         load();
@@ -47,9 +49,11 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                         url: ret.data.attributes.url,
                         ip: ret.data.attributes.ip,
                         port: ret.data.attributes.port,
-                        envId: ret.data.attributes.envId + ''
+                        envId: ret.data.attributes.envId + '',
+                        dcnId: !ret.data.attributes.dcnId ? null : ret.data.attributes.dcnId+'',
                     });
                     setRunEnvId(ret.data.attributes.envId + '');
+                    setDcnId(!ret.data.attributes.dcnId ? null : ret.data.attributes.dcnId+'');
                 }
             }
         });
@@ -73,6 +77,23 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                         }
                     }
                 }
+            }
+        }
+        if(dcnId !== null && dcnId !== undefined) {
+            data['data']['relationships']['dcnConfig'] = {
+                "data": {
+                    "id": dcnId,
+                    "type": "dcn_config"
+                }
+            };
+        }else{
+            if (id >= 1) {
+                axios.post(ApiUrlConfig.SAVE_URL_CONFIG_DCN_ID_TO_NULL_URL, {id: id},
+                    {headers: {"Content-Type": "application/json"}}).then(resp => {
+                    if (resp.status !== 200) {
+                        message.error('操作失败');
+                    }
+                });
             }
         }
         setSaving(true);
@@ -157,6 +178,14 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                     rules={[{required: true, message: '请选择环境!'}]}
                 >
                     <RunEnvSelect onChange={setRunEnvId} style={{width: '200px'}} value={runEnvId}></RunEnvSelect>
+                </Form.Item>
+
+                <Form.Item
+                    label="DCN"
+                    name="dcnId"
+                    rules={[{required: false, message: '请选择DCN!'}]}
+                >
+                    <DCNSelect onChange={setDcnId} style={{width: '200px'}} value={dcnId}></DCNSelect>
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>

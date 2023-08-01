@@ -6,6 +6,8 @@ export interface HttpNode extends BaseNode {
     requestType: string;
     url: string;
 
+    dcnId?: number|string|null|undefined;
+
     saveFileName?: string;
     params: KeyValueRow[];
     headers: KeyValueRow[];

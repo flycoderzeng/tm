@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.tm.common.base.mapper.DbConfigMapper" >
-  <resultMap id="BaseResultMap" type="com.tm.common.base.model.DbConfig" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="username" property="username" jdbcType="VARCHAR" />
-    <result column="password" property="password" jdbcType="VARCHAR" />
-    <result column="ip" property="ip" jdbcType="VARCHAR" />
-    <result column="port" property="port" jdbcType="VARCHAR" />
-    <result column="env_id" property="envId" jdbcType="INTEGER" />
-    <result column="dcn_id" property="dcnId" jdbcType="INTEGER" />
-    <result column="env_name" property="envName" jdbcType="VARCHAR" />
-    <result column="db_name" property="dbName" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="type" property="type" jdbcType="INTEGER" />
-    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
-    <result column="add_user" property="addUser" jdbcType="VARCHAR" />
-    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
-    <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.tm.common.base.model.DbConfig" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="ip" property="ip" jdbcType="VARCHAR" />
+        <result column="port" property="port" jdbcType="VARCHAR" />
+        <result column="env_id" property="envId" jdbcType="INTEGER" />
+        <result column="dcn_id" property="dcnId" jdbcType="INTEGER" />
+        <result column="env_name" property="envName" jdbcType="VARCHAR" />
+        <result column="db_name" property="dbName" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="add_user" property="addUser" jdbcType="VARCHAR" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+    </resultMap>
 
-  <sql id="Base_Column_List" >
-    id, username, password, db_name, ip, port, status, env_id, dcn_id, type, add_time, add_user, last_modify_time, last_modify_user
-  </sql>
+    <sql id="Base_Column_List" >
+        id, username, password, db_name, ip, port, status, env_id, dcn_id, type, add_time, add_user, last_modify_time, last_modify_user
+    </sql>
 
     <select id="selectByPrimaryId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -58,13 +58,13 @@
         where env_id = #{envId,jdbcType=INTEGER} and status=0
     </select>
 
-  <select id="getAllDatabaseNames" resultMap="BaseResultMap">
-    select
-    distinct db_name
-    from db_config
-    where status=0
-    limit 10000
-  </select>
+    <select id="getAllDatabaseNames" resultMap="BaseResultMap">
+        select
+            distinct db_name
+        from db_config
+        where status=0
+        limit 10000
+    </select>
 
 
 

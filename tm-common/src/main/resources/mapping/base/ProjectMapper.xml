@@ -21,11 +21,11 @@
   </select>
 
   <select id="getCountCase" resultType="java.lang.Integer" parameterType="java.lang.Integer">
-    select count(*) from data_nodes where data_type_id=6 and is_folder=0 and status=0;
+    select count(*) from data_nodes where data_type_id=6 and is_folder=0 and status=0 and project_id=#{projectId,jdbcType=INTEGER};
   </select>
 
   <select id="getCountPlan" resultType="java.lang.Integer" parameterType="java.lang.Integer">
-    select count(*) from data_nodes where data_type_id=7 and is_folder=0 and status=0;
+    select count(*) from data_nodes where data_type_id=7 and is_folder=0 and status=0 and project_id=#{projectId,jdbcType=INTEGER};
   </select>
 
 </mapper>

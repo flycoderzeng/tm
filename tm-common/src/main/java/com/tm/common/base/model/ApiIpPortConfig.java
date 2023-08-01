@@ -10,4 +10,5 @@ public class ApiIpPortConfig extends Common6ItemsModel {
     private String envName;
     private String ip;
     private String port;
+    private Integer dcnId;
 }
