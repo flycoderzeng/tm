@@ -45,7 +45,8 @@ public class ApiIpPortConfigService {
             boolean existed = false;
             if(desApiIpPortConfigs != null && !desApiIpPortConfigs.isEmpty()) {
                 for (ApiIpPortConfig desApiIpPortConfig : desApiIpPortConfigs) {
-                    if(StringUtils.equals(apiIpPortConfig.getUrl(), desApiIpPortConfig.getUrl())) {
+                    if((StringUtils.equals(apiIpPortConfig.getUrl(), desApiIpPortConfig.getUrl()) && apiIpPortConfig.getDcnId() == null && desApiIpPortConfig.getDcnId() == null)
+                            ||(StringUtils.equals(apiIpPortConfig.getUrl(), desApiIpPortConfig.getUrl()) && apiIpPortConfig.getDcnId() != null && apiIpPortConfig.getDcnId().equals(desApiIpPortConfig.getDcnId()))) {
                         existed = true;
                         break;
                     }

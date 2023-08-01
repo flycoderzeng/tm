@@ -2,12 +2,15 @@ import CommonListPage from "../../common/CommonListPage";
 import {withRouter} from "react-router-dom";
 import {CommonApiUrlModel} from "../../../entities/CommonApiUrlModel";
 import {ApiUrlConfig} from "../../../config/api.url";
-import {Button, Input, Radio, Table} from "antd";
+import {Button, Input, message, Modal, Radio, Table} from "antd";
 import {OptionsConfig} from "../../../config/options.config";
 import React from "react";
+import {CommonBatchCopyConfig} from "../../common/components/CommonBatchCopyConfig";
+import axios from "axios";
 const { Search } = Input;
 
 class UrlConfigList extends CommonListPage {
+    batchCopyConfigValues = {srcEnvId: null, srcDcnId: null, desEnvId: null, ip: '', port: ''};
     constructor(props) {
         super(props);
         const commonApiUrlModel: CommonApiUrlModel = {
@@ -41,6 +44,38 @@ class UrlConfigList extends CommonListPage {
     onChange = (pagination, filters, sorter) => {
         this.loadDataListSort(pagination, filters, sorter);
         this.setState({sortedInfo: sorter});
+    }
+
+    onChangeBatchCopyConfigValues = (key, value) => {
+        this.batchCopyConfigValues[key] = value;
+    }
+
+    handleOk = () => {
+        if(!window.confirm('确定复制配置吗?')) {
+            return;
+        }
+        axios.post(ApiUrlConfig.BATCH_COPY_DB_CONFIG_URL, this.batchCopyConfigValues).then(resp => {
+            if (resp.status !== 200) {
+                message.error('操作失败');
+            } else {
+                const ret = resp.data;
+                if (ret.code !== 0) {
+                    message.error(ret.message);
+                } else {
+                    message.success('操作成功');
+                    this.loadDataList(this.state.pagination);
+                }
+            }
+        });
+        this.handleCancel();
+    }
+
+    handleCancel = () => {
+        this.setState({isModalVisible: false});
+    }
+
+    openModal = () => {
+        this.setState({isModalVisible: true});
     }
 
     render() {
@@ -131,7 +166,8 @@ class UrlConfigList extends CommonListPage {
                         buttonStyle="solid"
                         style={{marginRight: '5px'}}
                     />
-                    <Button type="primary" onClick={() => this.edit(0)}>添加配置</Button>
+                    <Button type="primary" onClick={() => this.edit(0)} style={{ marginRight: '5px'}}>添加配置</Button>
+                    <Button type="primary" onClick={() => this.openModal()}>复制配置到新环境</Button>
                 </div>
                 <Table columns={columns}
                        dataSource={this.state.data}
@@ -142,6 +178,12 @@ class UrlConfigList extends CommonListPage {
                        onChange={this.onChange}
                 />
             </div>
+
+            <Modal title="复制接口配置到新环境" open={this.state.isModalVisible}
+                   onOk={this.handleOk}
+                   onCancel={this.handleCancel}>
+                <CommonBatchCopyConfig onChange={this.onChangeBatchCopyConfigValues}></CommonBatchCopyConfig>
+            </Modal>
         </div>)
     }
 }
