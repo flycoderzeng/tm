@@ -11,7 +11,7 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 18/07/2023 18:57:17
+ Date: 02/08/2023 11:52:03
 */
 
 SET NAMES utf8mb4;
@@ -56,6 +56,7 @@ CREATE TABLE `api_ip_port_config`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '接口路径',
   `env_id` int NULL DEFAULT NULL COMMENT '环境',
+  `dcn_id` int NULL DEFAULT NULL,
   `ip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `port` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `status` int NULL DEFAULT 0 COMMENT '0-正常1-删除',
@@ -65,7 +66,7 @@ CREATE TABLE `api_ip_port_config`  (
   `last_modify_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique_url_env_id`(`url` ASC, `env_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 132 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 195 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for area
@@ -93,7 +94,7 @@ CREATE TABLE `auto_case_history`  (
   `add_time` datetime NULL DEFAULT NULL,
   `add_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1070 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1137 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for auto_cases
@@ -106,7 +107,7 @@ CREATE TABLE `auto_cases`  (
   `last_run_env_id` int NULL DEFAULT NULL,
   `group_variables` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10230 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10240 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for auto_plans
@@ -123,7 +124,7 @@ CREATE TABLE `auto_plans`  (
   `fail_continue` int NULL DEFAULT 1 COMMENT '用例失败后计划是否继续执行，0-停止执行1-继续执行',
   `plan_variables` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10018 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10028 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for auto_scripts
@@ -244,7 +245,7 @@ CREATE TABLE `case_execute_result_202307`  (
   `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `case_result_query_index`(`plan_result_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3535 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 12441 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for case_execute_result_202308
@@ -267,7 +268,30 @@ CREATE TABLE `case_execute_result_202308`  (
   `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `case_result_query_index`(`plan_result_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1462 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for case_execute_result_202309
+-- ----------------------------
+DROP TABLE IF EXISTS `case_execute_result_202309`;
+CREATE TABLE `case_execute_result_202309`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `plan_result_id` int NULL DEFAULT NULL,
+  `case_id` int NULL DEFAULT NULL,
+  `group_no` int NULL DEFAULT NULL,
+  `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `start_timestamp` bigint NULL DEFAULT NULL,
+  `end_timestamp` bigint NULL DEFAULT NULL,
+  `result_status` int NULL DEFAULT 1 COMMENT '1-执行中 2-执行成功（没有发生异常，断言都成功） 200-执行失败（发生异常或断言失败） 190-执行超时，强制结束 100-用户停止',
+  `seq` int NULL DEFAULT 1,
+  `worker_ip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `result_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `case_result_query_index`(`plan_result_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for case_step_execute_result_202305
@@ -327,7 +351,7 @@ CREATE TABLE `case_step_execute_result_202307`  (
   `result_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `result_query_index`(`plan_result_id` ASC, `case_id` ASC, `group_no` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 29020 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 123488 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for case_step_execute_result_202308
@@ -347,7 +371,27 @@ CREATE TABLE `case_step_execute_result_202308`  (
   `result_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `result_query_index`(`plan_result_id` ASC, `case_id` ASC, `group_no` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 13494 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for case_step_execute_result_202309
+-- ----------------------------
+DROP TABLE IF EXISTS `case_step_execute_result_202309`;
+CREATE TABLE `case_step_execute_result_202309`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `plan_result_id` int NULL DEFAULT NULL,
+  `case_id` int NULL DEFAULT NULL,
+  `group_no` int NULL DEFAULT NULL,
+  `start_timestamp` bigint NULL DEFAULT NULL,
+  `end_timestamp` bigint NULL DEFAULT NULL,
+  `result_status` int NULL DEFAULT 1 COMMENT '用例结果状态 1-执行中 2-执行成功（没有发生异常，断言都成功） 200-执行失败（发生异常或断言失败） 190-执行超时，强制结束 100-用户停止',
+  `step_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `result_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `result_query_index`(`plan_result_id` ASC, `case_id` ASC, `group_no` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for case_variable_value_result_202305
@@ -389,7 +433,7 @@ CREATE TABLE `case_variable_value_result_202307`  (
   `variable_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `variable_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 89579 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 344046 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for case_variable_value_result_202308
@@ -403,7 +447,21 @@ CREATE TABLE `case_variable_value_result_202308`  (
   `variable_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `variable_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 38456 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for case_variable_value_result_202309
+-- ----------------------------
+DROP TABLE IF EXISTS `case_variable_value_result_202309`;
+CREATE TABLE `case_variable_value_result_202309`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `plan_result_id` int NULL DEFAULT NULL,
+  `case_id` int NULL DEFAULT NULL,
+  `group_no` int NULL DEFAULT NULL,
+  `variable_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `variable_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for city
@@ -508,7 +566,7 @@ CREATE TABLE `db_config`  (
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `last_modify_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for dcn_config
@@ -516,16 +574,16 @@ CREATE TABLE `db_config`  (
 DROP TABLE IF EXISTS `dcn_config`;
 CREATE TABLE `dcn_config`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `dcn_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `dcn_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `dcn_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `dcn_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `status` int NULL DEFAULT 0 COMMENT '0-正常1-删除',
   `add_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `add_time` datetime NULL DEFAULT NULL,
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `last_modify_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `dcn_name` (`dcn_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+  UNIQUE INDEX `dcn_name`(`dcn_name` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for distributed_lock
@@ -547,7 +605,7 @@ CREATE TABLE `global_variables`  (
   `value` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `modify_flag` int UNSIGNED NULL DEFAULT 1 COMMENT '是否允许在用例中调用API修改全局变量值，1，允许，0，不允许',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10019 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10027 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for http_api
@@ -627,22 +685,6 @@ CREATE TABLE `http_mock_target_config`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Table structure for labels
--- ----------------------------
-DROP TABLE IF EXISTS `labels`;
-CREATE TABLE `labels`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `data_type_id` int NULL DEFAULT NULL,
-  `project_id` int NULL DEFAULT NULL,
-  `add_time` datetime NULL DEFAULT NULL,
-  `add_user_id` int NULL DEFAULT NULL,
-  `last_modify_time` datetime NULL DEFAULT NULL,
-  `last_modify_user_id` int NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
 -- Table structure for menu
 -- ----------------------------
 DROP TABLE IF EXISTS `menu`;
@@ -661,7 +703,7 @@ CREATE TABLE `menu`  (
   `status` int NULL DEFAULT 0 COMMENT '0 正常, 1 已删除',
   `page_id` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 225 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for mock_agent_instances
@@ -678,7 +720,7 @@ CREATE TABLE `mock_agent_instances`  (
   `last_register_time` datetime NULL DEFAULT NULL,
   `status` int NULL DEFAULT 0 COMMENT '0-黑1-亮',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for mock_rule_agent_relation
@@ -698,7 +740,7 @@ CREATE TABLE `mock_rule_agent_relation`  (
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `last_modify_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for neighborhood
@@ -711,7 +753,7 @@ CREATE TABLE `neighborhood`  (
   `street_id` int NULL DEFAULT NULL,
   `finish` int NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 805926 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for plan_case
@@ -724,7 +766,7 @@ CREATE TABLE `plan_case`  (
   `seq` int NULL DEFAULT NULL,
   `add_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 810 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for plan_case_setup
@@ -737,7 +779,7 @@ CREATE TABLE `plan_case_setup`  (
   `seq` int NULL DEFAULT NULL,
   `add_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 81 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for plan_case_teardown
@@ -750,7 +792,7 @@ CREATE TABLE `plan_case_teardown`  (
   `seq` int NULL DEFAULT NULL,
   `add_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 39 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for plan_cron_jobs
@@ -768,7 +810,7 @@ CREATE TABLE `plan_cron_jobs`  (
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `last_modify_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for plan_execute_result
@@ -797,7 +839,7 @@ CREATE TABLE `plan_execute_result`  (
   `plan_case_type` int NULL DEFAULT 0 COMMENT '0-计划用例1-计划前用例2-计划后用例',
   `run_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3765 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for plan_running_config_snapshot
@@ -814,7 +856,7 @@ CREATE TABLE `plan_running_config_snapshot`  (
   `fail_continue` int NULL DEFAULT 1 COMMENT '用例失败后计划是否继续执行，0-停止执行1-继续执行',
   `plan_variables` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3762 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for platform_api
@@ -824,7 +866,7 @@ CREATE TABLE `platform_api`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `define_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10034 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for project_user
@@ -839,7 +881,7 @@ CREATE TABLE `project_user`  (
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `last_modify_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 46 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for project_user_role
@@ -855,7 +897,7 @@ CREATE TABLE `project_user_role`  (
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `last_modify_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 50 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for projects
@@ -968,7 +1010,7 @@ CREATE TABLE `run_env`  (
   `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `status` int NULL DEFAULT 0 COMMENT '0 正常 1 已删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for street
@@ -1005,6 +1047,23 @@ CREATE TABLE `system_stories`  (
   `predict_cost_time` int NULL DEFAULT 0 COMMENT '预计耗时，单位小时',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for tags
+-- ----------------------------
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE `tags`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `data_type_id` int NULL DEFAULT 6,
+  `project_id` int NULL DEFAULT NULL,
+  `add_time` datetime NULL DEFAULT NULL,
+  `add_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `last_modify_time` datetime NULL DEFAULT NULL,
+  `last_modify_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `status` int NULL DEFAULT 0 COMMENT '0-正常1-已删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '自动化用例标签' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for test_cases

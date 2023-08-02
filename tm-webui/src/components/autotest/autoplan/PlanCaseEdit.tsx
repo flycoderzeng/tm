@@ -377,6 +377,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
             <DataNodeTreeSelect
                 onChange={setSelectedResourceIdList}
                 projectId={projectId}
+                observerId={planId}
                 dataTypeId={DataTypeEnum.AUTO_CASE}>
             </DataNodeTreeSelect>
         </Modal>

@@ -2,13 +2,14 @@ import React, {useEffect, useState} from "react";
 import {message, Tooltip, Tree} from "antd";
 import axios from "axios";
 import {ApiUrlConfig} from "../../config/api.url";
-import {Key} from "react/index";
 import {DataTypeEnumDescription} from "../../entities/DataTypeEnumDescription";
+import {RandomUtils} from "../../utils/RandomUtils";
 
 interface IState {
     projectId ?: number|null;
     dataTypeId ?: number|null;
     onChange: any;
+    observerId?: number|null;
 }
 const initTreeData = [{ title: '自动化用例', key: '1-1' }];
 
@@ -40,24 +41,26 @@ function updateTreeData(list: any[], key: React.Key, children: any[]): any[] {
 
 const DataNodeTreeSelect: React.FC<IState> = (props) => {
     const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
-    const [treeData, setTreeData] = useState<any[]>(['1-1']);
+    const [treeData, setTreeData] = useState<any[]>([{ title: '自动化用例', key: '1-1' }]);
     const [projectId, setProjectId] = useState(props.projectId);
     const [dataTypeId, setDataTypeId] = useState(props.dataTypeId);
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
     const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-    if(props.dataTypeId)
+    if(props.dataTypeId) {
         initTreeData[0].title = rootTitle[props.dataTypeId];
-    if(projectId !== props.projectId) {
-        setProjectId(props.projectId);
-    }
-    if(dataTypeId !== props.dataTypeId) {
-        setDataTypeId(props.dataTypeId);
     }
 
     useEffect(() => {
-        setTreeData(initTreeData);
-        onLoadData({key: '1-1', children: undefined}).then(() => {});
-    }, [projectId, dataTypeId]);
+        setProjectId(props.projectId);
+        setDataTypeId(props.dataTypeId);
+    }, [props.projectId, props.dataTypeId]);
+
+    useEffect(() => {
+        const tree = [{ title: '自动化用例', key: '1-1' }];
+        tree[0]['key'] = '1-1-' + RandomUtils.getKey();
+        setTreeData([...tree]);
+        onLoadData({key: tree[0]['key'], children: undefined}).then(() => {});
+    }, [props.observerId]);
 
     function onExpand(expandedKeys, {expanded: bool, node}) {
         //console.log(expandedKeys);
@@ -96,7 +99,7 @@ const DataNodeTreeSelect: React.FC<IState> = (props) => {
                             n.title = <Tooltip overlayClassName="small-font-size" title={v.name} color="#2db7f5" placement="rightTop">
                                 <span>{v.name}</span>
                             </Tooltip>;
-                            n.key = v.id + '-' + v.dataTypeId;
+                            n.key = v.id + '-' + v.dataTypeId + '-' + RandomUtils.getKey();
                             n.isLeaf = v.isFolder === 1 ? false : true;
                             n.dataNode = v;
                             n.parentNode = node;
@@ -130,8 +133,9 @@ const DataNodeTreeSelect: React.FC<IState> = (props) => {
     }
 
     return (
-        <div>
+        <div style={{background: 'aliceblue'}}>
             <Tree
+                style={{background: 'aliceblue'}}
                 checkable
                 loadData={onLoadData}
                 onExpand={onExpand}
