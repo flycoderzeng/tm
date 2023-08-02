@@ -120,6 +120,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                             setPlanVariables([]);
                         }
                         WindowTopUtils.expandLeftTree(ret.data, 1);
+                        WindowTopUtils.setWindowTopObject(WindowTopUtils.object_currDataNode, ret.data);
                     }
                     if(ret.data.mailList !== '' && ret.data.mailList !== null && ret.data.mailList !== undefined) {
                         const tempList: string[] = ret.data.mailList?.split(';') || [];

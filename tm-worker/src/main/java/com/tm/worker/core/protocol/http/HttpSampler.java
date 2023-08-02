@@ -43,6 +43,8 @@ import java.util.Map;
 public class HttpSampler extends StepNodeBase {
     private String WINDOWS_TEMP_DOWNLOAD_FILES_PATH = System.getProperty("user.home") + "/data/ci/autotest/temp/download-files";
     private String LINUX_TEMP_DOWNLOAD_FILES_PATH = "/data/ci/autotest/temp/download-files";
+    private String WINDOWS_TEMP_UPLOAD_FILES_PATH = System.getProperty("user.home") + "/data/ci/autotest/temp/upload-files";
+    private String LINUX_TEMP_UPLOAD_FILES_PATH = "/data/ci/autotest/temp/upload-files";
 
     // GET POST etc.
     private String requestType;
@@ -244,7 +246,13 @@ public class HttpSampler extends StepNodeBase {
                 if(StringUtils.equals("text", formDatum.getType())) {
                     formMap.put(name, value);
                 } else if (StringUtils.equals("file", formDatum.getType())) {
-                    formMap.put(name, new File(value));
+                    String filePath;
+                    if(OS.indexOf("windows") > -1) {
+                        filePath = WINDOWS_TEMP_UPLOAD_FILES_PATH + File.separator + value;
+                    }else{
+                        filePath = LINUX_TEMP_UPLOAD_FILES_PATH + File.separator + value;
+                    }
+                    formMap.put(name, new File(filePath));
                 }
             }
         }

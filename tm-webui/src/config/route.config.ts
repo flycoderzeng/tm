@@ -30,6 +30,8 @@ import HttpMockRuleList from "../components/mock/rules/HttpMockRuleList";
 import {HttpMockRuleEdit} from "../components/mock/rules/HttpMockRuleEdit";
 import DcnConfigList from "../components/testmanage/dcnconfig/DcnConfigList";
 import {DcnConfigEdit} from "../components/testmanage/dcnconfig/DcnConfigEdit";
+import TagList from "../components/testmanage/tags/TagList";
+import TagEdit from "../components/testmanage/tags/TagEdit";
 
 const routes = [
     {
@@ -148,6 +150,14 @@ const routes = [
             {
                 path: "/dcnconfigedit/:id",
                 component: DcnConfigEdit
+            },
+            {
+                path: "/tags",
+                component: TagList
+            },
+            {
+                path: "/tagedit/:id",
+                component: TagEdit
             },
             {
                 path: "/planresult/:planOrCaseId/:fromType/:planCaseType/:planResultId",
