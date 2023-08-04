@@ -2,6 +2,7 @@ export class LocalStorageUtils {
     public static COPY_STEP_NODE = '__COPY_STEP_NODE';
     public static _LOGIN_USERNAME = '_LOGIN_USERNAME';
     public static __COPY_VARIABLES = '__COPY_VARIABLES';
+    public static __CURR_DIR_ONLY = '__CURR_DIR_ONLY';
 
     public static saveFilteredValue(className: string, filteredValue: string[]): void {
         localStorage.setItem(className + '_filteredValue', JSON.stringify(filteredValue));
@@ -23,6 +24,10 @@ export class LocalStorageUtils {
 
     public static getItem(key: string): string {
         return localStorage.getItem(key) || '';
+    }
+
+    public static setItem(key: string, value: any) {
+        localStorage.setItem(key, (value === null || value === undefined) ? '' : value+'');
     }
 
     public static getLoginUsername(): string|null {

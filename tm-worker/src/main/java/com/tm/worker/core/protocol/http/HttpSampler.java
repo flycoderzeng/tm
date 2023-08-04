@@ -305,11 +305,11 @@ public class HttpSampler extends StepNodeBase {
         apiIpPortConfigs = context.getTaskService().selectByUrlAndEnvId(path, context.getPlanTask().getRunningConfigSnapshot().getEnvId(), dcnId);
         if(apiIpPortConfigs != null && apiIpPortConfigs.size() > 1) {
             throw new TMException("接口: " + path + ", 环境: "
-                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + "dcnId: " + dcnId + ", 存在多条配置");
+                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", dcnId: " + dcnId + ", 存在多条配置");
         }
         if(apiIpPortConfigs == null || apiIpPortConfigs.isEmpty()) {
             throw new TMException("接口: " + path + ", 环境: "
-                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + "dcnId: " + dcnId + ", 没有对应的接口地址配置, 请去测试管理-接口地址配置 配置!");
+                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", dcnId: " + dcnId + ", 没有对应的接口地址配置, 请去测试管理-接口地址配置 配置!");
         }
 
         if(StringUtils.isBlank(actualUrl)) {

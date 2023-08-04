@@ -79,10 +79,10 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                 }
             }
         }
-        if(dcnId !== null && dcnId !== undefined) {
+        if(dcnId) {
             data['data']['relationships']['dcnConfig'] = {
                 "data": {
-                    "id": dcnId,
+                    "id": dcnId || null,
                     "type": "dcn_config"
                 }
             };

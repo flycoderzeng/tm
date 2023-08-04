@@ -10,6 +10,7 @@ import moment from "moment";
 import {ApiUrlConfig} from "../../config/api.url";
 import {DataNodeModel} from "../../entities/DataNodeModel";
 import {WindowTopUtils} from "../../utils/WindowTopUtils";
+import {LocalStorageUtils} from "../../utils/LocalStorageUtils";
 
 const {Search} = Input;
 
@@ -17,6 +18,7 @@ interface IState {
     dataTypeId: number | null,
     projectId: number | null,
     setRenderRightFlag: any,
+    treeParentId?: number;
     setNodeId: any,
     isResourceSelect?: boolean;
     setSelectedResourceIdList?: any;
@@ -73,21 +75,39 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
     const [showColumnValue, setShowColumnValue] = useState<any>(defaultShowColumn);
 
     if (projectId !== props.projectId) {
+        initCurrDirOnly();
         setProjectId(props.projectId);
     }
+
     if (dataTypeId !== props.dataTypeId) {
+        initCurrDirOnly();
         setDataTypeId(props.dataTypeId);
     }
+
     if (projectId !== props.projectId || dataTypeId !== props.dataTypeId) {
+        initCurrDirOnly();
         setData([]);
     }
+
     useEffect(() => {
+        initCurrDirOnly();
         loadDataList(true);
-    }, [projectId, dataTypeId]);
+    }, [projectId, dataTypeId, props.treeParentId]);
+
     useImperativeHandle(ref, () => ({
         setSelectedList: setSelectedList,
         setTotalSelect: setTotalSelect,
     }));
+
+
+    function initCurrDirOnly() {
+        const item = LocalStorageUtils.getItem(LocalStorageUtils.__CURR_DIR_ONLY);
+        if (item === 'true') {
+            setCurrFolderChecked(true);
+        } else {
+            setCurrFolderChecked(false);
+        }
+    }
 
     function edit(id: number) {
         if (!setRenderRightFlag) {
@@ -223,6 +243,7 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
 
     function onChangeCurrFolder(e) {
         setCurrFolderChecked(e.target.checked);
+        LocalStorageUtils.setItem(LocalStorageUtils.__CURR_DIR_ONLY, e.target.checked);
     }
 
     let operateColumn;

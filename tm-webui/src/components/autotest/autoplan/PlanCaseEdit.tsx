@@ -4,7 +4,6 @@ import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
 import {CommonNodeListPage} from "../../common/CommonNodeListPage";
 import {DataTypeEnum} from "../../../entities/DataTypeEnum";
-import moment from "moment";
 import {MathUtils} from "../../../utils/MathUtils";
 import {DataNodeTreeSelect} from "../../common/DataNodeTreeSelect";
 import {DateUtils} from "../../../utils/DateUtils";
