@@ -30,6 +30,7 @@ interface IState {
     projectId ?: number|null;
     prevProjectId ?: number|null;
     renderRightFlag: number;
+    treeParentId?: number;
     myProjects: ProjectModel[];
     initTreeData: AntDataNode[];
 }
@@ -137,9 +138,10 @@ class CommonNodeManageLayout extends React.Component<CommonNodeListProps, IState
         window.localStorage.setItem("_LAST_USED_PROJECT_ID", e);
     }
 
-    setRenderRightFlag = (flag: number) => {
+    setRenderRightFlag = (flag: number, treeParentId?: number) => {
         this.setState({
-            renderRightFlag: flag
+            renderRightFlag: flag,
+            treeParentId: treeParentId,
         });
     }
 
@@ -159,7 +161,7 @@ class CommonNodeManageLayout extends React.Component<CommonNodeListProps, IState
 
     renderRight() {
         if(this.state.projectId && this.state.renderRightFlag === DataTypeEnum.ALL) {
-            return <CommonNodeListPage setNodeId={this.setNodeId} setRenderRightFlag={this.setRenderRightFlag} projectId={this.state.projectId} dataTypeId={this.props.match.params.dataTypeId}></CommonNodeListPage>
+            return <CommonNodeListPage setNodeId={this.setNodeId} setRenderRightFlag={this.setRenderRightFlag} treeParentId={this.state.treeParentId} projectId={this.state.projectId} dataTypeId={this.props.match.params.dataTypeId}></CommonNodeListPage>
         }else if(this.state.projectId && this.state.renderRightFlag === DataTypeEnum.AUTO_SHELL) {
             return <ShellEdit setRenderRightFlag={this.setRenderRightFlag} id={this.state.nodeId}></ShellEdit>
         }else if(this.state.projectId && this.state.renderRightFlag === DataTypeEnum.GLOBAL_VARIABLE) {
