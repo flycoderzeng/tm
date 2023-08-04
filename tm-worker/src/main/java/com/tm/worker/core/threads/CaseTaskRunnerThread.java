@@ -4,6 +4,7 @@ import com.tm.common.base.model.PlanRunningConfigSnapshot;
 import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.task.CaseTask;
 import com.tm.worker.core.task.PlanTask;
 import com.tm.worker.core.task.TaskService;
@@ -23,6 +24,8 @@ public class CaseTaskRunnerThread implements Runnable {
         this.taskService = taskService;
     }
 
+    private int index = 0;
+
     @Override
     public void run() {
         log.info("worker runner");
@@ -33,56 +36,10 @@ public class CaseTaskRunnerThread implements Runnable {
                     TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
                     continue;
                 }
-                int index = 0;
+
                 for (; ; ) {
                     PlanTask planTask = taskService.getPlanTask(index);
-                    if (planTask == null || planTask.isFinished()) {
-                        TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
-                        index = 0;
-                        continue;
-                    }
-                    // 获取case task 队列
-                    WorkerCaseTaskQueue caseTaskQueue = taskService.getCaseTaskQueue(planTask.getPlanExecuteResult().getId());
-                    if (caseTaskQueue == null || caseTaskQueue.isEmpty()) {
-                        continue;
-                    }
-                    // 获取运行时配置
-                    PlanRunningConfigSnapshot runningConfigSnapshot = planTask.getRunningConfigSnapshot();
-                    // 计划中当前运行的用例
-                    Integer runningTotal = planTask.getRunningTotal();
-                    // 计划中最大同时可以执行用例数
-                    Integer maxOccurs = runningConfigSnapshot.getMaxOccurs();
-                    if (maxOccurs == null || maxOccurs < 1) {
-                        maxOccurs = 1;
-                    }
-                    // 计划中正在运行的用例数大于等于设置的最大并发数
-                    if (runningTotal >= maxOccurs) {
-                        TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
-                        index++;
-                        continue;
-                    }
-                    CaseTask caseTask = null;
-                    if(maxOccurs == 1) {
-                        if(planTask.getFinishedCount() >= planTask.getPolledCount()) {
-                            // 取case task 执行用例
-                            caseTask = caseTaskQueue.poll();
-                        }
-                    }else{
-                        caseTask = caseTaskQueue.poll();
-                    }
-
-                    if (caseTask == null) {
-                        TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
-                        index++;
-                        continue;
-                    }
-                    planTask.increasePolledCount();
-
-                    runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
-                        if(baseResponse != null) {
-                            teardownPlanTask(planTask, baseResponse);
-                        }
-                    }));
+                    runTask(planTask);
                 }
             } catch (InterruptedException e) {
                 log.error("sleep error, ", e);
@@ -91,6 +48,57 @@ public class CaseTaskRunnerThread implements Runnable {
                 log.error("worker error, ", e);
             }
         }
+    }
+
+    private boolean runTask(PlanTask planTask) throws InterruptedException {
+        if (planTask == null || planTask.isFinished()) {
+            TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
+            index = 0;
+            return true;
+        }
+        // 获取case task 队列
+        WorkerCaseTaskQueue caseTaskQueue = taskService.getCaseTaskQueue(planTask.getPlanExecuteResult().getId());
+        if (caseTaskQueue == null || caseTaskQueue.isEmpty()) {
+            return true;
+        }
+        // 获取运行时配置
+        PlanRunningConfigSnapshot runningConfigSnapshot = planTask.getRunningConfigSnapshot();
+        // 计划中当前运行的用例
+        Integer runningTotal = planTask.getRunningTotal();
+        // 计划中最大同时可以执行用例数
+        Integer maxOccurs = runningConfigSnapshot.getMaxOccurs();
+        if (maxOccurs == null || maxOccurs < 1) {
+            maxOccurs = 1;
+        }
+        // 计划中正在运行的用例数大于等于设置的最大并发数
+        if (runningTotal >= maxOccurs) {
+            TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
+            index++;
+            return true;
+        }
+        CaseTask caseTask = null;
+        if(maxOccurs == 1) {
+            if(planTask.getFinishedCount() >= planTask.getPolledCount()) {
+                // 取case task 执行用例
+                caseTask = caseTaskQueue.poll();
+            }
+        }else{
+            caseTask = caseTaskQueue.poll();
+        }
+
+        if (caseTask == null) {
+            TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
+            index++;
+            return true;
+        }
+        planTask.increasePolledCount();
+
+        runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
+            if(baseResponse != null) {
+                teardownPlanTask(planTask, baseResponse);
+            }
+        }));
+        return false;
     }
 
     private void removePlanTask(PlanTask planTask) {
@@ -128,8 +136,6 @@ public class CaseTaskRunnerThread implements Runnable {
                 && planTask.getRunningConfigSnapshot().getFailContinue().equals(0)) {
             log.info("用例失败，并且 计划设置失败后停止执行");
             taskService.stopPlanTask(planTask.getPlanExecuteResultId());
-            taskService.setPlanExecuteResultStatus(planTask, PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN);
-            removePlanTask(planTask);
         }
     }
 
@@ -142,9 +148,10 @@ public class CaseTaskRunnerThread implements Runnable {
             try {
                 return taskService.submitCaseTask(caseTaskThread).get();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
+                throw new TMException(e);
             } catch (ExecutionException e) {
-                throw new RuntimeException(e);
+                throw new TMException(e);
             }
         });
     }

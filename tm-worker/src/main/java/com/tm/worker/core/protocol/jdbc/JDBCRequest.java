@@ -192,16 +192,21 @@ public class JDBCRequest extends StepNodeBase {
             throw new TMException("没有sql结果,断言失败");
         }
         boolean checkResult = true;
+        String info = null;
         for (KeyValueRow keyValueRow : checkErrorList) {
             Integer rowNumber = getRowNumber(keyValueRow);
             if(rowNumber >= list.size()) {
                 break;
             }
             Map<String, String> map = list.get(rowNumber);
-            checkResult = checkResult && checkResponse(caseVariables, map, keyValueRow);
+            info = checkResponse(caseVariables, map, keyValueRow);
+            if(info != null) {
+                checkResult = false;
+                break;
+            }
         }
         if(!checkResult) {
-            throw new TMException("数据库操作断言失败");
+            throw new TMException(info);
         }
     }
 
@@ -223,22 +228,22 @@ public class JDBCRequest extends StepNodeBase {
         return rowNumber;
     }
 
-    private boolean checkResponse(AutoTestVariables caseVariables, Map<String, String> map, KeyValueRow keyValueRow) {
+    private String checkResponse(AutoTestVariables caseVariables, Map<String, String> map, KeyValueRow keyValueRow) {
         final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
         if (StringUtils.isBlank(name)) {
-            return true;
+            return null;
         }
         Object leftOperand = map.get(name);
         final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
         final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
-        addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand).addResultInfo("] ")
-                .addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
+        String info = name + "[" + leftOperand + "] " + relationOperator.desc() + " " + value;
+        addResultInfo(info);
         if(AssertUtils.compare(leftOperand, relationOperator, value)) {
-            addResultInfoLine("[成功]");
-            return true;
+            addResultInfoLine(" [成功]");
+            return null;
         }else{
-            addResultInfoLine("[失败]");
-            return false;
+            addResultInfoLine(" [失败]");
+            return info + " [失败]";
         }
     }
 

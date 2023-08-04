@@ -32,10 +32,9 @@ const StepResultPage: React.FC<IState> = (props) => {
             message.error('复制失败');
         }
     }
-    const title = props.isInModal ? '' : '步骤结果';
     let resultPage;
     if(stepResult) {
-        resultPage = (<Descriptions title={title} size="small" bordered>
+        resultPage = (<Descriptions size="small" bordered>
             <Descriptions.Item label="步骤名称" labelStyle={{width: 100, minWidth: 100}} span={3}>{stepResult?.name}</Descriptions.Item>
             <Descriptions.Item label="步骤描述" labelStyle={{width: 100, minWidth: 100}} span={3}>{stepResult?.description}</Descriptions.Item>
             <Descriptions.Item label="结果状态" labelStyle={{width: 100, minWidth: 100}} span={3}>{renderResultStatus(stepResult)}</Descriptions.Item>
