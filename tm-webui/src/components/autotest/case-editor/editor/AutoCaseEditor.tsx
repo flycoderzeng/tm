@@ -1133,10 +1133,10 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 <Button type="primary" loading={running1} onClick={() => {
                     onRun(1);
                 }}>运行</Button>
-                <Button type="primary" loading={running2} onClick={() => {
+                <Button type="default" loading={running2} onClick={() => {
                     onRun(2);
                 }}>运行组合</Button>
-                <Button type="primary" danger>停止</Button>
+                {/*<Button type="primary" danger>停止</Button>*/}
                 <RunEnvSelect onChange={setRunEnvId} style={{width: '180px', marginRight: '5px'}} value={runEnvId}></RunEnvSelect>
                 <Button type="primary" onClick={() => {
                     onViewResult();

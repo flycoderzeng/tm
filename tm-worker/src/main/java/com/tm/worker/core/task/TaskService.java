@@ -398,6 +398,11 @@ public class TaskService {
     public void stopPlanTask(Integer planExecuteResultId) {
         caseTaskQueueMap.remove(planExecuteResultId);
         planTaskList.stop(planExecuteResultId);
+        setPlanExecuteResultStatus(getPlanTask(planExecuteResultId), PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN);
+        boolean removed = removePlanTask(planExecuteResultId);
+        if (!removed) {
+            log.error("remove failed, {}", planExecuteResultId);
+        }
     }
 
     public boolean removePlanTask(Integer planExecuteResultId) {

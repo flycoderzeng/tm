@@ -149,11 +149,16 @@ public class HttpSampler extends StepNodeBase {
             return ;
         }
         boolean checkResult = true;
+        String info = null;
         for (KeyValueRow keyValueRow : checkErrorList) {
-            checkResult = checkResult && checkResponseBody(caseVariables, httpResponse, keyValueRow);
+            info = checkResponseBody(caseVariables, httpResponse, keyValueRow);
+            if(info != null) {
+                checkResult = false;
+                break;
+            }
         }
         if(!checkResult) {
-            throw new TMException("响应断言失败");
+            throw new TMException(info);
         }
     }
 
@@ -191,19 +196,19 @@ public class HttpSampler extends StepNodeBase {
         return leftOperand;
     }
 
-    private boolean checkResponseBody(AutoTestVariables caseVariables, HttpResponse httpResponse, KeyValueRow keyValueRow) {
+    private String checkResponseBody(AutoTestVariables caseVariables, HttpResponse httpResponse, KeyValueRow keyValueRow) {
         final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
         Object leftOperand = extractLeftOperand(httpResponse, keyValueRow, name);
         final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
         final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
-        addResultInfo(name).addResultInfo("[").addResultInfo(leftOperand.toString()).addResultInfo("] ")
-                .addResultInfo(relationOperator.desc()).addResultInfo(" ").addResultInfo(value);
+        String info = name + "[" + leftOperand + "] " + relationOperator.desc() + " " + value;
+        addResultInfo(info);
         if(AssertUtils.compare(leftOperand, relationOperator, value)) {
-            addResultInfoLine("[成功]");
-            return true;
+            addResultInfoLine(" [成功]");
+            return null;
         }else{
-            addResultInfoLine("[失败]");
-            return false;
+            addResultInfoLine(" [失败]");
+            return info + " [失败]";
         }
     }
 
