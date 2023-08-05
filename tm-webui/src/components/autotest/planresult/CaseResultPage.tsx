@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {message, Modal, Space, Table, Tag, Tree} from "antd";
+import { CloseCircleTwoTone } from '@ant-design/icons';
 import {TreeUtils} from "../../../utils/TreeUtils";
 import {PlanResultStatusUtils} from "../../../utils/PlanResultStatusUtils";
 import {CaseResultStatusEnum} from "../../../entities/CaseResultStatusEnum";
@@ -15,6 +16,7 @@ interface IState {
 
 const CaseResultPage: React.FC<IState> = (props) => {
     const [stepsStr, setStepsStr] = useState(props.caseResult.steps);
+    const [errorStepKey, setErrorStepKey] = useState(props.caseResult.errorStepKey);
     const [stepResult, setStepResult] = useState<any>(null);
     const [steps, setSteps] = useState<any[]>([]);
     const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
@@ -33,6 +35,10 @@ const CaseResultPage: React.FC<IState> = (props) => {
 
     if(stepsStr !== props.caseResult.steps) {
         setStepsStr(props.caseResult.steps);
+    }
+
+    if(errorStepKey !== props.caseResult.errorStepKey) {
+        setErrorStepKey(props.caseResult.errorStepKey);
     }
 
     useEffect(() => {
@@ -243,7 +249,12 @@ const CaseResultPage: React.FC<IState> = (props) => {
             <Tree
                 style={{background: 'aliceblue'}}
                 expandedKeys={expandedKeys}
-                titleRender={(nodeData) => {return (<span>{nodeData.seq + ': ' + nodeData.title}</span>)}}
+                titleRender={(nodeData) => {
+                    if(nodeData.key === errorStepKey) {
+                        return (<span><CloseCircleTwoTone twoToneColor="#f50" />{nodeData.seq + ': ' + nodeData.title}</span>)
+                    }
+                    return (<span>{nodeData.seq + ': ' + nodeData.title}</span>)
+                }}
                 onSelect={onSelect}
                 onExpand={onExpand}
                 treeData={steps}
