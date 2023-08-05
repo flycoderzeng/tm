@@ -75,6 +75,8 @@ public class CaseTaskThread implements Callable<BaseResponse> {
     private boolean error = false;
     private String resultInfo = null;
 
+    private String errorStepKey;
+
     private CaseExecuteResult caseExecuteResult;
 
     public CaseTaskThread(CaseTask caseTask,
@@ -112,6 +114,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
                 Thread.interrupted();
             }
             error = true;
+            errorStepKey = currStepNode.getKey();
             if(exception instanceof TMException) {
                 resultInfo = exception.getMessage();
             }else{
@@ -188,6 +191,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
         if(error) {
             caseExecuteResult.setResultStatus(CaseExecuteResultStatusEnum.FAIL.value());
             caseExecuteResult.setResultInfo(resultInfo);
+            caseExecuteResult.setErrorStepKey(errorStepKey);
         }else{
             caseExecuteResult.setResultStatus(CaseExecuteResultStatusEnum.SUCCESS.value());
         }

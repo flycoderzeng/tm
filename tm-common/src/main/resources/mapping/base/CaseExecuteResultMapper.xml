@@ -15,6 +15,7 @@
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="description" property="description" jdbcType="VARCHAR" />
         <result column="result_info" property="resultInfo" jdbcType="VARCHAR" />
+        <result column="error_step_key" property="errorStepKey" jdbcType="VARCHAR" />
         <result column="steps" property="steps" jdbcType="VARCHAR" />
     </resultMap>
 
@@ -72,6 +73,9 @@
             <if test="resultInfo != null" >
                 result_info,
             </if>
+            <if test="errorStepKey != null" >
+                error_step_key,
+            </if>
             <if test="steps != null" >
                 steps,
             </if>
@@ -115,6 +119,9 @@
             </if>
             <if test="resultInfo != null" >
                 #{resultInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="errorStepKey != null" >
+                #{errorStepKey,jdbcType=VARCHAR},
             </if>
             <if test="steps != null" >
                 #{steps,jdbcType=VARCHAR},
@@ -161,6 +168,9 @@
             <if test="resultInfo != null" >
                 result_info = #{resultInfo,jdbcType=VARCHAR},
             </if>
+            <if test="errorStepKey != null" >
+                error_step_key = #{errorStepKey,jdbcType=VARCHAR},
+            </if>
             <if test="steps != null" >
                 steps = #{steps,jdbcType=VARCHAR},
             </if>
@@ -183,6 +193,7 @@
             `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
             `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
             `result_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+            `error_step_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
             `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
             PRIMARY KEY (`id`),
             KEY `case_result_query_index` (`plan_result_id`)

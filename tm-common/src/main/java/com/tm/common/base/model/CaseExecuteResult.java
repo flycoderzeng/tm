@@ -16,6 +16,7 @@ public class CaseExecuteResult extends Common5ItemsModel {
     private String name;
     private String description;
     private String resultInfo;
+    private String errorStepKey;
     private String steps;
     private String tableSuffix;
 }
