@@ -29,6 +29,8 @@ public class ScriptActionNode extends StepNodeBase {
 
     private String SHELL_RESULT_FLAG = "RESULT=";
 
+    private String interpreterPath;
+
     private static String OS = System.getProperty("os.name").toLowerCase();
 
     @Override
@@ -55,10 +57,14 @@ public class ScriptActionNode extends StepNodeBase {
 
     private void execTempScript(AutoTestVariables caseVariables, String tempScriptPath) throws InterruptedException, IOException {
         Process process;
-        if(OS.indexOf("windows") > -1) {
-            process = RuntimeUtil.exec("cmd.exe /c " + tempScriptPath);
-        }else{
-            process = RuntimeUtil.exec("sh -x " + tempScriptPath);
+        if (StringUtils.isNoneBlank(interpreterPath)) {
+            process = RuntimeUtil.exec(interpreterPath + " " + tempScriptPath);
+        } else {
+            if (OS.indexOf("windows") > -1) {
+                process = RuntimeUtil.exec("cmd.exe /c " + tempScriptPath);
+            } else {
+                process = RuntimeUtil.exec("sh -x " + tempScriptPath);
+            }
         }
         process.waitFor(600, TimeUnit.SECONDS);
         log.info("shell exit code: {}", process.exitValue());
@@ -78,8 +84,14 @@ public class ScriptActionNode extends StepNodeBase {
         addResultInfoLine(stdoutBuilder.toString());
 
         StringBuilder stderrBuilder = new StringBuilder();
+        String charsetName;
+        if (OS.indexOf("windows") > -1) {
+            charsetName = "GBK";
+        } else {
+            charsetName = "UTF8";
+        }
         BufferedReader stderrBufferedReader = new BufferedReader(
-                new InputStreamReader(process.getErrorStream(), "GBK"));
+                new InputStreamReader(process.getErrorStream(), charsetName));
         while ((line = stderrBufferedReader.readLine()) != null) {
             stderrBuilder.append(line).append("\n");
         }
