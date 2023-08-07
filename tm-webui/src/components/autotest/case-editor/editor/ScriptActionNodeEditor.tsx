@@ -7,6 +7,7 @@ import {ContentEditor} from "./ContentEditor";
 
 const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props) => {
     const [content, setContent] = useState(props.define.content);
+    const [interpreterPath, setInterpreterPath] = useState(props.define.interpreterPath);
     const [scriptResultVariableName, setScriptResultVariableName] = useState(props.define.scriptResultVariableName);
     const {onChange} = props;
     const {stepNode} = props;
@@ -26,6 +27,11 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
         onChange('scriptResultVariableName', v);
     }
 
+    function onChangeInterpreterPath(v: any) {
+        setInterpreterPath(v);
+        onChange('interpreterPath', v);
+    }
+
     const options = props.userDefinedVariables?.map(v => {
         return {label: v.name, value: '${' + v.name + '}'};
     }) as any[];
@@ -34,6 +40,16 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
         <CommonNameComments refreshTree={props.refreshTree} stepNode={stepNode} define={stepNode.define} onChange={onChange}>
         </CommonNameComments>
         <div>
+            <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
+                <Col flex="150px">执行器路径</Col>
+                <Col flex="auto">
+                    <AutoComplete
+                        placeholder="变量名"
+                        value={interpreterPath} onChange={onChangeInterpreterPath}
+                        style={{width: '100%'}}
+                    />
+                </Col>
+            </Row>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
                 <Col flex="150px">shell脚本内容</Col>
                 <Col flex="auto">
