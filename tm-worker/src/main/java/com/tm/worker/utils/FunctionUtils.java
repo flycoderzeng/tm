@@ -53,6 +53,9 @@ public final class FunctionUtils {
     //
     //2）decodeuricomponent和urldecoder.decode暂时还看不出有何区别
     public static String encodeURIComponent(@NotNull String src) throws UnsupportedEncodingException {
+        if(src == null) {
+            return "";
+        }
         String encodedStr = URLEncoder.encode(src, "UTF-8");
         if(StringUtils.isNoneBlank(encodedStr)) {
             encodedStr = encodedStr.replace("%21", "!").replace("%27", "'")
