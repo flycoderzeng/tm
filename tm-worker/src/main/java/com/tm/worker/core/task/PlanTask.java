@@ -86,6 +86,10 @@ public class PlanTask extends WorkerPlanTask {
         polledCount.incrementAndGet();
     }
 
+    public void decreasePolledCount() {
+        polledCount.decrementAndGet();
+    }
+
     public Integer getPolledCount() {
         return polledCount.get();
     }

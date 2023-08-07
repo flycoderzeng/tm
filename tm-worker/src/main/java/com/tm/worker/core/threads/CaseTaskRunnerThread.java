@@ -4,6 +4,7 @@ import com.tm.common.base.model.PlanRunningConfigSnapshot;
 import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
+import com.tm.common.utils.ResultUtils;
 import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.task.CaseTask;
 import com.tm.worker.core.task.PlanTask;
@@ -78,7 +79,7 @@ public class CaseTaskRunnerThread implements Runnable {
         }
         CaseTask caseTask = null;
         if(maxOccurs == 1) {
-            if(planTask.getFinishedCount() >= planTask.getPolledCount()) {
+            if(planTask.getFinishedCount() >= planTask.getPolledCount() && !planTask.isStopped()) {
                 // 取case task 执行用例
                 caseTask = caseTaskQueue.poll();
             }
@@ -95,9 +96,12 @@ public class CaseTaskRunnerThread implements Runnable {
 
         runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
             if(baseResponse != null) {
+                if(baseResponse.getCode().equals(ResultCodeEnum.PLAN_IS_STOPPED_NOT_RUN_CASE)) {
+                    planTask.decreasePolledCount();
+                }
                 teardownPlanTask(planTask, baseResponse);
             }
-        }));
+        })).join();
         return false;
     }
 
@@ -109,8 +113,13 @@ public class CaseTaskRunnerThread implements Runnable {
     }
 
     private void teardownPlanTask(PlanTask planTask, BaseResponse baseResponse) {
+        // 用例失败 并且 计划设置失败后停止执行
+        if(baseResponse.getCode().equals(ResultCodeEnum.CASE_RUN_ERROR.getCode())
+                && planTask.getRunningConfigSnapshot().getFailContinue().equals(0)) {
+            log.info("用例失败，并且 计划设置失败后停止执行, {}", planTask.getPlanExecuteResultId());
+            taskService.stopPlanTask(planTask);
+        }
         planTask.increaseFinishedCount();
-        planTask.decreaseRunningCount();
         if(baseResponse.getCode().equals(ResultCodeEnum.CASE_RUN_ERROR.getCode())) {
             planTask.increaseFailedCasesCount();
         }
@@ -119,7 +128,7 @@ public class CaseTaskRunnerThread implements Runnable {
             log.info("最后一个用例执行完，设置计划结果状态为完成, 计划结果id：{}", planTask.getPlanExecuteResultId());
             taskService.setPlanExecuteEnd(planTask);
             removePlanTask(planTask);
-        } else if (planTask.getRunningTotal().equals(0) && planTask.isStopped()) {
+        } else if (planTask.getRunningTotal().equals(0) && planTask.isStopped() && !planTask.isCaseFailStopPlan()) {
             log.info("计划被用户停止，设置为停止状态, 计划结果id：{}", planTask.getPlanExecuteResultId());
             taskService.setPlanExecuteResultStatus(planTask, PlanExecuteResultStatusEnum.CANCELED);
             removePlanTask(planTask);
@@ -131,17 +140,14 @@ public class CaseTaskRunnerThread implements Runnable {
         }else{
             taskService.addSuccessCount(planTask.getPlanExecuteResultId());
         }
-        // 用例失败 并且 计划设置失败后停止执行
-        if(baseResponse.getCode().equals(ResultCodeEnum.CASE_RUN_ERROR.getCode())
-                && planTask.getRunningConfigSnapshot().getFailContinue().equals(0)) {
-            log.info("用例失败，并且 计划设置失败后停止执行");
-            taskService.stopPlanTask(planTask.getPlanExecuteResultId());
-        }
+        planTask.decreaseRunningCount();
     }
 
     private CompletableFuture<BaseResponse> runCase(PlanTask planTask, CaseTask caseTask) {
         if (planTask.isStopped()) {
-            return null;
+            CompletableFuture<BaseResponse> future = new CompletableFuture<>();
+            future.complete(ResultUtils.error(ResultCodeEnum.PLAN_IS_STOPPED_NOT_RUN_CASE));
+            return future;
         }
         return CompletableFuture.supplyAsync(() -> {
             CaseTaskThread caseTaskThread = new CaseTaskThread(caseTask, taskService);

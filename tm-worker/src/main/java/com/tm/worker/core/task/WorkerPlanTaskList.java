@@ -97,4 +97,20 @@ public class WorkerPlanTaskList<T extends WorkerPlanTask> {
             }
         }
     }
+
+    public void stopPassive(Integer planExecuteResultId) {
+        int index = -1;
+        for (int i = 0; i < planTaskList.size(); i++) {
+            if(planTaskList.get(i).getPlanExecuteResultId().equals(planExecuteResultId)) {
+                index = i;
+                break;
+            }
+        }
+        if(index > -1) {
+            T t = planTaskList.get(index);
+            if(t != null) {
+                t.stopPassive();
+            }
+        }
+    }
 }

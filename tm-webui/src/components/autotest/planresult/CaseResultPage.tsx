@@ -251,7 +251,7 @@ const CaseResultPage: React.FC<IState> = (props) => {
                 expandedKeys={expandedKeys}
                 titleRender={(nodeData) => {
                     if(nodeData.key === errorStepKey) {
-                        return (<span><CloseCircleTwoTone twoToneColor="#f50" />{nodeData.seq + ': ' + nodeData.title}</span>)
+                        return (<span><CloseCircleTwoTone twoToneColor="#f50" /> {nodeData.seq + ': ' + nodeData.title}</span>)
                     }
                     return (<span>{nodeData.seq + ': ' + nodeData.title}</span>)
                 }}

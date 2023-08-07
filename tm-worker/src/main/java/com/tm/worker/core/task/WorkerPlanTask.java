@@ -13,6 +13,8 @@ public class WorkerPlanTask {
 
     private volatile boolean running = true;
 
+    private volatile boolean caseFailStopPlan = false;
+
     private PlanExecuteResult planExecuteResult;
 
     public WorkerPlanTask(PlanExecuteResult planExecuteResult) {
@@ -38,6 +40,14 @@ public class WorkerPlanTask {
 
     public void stop() {
         running = false;
+    }
+
+    public void stopPassive() {
+        caseFailStopPlan = true;
+    }
+
+    public boolean isCaseFailStopPlan() {
+        return caseFailStopPlan;
     }
 
     public boolean isStopped() {

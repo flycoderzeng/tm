@@ -395,13 +395,13 @@ public class TaskService {
         planExecuteResultDao.setPlanExecuteResultStatus(planTask.getPlanExecuteResult(), status);
     }
 
-    public void stopPlanTask(Integer planExecuteResultId) {
-        caseTaskQueueMap.remove(planExecuteResultId);
-        planTaskList.stop(planExecuteResultId);
-        setPlanExecuteResultStatus(getPlanTask(planExecuteResultId), PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN);
-        boolean removed = removePlanTask(planExecuteResultId);
+    public void stopPlanTask(PlanTask planTask) {
+        planTaskList.stop(planTask.getPlanExecuteResultId());
+        planTaskList.stopPassive(planTask.getPlanExecuteResultId());
+        setPlanExecuteResultStatus(planTask, PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN);
+        boolean removed = removePlanTask(planTask.getPlanExecuteResultId());
         if (!removed) {
-            log.error("remove failed, {}", planExecuteResultId);
+            log.error("remove failed, {}", planTask.getPlanExecuteResultId());
         }
     }
 
