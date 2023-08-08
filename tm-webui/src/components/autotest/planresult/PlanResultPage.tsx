@@ -198,7 +198,7 @@ const PlanResultPage: React.FC<IState> = (props) => {
                 </Descriptions.Item>
                 <Descriptions.Item label="进度">
                     <div style={{display: "flex", alignItems: 'center'}}>
-                        <Progress percent={progress} />
+                        <Progress percent={progress} style={{marginRight: '30px'}} />
                         <Tag color="blue">{completeInfo}</Tag>
                         <Tag color={successRateColor}>{successRate}</Tag>
                     </div>
