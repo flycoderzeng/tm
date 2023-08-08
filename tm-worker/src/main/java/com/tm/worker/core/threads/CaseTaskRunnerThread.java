@@ -101,7 +101,7 @@ public class CaseTaskRunnerThread implements Runnable {
                 }
                 teardownPlanTask(planTask, baseResponse);
             }
-        })).join();
+        }));
         return false;
     }
 

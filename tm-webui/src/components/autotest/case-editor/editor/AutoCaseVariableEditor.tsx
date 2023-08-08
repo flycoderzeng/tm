@@ -295,7 +295,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                         计划变量
                     </Col>
                 </Row>
-                <div style={{maxHeight: 'calc(100vh - 300px)', overflow: 'auto'}}>
+                <div style={{maxHeight: 'calc(100vh - 350px)', overflow: 'auto'}}>
                 {renderRows()}
                 </div>
             </div>

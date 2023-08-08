@@ -147,8 +147,8 @@ const GroupManageEditor: React.FC<IState> = (props) => {
 
     rows = renderData();
 
-    const maxWidth = window.innerWidth - 630;
-    const maxHeight = window.outerHeight - 450;
+    const maxWidth = window.innerWidth - 640;
+    const maxHeight = window.outerHeight - 435;
 
     function renderOptions() {
         if(!headers) {
@@ -173,7 +173,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
                 <Button size="small" type="primary" onClick={onAddGroup}>添加组合</Button>
                 <Button size="small" type="primary" onClick={onRemoveGroup}>删除组合</Button>
             </div>
-            <div style={{marginTop: '5px', maxWidth: maxWidth, maxHeight: 'calc(100vh - 300px)', overflow: 'auto'}}>
+            <div style={{marginTop: '5px', maxWidth: maxWidth, maxHeight: 'calc(100vh - 310px)', overflow: 'auto'}}>
                 <Table columns={headers} scroll={{ x: maxWidth, y: maxHeight }} dataSource={rows} size="small" pagination={false} bordered={true}/>
             </div>
             <Modal
