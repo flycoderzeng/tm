@@ -47,6 +47,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                 const ret = resp.data;
                 ref.current?.setFieldsValue({
                     dbName: ret.data.attributes.dbName,
+                    schemaName: ret.data.attributes.schemaName,
                     dcnId: !ret.data.attributes.dcnId ? null : ret.data.attributes.dcnId+'',
                     ip: ret.data.attributes.ip,
                     port: ret.data.attributes.port,
@@ -67,6 +68,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                 "type": "db_config",
                 "attributes": {
                     dbName: values.dbName,
+                    schemaName: values.schemaName,
                     username: values.username,
                     password: values.password,
                     type: values.type,
@@ -145,10 +147,19 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                 initialValues={initialValues}
                 onFinish={onFinish}
             >
+
                 <Form.Item
                     label="数据库名"
                     name="dbName"
-                    rules={[{required: true, message: '请输入数据库名!'}]}
+                    rules={[{required: true, message: '请输入数据库名称!'}]}
+                >
+                    <Input style={{width: '300px'}}/>
+                </Form.Item>
+
+                <Form.Item
+                    label="schema名称"
+                    name="schemaName"
+                    rules={[{required: false, message: '请输入schema名称!'}]}
                 >
                     <Input style={{width: '300px'}}/>
                 </Form.Item>
@@ -208,6 +219,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                 >
                     <Select style={{ width: 120 }}>
                         <Option value="1">MySql</Option>
+                        <Option value="2">Postgresql</Option>
                     </Select>
                 </Form.Item>
 

@@ -2,6 +2,7 @@ package com.tm.worker.core.protocol.jdbc;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.tm.common.base.model.DbConfig;
+import com.tm.common.entities.common.enumerate.DbTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -25,6 +26,9 @@ public class JDBCDataSource {
         dataSource.setUsername(dbConfig.getUsername());
         dataSource.setPassword(dbConfig.getPassword());
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        if(DbTypeEnum.POSTGRESQL.value() == dbConfig.getType()) {
+            dataSource.setDriverClassName("org.postgresql.Driver");
+        }
         dataSource.setInitialSize(3);
         dataSource.setMaxActive(30);
         dataSource.setMinIdle(1);
@@ -54,6 +58,11 @@ public class JDBCDataSource {
     public String getUrl() {
         String url = "jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull";
         url = String.format(url, dbConfig.getIp(), dbConfig.getPort(), dbConfig.getDbName());
+        if(DbTypeEnum.POSTGRESQL.value() == dbConfig.getType()) {
+            url = "jdbc:postgresql://%s:%s/%s?currentSchema=%s";
+            url = String.format(url, dbConfig.getIp(), dbConfig.getPort(), dbConfig.getSchemaName(), dbConfig.getDbName());
+        }
+        log.info(url);
         return url;
     }
 

@@ -30,6 +30,9 @@ public class DbConfig extends CommonSixItemsElideModel {
     @Column(name = "db_name")
     private String dbName;
 
+    @Column(name = "schema_name")
+    private String schemaName;
+
     @Lob
     @Column(name = "username", columnDefinition = "TEXT")
     @Convert(converter = EncryptDecrypt.class)
