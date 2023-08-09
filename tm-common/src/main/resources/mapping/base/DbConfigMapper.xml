@@ -10,6 +10,7 @@
         <result column="env_id" property="envId" jdbcType="INTEGER" />
         <result column="dcn_id" property="dcnId" jdbcType="INTEGER" />
         <result column="env_name" property="envName" jdbcType="VARCHAR" />
+        <result column="schema_name" property="schemaName" jdbcType="VARCHAR" />
         <result column="db_name" property="dbName" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="type" property="type" jdbcType="INTEGER" />
@@ -20,7 +21,7 @@
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, username, password, db_name, ip, port, status, env_id, dcn_id, type, add_time, add_user, last_modify_time, last_modify_user
+        id, username, password, schema_name, db_name, ip, port, status, env_id, dcn_id, type, add_time, add_user, last_modify_time, last_modify_user
     </sql>
 
     <select id="selectByPrimaryId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -71,10 +72,10 @@
 
     <update id="batchInsert" parameterType="com.tm.common.base.model.DbConfig">
         INSERT INTO db_config
-        (id, username, password, db_name, ip, port, status, env_id, dcn_id, type, add_time, add_user)
+        (id, username, password, schema_name, db_name, ip, port, status, env_id, dcn_id, type, add_time, add_user)
         VALUES
         <foreach collection ="dbConfigs" item="item" separator =",">
-            (null, #{item.username}, #{item.password}, #{item.dbName}, #{item.ip}, #{item.port}, #{item.status}, #{item.envId}, #{item.dcnId}, #{item.type}, #{item.addTime}, #{item.addUser})
+            (null, #{item.username}, #{item.password}, #{item.schemaName}, #{item.dbName}, #{item.ip}, #{item.port}, #{item.status}, #{item.envId}, #{item.dcnId}, #{item.type}, #{item.addTime}, #{item.addUser})
         </foreach >
     </update>
 

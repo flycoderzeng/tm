@@ -268,7 +268,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         data['filter[' + this.modelType + ']'] = filter;
 
         if(this.modelType === 'db_config') {
-            data['fields[db_config]'] = 'addTime,addUser,lastModifyTime,lastModifyUser,ip,port,username,status,type,envId,envName,dbName,dcnId,dcnName';
+            data['fields[db_config]'] = 'addTime,addUser,lastModifyTime,lastModifyUser,ip,port,username,status,type,envId,envName,schemaName,dbName,dcnId,dcnName';
         }
 
         if(this.modelType === 'api_ip_port_config') {

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 public class DbConfig extends Common6ItemsModel {
     @NotBlank(message = "数据库名称不能为空")
     private String dbName;
+    private String schemaName;
     private String username;
     private String password;
     private String ip;

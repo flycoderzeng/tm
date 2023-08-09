@@ -94,9 +94,13 @@ class DbConfigList extends CommonListPage {
                     type="link"
                     onClick={() => this.edit(record.id)}>{text}</Button>,
             },{
+                title: 'schema',
+                dataIndex: 'schemaName',
+                sorter: ()=>{},
+                render: text => <span>{text}</span>,
+            },{
                 title: 'ip',
                 dataIndex: 'ip',
-                key: 'ip',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             },{
