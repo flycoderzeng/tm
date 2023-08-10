@@ -1,5 +1,6 @@
 export class LocalStorageUtils {
     public static COPY_STEP_NODE = '__COPY_STEP_NODE';
+    public static __COPY_STEP_VARIABLES = '__COPY_STEP_VARIABLES';
     public static _LOGIN_USERNAME = '_LOGIN_USERNAME';
     public static __COPY_VARIABLES = '__COPY_VARIABLES';
     public static __CURR_DIR_ONLY = '__CURR_DIR_ONLY';
