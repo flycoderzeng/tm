@@ -304,7 +304,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                 <Row style={{paddingBottom: '5px'}}>
                     <Col flex="100px" style={{fontWeight: 600, color: '#6e6e6e'}}>变量名称</Col>
                     <Col flex="auto">
-                        <Input value={variableName} onChange={onChangeNameInModal}/>
+                        <Input placeholder="变量名必须以v_开头" value={variableName} onChange={onChangeNameInModal}/>
                     </Col>
                 </Row>
                 <Row style={{paddingBottom: '5px'}}>

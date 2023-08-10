@@ -30,6 +30,7 @@ import {ScriptActionNodeEditor} from "./ScriptActionNodeEditor";
 import {WindowTopUtils} from "../../../../utils/WindowTopUtils";
 import {Resizable} from "re-resizable";
 import copy from "copy-to-clipboard";
+import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 
 
 interface IState {
@@ -150,7 +151,7 @@ const initTreeData: StepNode[] = [{
 
 let seq = 5;
 
-let FUCK_CURR_STEP_NODE: StepNode;
+let HAPPY_CURR_STEP_NODE: StepNode;
 
 const AutoCaseEditor: React.FC<IState> = (props) => {
     //let history = useHistory();
@@ -373,7 +374,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     setTreeCheckEnable(false);
                     setTreeData(steps);
                     setCurrStepNode(steps[0]);
-                    FUCK_CURR_STEP_NODE = steps[0];
+                    HAPPY_CURR_STEP_NODE = steps[0];
                     setRootNode(steps[0]);
                     setRunEnvId(ret.data.lastRunEnvId == null ? '' : (ret.data.lastRunEnvId + ''));
                     setGroupVariables(ret.data.groupVariables||null);
@@ -386,7 +387,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
 
     function onRightClick({event, node}: any) {
         setCurrStepNode(node);
-        FUCK_CURR_STEP_NODE = node;
+        HAPPY_CURR_STEP_NODE = node;
         setSelectedKeys([node.key]);
         if (node.id === '1') {
             hideRightMenu(event);
@@ -506,7 +507,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
             const n: any = Object.assign({}, currStepNode, e.node);
             return n;
         });
-        FUCK_CURR_STEP_NODE = e.node;
+        HAPPY_CURR_STEP_NODE = e.node;
         if (e.node.isLeaf) {
 
         } else {
@@ -679,6 +680,60 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         const copyNodeData = getCopyNodeData(currStepNode);
         setCopyNodeData(copyNodeData);
         localStorage.setItem(LocalStorageUtils.COPY_STEP_NODE, JSON.stringify([copyNodeData]));
+        onCopyVariables();
+    }
+
+    function onPasteStepVariables() {
+        const item = localStorage.getItem(LocalStorageUtils.__COPY_STEP_VARIABLES);
+        if(item == null || item === '') {
+            return ;
+        }
+        try {
+            let arr: AutoCaseVariable[] = JSON.parse(item);
+            for (let i = 0; i < arr.length; i++) {
+                let definedVariables = treeData[0].define.userDefinedVariables;
+                let exists = false;
+                for (let j = 0; j < definedVariables.length; j++) {
+                    if(arr[i].name === definedVariables[j].name) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if(exists) {
+                    definedVariables.push(arr[i]);
+                }
+            }
+            setTreeData([...treeData]);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function onCopyVariables() {
+        const steps = localStorage.getItem(LocalStorageUtils.COPY_STEP_NODE);
+        if(!steps) {
+            return;
+        }
+        const array = steps.match(/\$\{(v_[0-9a-zA-Z_]+?)\}/g);
+        if(array == null) {
+            return ;
+        }
+        const variables: any[] = [];
+        for (let i = 0; i < array.length; i++) {
+            let definedVariables = treeData[0].define.userDefinedVariables;
+            for (let j = 0; j < definedVariables.length; j++) {
+                let element = array[i];
+                element = element.substring(2, element.length - 1);
+                if(element === definedVariables[j].name) {
+                    variables.push(definedVariables[j]);
+                }
+            }
+        }
+        if(variables.length > 0) {
+            localStorage.setItem(LocalStorageUtils.__COPY_STEP_VARIABLES, JSON.stringify(variables));
+        }else{
+            localStorage.setItem(LocalStorageUtils.__COPY_STEP_VARIABLES, "");
+        }
     }
 
     function updateLevelAndKey(): (StepNode | null) [] {
@@ -852,8 +907,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     }
 
     function onChangeDefine(key: string, value: any) {
-        if(FUCK_CURR_STEP_NODE) {
-            FUCK_CURR_STEP_NODE.define[key] = value;
+        if(HAPPY_CURR_STEP_NODE) {
+            HAPPY_CURR_STEP_NODE.define[key] = value;
         }
     }
 
@@ -1042,6 +1097,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
             }
             setExpandedKeys([...expandedKeys]);
         }
+
+        onPasteStepVariables();
     }
 
     function getCheckedStepNode(steps: StepNode[]): StepNode[] {
@@ -1097,6 +1154,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
             }
         }
         localStorage.setItem(LocalStorageUtils.COPY_STEP_NODE, JSON.stringify(steps));
+        onCopyVariables();
 
         message.info('复制用例步骤成功');
         const newExpandedKeys: string[] = refreshKey(treeData);
