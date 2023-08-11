@@ -154,7 +154,7 @@ public class JDBCRequest extends StepNodeBase {
                 return;
             }
             Map<String, String> map = list.get(rowNumber);
-            addResultInfo("将列: ").addResultInfo(name).addResultInfo(" 的值保存到变量: ").addResultInfoLine(value);
+            addResultInfo("将列: ").addResultInfo(name).addResultInfo(" 的值[").addResultInfo(map.get(name)).addResultInfo("]保存到变量: ").addResultInfoLine(value);
             caseVariables.putObject(value, map.get(name));
         }
     }

@@ -79,7 +79,7 @@ const VariableResultList: React.FC<IState> = (props) => {
 
     const columns: any[] = [
         {
-            width: 200,
+            width: 300,
             title: '变量名称',
             dataIndex: 'variableName',
             key: 'id',

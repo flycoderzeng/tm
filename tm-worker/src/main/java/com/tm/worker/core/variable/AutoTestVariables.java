@@ -83,11 +83,6 @@ public class AutoTestVariables {
     private String get(String key) {
         Object o = this.variables.get(key);
         if (o instanceof String string) {
-            if(StringUtils.equals(string, ExpressionUtils.__PLATFORM_PRIVATE_NULL)) {
-                return null;
-            }else if(ReUtil.isMatch(ExpressionUtils.pattern, string)) {
-                return ExpressionUtils.replaceExpression((String) o, variables);
-            }
             return string;
         } else {
             return o != null ? o.toString() : null;
@@ -103,11 +98,26 @@ public class AutoTestVariables {
     }
 
     public Object getObject(String key) {
-        return variables.get(key);
+        Object o = this.variables.get(key);
+        if (o instanceof String string) {
+            if(StringUtils.equals(string, ExpressionUtils.__PLATFORM_PRIVATE_NULL)) {
+                return null;
+            }else if(ReUtil.isMatch(ExpressionUtils.pattern, string)) {
+                return ExpressionUtils.replaceExpression((String) o, variables);
+            }
+            return string;
+        } else {
+            return o != null ? o.toString() : null;
+        }
     }
 
     public Map<String, Object> getVariables() {
-        return variables;
+        Map<String, Object> newVariables = new HashMap();
+        for (Map.Entry<String, Object> entry : variables.entrySet()) {
+            String key = entry.getKey();
+            newVariables.put(key, this.getObject(key));
+        }
+        return newVariables;
     }
 
     private void initBuiltinVariables() {

@@ -69,7 +69,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
         let headers: any[] = [
             {
                 "title": "变量名称",
-                "width": 150,
+                "width": 180,
                 dataIndex: "__variableName",
                 key: "__variableName",
                 fixed: 'left',
