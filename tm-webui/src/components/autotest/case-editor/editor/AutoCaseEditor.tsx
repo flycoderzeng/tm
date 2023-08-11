@@ -699,7 +699,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                         break;
                     }
                 }
-                if(exists) {
+                if(!exists) {
                     definedVariables.push(arr[i]);
                 }
             }
