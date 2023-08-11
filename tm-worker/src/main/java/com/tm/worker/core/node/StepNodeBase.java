@@ -94,6 +94,7 @@ public class StepNodeBase {
         TaskService taskService = context.getTaskService();
         log.info("插入步骤 异常执行 完毕的日志,结果id：{}, 用例id: {}, 步骤名称: {}", planTask.getPlanExecuteResultId(),
                 caseTask.getAutoCase().getId(), name);
+        addResultInfoLine(errorInfo);
         caseStepExecuteResult.setResultInfo(getResultInfo());
         caseStepExecuteResult.setEndTimestamp(System.currentTimeMillis());
         caseStepExecuteResult.setResultStatus(CaseExecuteResultStatusEnum.FAIL.value());
