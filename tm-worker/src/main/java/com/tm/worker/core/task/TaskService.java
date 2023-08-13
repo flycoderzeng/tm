@@ -16,6 +16,7 @@ import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.common.KeyValueRow;
 import com.tm.common.utils.DateUtils;
 import com.tm.common.utils.LocalHostUtils;
+import com.tm.common.utils.TableSuffixUtils;
 import com.tm.worker.core.function.date.GetDate;
 import com.tm.worker.core.function.date.GetTimestamp;
 import com.tm.worker.core.function.extractor.JsonExtractor;
@@ -28,20 +29,18 @@ import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.service.CaseResultLogService;
 import com.tm.worker.service.DbConfigService;
 import com.tm.worker.utils.DataTypeAdapter;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Type;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 
@@ -118,7 +117,6 @@ public class TaskService {
         threadPoolExecutor.submit(caseResultLogProcessRunnerThread);
     }
 
-    @Async
     public void submitPlanTask(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
         log.info("接收到任务，计划结果id：{}，开始初始化", planExecuteResult.getId());
         if (!canSubmitPlanTask()) {
@@ -154,13 +152,35 @@ public class TaskService {
             }
         }
 
-        PlanTask planTask = handleSubmitTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value());
+        PlanTask planTask = handleSubmitPlanTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value());
         waitForTaskFinish(planTask);
 
         int countTeardownCaseList = planCaseDao.countTeardownCaseList(body);
         if(countTeardownCaseList > 0) {
             execPlanTeardownCases(planExecuteResult, snapshot, planVariables);
         }
+    }
+
+    public void retryFailedCase(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
+        log.info("接收到重试失败用例任务，计划结果id：{}，开始初始化", planExecuteResult.getId());
+        AutoTestVariables planVariables = null;
+        // 如果不是调试用例，需要加载全局变量
+        if (!planExecuteResult.getFromType().equals(PlanRunFromTypeEnum.CASE.value())) {
+            log.info("加载全局变量");
+            planVariables = initPlanVariables(snapshot.getPlanVariables());
+        }
+        final String tableSuffix = TableSuffixUtils.getTableSuffix(new Date(planExecuteResult.getSubmitTimestamp()),
+                getSplitCaseResultTableType(), 0);
+        // 删除执行失败的结果日志
+        planExecuteResultDao.deleteFailedCaseResult(planExecuteResult.getId(), tableSuffix);
+        // 得到已经执行成功的用例
+        final List<CaseExecuteResult> successCaseResultList = planExecuteResultDao.getExecuteSuccessCaseResultList(planExecuteResult.getId(),
+                tableSuffix);
+        Map<String, Boolean> successCaseMap = new HashedMap();
+        for (CaseExecuteResult caseExecuteResult : successCaseResultList) {
+            successCaseMap.put(caseExecuteResult.getCaseId() + "_" + caseExecuteResult.getGroupNo(), true);
+        }
+        handleSubmitPlanTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value(), successCaseMap);
     }
 
     private void execPlanTeardownCases(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot, AutoTestVariables planVariables) {
@@ -176,7 +196,7 @@ public class TaskService {
         log.info("初始化 teardown PlanRunningConfigSnapshot");
         PlanRunningConfigSnapshot planTeardownSnapshot = copyPlanRunningConfigSnapshot(snapshot, planTeardownExecuteResult);
         planRunningConfigSnapshotDao.insertBySelective(planTeardownSnapshot);
-        handleSubmitTask(planTeardownExecuteResult, planTeardownSnapshot, planVariables, PlanCaseEnum.TEARDOWN.value());
+        handleSubmitPlanTask(planTeardownExecuteResult, planTeardownSnapshot, planVariables, PlanCaseEnum.TEARDOWN.value());
     }
 
     private void waitForTaskFinish(PlanTask planSetupTask) {
@@ -188,6 +208,7 @@ public class TaskService {
                 TimeUnit.SECONDS.sleep(10);
             } catch (InterruptedException e) {
                 log.info("", e);
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -206,7 +227,7 @@ public class TaskService {
         PlanRunningConfigSnapshot planSetupSnapshot = copyPlanRunningConfigSnapshot(snapshot, planSetupExecuteResult);
         planRunningConfigSnapshotDao.insertBySelective(planSetupSnapshot);
 
-        return handleSubmitTask(planSetupExecuteResult, planSetupSnapshot, planVariables, PlanCaseEnum.SETUP.value());
+        return handleSubmitPlanTask(planSetupExecuteResult, planSetupSnapshot, planVariables, PlanCaseEnum.SETUP.value());
     }
 
     private PlanRunningConfigSnapshot copyPlanRunningConfigSnapshot(PlanRunningConfigSnapshot snapshot, PlanExecuteResult planSetupExecuteResult) {
@@ -252,11 +273,21 @@ public class TaskService {
         }
         return new AutoTestVariables(map);
     }
+    public PlanTask handleSubmitPlanTask(PlanExecuteResult planExecuteResult,
+                                         PlanRunningConfigSnapshot snapshot,
+                                         AutoTestVariables planVariables,
+                                         Integer planCaseType) {
+        return handleSubmitPlanTask(planExecuteResult, snapshot, planVariables, planCaseType, new HashMap<>());
+    }
 
-    public PlanTask handleSubmitTask(PlanExecuteResult planExecuteResult,
-                                     PlanRunningConfigSnapshot snapshot,
-                                     AutoTestVariables planVariables,
-                                     Integer planCaseType) {
+    public PlanTask handleSubmitPlanTask(PlanExecuteResult planExecuteResult,
+                                         PlanRunningConfigSnapshot snapshot,
+                                         AutoTestVariables planVariables,
+                                         Integer planCaseType,
+                                         @NonNull Map<String, Boolean> excludeCaseMap) {
+        if(!excludeCaseMap.isEmpty()) {
+            planExecuteResultDao.setPlanExecuteResultStatus(planExecuteResult, PlanExecuteResultStatusEnum.INIT);
+        }
         List<Integer> caseIdList = new ArrayList<>();
         if (!fillCaseIdList(planExecuteResult, caseIdList, planCaseType)) return null;
 
@@ -270,7 +301,36 @@ public class TaskService {
 
         PlanTask planTask = new PlanTask(planExecuteResult, snapshot, planVariables);
         WorkerCaseTaskQueue caseTaskQueue = new WorkerCaseTaskQueue();
+        fillCaseTaskQueue(planExecuteResult, snapshot, caseIdList, planTask, caseTaskQueue, excludeCaseMap);
+        caseTaskQueueMap.put(planExecuteResult.getId(), caseTaskQueue);
+        // 更新将运行的用例总数
+        log.info("更新将运行的用例总数,结果id：{}, 总数: {}", planExecuteResult.getId(), caseTaskQueue.size());
+        planExecuteResultDao.setTotal(planExecuteResult, caseTaskQueue.size() + planExecuteResult.getSuccessCount());
+        // 更新计划运行开始时间
+        log.info("更新计划运行开始时间,结果id：{}", planExecuteResult.getId());
+        if(excludeCaseMap.isEmpty()) {
+            planExecuteResultDao.setPlanExecuteResultStartTimestamp(planExecuteResult);
+        }
+        planExecuteResultDao.setPlanExecuteResultStatus(planExecuteResult, PlanExecuteResultStatusEnum.INIT_END);
+
+        planTask.setTotalCases(caseTaskQueue.size());
+        planTaskList.add(planTask);
+        planTaskList.sort();
+
+        return planTask;
+    }
+
+    private void deleteCaseStepResultAndVariableResult(int planResultId, int caseId, int groupNo, String tableSuffix) {
+        planExecuteResultDao.deleteFailedCaseStepResult(planResultId, caseId, groupNo, tableSuffix);
+        planExecuteResultDao.deleteFailedCaseVariableResult(planResultId, caseId, groupNo, tableSuffix);
+    }
+
+    private void fillCaseTaskQueue(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot,
+                                   List<Integer> caseIdList, PlanTask planTask, WorkerCaseTaskQueue caseTaskQueue,
+                                   Map<String, Boolean> excludeCaseMap) {
         int i = 0;
+        final String tableSuffix = TableSuffixUtils.getTableSuffix(
+                new Date(planExecuteResult.getSubmitTimestamp()), getSplitCaseResultTableType(), 0);
         for (Integer caseId : caseIdList) {
             AutoCase autoCase = autoCaseDao.selectByPrimaryId(caseId);
             String groupVariablesStr = autoCase.getGroupVariables();
@@ -279,6 +339,11 @@ public class TaskService {
                 HashMap<String, String>[] groups = gson.fromJson(groupVariablesStr, groupVariablesTypeToken);
                 log.info("组合方式运行， 用例id: {}", caseId);
                 for (int j = 0; j < groups.length; j++) {
+                    final String key = caseId + "_" + j;
+                    if(excludeCaseMap.containsKey(key)) {
+                        deleteCaseStepResultAndVariableResult(planExecuteResult.getId(), caseId, j, tableSuffix);
+                        continue;
+                    }
                     HashMap<String, String> group = groups[j];
                     String taskId = planExecuteResult.getId() + "_" + i;
                     AutoTestVariables groupVariables = new AutoTestVariables();
@@ -294,26 +359,18 @@ public class TaskService {
                     i++;
                 }
             } else {
+                final String key = caseId + "_0";
+                if(excludeCaseMap.containsKey(key)) {
+                    deleteCaseStepResultAndVariableResult(planExecuteResult.getId(), caseId, 0, tableSuffix);
+                    continue;
+                }
                 log.info("非组合方式运行， 用例id: {}", caseId);
                 String taskId = planExecuteResult.getId() + "_" + i;
                 CaseTask caseTask = new CaseTask(taskId, planTask, autoCase);
                 caseTaskQueue.add(caseTask);
+                i++;
             }
         }
-        caseTaskQueueMap.put(planExecuteResult.getId(), caseTaskQueue);
-        // 更新将运行的用例总数
-        log.info("更新将运行的用例总数,结果id：{}, 总数: {}", planExecuteResult.getId(), caseTaskQueue.size());
-        planExecuteResultDao.setTotal(planExecuteResult, caseTaskQueue.size());
-        // 更新计划运行开始时间
-        log.info("更新计划运行开始时间,结果id：{}", planExecuteResult.getId());
-        planExecuteResultDao.setPlanExecuteResultStartTimestamp(planExecuteResult);
-        planExecuteResultDao.setPlanExecuteResultStatus(planExecuteResult, PlanExecuteResultStatusEnum.INIT_END);
-
-        planTask.setTotalCases(caseTaskQueue.size());
-        planTaskList.add(planTask);
-        planTaskList.sort();
-
-        return planTask;
     }
 
     private boolean fillCaseIdList(PlanExecuteResult planExecuteResult, List<Integer> caseIdList, Integer planCaseType) {

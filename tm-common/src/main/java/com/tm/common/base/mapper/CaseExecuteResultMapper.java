@@ -18,4 +18,10 @@ public interface CaseExecuteResultMapper {
     List<CaseExecuteResult> queryList(CommonTableQueryBody body);
 
     int countList(CommonTableQueryBody body);
+
+    List<CaseExecuteResult> getExecuteSuccessCaseResultList(@Param("planResultId") Integer planResultId,
+                                                            @Param("tableSuffix") String tableSuffix);
+
+    int deleteFailedCaseResult(@Param("planResultId") Integer planResultId,
+                                                            @Param("tableSuffix") String tableSuffix);
 }

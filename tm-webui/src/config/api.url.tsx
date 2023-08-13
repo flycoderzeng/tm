@@ -92,6 +92,7 @@ const ApiUrlConfig = {
     CHANGE_CASE_SEQ_URL: '/web/plancase/changeCaseSeq',
     RUN_PLAN_URL: '/worker/autotest/runPlan',
     RUN_CASE_URL: '/worker/autotest/runCase',
+    RETRY_FAILED_CASE_URL: '/worker/autotest/retryFailedCase',
     QUERY_URL_CONFIG_LIST_URL: '/lc/lc/json/api/api_ip_port_config',
     LOAD_URL_CONFIG_URL: '/lc/lc/json/api/api_ip_port_config/',
     SAVE_URL_CONFIG_URL: '/lc/lc/json/api/api_ip_port_config',

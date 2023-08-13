@@ -11,8 +11,8 @@ public class PlanExecuteResult extends PlanRunningConfigSnapshot {
     private Long startTimestamp;
     private Long endTimestamp;
     private Integer total;
-    private Integer successCount;
-    private Integer failCount;
+    private Integer successCount = 0;
+    private Integer failCount = 0;
     private String resultInfo;
     private String submitter;
     private Long submitTimestamp;

@@ -100,4 +100,10 @@
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
     </update>
+
+    <delete id="deleteFailedCaseVariableResult">
+        delete from
+                    `case_variable_value_result_${tableSuffix}`
+        where plan_result_id = #{planResultId,jdbcType=INTEGER} and case_id=#{caseId,jdbcType=INTEGER} and group_no=#{groupNo,jdbcType=INTEGER}
+    </delete>
 </mapper>

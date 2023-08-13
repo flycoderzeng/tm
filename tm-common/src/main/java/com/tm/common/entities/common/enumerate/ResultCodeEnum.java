@@ -13,6 +13,7 @@ public enum ResultCodeEnum {
     CASE_RUN_ERROR(100006, "用例执行失败"),
     SOURCE_ENV_RELATIVE_CONFIG_EMPTY(100007, "源环境相关配置为空"),
     PLAN_IS_STOPPED_NOT_RUN_CASE(100008, "计划已经停止,没有运行用例"),
+    CURR_PLAN_RESULT_STATUS_NOT_PERMITTED(100009, "当前计划结果状态不允许重试失败用例"),
     SYSTEM_ERROR(999999, "系统错误"),
     ;
     private Integer code;

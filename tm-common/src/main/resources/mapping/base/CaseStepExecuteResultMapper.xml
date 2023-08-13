@@ -156,7 +156,11 @@
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
     </update>
 
-
+    <delete id="deleteFailedCaseStepResult">
+        delete from case_step_execute_result_${tableSuffix}
+        where 1=1 and plan_result_id = #{planResultId,jdbcType=INTEGER} and case_id=#{caseId,jdbcType=INTEGER}
+          and group_no=#{groupNo,jdbcType=INTEGER}
+    </delete>
 
     <select id="queryList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultMap="BaseResultMap">
         select

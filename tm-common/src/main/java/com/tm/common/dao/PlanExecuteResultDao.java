@@ -111,4 +111,20 @@ public class PlanExecuteResultDao {
     public List<CaseStepExecuteResult> getCaseStepResultList(CommonTableQueryBody body) {
         return caseStepExecuteResultMapper.queryList(body);
     }
+
+    public List<CaseExecuteResult> getExecuteSuccessCaseResultList(int planResultId, String tableSuffix) {
+        return caseExecuteResultMapper.getExecuteSuccessCaseResultList(planResultId, tableSuffix);
+    }
+
+    public int deleteFailedCaseResult(int planResultId, String tableSuffix) {
+        return caseExecuteResultMapper.deleteFailedCaseResult(planResultId, tableSuffix);
+    }
+
+    public int deleteFailedCaseStepResult(Integer planResultId, Integer caseId, Integer groupNo, String tableSuffix) {
+        return caseStepExecuteResultMapper.deleteFailedCaseStepResult(planResultId, caseId, groupNo, tableSuffix);
+    }
+
+    public int deleteFailedCaseVariableResult(Integer planResultId, Integer caseId, Integer groupNo, String tableSuffix) {
+        return caseVariableValueResultMapper.deleteFailedCaseVariableResult(planResultId, caseId, groupNo, tableSuffix);
+    }
 }

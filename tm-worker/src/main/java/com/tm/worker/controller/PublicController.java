@@ -24,22 +24,19 @@ public class PublicController extends BaseController {
     public BaseResponse runAutoCase(@RequestBody @Valid RunCaseBody body) {
         User user = getLoginUser();
         user.setUsername("定时任务");
-        BaseResponse baseResponse = autoTestService.runAutoCase(body, user);
-        return baseResponse;
+        return autoTestService.runAutoCase(body, user);
     }
 
     @PostMapping(value = "/autotest/runPlan", produces = {"application/json;charset=UTF-8"})
     public BaseResponse runPlan(@RequestBody @Valid RunPlanBody body) {
         User user = getLoginUser();
         user.setUsername("定时任务");
-        BaseResponse baseResponse = autoTestService.runAutoPlan(body, user);
-        return baseResponse;
+        return autoTestService.runAutoPlan(body, user);
     }
 
     @PostMapping(value = "/autotest/getPlanRunResultStatus", produces = {"application/json;charset=UTF-8"})
     public BaseResponse getPlanRunResultStatus(@RequestBody @Valid GetPlanRunResultStatusBody body) {
         User user = getLoginUser();
-        BaseResponse baseResponse = autoTestService.getPlanRunResultStatus(body, user);
-        return baseResponse;
+        return autoTestService.getPlanRunResultStatus(body, user);
     }
 }
