@@ -22,7 +22,6 @@ public class BaseController {
             return new User();
         }
         String username = request.getUserPrincipal().getName();
-        User user = ehcacheService.get(username);
-        return user;
+        return ehcacheService.get(username);
     }
 }

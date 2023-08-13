@@ -172,9 +172,32 @@ const PlanResultPage: React.FC<IState> = (props) => {
         window.open("#/planresult/" + planOrCaseId + "/" + fromType + "/2/" + planTeardownResultId);
     }
 
+    function retryFailedCase() {
+        if(!window.confirm('确定重新执行失败的用例吗？')) {
+            return ;
+        }
+        axios.post(ApiUrlConfig.RETRY_FAILED_CASE_URL,
+            {planResultId: planResultId}).then(resp => {
+            if (resp.status !== 200) {
+                message.error('执行失败');
+            } else {
+                const ret = resp.data;
+                if (ret.code !== 0) {
+                    message.error(ret.message);
+                } else {
+                    message.success('操作成功');
+                }
+            }
+        });
+    }
+
     let checkHistoryResultBtn;
     if(planCaseType === 0 || planCaseType === '0') {
-        checkHistoryResultBtn = <Button type="primary" size="small" onClick={()=>{setVisible(true);}}>查看历史结果</Button>
+        checkHistoryResultBtn = <Button type="primary" onClick={()=>{setVisible(true);}}>查看历史结果</Button>
+    }
+    let retryFailedCaseBtn;
+    if(planCaseType === 0 || planCaseType === '0') {
+        retryFailedCaseBtn = <Button type="primary" danger onClick={()=>{retryFailedCase();}}>重试失败用例</Button>
     }
 
     return (<div className="card">
@@ -184,10 +207,11 @@ const PlanResultPage: React.FC<IState> = (props) => {
         <div className="card-body">
             <Descriptions size="small" title="基本信息" extra={<div className="tool-bar">
                 {checkHistoryResultBtn}
-                <Button type="default" size="small" onClick={()=>{checkSetupResult();}}>查看计划前执行结果</Button>
-                <Button type="dashed" size="small" onClick={()=>{checkTeardownResult();}}>查看计划后执行结果</Button>
-                {/*<Button type="default" size="small">发送邮件</Button>*/}
-                {/*<Button type="primary" size="small">再次执行</Button>*/}
+                {retryFailedCaseBtn}
+                <Button type="default" onClick={()=>{checkSetupResult();}}>查看计划前结果</Button>
+                <Button type="dashed" onClick={()=>{checkTeardownResult();}}>查看计划后结果</Button>
+                {/*<Button type="default" >发送邮件</Button>*/}
+                {/*<Button type="primary" >再次执行</Button>*/}
             </div>} bordered>
                 <Descriptions.Item label="计划名称">{planOrCaseName}</Descriptions.Item>
                 <Descriptions.Item label="提交信息">{submitInfo}</Descriptions.Item>

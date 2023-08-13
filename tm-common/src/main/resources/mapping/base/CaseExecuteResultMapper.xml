@@ -200,7 +200,17 @@
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
     </update>
 
+    <select id="getExecuteSuccessCaseResultList" resultMap="BaseResultMap">
+        select
+            case_id, group_no
+        from case_execute_result_${tableSuffix}
+        where 1=1 and plan_result_id = #{planResultId,jdbcType=INTEGER} and result_status=2
+    </select>
 
+    <delete id="deleteFailedCaseResult">
+        delete from case_execute_result_${tableSuffix}
+        where 1=1 and plan_result_id = #{planResultId,jdbcType=INTEGER} and result_status!=2
+    </delete>
 
     <select id="queryList" parameterType="com.tm.common.entities.base.CommonTableQueryBody" resultMap="BaseResultMap">
         select

@@ -3,8 +3,10 @@ package com.tm.worker.service;
 import com.tm.common.base.mapper.*;
 import com.tm.common.base.model.*;
 import com.tm.common.entities.autotest.RunPlanBean;
+import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
 import com.tm.common.entities.autotest.request.GetPlanRunResultStatusBody;
+import com.tm.common.entities.autotest.request.RetryFailedCaseBody;
 import com.tm.common.entities.autotest.request.RunCaseBody;
 import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;
@@ -16,9 +18,8 @@ import com.tm.common.utils.ResultUtils;
 import com.tm.worker.core.task.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service("autoTestService")
@@ -110,13 +111,19 @@ public class AutoTestService {
         if(bean.getFromTypeEnum() == PlanRunFromTypeEnum.CASE) {
             updateAutoCaseLastRunEnvId(bean);
         }
-        submitPlanTask(planExecuteResult, snapshot);
+        runPlanTask(planExecuteResult, snapshot);
 
         return ResultUtils.success(planExecuteResult.getId());
     }
 
-    public void submitPlanTask(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
+    @Async
+    public void runPlanTask(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
         taskService.submitPlanTask(planExecuteResult, snapshot);
+    }
+
+    @Async
+    public void retryFailedCase(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
+        taskService.retryFailedCase(planExecuteResult, snapshot);
     }
 
     private void updateAutoCaseLastRunEnvId(RunPlanBean body) {
@@ -132,12 +139,14 @@ public class AutoTestService {
         }
         PlanRunningConfigSnapshot snapshot = new PlanRunningConfigSnapshot();
         snapshot.setPlanResultId(planExecuteResult.getId());
-        if(runPlanBean.getRunEnvId() == null) {
+        if(runPlanBean.getRunEnvId() == null && autoPlan != null) {
             snapshot.setEnvId(autoPlan.getEnvId());
         }else{
             snapshot.setEnvId(runPlanBean.getRunEnvId());
         }
-        if(runPlanBean.getFromTypeEnum() == PlanRunFromTypeEnum.PLAN || runPlanBean.getFromTypeEnum() == PlanRunFromTypeEnum.CRON_JOB) {
+        if(autoPlan != null
+                && (runPlanBean.getFromTypeEnum() == PlanRunFromTypeEnum.PLAN
+                || runPlanBean.getFromTypeEnum() == PlanRunFromTypeEnum.CRON_JOB)) {
             snapshot.setMaxOccurs(autoPlan.getMaxOccurs());
             snapshot.setFailContinue(autoPlan.getFailContinue());
             if(runPlanBean.getPlanVariables() == null || runPlanBean.getPlanVariables().isEmpty()) {
@@ -167,35 +176,54 @@ public class AutoTestService {
             dataNode = dataNodeMapper.selectByPrimaryKey(bean.getCaseId(), DataTypeEnum.AUTO_CASE.value());
         }
         if(dataNode == null) {
+            log.error("error plan id: {} or case id: {}", bean.getPlanId(), bean.getCaseId());
             return null;
         }
         return addPlanExecuteResult(dataNode, loginUser, bean);
     }
 
     private PlanExecuteResult addPlanExecuteResult(DataNode dataNode, User loginUser, RunPlanBean runPlanBean) {
-        PlanExecuteResult record = new PlanExecuteResult();
-        record.setFromType(runPlanBean.getFromTypeEnum().value());
-        record.setPlanOrCaseId(dataNode.getId());
-        record.setPlanOrCaseName(dataNode.getName());
+        PlanExecuteResult planExecuteResult = new PlanExecuteResult();
+        planExecuteResult.setFromType(runPlanBean.getFromTypeEnum().value());
+        planExecuteResult.setPlanOrCaseId(dataNode.getId());
+        planExecuteResult.setPlanOrCaseName(dataNode.getName());
         if(PlanRunFromTypeEnum.CRON_JOB == runPlanBean.getFromTypeEnum()) {
-            record.setSubmitter("定时任务");
+            planExecuteResult.setSubmitter("定时任务");
         }else {
-            record.setSubmitter(loginUser.getUsername());
+            planExecuteResult.setSubmitter(loginUser.getUsername());
         }
-        record.setSubmitTimestamp(System.currentTimeMillis());
-        record.setWorkerIp(LocalHostUtils.getLocalIp());
-        record.setPlanCronJobId(runPlanBean.getPlanCronJobId());
-        record.setSubmitDate(DateUtils.parseTimestampToFormatDate(System.currentTimeMillis(), DateUtils.DATE_PATTERN_YMD));
-        record.setTotal(1);
-        record.setRunDescription(runPlanBean.getRunDescription());
+        planExecuteResult.setSubmitTimestamp(System.currentTimeMillis());
+        planExecuteResult.setWorkerIp(LocalHostUtils.getLocalIp());
+        planExecuteResult.setPlanCronJobId(runPlanBean.getPlanCronJobId());
+        planExecuteResult.setSubmitDate(DateUtils.parseTimestampToFormatDate(System.currentTimeMillis(), DateUtils.DATE_PATTERN_YMD));
+        planExecuteResult.setTotal(1);
+        planExecuteResult.setRunDescription(runPlanBean.getRunDescription());
 
-        planExecuteResultMapper.insertBySelective(record);
-        return record;
+        planExecuteResultMapper.insertBySelective(planExecuteResult);
+        return planExecuteResult;
     }
 
     public BaseResponse getPlanRunResultStatus(GetPlanRunResultStatusBody body, User user) {
         log.info("{} 查询计划结果执行状态", user.getUsername());
         PlanExecuteResult planExecuteResult = planExecuteResultMapper.selectByPrimaryId(body.getPlanResultId());
         return ResultUtils.success(planExecuteResult);
+    }
+
+    public BaseResponse retryFailedCase(RetryFailedCaseBody body, User user) {
+        final PlanExecuteResult planExecuteResult = planExecuteResultMapper.selectByPrimaryId(body.getPlanResultId());
+        if(planExecuteResult == null) {
+            log.error("无效的计划结果id：{}", body.getPlanResultId());
+            return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
+        }
+        if(PlanExecuteResultStatusEnum.FINISHED.value() != planExecuteResult.getResultStatus()
+                && PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN.value() != planExecuteResult.getResultStatus()) {
+            return ResultUtils.error(ResultCodeEnum.CURR_PLAN_RESULT_STATUS_NOT_PERMITTED);
+        }
+        if(!taskService.canSubmitPlanTask()) {
+            return ResultUtils.error(ResultCodeEnum.COPY_TASK_OVERFLOW_ERROR);
+        }
+        final PlanRunningConfigSnapshot snapshot = planRunningConfigSnapshotMapper.selectByPrimaryPlanResultId(body.getPlanResultId());
+        retryFailedCase(planExecuteResult, snapshot);
+        return ResultUtils.success();
     }
 }

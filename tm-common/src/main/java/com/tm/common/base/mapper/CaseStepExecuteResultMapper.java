@@ -15,9 +15,12 @@ public interface CaseStepExecuteResultMapper {
                                                                        @Param("tableSuffix") String tableSuffix);
     void createCaseStepExecuteResultTable(String tableSuffix);
 
-
-
     List<CaseStepExecuteResult> queryList(CommonTableQueryBody body);
 
     int countList(CommonTableQueryBody body);
+
+    int deleteFailedCaseStepResult(@Param("planResultId") Integer planResultId,
+                                   @Param("caseId") Integer caseId,
+                                   @Param("groupNo") Integer groupNo,
+                                   @Param("tableSuffix") String tableSuffix);
 }

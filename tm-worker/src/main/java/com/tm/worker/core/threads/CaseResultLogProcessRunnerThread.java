@@ -26,11 +26,11 @@ public class CaseResultLogProcessRunnerThread implements Runnable {
             if(logOperate == null) {
                 try {
                     TimeUnit.MILLISECONDS.sleep(500);
-                    continue;
                 } catch (InterruptedException e) {
                     log.error("sleep error, ", e);
-                    Thread.interrupted();
+                    Thread.currentThread().interrupt();
                 }
+                continue;
             }
             switch (logOperate.getLogOperateTypeEnum()) {
                 case INSERT -> caseResultLogService.insert(logOperate.getLogRow());

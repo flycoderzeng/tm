@@ -2,6 +2,7 @@ package com.tm.worker.controller;
 
 import com.tm.common.base.model.User;
 import com.tm.common.entities.autotest.request.GetPlanRunResultStatusBody;
+import com.tm.common.entities.autotest.request.RetryFailedCaseBody;
 import com.tm.common.entities.autotest.request.RunCaseBody;
 import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;
@@ -23,21 +24,24 @@ public class AutoTestController extends BaseController {
     @PostMapping(value = "/runCase")
     public BaseResponse runAutoCase(@RequestBody @Valid RunCaseBody body) {
         User user = getLoginUser();
-        BaseResponse baseResponse = autoTestService.runAutoCase(body, user);
-        return baseResponse;
+        return autoTestService.runAutoCase(body, user);
     }
 
     @PostMapping(value = "/runPlan", produces = {"application/json;charset=UTF-8"})
     public BaseResponse runPlan(@RequestBody @Valid RunPlanBody body) {
         User user = getLoginUser();
-        BaseResponse baseResponse = autoTestService.runAutoPlan(body, user);
-        return baseResponse;
+        return autoTestService.runAutoPlan(body, user);
     }
 
     @PostMapping(value = "/getPlanRunResultStatus", produces = {"application/json;charset=UTF-8"})
     public BaseResponse getPlanRunResultStatus(@RequestBody @Valid GetPlanRunResultStatusBody body) {
         User user = getLoginUser();
-        BaseResponse baseResponse = autoTestService.getPlanRunResultStatus(body, user);
-        return baseResponse;
+        return autoTestService.getPlanRunResultStatus(body, user);
+    }
+
+    @PostMapping(value = "/retryFailedCase", produces = {"application/json;charset=UTF-8"})
+    public BaseResponse retryFailedCase(@RequestBody @Valid RetryFailedCaseBody body) {
+        User user = getLoginUser();
+        return autoTestService.retryFailedCase(body, user);
     }
 }
