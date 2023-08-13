@@ -111,10 +111,11 @@ public class TaskService {
     private void initThreadPool() {
         int cores = Runtime.getRuntime().availableProcessors();
         ThreadFactory springThreadFactory = new CustomizableThreadFactory("worker-pool-");
-        executorService = Executors.newFixedThreadPool(cores * 2, springThreadFactory);
+        executorService = Executors.newFixedThreadPool(cores * 4, springThreadFactory);
         threadPoolExecutor = (ThreadPoolExecutor) executorService;
-        CaseResultLogProcessRunnerThread caseResultLogProcessRunnerThread = new CaseResultLogProcessRunnerThread(caseResultLogService);
-        threadPoolExecutor.submit(caseResultLogProcessRunnerThread);
+        for (int i = 0; i < 10; i++) {
+            threadPoolExecutor.submit(new CaseResultLogProcessRunnerThread(caseResultLogService));
+        }
     }
 
     public void submitPlanTask(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
