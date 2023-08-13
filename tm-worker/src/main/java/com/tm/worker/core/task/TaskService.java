@@ -111,7 +111,11 @@ public class TaskService {
     private void initThreadPool() {
         int cores = Runtime.getRuntime().availableProcessors();
         ThreadFactory springThreadFactory = new CustomizableThreadFactory("worker-pool-");
-        executorService = Executors.newFixedThreadPool(cores * 4, springThreadFactory);
+        int nThreads = cores * 4;
+        if(nThreads < 30) {
+            nThreads = 30;
+        }
+        executorService = Executors.newFixedThreadPool(nThreads, springThreadFactory);
         threadPoolExecutor = (ThreadPoolExecutor) executorService;
         for (int i = 0; i < 10; i++) {
             threadPoolExecutor.submit(new CaseResultLogProcessRunnerThread(caseResultLogService));
