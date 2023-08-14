@@ -150,6 +150,9 @@ public class TaskService {
             planExecuteResult.setResultStatus(PlanExecuteResultStatusEnum.SETUP_PLAN_RUNNING.value());
             planExecuteResultDao.updateBySelective(planExecuteResult);
             PlanTask planSetupTask = execPlanSetupCases(planExecuteResult, snapshot, planVariables);
+            if(planSetupTask == null) {
+                return ;
+            }
             waitForTaskFinish(planSetupTask);
             if(planSetupTask.getFailedCasesCount() > 0) {
                 log.info("计划前执行用例失败");
@@ -160,6 +163,9 @@ public class TaskService {
         }
 
         PlanTask planTask = handleSubmitPlanTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value());
+        if(planTask == null) {
+            return ;
+        }
         waitForTaskFinish(planTask);
 
         int countTeardownCaseList = planCaseDao.countTeardownCaseList(body);
