@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Component;
 
@@ -122,6 +123,7 @@ public class TaskService {
         }
     }
 
+    @Async
     public void submitPlanTask(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
         log.info("接收到任务，计划结果id：{}，开始初始化", planExecuteResult.getId());
         if (!canSubmitPlanTask()) {
@@ -166,6 +168,7 @@ public class TaskService {
         }
     }
 
+    @Async
     public void retryFailedCase(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
         log.info("接收到重试失败用例任务，计划结果id：{}，开始初始化", planExecuteResult.getId());
         AutoTestVariables planVariables = null;
@@ -278,6 +281,7 @@ public class TaskService {
         }
         return new AutoTestVariables(map);
     }
+
     public PlanTask handleSubmitPlanTask(PlanExecuteResult planExecuteResult,
                                          PlanRunningConfigSnapshot snapshot,
                                          AutoTestVariables planVariables,
@@ -319,6 +323,12 @@ public class TaskService {
         planExecuteResultDao.setPlanExecuteResultStatus(planExecuteResult, PlanExecuteResultStatusEnum.INIT_END);
 
         planTask.setTotalCases(caseTaskQueue.size());
+        for (Integer i = 0; i < planExecuteResult.getSuccessCount(); i++) {
+            planTask.increaseFinishedCount();
+        }
+        for (Integer i = 0; i < planExecuteResult.getFailCount(); i++) {
+            planTask.increaseFailedCasesCount();
+        }
         planTaskList.add(planTask);
         planTaskList.sort();
 
@@ -472,12 +482,12 @@ public class TaskService {
         return planTaskList.remove(planExecuteResultId);
     }
 
-    public void addFailCount(Integer planExecuteResultId) {
-        planExecuteResultDao.addFailCount(planExecuteResultId);
+    synchronized public void setFailCount(Integer planExecuteResultId, Integer failCount) {
+        planExecuteResultDao.setFailCount(planExecuteResultId, failCount);
     }
 
-    public void addSuccessCount(Integer planExecuteResultId) {
-        planExecuteResultDao.addSuccessCount(planExecuteResultId);
+    synchronized public void setSuccessCount(Integer planExecuteResultId, Integer successCount) {
+        planExecuteResultDao.setSuccessCount(planExecuteResultId, successCount);
     }
 
     public void putResultLog(CaseExecuteLogOperate caseExecuteLogOperate) {

@@ -72,12 +72,12 @@ public class PlanExecuteResultDao {
         planExecuteResultMapper.updateBySelective(planExecuteResult);
     }
 
-    public void addFailCount(Integer planExecuteResultId) {
-        planExecuteResultMapper.addFailCount(planExecuteResultId);
+    public void setFailCount(Integer planExecuteResultId, Integer failCount) {
+        planExecuteResultMapper.setFailCount(planExecuteResultId, failCount);
     }
 
-    public void addSuccessCount(Integer planExecuteResultId) {
-        planExecuteResultMapper.addSuccessCount(planExecuteResultId);
+    public void setSuccessCount(Integer planExecuteResultId, Integer successCount) {
+        planExecuteResultMapper.setSuccessCount(planExecuteResultId, successCount);
     }
 
     public PlanExecuteResult getNewestPlanExecuteResult(GetNewestPlanExecuteResultBody body) {

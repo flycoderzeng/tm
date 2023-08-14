@@ -136,9 +136,10 @@ public class CaseTaskRunnerThread implements Runnable {
         log.info("更新计划{}结果成功、失败数目", planTask.getPlanExecuteResultId());
         // 更新计划结果成功、失败数目
         if(baseResponse.getCode().equals(ResultCodeEnum.CASE_RUN_ERROR.getCode())) {
-            taskService.addFailCount(planTask.getPlanExecuteResultId());
+            taskService.setFailCount(planTask.getPlanExecuteResultId(), planTask.getFailedCasesCount());
         }else{
-            taskService.addSuccessCount(planTask.getPlanExecuteResultId());
+            taskService.setSuccessCount(planTask.getPlanExecuteResultId(),
+                    planTask.getFinishedCount() - planTask.getFailedCasesCount());
         }
         planTask.decreaseRunningCount();
     }

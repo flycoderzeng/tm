@@ -17,8 +17,14 @@ public class GenericController extends StepNodeBase {
 
     protected boolean breakLoop = false;
 
+    protected int count = 0;
+
     @Override
     public void run() throws Exception {
+        if(count > 100) {
+            setBreakLoop(true);
+            return;
+        }
         super.run();
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
@@ -41,5 +47,6 @@ public class GenericController extends StepNodeBase {
         }else{
             throw new TMException("条件表达氏的结果必须是true或者false，计算结果是：" + result);
         }
+        count++;
     }
 }
