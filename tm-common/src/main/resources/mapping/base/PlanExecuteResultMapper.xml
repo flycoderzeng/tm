@@ -243,15 +243,15 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <update id="addFailCount" parameterType="java.lang.Integer">
+    <update id="setFailCount" parameterType="java.lang.Integer">
         update plan_execute_result
-        set fail_count=fail_count+1
+        set fail_count=#{failCount,jdbcType=INTEGER}
         where id = #{planExecuteResultId,jdbcType=INTEGER}
     </update>
 
-    <update id="addSuccessCount" parameterType="java.lang.Integer">
+    <update id="setSuccessCount" parameterType="java.lang.Integer">
         update plan_execute_result
-        set success_count=success_count+1
+        set success_count=#{successCount,jdbcType=INTEGER}
         where id = #{planExecuteResultId,jdbcType=INTEGER}
     </update>
 

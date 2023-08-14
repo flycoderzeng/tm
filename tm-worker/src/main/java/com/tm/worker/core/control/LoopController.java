@@ -25,6 +25,9 @@ public class LoopController extends GenericController {
             if(StringUtils.isNotBlank(result)) {
                 Double count = Double.valueOf(result);
                 total = count.intValue();
+                if(total > 100) {
+                    total = 100;
+                }
                 count();
             }else{
                 throw new TMException("循环次数值表达氏的结果必须是整数，计算结果是：" + result);

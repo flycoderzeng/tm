@@ -11,9 +11,9 @@ public interface PlanExecuteResultMapper {
     int updateBySelective(PlanExecuteResult record);
     PlanExecuteResult selectByPrimaryId(Integer id);
 
-    void addFailCount(Integer planExecuteResultId);
+    void setFailCount(Integer planExecuteResultId, Integer failCount);
 
-    void addSuccessCount(Integer planExecuteResultId);
+    void setSuccessCount(Integer planExecuteResultId, Integer successCount);
 
     PlanExecuteResult getNewestPlanExecuteResult(GetNewestPlanExecuteResultBody body);
 
