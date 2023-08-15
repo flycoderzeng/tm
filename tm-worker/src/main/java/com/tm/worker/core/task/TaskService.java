@@ -346,11 +346,7 @@ public class TaskService {
         for (Integer i = 0; i < planExecuteResult.getSuccessCount(); i++) {
             planTask.increaseFinishedCount();
         }
-        if(excludeCaseMap.isEmpty()) {
-            for (Integer i = 0; i < planExecuteResult.getFailCount(); i++) {
-                planTask.increaseFailedCasesCount();
-            }
-        }
+
         planTaskList.add(planTask);
         planTaskList.sort();
 
@@ -398,8 +394,9 @@ public class TaskService {
                 }
             } else {
                 final String key = caseId + "_0";
-                if(excludeCaseMap.containsKey(key)) {
+                if(!excludeCaseMap.containsKey(key)) {
                     deleteCaseStepResultAndVariableResult(planExecuteResult.getId(), caseId, 0, tableSuffix);
+                }else{
                     continue;
                 }
                 log.info("非组合方式运行， 用例id: {}", caseId);
