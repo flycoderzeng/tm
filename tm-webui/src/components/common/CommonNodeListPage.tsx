@@ -197,7 +197,8 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
             parentId: null,
             filterConditionList: page.filterConditionList
         };
-        if(currFolderChecked) {
+        const item = LocalStorageUtils.getItem(LocalStorageUtils.__CURR_DIR_ONLY);
+        if (item === 'true') {
             const currDataNode = WindowTopUtils.getWindowTopObject(WindowTopUtils.object_currDataNode);
             data.parentId = currDataNode?.id || 1;
         }
