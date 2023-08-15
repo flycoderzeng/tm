@@ -214,6 +214,7 @@ public class HttpSampler extends StepNodeBase {
 
     private HttpResponse executeHttp(AutoTestVariables caseVariables, String actualUrl, Map<String, String> headerMap, List<HttpCookie> cookies) throws UnsupportedEncodingException {
         HttpResponse httpResponse = null;
+        String actualContent = "";
         addResultInfo("请求方法: ").addResultInfoLine(requestType);
         if(HttpMethod.GET.name().equals(requestType)) {
             httpResponse = HttpRequest.get(actualUrl).headerMap(headerMap, true)
@@ -224,16 +225,16 @@ public class HttpSampler extends StepNodeBase {
                 || StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value()))) {
             updateContentType(headerMap);
             if(StringUtils.equals(bodyType, BodyTypeNum.RAW.value()) && StringUtils.isNoneBlank(content)) {
-                content = ExpressionUtils.replaceExpression(content, caseVariables.getVariables());
+                actualContent = ExpressionUtils.replaceExpression(content, caseVariables.getVariables());
             }else if(StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value())) {
-                content = getParamStr(caseVariables, formUrlencoded);
+                actualContent = getParamStr(caseVariables, formUrlencoded);
             }
             caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_REQUEST, content);
 
-            addResultInfoLine("请求报文: ").addResultInfoLine(content);
+            addResultInfoLine("请求报文: ").addResultInfoLine(actualContent);
 
             httpResponse = HttpRequest.post(actualUrl).headerMap(headerMap, true)
-                    .cookie(cookies).timeout(60000).body(content).execute();
+                    .cookie(cookies).timeout(60000).body(actualContent).execute();
         }else if(HttpMethod.POST.name().equals(requestType) && StringUtils.equals(bodyType, BodyTypeNum.FORM_DATA.value())) {
             Map<String, Object> formMap = getFormMap(caseVariables);
             httpResponse = HttpRequest.post(actualUrl).headerMap(headerMap, true).cookie(cookies).form(formMap).timeout(60000).execute();

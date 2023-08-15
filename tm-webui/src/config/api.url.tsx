@@ -81,6 +81,7 @@ const ApiUrlConfig = {
     SAVE_TAG_URL: '/lc/lc/json/api/tags',
     DELETE_TAG_URL: '/lc/lc/json/api/tags/',
     LOAD_TAG_URL: '/lc/lc/json/api/tags/',
+    LOAD_ALL_TAGS_URL: '/lc/lc/json/api/tags?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Btags%5D=status%3D%3D0;projectId%3D%3D%23projectId%23&sort=name&page%5Bsize%5D=100',
     LOAD_ALL_RUN_ENV_URL: '/lc/lc/json/api/run_env?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Brun_env%5D=status%3D%3D0&sort=name&page%5Bsize%5D=100',
     LOAD_ALL_PROJECT_URL: '/lc/lc/json/api/project?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Bproject%5D=status%3D%3D0&sort=id&page%5Bsize%5D=100',
     LOAD_ALL_DCN_URL: '/lc/lc/json/api/dcn_config?page%5Btotals%5D&page%5Bnumber%5D=1&filter%5Bdcn_config%5D=status%3D%3D0&sort=dcnName&page%5Bsize%5D=100',
