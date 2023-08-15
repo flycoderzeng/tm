@@ -92,6 +92,8 @@ public class CaseTaskRunnerThread implements Runnable {
             index++;
             return true;
         }
+        log.info("取到一个用例任务，计划结果id： {}, 用例id：{}, 用例名称：{}", planTask.getPlanExecuteResultId(),
+                caseTask.getAutoCase().getId(), caseTask.getAutoCase().getName());
         planTask.increasePolledCount();
 
         runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
