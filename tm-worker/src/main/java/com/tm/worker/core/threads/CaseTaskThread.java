@@ -73,6 +73,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
     private volatile boolean running;
 
     private boolean error = false;
+
     private String resultInfo = null;
 
     private String errorStepKey;
