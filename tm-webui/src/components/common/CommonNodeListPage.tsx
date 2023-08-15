@@ -11,6 +11,8 @@ import {ApiUrlConfig} from "../../config/api.url";
 import {DataNodeModel} from "../../entities/DataNodeModel";
 import {WindowTopUtils} from "../../utils/WindowTopUtils";
 import {LocalStorageUtils} from "../../utils/LocalStorageUtils";
+import {DataTypeEnum} from "../../entities/DataTypeEnum";
+import {TagSelect} from "../testmanage/tags/TagSelect";
 
 const {Search} = Input;
 
@@ -354,6 +356,10 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
     let cardHeader;
     let countTag;
     let currFolderCheck;
+    let caseTagSelect;
+    if(props.dataTypeId === DataTypeEnum.AUTO_CASE || props.dataTypeId + '' === DataTypeEnum.AUTO_CASE + '') {
+        caseTagSelect = <TagSelect style={{width: 400}} value={[]} projectId={projectId}></TagSelect>
+    }
     if (!props.isResourceSelect) {
         cardHeader =
             <div className="card-header card-header-divider">{title}<span className="card-subtitle">{subtitle}</span>
@@ -370,6 +376,7 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
             <div className="list-toolbar">
                 <Search placeholder="Id或者名称" onSearch={onSearch} enterButton style={{width: 400,}}/>
                 {currFolderCheck}
+                {caseTagSelect}
                 {countTag}
             </div>
             <Table columns={columns}

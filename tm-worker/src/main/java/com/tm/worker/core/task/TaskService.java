@@ -154,6 +154,9 @@ public class TaskService {
                 return ;
             }
             waitForTaskFinish(planSetupTask);
+            setFailCount(planSetupTask.getPlanExecuteResultId(), planSetupTask.getFailedCasesCount());
+            setSuccessCount(planSetupTask.getPlanExecuteResultId(),
+                    planSetupTask.getFinishedCount() - planSetupTask.getFailedCasesCount());
             if(planSetupTask.getFailedCasesCount() > 0) {
                 log.info("计划前执行用例失败");
                 planExecuteResult.setResultStatus(PlanExecuteResultStatusEnum.SETUP_FAIL.value());
@@ -167,6 +170,9 @@ public class TaskService {
             return ;
         }
         waitForTaskFinish(planTask);
+        setFailCount(planTask.getPlanExecuteResultId(), planTask.getFailedCasesCount());
+        setSuccessCount(planTask.getPlanExecuteResultId(),
+                planTask.getFinishedCount() - planTask.getFailedCasesCount());
 
         int countTeardownCaseList = planCaseDao.countTeardownCaseList(body);
         if(countTeardownCaseList > 0) {
@@ -194,7 +200,11 @@ public class TaskService {
         for (CaseExecuteResult caseExecuteResult : successCaseResultList) {
             successCaseMap.put(caseExecuteResult.getCaseId() + "_" + caseExecuteResult.getGroupNo(), true);
         }
-        handleSubmitPlanTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value(), successCaseMap);
+        PlanTask planTask = handleSubmitPlanTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value(), successCaseMap);
+        waitForTaskFinish(planTask);
+        setFailCount(planTask.getPlanExecuteResultId(), planTask.getFailedCasesCount());
+        setSuccessCount(planTask.getPlanExecuteResultId(),
+                planTask.getFinishedCount() - planTask.getFailedCasesCount());
     }
 
     private void execPlanTeardownCases(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot, AutoTestVariables planVariables) {
@@ -210,7 +220,11 @@ public class TaskService {
         log.info("初始化 teardown PlanRunningConfigSnapshot");
         PlanRunningConfigSnapshot planTeardownSnapshot = copyPlanRunningConfigSnapshot(snapshot, planTeardownExecuteResult);
         planRunningConfigSnapshotDao.insertBySelective(planTeardownSnapshot);
-        handleSubmitPlanTask(planTeardownExecuteResult, planTeardownSnapshot, planVariables, PlanCaseEnum.TEARDOWN.value());
+        PlanTask planTask = handleSubmitPlanTask(planTeardownExecuteResult, planTeardownSnapshot, planVariables, PlanCaseEnum.TEARDOWN.value());
+        waitForTaskFinish(planTask);
+        setFailCount(planTask.getPlanExecuteResultId(), planTask.getFailedCasesCount());
+        setSuccessCount(planTask.getPlanExecuteResultId(),
+                planTask.getFinishedCount() - planTask.getFailedCasesCount());
     }
 
     private void waitForTaskFinish(PlanTask planSetupTask) {
@@ -332,8 +346,10 @@ public class TaskService {
         for (Integer i = 0; i < planExecuteResult.getSuccessCount(); i++) {
             planTask.increaseFinishedCount();
         }
-        for (Integer i = 0; i < planExecuteResult.getFailCount(); i++) {
-            planTask.increaseFailedCasesCount();
+        if(excludeCaseMap.isEmpty()) {
+            for (Integer i = 0; i < planExecuteResult.getFailCount(); i++) {
+                planTask.increaseFailedCasesCount();
+            }
         }
         planTaskList.add(planTask);
         planTaskList.sort();
@@ -361,8 +377,9 @@ public class TaskService {
                 log.info("组合方式运行， 用例id: {}", caseId);
                 for (int j = 0; j < groups.length; j++) {
                     final String key = caseId + "_" + j;
-                    if(excludeCaseMap.containsKey(key)) {
+                    if(!excludeCaseMap.containsKey(key)) {
                         deleteCaseStepResultAndVariableResult(planExecuteResult.getId(), caseId, j, tableSuffix);
+                    }else{
                         continue;
                     }
                     HashMap<String, String> group = groups[j];
@@ -404,11 +421,11 @@ public class TaskService {
             body.setSort("asc");
             body.setPlanId(planExecuteResult.getPlanOrCaseId());
             int total = 0;
-            if (planCaseType == PlanCaseEnum.DEFAULT.value()) {
+            if (Objects.equals(planCaseType, PlanCaseEnum.DEFAULT.value())) {
                 total = planCaseDao.countCaseList(body);
-            }else if(planCaseType == PlanCaseEnum.SETUP.value()) {
+            }else if(Objects.equals(planCaseType, PlanCaseEnum.SETUP.value())) {
                 total = planCaseDao.countSetupCaseList(body);
-            }else if(planCaseType == PlanCaseEnum.TEARDOWN.value()) {
+            }else if(Objects.equals(planCaseType, PlanCaseEnum.TEARDOWN.value())) {
                 total = planCaseDao.countTeardownCaseList(body);
             }
             if (total < 1) {
@@ -422,11 +439,11 @@ public class TaskService {
             planExecuteResultDao.setTotal(planExecuteResult, total);
 
             List<PlanCase> planCases = new ArrayList<>();
-            if (planCaseType == PlanCaseEnum.DEFAULT.value()) {
+            if (Objects.equals(planCaseType, PlanCaseEnum.DEFAULT.value())) {
                 planCases = planCaseDao.queryCaseList(body);
-            }else if(planCaseType == PlanCaseEnum.SETUP.value()) {
+            }else if(Objects.equals(planCaseType, PlanCaseEnum.SETUP.value())) {
                 planCases = planCaseDao.querySetupCaseList(body);
-            }else if(planCaseType == PlanCaseEnum.TEARDOWN.value()) {
+            }else if(Objects.equals(planCaseType, PlanCaseEnum.TEARDOWN.value())) {
                 planCases = planCaseDao.queryTeardownCaseList(body);
             }
 
@@ -488,11 +505,11 @@ public class TaskService {
         return planTaskList.remove(planExecuteResultId);
     }
 
-    synchronized public void setFailCount(Integer planExecuteResultId, Integer failCount) {
+    public synchronized void setFailCount(Integer planExecuteResultId, Integer failCount) {
         planExecuteResultDao.setFailCount(planExecuteResultId, failCount);
     }
 
-    synchronized public void setSuccessCount(Integer planExecuteResultId, Integer successCount) {
+    public synchronized void setSuccessCount(Integer planExecuteResultId, Integer successCount) {
         planExecuteResultDao.setSuccessCount(planExecuteResultId, successCount);
     }
 
