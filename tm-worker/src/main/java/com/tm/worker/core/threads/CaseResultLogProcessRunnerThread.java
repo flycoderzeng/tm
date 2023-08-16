@@ -4,13 +4,13 @@ import com.tm.common.entities.autotest.CaseExecuteLogOperate;
 import com.tm.worker.service.CaseResultLogService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.Deque;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class CaseResultLogProcessRunnerThread implements Runnable {
     private CaseResultLogService caseResultLogService;
-    private ConcurrentLinkedDeque<CaseExecuteLogOperate> queue;
+    private Deque<CaseExecuteLogOperate> queue;
 
     public CaseResultLogProcessRunnerThread(CaseResultLogService caseResultLogService) {
         this.caseResultLogService = caseResultLogService;
