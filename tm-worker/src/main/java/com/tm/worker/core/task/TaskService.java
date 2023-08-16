@@ -102,7 +102,9 @@ public class TaskService {
         AviatorEvaluator.addFunction(new GetTimestamp());
         AviatorEvaluator.addFunction(new JsonExtractor());
         AviatorEvaluator.addFunction(new GetChineseAddress());
+        AviatorEvaluator.addFunction(new GetChineseName());
         AviatorEvaluator.addFunction(new GetChineseIdCardNo());
+        AviatorEvaluator.addFunction(new GetChineseBankCardNo());
         AviatorEvaluator.addFunction(new GetEmail());
         AviatorEvaluator.addFunction(new GetEnglishName());
         AviatorEvaluator.addFunction(new GetMobile());

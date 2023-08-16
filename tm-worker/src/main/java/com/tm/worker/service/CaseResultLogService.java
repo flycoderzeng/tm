@@ -59,14 +59,16 @@ public class CaseResultLogService {
         }
     }
 
-    public void update(Object logRowObject) {
+    public int update(Object logRowObject) {
+        int i = 0;
         if(logRowObject instanceof CaseExecuteResult logRow) {
-            int i = caseExecuteResultMapper.updateBySelective(logRow);
+            i = caseExecuteResultMapper.updateBySelective(logRow);
             log.debug("更新用例执行结果，影响了{}条记录", i);
         }else if(logRowObject instanceof CaseStepExecuteResult logRow) {
-            int i = caseStepExecuteResultMapper.updateBySelective(logRow);
+            i = caseStepExecuteResultMapper.updateBySelective(logRow);
             log.debug("更新用例步骤执行结果，影响了{}条记录", i);
         }
+        return i;
     }
 
     public Integer getSplitCaseResultTableType() {
