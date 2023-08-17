@@ -64,15 +64,13 @@ public class CaseTaskRunnerThread implements Runnable {
         }
         // 获取运行时配置
         PlanRunningConfigSnapshot runningConfigSnapshot = planTask.getRunningConfigSnapshot();
-        // 计划中当前运行的用例
-        Integer runningTotal = planTask.getRunningTotal();
         // 计划中最大同时可以执行用例数
         Integer maxOccurs = runningConfigSnapshot.getMaxOccurs();
         if (maxOccurs == null || maxOccurs < 1) {
             maxOccurs = 1;
         }
         // 计划中正在运行的用例数大于等于设置的最大并发数
-        if (runningTotal >= maxOccurs) {
+        if (planTask.getVirtualRunningCount() >= maxOccurs) {
             TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
             index++;
             return true;
@@ -95,6 +93,7 @@ public class CaseTaskRunnerThread implements Runnable {
         log.info("取到一个用例任务，计划结果id： {}, 用例id：{}, 用例名称：{}", planTask.getPlanExecuteResultId(),
                 caseTask.getAutoCase().getId(), caseTask.getAutoCase().getName());
         planTask.increasePolledCount();
+        planTask.increaseVirtualRunningCount();
 
         runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
             if(baseResponse != null) {
@@ -103,6 +102,7 @@ public class CaseTaskRunnerThread implements Runnable {
                 }
                 teardownPlanTask(planTask, baseResponse);
             }
+            planTask.decreaseVirtualRunningCount();
         }));
         return false;
     }
@@ -139,10 +139,9 @@ public class CaseTaskRunnerThread implements Runnable {
         // 更新计划结果成功、失败数目
         if(baseResponse.getCode().equals(ResultCodeEnum.CASE_RUN_ERROR.getCode())) {
             taskService.setFailCount(planTask.getPlanExecuteResultId(), planTask.getFailedCasesCount());
-        }else{
-            taskService.setSuccessCount(planTask.getPlanExecuteResultId(),
-                    planTask.getFinishedCount() - planTask.getFailedCasesCount());
         }
+        taskService.setSuccessCount(planTask.getPlanExecuteResultId(),
+                planTask.getFinishedCount() - planTask.getFailedCasesCount());
         planTask.decreaseRunningCount();
     }
 

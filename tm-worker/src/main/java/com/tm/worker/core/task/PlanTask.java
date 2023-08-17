@@ -19,6 +19,8 @@ public class PlanTask extends WorkerPlanTask {
 
     private AtomicInteger runningCasesCount = new AtomicInteger(0);
 
+    private AtomicInteger virtualRunningCasesCount = new AtomicInteger(0);
+
     private AtomicInteger failedCasesCount = new AtomicInteger(0);
 
     private AtomicInteger polledCount = new AtomicInteger(0);
@@ -40,6 +42,18 @@ public class PlanTask extends WorkerPlanTask {
 
     public void increaseRunningCount() {
         runningCasesCount.incrementAndGet();
+    }
+
+    public void increaseVirtualRunningCount() {
+        virtualRunningCasesCount.incrementAndGet();
+    }
+
+    public Integer getVirtualRunningCount() {
+        return virtualRunningCasesCount.get();
+    }
+
+    public void decreaseVirtualRunningCount() {
+        virtualRunningCasesCount.decrementAndGet();
     }
 
     public void increaseFailedCasesCount() {

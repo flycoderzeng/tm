@@ -195,6 +195,7 @@ public class TaskService {
                 getSplitCaseResultTableType(), 0);
         // 删除执行失败的结果日志
         planExecuteResultDao.deleteFailedCaseResult(planExecuteResult.getId(), tableSuffix);
+        planExecuteResultDao.setFailCount(planExecuteResult.getId(), 0);
         // 得到已经执行成功的用例
         final List<CaseExecuteResult> successCaseResultList = planExecuteResultDao.getExecuteSuccessCaseResultList(planExecuteResult.getId(),
                 tableSuffix);
@@ -344,7 +345,7 @@ public class TaskService {
         }
         planExecuteResultDao.setPlanExecuteResultStatus(planExecuteResult, PlanExecuteResultStatusEnum.INIT_END);
 
-        planTask.setTotalCases(caseTaskQueue.size());
+        planTask.setTotalCases(caseTaskQueue.size() + planExecuteResult.getSuccessCount());
         for (Integer i = 0; i < planExecuteResult.getSuccessCount(); i++) {
             planTask.increaseFinishedCount();
         }
