@@ -242,14 +242,14 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                                 <Input.TextArea rows={4}/>
                             </Form.Item>
 
-                            <Form.Item
-                                label="邮件接收"
-                                name="mailList"
-                                rules={[{required: false}]}
-                            >
-                                <CommonRemoteSearchMultiSelect onChange={setMailList} valueList={mailList}
-                                                               type={'user'}></CommonRemoteSearchMultiSelect>
-                            </Form.Item>
+                            {/*<Form.Item*/}
+                            {/*    label="邮件接收"*/}
+                            {/*    name="mailList"*/}
+                            {/*    rules={[{required: false}]}*/}
+                            {/*>*/}
+                            {/*    <CommonRemoteSearchMultiSelect onChange={setMailList} valueList={mailList}*/}
+                            {/*                                   type={'user'}></CommonRemoteSearchMultiSelect>*/}
+                            {/*</Form.Item>*/}
 
                             <Form.Item
                                 label="类型"

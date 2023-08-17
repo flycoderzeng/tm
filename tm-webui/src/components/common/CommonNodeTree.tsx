@@ -238,8 +238,10 @@ const CommonNodeTree: React.FC<IState> = (props) => {
         if(e.node.isLeaf) {
             setRenderRightFlag(Number(dataTypeId));
             setNodeId(e.node.dataNode.id);
-        } else {
+        } else if(e.node.dataNode) {
             setRenderRightFlag(DataTypeEnum.ALL, e.node.dataNode.id);
+        } else if(!e.node.dataNode) {
+            setRenderRightFlag(DataTypeEnum.ALL, 1);
         }
         if(e.node.dataNode) {
             //setSelectedKeys([...e.node.key]);
