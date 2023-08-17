@@ -573,6 +573,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
             <Menu onClick={onClickRightMenuItem} className="node-tree-context-menu" style={contextMenuPosition as any} mode="vertical" items={renderRightMenu()}>
             </Menu>
             <Modal
+                width={700}
                 title={titleNodeEdit}
                 open={visibleNodeEdit}
                 onOk={handleOkNodeEdit}
@@ -610,7 +611,7 @@ const CommonNodeTree: React.FC<IState> = (props) => {
                         name="description"
                         rules={[{required: true, message: '请输入描述!' }]}
                     >
-                        <Input.TextArea />
+                        <Input.TextArea rows={5}/>
                     </Form.Item>
                 </Form>
             </Modal>
