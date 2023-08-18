@@ -164,6 +164,9 @@ public class TaskService {
                 planExecuteResult.setResultStatus(PlanExecuteResultStatusEnum.SETUP_FAIL.value());
                 planExecuteResultDao.updateBySelective(planExecuteResult);
                 return ;
+            }else{
+                planExecuteResult.setResultStatus(PlanExecuteResultStatusEnum.INIT.value());
+                planExecuteResultDao.updateBySelective(planExecuteResult);
             }
         }
 
@@ -435,8 +438,10 @@ public class TaskService {
                         PlanExecuteResultStatusEnum.EXCEPTION, "计划没有关联用例");
                 return false;
             }
-            //更新将运行的用例总数
-            planExecuteResultDao.setTotal(planExecuteResult, total);
+            if(planExecuteResult.getSuccessCount() == 0) {
+                //更新将运行的用例总数
+                planExecuteResultDao.setTotal(planExecuteResult, total);
+            }
 
             List<PlanCase> planCases = new ArrayList<>();
             if (Objects.equals(planCaseType, PlanCaseEnum.DEFAULT.value())) {
