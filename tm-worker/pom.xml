@@ -158,13 +158,13 @@
         <dependency>
             <groupId>olym.tetch</groupId>
             <artifactId>olymkgc</artifactId>
-            <version>4.0</version>
+            <version>4.0.7-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.platform.service</groupId>
             <artifactId>platform_common</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
+            <version>0.0.3-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
