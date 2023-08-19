@@ -146,12 +146,10 @@ public class CaseTaskRunnerThread implements Runnable {
     }
 
     private CompletableFuture<BaseResponse> runCase(PlanTask planTask, CaseTask caseTask) {
-        if (planTask.isStopped()) {
-            CompletableFuture<BaseResponse> future = new CompletableFuture<>();
-            future.complete(ResultUtils.error(ResultCodeEnum.PLAN_IS_STOPPED_NOT_RUN_CASE));
-            return future;
-        }
         return CompletableFuture.supplyAsync(() -> {
+            if (planTask.isStopped()) {
+                return ResultUtils.error(ResultCodeEnum.PLAN_IS_STOPPED_NOT_RUN_CASE);
+            }
             CaseTaskThread caseTaskThread = new CaseTaskThread(caseTask, taskService);
             try {
                 return taskService.submitCaseTask(caseTaskThread).get();
