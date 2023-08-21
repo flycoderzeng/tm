@@ -115,8 +115,8 @@ public class TaskService {
         int cores = Runtime.getRuntime().availableProcessors();
         ThreadFactory springThreadFactory = new CustomizableThreadFactory("worker-pool-");
         int nThreads = cores * 4;
-        if(nThreads < 30) {
-            nThreads = 30;
+        if(nThreads < 50) {
+            nThreads = 50;
         }
         executorService = Executors.newFixedThreadPool(nThreads, springThreadFactory);
         threadPoolExecutor = (ThreadPoolExecutor) executorService;
@@ -375,13 +375,15 @@ public class TaskService {
             String groupVariablesStr = autoCase.getGroupVariables();
             // 是组合运行方式 并且 组合配置不为空
             if (PlanRunTypeEnum.GROUP.value().equals(snapshot.getRunType()) && StringUtils.isNotBlank(groupVariablesStr)) {
-                HashMap<String, String>[] groups = gson.fromJson(groupVariablesStr, groupVariablesTypeToken);
                 log.info("组合方式运行， 用例id: {}", caseId);
+                HashMap<String, String>[] groups = gson.fromJson(groupVariablesStr, groupVariablesTypeToken);
+                long start = System.currentTimeMillis();
+                log.info("init start: " + start);
                 for (int j = 0; j < groups.length; j++) {
                     final String key = caseId + "_" + j;
-                    if(!excludeCaseMap.containsKey(key)) {
+                    if(!excludeCaseMap.isEmpty() && !excludeCaseMap.containsKey(key)) {
                         deleteCaseStepResultAndVariableResult(planExecuteResult.getId(), caseId, j, tableSuffix);
-                    }else{
+                    }else if(!excludeCaseMap.isEmpty() && excludeCaseMap.containsKey(key)) {
                         continue;
                     }
                     HashMap<String, String> group = groups[j];
@@ -398,11 +400,14 @@ public class TaskService {
                     caseTaskQueue.add(caseTask);
                     i++;
                 }
+                long end = System.currentTimeMillis();
+                log.info("init end: " + end);
+                log.info("cost time: " + (end - start)/1000.0 + "(s)");
             } else {
                 final String key = caseId + "_0";
-                if(!excludeCaseMap.containsKey(key)) {
+                if(!excludeCaseMap.isEmpty() && !excludeCaseMap.containsKey(key)) {
                     deleteCaseStepResultAndVariableResult(planExecuteResult.getId(), caseId, 0, tableSuffix);
-                }else{
+                }else if(!excludeCaseMap.isEmpty() && excludeCaseMap.containsKey(key)) {
                     continue;
                 }
                 log.info("非组合方式运行， 用例id: {}", caseId);
