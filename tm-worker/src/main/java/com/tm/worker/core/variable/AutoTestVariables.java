@@ -38,10 +38,8 @@ public class AutoTestVariables {
         updateVariables(autoCaseVariables, planVariables);
     }
 
-    public AutoTestVariables(Map<String, String> variables) {
-        for (Map.Entry<String, String> stringObjectEntry : variables.entrySet()) {
-            put(stringObjectEntry.getKey(), stringObjectEntry.getValue());
-        }
+    public AutoTestVariables(Map<String, String> testVariables) {
+        variables.putAll(testVariables);
     }
 
     private void updateVariables(List<AutoCaseVariable> autoCaseVariables, AutoTestVariables planVariables) {
