@@ -72,7 +72,7 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
     if (props.isResourceSelect) {
         defaultShowColumn = ['description', 'addUser', 'addTime'];
     } else {
-        defaultShowColumn = ['description', 'addUser', 'addTime', 'lastModifyUser', 'lastModifyTime'];
+        defaultShowColumn = ['addUser', 'addTime', 'lastModifyUser', 'lastModifyTime'];
     }
     const [showColumnValue, setShowColumnValue] = useState<any>(defaultShowColumn);
 
@@ -327,6 +327,7 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
         {
             title: 'ID',
             dataIndex: 'id',
+            width: 150,
             render: (text, record) => <span><a onClick={() => edit(record.id)}>{text}</a></span>,
         }, {
             title: '名称',
