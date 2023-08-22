@@ -243,13 +243,25 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         data['sort'] = sort;
 
         let filter = 'status==0';
+        if(this.modelType === 'plan_cron_job') {
+            filter = '';
+        }
         if(pagination.area && pagination.area === '1') {
-            filter += ';addUser==' + LocalStorageUtils.getLoginUsername();
+            if(filter !== '') {
+                filter += ';';
+            }
+            filter += 'addUser==' + LocalStorageUtils.getLoginUsername();
         }else if(!pagination.area && this.state.queryInfo.area === '1') {
-            filter += ';addUser==' + LocalStorageUtils.getLoginUsername();
+            if(filter !== '') {
+                filter += ';';
+            }
+            filter += 'addUser==' + LocalStorageUtils.getLoginUsername();
         }
         if(pagination.searchValue) {
-            filter += ';(';
+            if(filter !== '') {
+                filter += ';';
+            }
+            filter += '(';
             if(MathUtils.isNumberSequence(pagination.searchValue)) {
                 filter += 'id==' + pagination.searchValue + ',';
             }
@@ -265,7 +277,9 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             }
             filter += ')';
         }
-        data['filter[' + this.modelType + ']'] = filter;
+        if(filter !== '') {
+            data['filter[' + this.modelType + ']'] = filter;
+        }
 
         if(this.modelType === 'db_config') {
             data['fields[db_config]'] = 'addTime,addUser,lastModifyTime,lastModifyUser,ip,port,username,status,type,envId,envName,schemaName,dbName,dcnId,dcnName';
@@ -358,7 +372,11 @@ class CommonListPage extends React.Component<CommonProps, IState> {
     }
 
     delete = id => {
-        if(!window.confirm("确定删除吗？")) {
+        let msg = '确定删除吗?';
+        if(this.modelType === 'plan_cron_job') {
+            msg = '确定禁用吗?'
+        }
+        if(!window.confirm(msg)) {
             return;
         }
         const data = {
@@ -373,7 +391,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         axios.patch(this.commonApiUrlModel.deleteUrl + id, data,
             {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
             if (resp.status !== 204) {
-                message.error('删除失败');
+                message.error('操作失败');
             } else {
                 message.success('操作成功');
                 this.loadDataListSort(null, null, null, true);

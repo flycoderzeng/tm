@@ -11,7 +11,7 @@ const { Option } = Select;
 interface IState {
     type: 'user'|'resource';
     dataTypeId?: number;
-    value: string|null|undefined;
+    value: string|null|undefined|number;
     style?: any;
     onChange?: any;
 }
@@ -108,6 +108,7 @@ const CommonRemoteSearchSingleSelect: React.FC<IState> = (props) => {
     return (
         <Select
             showSearch
+            allowClear
             value={value||undefined}
             placeholder={placeholder}
             style={props.style}

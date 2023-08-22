@@ -1,11 +1,12 @@
 import React from 'react';
-import {Table, Button, Radio} from 'antd';
+import {Table, Button, Radio, Tag, message} from 'antd';
 import { Input } from 'antd';
 import {withRouter} from "react-router-dom";
 import CommonListPage from "../../common/CommonListPage";
 import {CommonApiUrlModel} from "../../../entities/CommonApiUrlModel";
 import {ApiUrlConfig} from "../../../config/api.url";
 import {OptionsConfig} from "../../../config/options.config";
+import axios from "axios";
 
 const { Search } = Input;
 
@@ -71,26 +72,31 @@ class CronJobList extends CommonListPage {
             }, {
                 title: '创建时间',
                 dataIndex: 'addTime',
-                key: 'addTime',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             }, {
                 title: '最近运行时间',
                 dataIndex: 'lastRunTime',
-                key: 'lastRunTime',
                 render: text => <span>{text}</span>,
+            }, {
+                title: '状态',
+                dataIndex: 'status',
+                width: 100,
+                render: text => {
+                    if(text === 0) {
+                        return <Tag color="#87d068">启用</Tag>;
+                    }else{
+                        return <Tag color="#f50">禁用</Tag>;
+                    }
+                },
             }, {
                 title: '操作',
                 fixed: 'right',
+                width: 200,
                 filters: this.columnFilters,
                 filteredValue: this.state.filteredValue,
                 onFilter: (value, record) => this.onFilter(value,record),
-                render: (text, record) => (
-                    <div>
-                        <Button className="padding-left0" size="small" type="link" onClick={() => this.edit(record.id)}>修改</Button>
-                        <Button danger size="small" type="link" onClick={() => this.delete(record.id)}>删除</Button>
-                    </div>
-                ),
+                render: (text, record) => this.getOperations(record),
             },
         ];
         const {area} = this.state.queryInfo;
@@ -124,6 +130,45 @@ class CronJobList extends CommonListPage {
                 />
             </div>
         </div>)
+    }
+
+    enable = id => {
+        let msg = '确定启用吗?';
+        if(!window.confirm(msg)) {
+            return;
+        }
+        const data = {
+            "data": {
+                "type": this.modelType,
+                "id": id,
+                "attributes": {
+                    "status": 0
+                }
+            }
+        };
+        axios.patch(this.commonApiUrlModel.deleteUrl + id, data,
+            {headers: {"Content-Type": "application/vnd.api+json"}}).then(resp => {
+            if (resp.status !== 204) {
+                message.error('操作失败');
+            } else {
+                message.success('操作成功');
+                this.loadDataListSort(null, null, null, true);
+            }
+        });
+    }
+
+    private getOperations(record) {
+        let disableEnableBtn;
+        if(record.status === 0) {
+            disableEnableBtn = <Button danger size="small" type="link" onClick={() => this.delete(record.id)}>禁用</Button>;
+        }else{
+            disableEnableBtn = <Button danger size="small" type="link" onClick={() => this.enable(record.id)}>启用</Button>;
+        }
+        return <div>
+            <Button className="padding-left0" size="small" type="link"
+                    onClick={() => this.edit(record.id)}>修改</Button>
+            {disableEnableBtn}
+        </div>;
     }
 }
 
