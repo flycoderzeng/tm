@@ -75,6 +75,8 @@ public class TaskService {
     @Autowired
     private AutoCaseDao autoCaseDao;
     @Autowired
+    private AutoScriptDao autoScriptDao;
+    @Autowired
     private GlobalVariableDao globalVariableDao;
     @Autowired
     private DataNodeDao dataNodeDao;
@@ -541,6 +543,10 @@ public class TaskService {
 
     public DbConfig findDbConfig(Integer envId, Integer dcnId, String dbName) {
         return dbConfigService.findDbConfig(envId, dcnId, dbName);
+    }
+
+    public AutoScript findAutoScript(Integer scriptId) {
+        return autoScriptDao.selectByPrimaryId(scriptId);
     }
 
     public Connection getJDBCConnection(DbConfig dbConfig) {

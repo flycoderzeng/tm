@@ -229,8 +229,8 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     }
 
                     const rightMenuInitKeys: MenuItem[] = [
-                        {key: MenuKey.AddResource, title: '添加资源', icon: <PlusOutlined/>, disabled: false, children: []},
-                        {key: MenuKey.AddRecent, title: '添加最近', icon: <PlusOutlined/>, disabled: false, children: []},
+                        //{key: MenuKey.AddResource, title: '添加资源', icon: <PlusOutlined/>, disabled: false, children: []},
+                        //{key: MenuKey.AddRecent, title: '添加最近', icon: <PlusOutlined/>, disabled: false, children: []},
                         {
                             key: MenuKey.AddMostCommonlyUsed, title: '添加常用', icon: <PlusOutlined/>, disabled: false, children: [
                                 {key: MenuKey.AddHttpRequest, title: 'HTTP请求', disabled: false},

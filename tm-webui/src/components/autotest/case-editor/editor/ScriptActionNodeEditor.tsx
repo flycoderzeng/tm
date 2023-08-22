@@ -4,10 +4,13 @@ import {ScriptActionNode} from "../entities/ScriptActionNode";
 import {CommonNameComments} from "./CommonNameComments";
 import {AutoComplete, Col, Input, Row} from "antd";
 import {ContentEditor} from "./ContentEditor";
+import {DataTypeEnum} from "../../../../entities/DataTypeEnum";
+import {CommonRemoteSearchSingleSelect} from "../../../common/components/CommonRemoteSearchSingleSelect";
 
 const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props) => {
     const [content, setContent] = useState(props.define.content);
     const [interpreterPath, setInterpreterPath] = useState(props.define.interpreterPath);
+    const [scriptId, setScriptId] = useState(props.define.scriptId);
     const [scriptResultVariableName, setScriptResultVariableName] = useState(props.define.scriptResultVariableName);
     const {onChange} = props;
     const {stepNode} = props;
@@ -32,6 +35,11 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
         onChange('interpreterPath', v);
     }
 
+    function onChangeScriptId(v: any) {
+        setScriptId(v);
+        onChange('scriptId', v);
+    }
+
     const options = props.userDefinedVariables?.map(v => {
         return {label: v.name, value: '${' + v.name + '}'};
     }) as any[];
@@ -44,14 +52,25 @@ const ScriptActionNodeEditor: React.FC<EditorIState<ScriptActionNode>> = (props)
                 <Col flex="150px">执行器路径</Col>
                 <Col flex="auto">
                     <AutoComplete
-                        placeholder="变量名"
+                        placeholder=""
                         value={interpreterPath} onChange={onChangeInterpreterPath}
                         style={{width: '100%'}}
                     />
                 </Col>
             </Row>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex="150px">shell脚本内容</Col>
+                <Col flex="150px">执行脚本</Col>
+                <Col flex="auto">
+                    <CommonRemoteSearchSingleSelect
+                        style={{width: 300}}
+                        onChange={onChangeScriptId}
+                        type={'resource'}
+                        value={scriptId}
+                        dataTypeId={DataTypeEnum.AUTO_SHELL}></CommonRemoteSearchSingleSelect>
+                </Col>
+            </Row>
+            <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
+                <Col flex="150px">脚本内容或参数</Col>
                 <Col flex="auto">
                     <ContentEditor userDefinedVariables={props.userDefinedVariables}
                                    refreshContent={refreshContent}
