@@ -25,8 +25,8 @@ public class LoopController extends GenericController {
             if(StringUtils.isNotBlank(result)) {
                 Double count = Double.valueOf(result);
                 total = count.intValue();
-                if(total > 100) {
-                    total = 100;
+                if(total > 10000) {
+                    total = 10000;
                 }
                 count();
             }else{
