@@ -8,7 +8,7 @@ import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
 import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.lock.DistributedLockMysql;
-import com.tm.web.service.AutoTestFeignService;
+import com.tm.web.controller.autotest.AutoTestFeignInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -28,7 +28,7 @@ public class PlanQuartzJob extends QuartzJobBean {
     @Autowired
     private PlanCronJobMapper planCronJobMapper;
     @Autowired
-    private AutoTestFeignService autoTestFeignService;
+    private AutoTestFeignInterface autoTestFeignInterface;
     @Autowired
     private CronJobPlanRelationMapper cronJobPlanRelationMapper;
 
@@ -67,7 +67,7 @@ public class PlanQuartzJob extends QuartzJobBean {
                         runPlanBody.setFromType(PlanRunFromTypeEnum.CRON_JOB.value());
                         runPlanBody.setPlanCronJobId(jobId);
                         log.info("{}", runPlanBody);
-                        final BaseResponse baseResponse = autoTestFeignService.runPlan(runPlanBody);
+                        final BaseResponse baseResponse = autoTestFeignInterface.runPlanPublic(runPlanBody);
                         log.info("{}", baseResponse);
                     }
                 }
