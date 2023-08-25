@@ -71,43 +71,43 @@ public class JDBCRequest extends StepNodeBase {
             throw new TMException("运行环境不能为空");
         }
 
-        dbName = ExpressionUtils.replaceExpression(dbName, caseVariables.getVariables());
-        if(StringUtils.isBlank(dbName)) {
+        String actualDbName = ExpressionUtils.replaceExpression(dbName, caseVariables.getVariables());
+        if(StringUtils.isBlank(actualDbName)) {
             throw new TMException("数据库名不能为空");
         }
 
-        DbConfig dbConfig = context.getTaskService().findDbConfig(runningConfigSnapshot.getEnvId(), dcnId, dbName);
+        DbConfig dbConfig = context.getTaskService().findDbConfig(runningConfigSnapshot.getEnvId(), dcnId, actualDbName);
         if(dbConfig == null) {
             throw new TMException(String.format("不存在 环境: %s(id: %s)，DCN id: %s， 数据库名: %s 的配置",
-                    runningConfigSnapshot.getEnvName(), runningConfigSnapshot.getEnvId(), dcnId, dbName));
+                    runningConfigSnapshot.getEnvName(), runningConfigSnapshot.getEnvId(), dcnId, actualDbName));
         }
 
         if(StringUtils.isBlank(content)) {
             throw new TMException("sql语句不能为空");
         }
-        content = ExpressionUtils.replaceExpression(content, caseVariables.getVariables());
-        if(StringUtils.isBlank(content)) {
+        String actualContent = ExpressionUtils.replaceExpression(content, caseVariables.getVariables());
+        if(StringUtils.isBlank(actualContent)) {
             throw new TMException("sql语句不能为空");
         }
-        content = content.trim();
-        addResultInfo("数据库名：").addResultInfoLine(dbName);
+        actualContent = actualContent.trim();
+        addResultInfo("数据库名：").addResultInfoLine(actualDbName);
         addResultInfo("数据库ip：").addResultInfoLine(dbConfig.getIp());
         addResultInfo("数据库port：").addResultInfoLine(dbConfig.getPort());
-        addResultInfo("sql语句：").addResultInfoLine(content);
+        addResultInfo("sql语句：").addResultInfoLine(actualContent);
 
         if(DbTypeEnum.MYSQL.value() == dbConfig.getType() || DbTypeEnum.POSTGRESQL.value() == dbConfig.getType()) {
-            if (content.toLowerCase().startsWith("select")) {
-                List<Map<String, String>> list = execMySQLSelect(dbConfig, content);
+            if (actualContent.toLowerCase().startsWith("select")) {
+                List<Map<String, String>> list = execMySQLSelect(dbConfig, actualContent);
                 String resultValue = gson.toJson(list);
                 addResultInfo("sql结果: ").addResultInfoLine(resultValue);
                 checkError(list);
                 extractResult(list);
-            } else if (content.toLowerCase().startsWith("update")) {
-                execUpdate(dbConfig, content);
-            } else if (content.toLowerCase().startsWith("delete")) {
-                execDelete(dbConfig, content);
-            } else if (content.toLowerCase().startsWith("insert")) {
-                execInsert(dbConfig, content);
+            } else if (actualContent.toLowerCase().startsWith("update")) {
+                execUpdate(dbConfig, actualContent);
+            } else if (actualContent.toLowerCase().startsWith("delete")) {
+                execDelete(dbConfig, actualContent);
+            } else if (actualContent.toLowerCase().startsWith("insert")) {
+                execInsert(dbConfig, actualContent);
             }
         }
     }
