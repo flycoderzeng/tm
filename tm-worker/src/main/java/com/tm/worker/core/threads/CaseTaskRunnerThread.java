@@ -60,6 +60,7 @@ public class CaseTaskRunnerThread implements Runnable {
         // 获取case task 队列
         WorkerCaseTaskQueue caseTaskQueue = taskService.getCaseTaskQueue(planTask.getPlanExecuteResult().getId());
         if (caseTaskQueue == null || caseTaskQueue.isEmpty()) {
+            index++;
             return true;
         }
         // 获取运行时配置
