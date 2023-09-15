@@ -29,6 +29,7 @@ public class RootNode extends StepNodeBase {
         if(groupVariables != null) {
             caseVariables.replace(groupVariables);
         }
+        caseVariables.execBuiltinFunction();
 
         autoTestContext.setAutoTestCookie(new AutoTestCookie(cookies));
     }
