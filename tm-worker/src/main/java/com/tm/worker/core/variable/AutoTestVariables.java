@@ -65,7 +65,11 @@ public class AutoTestVariables {
             // 如果计划变量不为空, 且用例变量配置了计划变量, 则 不用组合变量设置的值 做替换
             if(!(planVariables != null && autoCaseVariable != null && StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()))
                     && newVariables.getVariables().containsKey(variableName)) {
-                this.put(variableName, newVariables.get(variableName));
+                String value = newVariables.get(variableName);
+                if(ReUtil.isMatch(ExpressionUtils.function_call_pattern, value)) {
+                    value = ExpressionUtils.replaceExpression(value, variables);
+                }
+                this.put(variableName, value);
             }
         }
     }
@@ -132,5 +136,16 @@ public class AutoTestVariables {
         put(BUILTIN_VARIABLE_NAME_PLAN_RESULT_ID, null);
         putObject(BUILTIN_VARIABLE_NAME_GROUP_NO, 0);
         putObject(BUILTIN_VARIABLE_NAME_GROUP_NAME, "");
+    }
+
+    public void execBuiltinFunction() {
+        for (Map.Entry<String, Object> entry : variables.entrySet()) {
+            String variableName = entry.getKey();
+            String value = getVariableString(variableName);
+            if(ReUtil.isMatch(ExpressionUtils.function_call_pattern, value)) {
+                value = ExpressionUtils.replaceExpression(value, variables);
+                put(variableName, value);
+            }
+        }
     }
 }

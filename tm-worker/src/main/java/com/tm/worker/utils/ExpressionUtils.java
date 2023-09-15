@@ -13,6 +13,7 @@ public final class ExpressionUtils {
     public static final String __PLATFORM_PRIVATE_NULL = "__NULL__";
 
     public static final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
+    public static final Pattern function_call_pattern = Pattern.compile("\\$\\{__(.*?)\\}");
 
     private ExpressionUtils() {}
 
