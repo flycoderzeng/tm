@@ -95,7 +95,9 @@ public class JDBCRequest extends StepNodeBase {
         addResultInfo("数据库port：").addResultInfoLine(dbConfig.getPort());
         addResultInfo("sql语句：").addResultInfoLine(actualContent);
 
-        if(DbTypeEnum.MYSQL.value() == dbConfig.getType() || DbTypeEnum.POSTGRESQL.value() == dbConfig.getType()) {
+        if(DbTypeEnum.MYSQL.value() == dbConfig.getType() ||
+                DbTypeEnum.POSTGRESQL.value() == dbConfig.getType() ||
+                DbTypeEnum.DM.value() == dbConfig.getType()) {
             if (actualContent.toLowerCase().startsWith("select")) {
                 List<Map<String, String>> list = execMySQLSelect(dbConfig, actualContent);
                 String resultValue = gson.toJson(list);

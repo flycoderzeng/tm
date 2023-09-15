@@ -29,6 +29,9 @@ public class JDBCDataSource {
         if(DbTypeEnum.POSTGRESQL.value() == dbConfig.getType()) {
             dataSource.setDriverClassName("org.postgresql.Driver");
         }
+        if(DbTypeEnum.DM.value() == dbConfig.getType()) {
+            dataSource.setDriverClassName("dm.jdbc.driver.DmDriver");
+        }
         dataSource.setInitialSize(3);
         dataSource.setMaxActive(30);
         dataSource.setMinIdle(1);
@@ -61,6 +64,10 @@ public class JDBCDataSource {
         if(DbTypeEnum.POSTGRESQL.value() == dbConfig.getType()) {
             url = "jdbc:postgresql://%s:%s/%s?currentSchema=%s";
             url = String.format(url, dbConfig.getIp(), dbConfig.getPort(), dbConfig.getSchemaName(), dbConfig.getDbName());
+        }
+        if(DbTypeEnum.DM.value() == dbConfig.getType()) {
+            url = "jdbc:dm://%s:%s/%s";
+            url = String.format(url, dbConfig.getIp(), dbConfig.getPort(), dbConfig.getDbName());
         }
         log.info(url);
         return url;
