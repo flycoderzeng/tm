@@ -1,5 +1,8 @@
 package com.tm.common.security;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.tm.common.utils.ResultUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -7,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -22,6 +24,7 @@ import java.io.PrintWriter;
 @EnableWebSecurity
 @Order(-1)
 public class SecurityConfiguration {
+    public static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     public static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json;charset=utf-8";
     public static final String LOGIN_SUCCESS = "{\"code\": 0, \"message\": \"login success\"}";
     public static final String LOGOUT_SUCCESS = "{\"code\": 0, \"message\": \"logout success\"}";
@@ -67,7 +70,7 @@ public class SecurityConfiguration {
                     response.setContentType(APPLICATION_JSON_CHARSET_UTF_8);
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     PrintWriter out = response.getWriter();
-                    out.write(AccessDecisionManagerImpl.NO_PERMISSION);
+                    out.write(gson.toJson(ResultUtils.error(401, authException.getMessage())));
                     out.flush();
                     out.close();
                 }).permitAll().successHandler((request, response, authException) -> {
