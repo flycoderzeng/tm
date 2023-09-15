@@ -85,7 +85,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                 }
             }
         }
-        if(dcnId !== null && dcnId !== undefined) {
+        if(dcnId && dcnId !== null && dcnId !== undefined) {
             data['data']['relationships']['dcnConfig'] = {
                 "data": {
                     "id": dcnId,
@@ -220,6 +220,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                     <Select style={{ width: 120 }}>
                         <Option value="1">MySql</Option>
                         <Option value="2">Postgresql</Option>
+                        <Option value="3">达梦</Option>
                     </Select>
                 </Form.Item>
 

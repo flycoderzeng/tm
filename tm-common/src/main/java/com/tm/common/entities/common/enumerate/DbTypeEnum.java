@@ -1,7 +1,7 @@
 package com.tm.common.entities.common.enumerate;
 
 public enum DbTypeEnum {
-    MYSQL(1), POSTGRESQL(2);
+    MYSQL(1), POSTGRESQL(2), DM(3);
     int value;
     DbTypeEnum(int value) {this.value = value;}
     DbTypeEnum() {}
@@ -12,6 +12,9 @@ public enum DbTypeEnum {
         }
         if (value == 2) {
             return DbTypeEnum.POSTGRESQL;
+        }
+        if (value == 3) {
+            return DbTypeEnum.DM;
         }
         return null;
     }
