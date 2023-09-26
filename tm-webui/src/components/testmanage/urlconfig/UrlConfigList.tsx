@@ -83,6 +83,7 @@ class UrlConfigList extends CommonListPage {
             {
                 title: 'ID',
                 dataIndex: 'id',
+                width: 100,
                 render: text => <span>{text}</span>,
             },{
                 title: '名称',
