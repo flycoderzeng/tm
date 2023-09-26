@@ -24,10 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Slf4j
@@ -39,6 +36,7 @@ public class JDBCRequest extends StepNodeBase {
             new DataTypeAdapter()).create();
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    public static final int MAX_ROWS = 100;
 
     private String dbName;
     private Integer dcnId;
@@ -156,6 +154,9 @@ public class JDBCRequest extends StepNodeBase {
                 return;
             }
             Map<String, String> map = list.get(rowNumber);
+            if(map.containsKey(name.toUpperCase())) {
+                name = name.toUpperCase();
+            }
             addResultInfo("将列: ").addResultInfo(name).addResultInfo(" 的值[").addResultInfo(map.get(name)).addResultInfo("]保存到变量: ").addResultInfoLine(value);
             caseVariables.putObject(value, map.get(name));
         }
@@ -167,6 +168,9 @@ public class JDBCRequest extends StepNodeBase {
         }
         List<String> arr = new ArrayList<>();
         for (Map<String, String> map : list) {
+            if(map.containsKey(fieldName.toUpperCase())) {
+                fieldName = fieldName.toUpperCase();
+            }
             arr.add(map.get(fieldName));
         }
         String joinResult = StrUtil.join(splitChar, arr);
@@ -231,9 +235,12 @@ public class JDBCRequest extends StepNodeBase {
     }
 
     private String checkResponse(AutoTestVariables caseVariables, Map<String, String> map, KeyValueRow keyValueRow) {
-        final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
+        String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
         if (StringUtils.isBlank(name)) {
             return null;
+        }
+        if(map.containsKey(name.toUpperCase())) {
+            name = name.toUpperCase();
         }
         Object leftOperand = map.get(name);
         final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
@@ -254,11 +261,6 @@ public class JDBCRequest extends StepNodeBase {
 
         if(sql.endsWith(";")) {
             sql = sql.substring(0, sql.length()-1);
-        }
-
-        int ind = sql.toLowerCase().lastIndexOf("limit");
-        if(ind < 0) {
-            sql += " limit 1";
         }
 
         List<Map<String, String>> list = execSelect(dbConfig, sql, context);
@@ -322,6 +324,7 @@ public class JDBCRequest extends StepNodeBase {
         try{
             // 执行查询
             stmt = conn.createStatement();
+            stmt.setMaxRows(MAX_ROWS);
             rs = stmt.executeQuery(sql);
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();

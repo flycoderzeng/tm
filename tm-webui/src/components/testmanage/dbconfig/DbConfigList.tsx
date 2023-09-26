@@ -99,6 +99,17 @@ class DbConfigList extends CommonListPage {
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             },{
+                title: '数据库类型',
+                dataIndex: 'type',
+                render: text => {
+                    if(text === 1)
+                        return <span>{'MySQL'}</span>
+                    if(text === 2)
+                        return <span>{'Postgresql'}</span>
+                    if(text === 3)
+                        return <span>{'达梦'}</span>
+                },
+            },{
                 title: 'ip',
                 dataIndex: 'ip',
                 sorter: ()=>{},
@@ -141,6 +152,7 @@ class DbConfigList extends CommonListPage {
                 render: text => <span>{text}</span>,
             },{
                 title: '操作',
+                fixed: 'right',
                 render: (text, record) => (
                     <div>
                         <Button className="padding-left0" size="small" type="link" onClick={() => this.edit(record.id)}>修改</Button>
@@ -172,6 +184,7 @@ class DbConfigList extends CommonListPage {
                 </div>
                 <Table columns={columns}
                        dataSource={this.state.data}
+                       scroll={{ x: window.outerWidth-200, y: window.outerHeight-300 }}
                        size="small"
                        footer={() => '共' + this.state.pagination.total + '条数据'}
                        loading={this.state.loading}
