@@ -46,27 +46,24 @@ public class CaseResultLogService {
         return queue;
     }
 
-    public void insert(Object logRowObject) {
-        if(logRowObject instanceof CaseExecuteResult logRow) {
-            int i = caseExecuteResultMapper.insertBySelective(logRow);
-            log.debug("插入用例执行结果，影响了{}条记录", i);
-        }else if(logRowObject instanceof CaseVariableValueResult logRow) {
-            int i = caseVariableValueResultMapper.insertBySelective(logRow);
-            log.debug("插入用例变量结果，影响了{}条记录", i);
-        }else if(logRowObject instanceof CaseStepExecuteResult logRow) {
-            int i = caseStepExecuteResultMapper.insertBySelective(logRow);
-            log.debug("插入用例步骤执行结果，影响了{}条记录", i);
+    public int insert(Object logRowObject) {
+        int i = 0;
+        if (logRowObject instanceof CaseExecuteResult logRow) {
+            i = caseExecuteResultMapper.insertBySelective(logRow);
+        } else if (logRowObject instanceof CaseVariableValueResult logRow) {
+            i = caseVariableValueResultMapper.insertBySelective(logRow);
+        } else if (logRowObject instanceof CaseStepExecuteResult logRow) {
+            i = caseStepExecuteResultMapper.insertBySelective(logRow);
         }
+        return i;
     }
 
     public int update(Object logRowObject) {
         int i = 0;
         if(logRowObject instanceof CaseExecuteResult logRow) {
             i = caseExecuteResultMapper.updateBySelective(logRow);
-            log.debug("更新用例执行结果，影响了{}条记录", i);
         }else if(logRowObject instanceof CaseStepExecuteResult logRow) {
             i = caseStepExecuteResultMapper.updateBySelective(logRow);
-            log.debug("更新用例步骤执行结果，影响了{}条记录", i);
         }
         return i;
     }
