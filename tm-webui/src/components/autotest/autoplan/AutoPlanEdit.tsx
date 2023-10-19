@@ -293,7 +293,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
                                 name="envId"
                                 rules={[{required: false}]}
                             >
-                                <RunEnvSelect onChange={setRunEnvId} style={{width: '200px'}}
+                                <RunEnvSelect onChange={setRunEnvId} style={{width: '250px'}}
                                               value={runEnvId}></RunEnvSelect>
                             </Form.Item>
 
