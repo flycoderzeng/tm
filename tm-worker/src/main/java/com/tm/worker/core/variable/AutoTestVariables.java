@@ -85,6 +85,9 @@ public class AutoTestVariables {
     private String get(String key) {
         Object o = this.variables.get(key);
         if (o instanceof String string) {
+            if(key.equals("v_columnName")) {
+                return string.toUpperCase();
+            }
             return string;
         } else {
             return o != null ? o.toString() : null;
@@ -104,7 +107,7 @@ public class AutoTestVariables {
         if (o instanceof String string) {
             if(StringUtils.equals(string, ExpressionUtils.__PLATFORM_PRIVATE_NULL)) {
                 return null;
-            }else if(ReUtil.isMatch(ExpressionUtils.pattern, string)) {
+            }else if(ReUtil.isMatch(ExpressionUtils.exists_function_pattern, string)) {
                 return ExpressionUtils.replaceExpression((String) o, variables);
             }
             return string;
