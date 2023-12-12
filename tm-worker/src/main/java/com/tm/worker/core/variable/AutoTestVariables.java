@@ -66,7 +66,7 @@ public class AutoTestVariables {
             if(!(planVariables != null && autoCaseVariable != null && StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()))
                     && newVariables.getVariables().containsKey(variableName)) {
                 String value = newVariables.get(variableName);
-                if(ReUtil.isMatch(ExpressionUtils.function_call_pattern, value)) {
+                if(ReUtil.isMatch(ExpressionUtils.FUNCTION_CALL_PATTERN, value)) {
                     value = ExpressionUtils.replaceExpression(value, variables);
                 }
                 this.put(variableName, value);
@@ -107,7 +107,7 @@ public class AutoTestVariables {
         if (o instanceof String string) {
             if(StringUtils.equals(string, ExpressionUtils.__PLATFORM_PRIVATE_NULL)) {
                 return null;
-            }else if(ReUtil.isMatch(ExpressionUtils.exists_function_pattern, string)) {
+            }else if(ReUtil.isMatch(ExpressionUtils.EXISTS_FUNCTION_PATTERN, string)) {
                 return ExpressionUtils.replaceExpression((String) o, variables);
             }
             return string;
@@ -145,7 +145,7 @@ public class AutoTestVariables {
         for (Map.Entry<String, Object> entry : variables.entrySet()) {
             String variableName = entry.getKey();
             String value = getVariableString(variableName);
-            if(ReUtil.isMatch(ExpressionUtils.function_call_pattern, value)) {
+            if(ReUtil.isMatch(ExpressionUtils.FUNCTION_CALL_PATTERN, value)) {
                 value = ExpressionUtils.replaceExpression(value, variables);
                 put(variableName, value);
             }

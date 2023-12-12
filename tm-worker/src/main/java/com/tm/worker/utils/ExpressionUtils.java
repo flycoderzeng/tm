@@ -1,6 +1,7 @@
 package com.tm.worker.utils;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import nl.flotsam.xeger.Xeger;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -9,20 +10,51 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * 引用 "用例变量"
+ * ${v_variableName}
+ * 引用 "全局变量"
+ * #{v_variableName}
+ * 引用 "正则表达式"  根据正则表达式 生成字符串替换
+ * @/[0-9]{1,3}/
+ */
 public final class ExpressionUtils {
     public static final String __PLATFORM_PRIVATE_NULL = "__NULL__";
 
-    public static final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
-    public static final Pattern exists_function_pattern = Pattern.compile(".*\\$\\{(.*?)\\}.*");
-    public static final Pattern function_call_pattern = Pattern.compile("\\$\\{__(.*?)\\}");
+    public static final Pattern TEMPLATE_CASE_VARIABLE_PATTERN = Pattern.compile("\\$\\{(.*?)\\}");
+    public static final Pattern EXISTS_FUNCTION_PATTERN = Pattern.compile(".*\\$\\{(.*?)\\}.*");
+    public static final Pattern FUNCTION_CALL_PATTERN = Pattern.compile("\\$\\{__(.*?)\\}");
+    public static final Pattern TEMPLATE_GLOBAL_VARIABLE_PATTERN = Pattern.compile("#\\{(.*?)\\}");
+    public static final Pattern TEMPLATE_REGEX_PATTERN = Pattern.compile("@/(.*?)/");
 
     private ExpressionUtils() {}
 
     public static String replaceExpression(String expression, Map envMap) {
-        if(StringUtils.isBlank(expression)) {
-            return expression;
+        return replaceRegex(replaceCaseVariable(expression, envMap));
+    }
+
+    public static String replaceRegex(String src) {
+        if(StringUtils.isBlank(src)) {
+            return src;
         }
-        Matcher m = pattern.matcher(expression);
+        Matcher m = TEMPLATE_REGEX_PATTERN.matcher(src);
+        List<String> listExpr = new ArrayList<>();
+        while (m.find()) {
+            listExpr.add(m.group(1));
+        }
+        for (String expr : listExpr) {
+            Xeger generator = new Xeger(expr);
+            src = src.replace("@/" + expr + "/", generator.generate());
+        }
+        return src;
+    }
+
+    public static String replaceCaseVariable(String src, Map envMap) {
+        if(StringUtils.isBlank(src)) {
+            return src;
+        }
+        Matcher m = TEMPLATE_CASE_VARIABLE_PATTERN.matcher(src);
         List<String> listExpr = new ArrayList<>();
         while (m.find()) {
             listExpr.add(m.group(1));
@@ -38,14 +70,19 @@ public final class ExpressionUtils {
             }else{
                 result = object + "";
             }
-            expression = expression.replace("${" + expr + "}", result+"");
+            result += "";
+            if(StringUtils.equals("v_columnFormat", expr) && StringUtils.isBlank(result)) {
+                src = src.replace("\"${" + expr + "}\"", "null");
+            }else {
+                src = src.replace("${" + expr + "}", result);
+            }
         }
 
-        if(StringUtils.equals(__PLATFORM_PRIVATE_NULL, expression)) {
+        if(StringUtils.equals(__PLATFORM_PRIVATE_NULL, src)) {
             return null;
         }
 
-        return expression;
+        return src;
     }
 
     public static String executeExpression(String expression, Map envMap) {
@@ -60,7 +97,7 @@ public final class ExpressionUtils {
         if(StringUtils.isBlank(expression)) {
             return null;
         }
-        Matcher m = pattern.matcher(expression);
+        Matcher m = TEMPLATE_CASE_VARIABLE_PATTERN.matcher(expression);
         if(m.find()) {
             return m.group(1);
         }
