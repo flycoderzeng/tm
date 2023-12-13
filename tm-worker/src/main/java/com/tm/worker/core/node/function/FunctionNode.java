@@ -1,6 +1,8 @@
 package com.tm.worker.core.node.function;
 
+import com.tm.common.base.model.GlobalVariable;
 import com.tm.common.entities.common.BaseNameValue;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.StepNodeBase;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
@@ -94,5 +96,17 @@ public class FunctionNode extends StepNodeBase {
             return defaultValue;
         }
         return value;
+    }
+
+    protected GlobalVariable getGlobalVariable() {
+        AutoTestContext context = AutoTestContextService.getContext();
+        AutoTestVariables caseVariables = context.getCaseVariables();
+        String globalKeyName = getContent("globalKeyName", caseVariables);
+        if(StringUtils.isBlank(globalKeyName)) {
+            throw new TMException("全局变量名称不能为空!");
+        }
+        GlobalVariable globalVariable = ExpressionUtils.getGlobalVariable(context, globalKeyName);
+        addResultInfo("全局变量名称: ").addResultInfoLine(globalKeyName);
+        return globalVariable;
     }
 }

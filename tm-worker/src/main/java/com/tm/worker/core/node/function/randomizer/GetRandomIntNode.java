@@ -1,7 +1,6 @@
 package com.tm.worker.core.node.function.randomizer;
 
 import cn.hutool.core.util.StrUtil;
-import com.googlecode.aviator.AviatorEvaluator;
 import com.tm.common.utils.DateUtils;
 import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.node.function.FunctionNode;

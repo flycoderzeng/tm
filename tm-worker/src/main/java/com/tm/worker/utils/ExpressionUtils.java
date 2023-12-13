@@ -1,6 +1,12 @@
 package com.tm.worker.utils;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.tm.common.base.model.DataNode;
+import com.tm.common.base.model.GlobalVariable;
+import com.tm.common.entities.common.enumerate.DataTypeEnum;
+import com.tm.worker.core.exception.TMException;
+import com.tm.worker.core.threads.AutoTestContext;
+import com.tm.worker.core.threads.AutoTestContextService;
 import nl.flotsam.xeger.Xeger;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,7 +37,40 @@ public final class ExpressionUtils {
     private ExpressionUtils() {}
 
     public static String replaceExpression(String expression, Map envMap) {
-        return replaceRegex(replaceCaseVariable(expression, envMap));
+        return replaceGlobalVariable(replaceRegex(replaceCaseVariable(expression, envMap)));
+    }
+
+    public static String replaceGlobalVariable(String src) {
+        if(StringUtils.isBlank(src)) {
+            return src;
+        }
+        AutoTestContext context = AutoTestContextService.getContext();
+        Matcher m = TEMPLATE_GLOBAL_VARIABLE_PATTERN.matcher(src);
+        List<String> listExpr = new ArrayList<>();
+        while (m.find()) {
+            listExpr.add(m.group(1));
+        }
+        for (String globalKeyName : listExpr) {
+            GlobalVariable globalVariable = getGlobalVariable(context, globalKeyName);
+            src = src.replace("#{" + globalKeyName + "}", globalVariable.getValue());
+        }
+        return src;
+    }
+
+    public static GlobalVariable getGlobalVariable(AutoTestContext context, String globalKeyName) {
+        List<DataNode> dataNodes = context.getTaskService().selectByDataTypeIdAndName(DataTypeEnum.GLOBAL_VARIABLE.value(), globalKeyName);
+        if(dataNodes == null || dataNodes.isEmpty()) {
+            throw new TMException("没有找到全局变量: " + globalKeyName);
+        }
+        if(dataNodes.size() > 1) {
+            throw new TMException("找到多个全局变量: " + globalKeyName);
+        }
+        DataNode dataNode = dataNodes.get(0);
+        GlobalVariable globalVariable = context.getTaskService().selectGlobalVariableByPrimaryId(dataNode.getId());
+        if(globalVariable == null) {
+            throw new TMException("没有找到全局变量: " + dataNode.getId());
+        }
+        return globalVariable;
     }
 
     public static String replaceRegex(String src) {
@@ -73,7 +112,10 @@ public final class ExpressionUtils {
             result += "";
             if(StringUtils.equals("v_columnFormat", expr) && StringUtils.isBlank(result)) {
                 src = src.replace("\"${" + expr + "}\"", "null");
-            }else {
+            } else if(StringUtils.equals(result, "null")) {
+                src = src.replace("\"${" + expr + "}\"", result);
+                src = src.replace("${" + expr + "}", result);
+            } else {
                 src = src.replace("${" + expr + "}", result);
             }
         }
