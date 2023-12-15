@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class CaseTaskRunnerThread implements Runnable {
-    public static final Integer DEFAULT_SLEEP_SECONDS = 1;
+    public static final long DEFAULT_SLEEP_SECONDS = 100;
     private TaskService taskService;
 
     public CaseTaskRunnerThread(TaskService taskService) {
@@ -34,7 +34,7 @@ public class CaseTaskRunnerThread implements Runnable {
             try {
                 // 线程池没有空闲线程或者没有计划任务
                 if (!taskService.canSubmitCaseTask() || taskService.isPlanTaskEmpty()) {
-                    TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
+                    TimeUnit.MILLISECONDS.sleep(DEFAULT_SLEEP_SECONDS);
                     continue;
                 }
 
@@ -53,7 +53,7 @@ public class CaseTaskRunnerThread implements Runnable {
 
     private boolean runTask(PlanTask planTask) throws InterruptedException {
         if (planTask == null || planTask.isFinished()) {
-            TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
+            TimeUnit.MILLISECONDS.sleep(DEFAULT_SLEEP_SECONDS);
             index = 0;
             return true;
         }
@@ -72,7 +72,7 @@ public class CaseTaskRunnerThread implements Runnable {
         }
         // 计划中正在运行的用例数大于等于设置的最大并发数
         if (planTask.getVirtualRunningCount() >= maxOccurs) {
-            TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
+            TimeUnit.MILLISECONDS.sleep(DEFAULT_SLEEP_SECONDS);
             index++;
             return true;
         }
@@ -87,7 +87,7 @@ public class CaseTaskRunnerThread implements Runnable {
         }
 
         if (caseTask == null) {
-            TimeUnit.SECONDS.sleep(DEFAULT_SLEEP_SECONDS);
+            TimeUnit.MILLISECONDS.sleep(DEFAULT_SLEEP_SECONDS);
             index++;
             return true;
         }
