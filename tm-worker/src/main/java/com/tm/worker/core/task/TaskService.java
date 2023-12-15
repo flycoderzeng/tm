@@ -53,8 +53,7 @@ public class TaskService {
             new DataTypeAdapter()).create();
     private static final Integer MAX_PLAN_CASE_TOTAL = 100000;
 
-    private ExecutorService executorService;
-    private ThreadPoolExecutor threadPoolExecutor;
+    private ThreadPoolExecutor poolExecutor;
 
     private static final WorkerPlanTaskList<PlanTask> planTaskList = new WorkerPlanTaskList<>();
     private static final Map<Integer, WorkerCaseTaskQueue> caseTaskQueueMap = new HashMap<>();
@@ -114,16 +113,14 @@ public class TaskService {
     }
 
     private void initThreadPool() {
-        int cores = Runtime.getRuntime().availableProcessors();
-        ThreadFactory springThreadFactory = new CustomizableThreadFactory("worker-pool-");
-        int nThreads = cores * 4;
-        if(nThreads < 64) {
-            nThreads = 64;
-        }
-        executorService = Executors.newFixedThreadPool(nThreads, springThreadFactory);
-        threadPoolExecutor = (ThreadPoolExecutor) executorService;
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        int nThreads = Math.max(availableProcessors * 4, 64);
+        ThreadFactory threadFactory = new CustomizableThreadFactory("worker-pool-");
+        poolExecutor = new ThreadPoolExecutor(nThreads, nThreads,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(), threadFactory);
         for (int i = 0; i < 10; i++) {
-            threadPoolExecutor.submit(new CaseResultLogProcessRunnerThread(caseResultLogService));
+            poolExecutor.submit(new CaseResultLogProcessRunnerThread(caseResultLogService));
         }
     }
 
@@ -475,11 +472,11 @@ public class TaskService {
     }
 
     public boolean canSubmitCaseTask() {
-        return threadPoolExecutor.getActiveCount() < threadPoolExecutor.getCorePoolSize();
+        return poolExecutor.getActiveCount() < poolExecutor.getCorePoolSize();
     }
 
     public Future<BaseResponse> submitCaseTask(CaseTaskThread caseTask) {
-        return threadPoolExecutor.submit(caseTask);
+        return poolExecutor.submit(caseTask);
     }
 
     public boolean isPlanTaskEmpty() {
