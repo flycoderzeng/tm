@@ -347,11 +347,11 @@ public class HttpSampler extends StepNodeBase {
         Map<String, String> headerMap = new HashMap<>();
         if(headers != null && !headers.isEmpty()) {
             for (KeyValueRow header : headers) {
-                String name = header.getName();
-                name = ExpressionUtils.replaceExpression(name, caseVariables.getVariables());
-                String value = header.getValue();
-                value = ExpressionUtils.replaceExpression(value, caseVariables.getVariables());
-                headerMap.put(name, value);
+                String name = ExpressionUtils.replaceExpression(header.getName(), caseVariables.getVariables());
+                String value = ExpressionUtils.replaceExpression(header.getValue(), caseVariables.getVariables());
+                if (StringUtils.isNotBlank(name)) {
+                    headerMap.put(name, value);
+                }
             }
         }
         return headerMap;
@@ -371,9 +371,9 @@ public class HttpSampler extends StepNodeBase {
                     throw new TMException("参数名称不能为空");
                 }
                 builder.append(FunctionUtils.encodeURIComponent(paramName)).append("=");
-                String value = param.getValue();
-                value = ExpressionUtils.replaceExpression(value, caseVariables.getVariables());
-                builder.append(FunctionUtils.encodeURIComponent(value));
+                builder.append(FunctionUtils.encodeURIComponent(
+                        ExpressionUtils.replaceExpression(param.getValue(), caseVariables.getVariables())
+                ));
                 if(i < keyValueRows.size() - 1) {
                     builder.append("&");
                 }

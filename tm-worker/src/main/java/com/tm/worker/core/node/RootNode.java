@@ -26,9 +26,7 @@ public class RootNode extends StepNodeBase {
         caseVariables.updateAutoCaseVariables(userDefinedVariables, planVariables);
         // 如果是组合方式运行，将组合变量值，初始化为用例变量值
         AutoTestVariables groupVariables = autoTestContext.getCaseTask().getGroupVariables();
-        if(groupVariables != null) {
-            caseVariables.replace(groupVariables);
-        }
+        caseVariables.replace(groupVariables);
         caseVariables.execBuiltinFunction();
 
         autoTestContext.setAutoTestCookie(new AutoTestCookie(cookies));
