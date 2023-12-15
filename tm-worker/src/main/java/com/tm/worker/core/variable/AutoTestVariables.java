@@ -33,25 +33,25 @@ public class AutoTestVariables {
         initBuiltinVariables();
     }
 
-    public void updateAutoCaseVariables(List<AutoCaseVariable> autoCaseVariables, AutoTestVariables planVariables) {
-        this.planVariables = planVariables;
-        updateVariables(autoCaseVariables, planVariables);
+    public void updateAutoCaseVariables(List<AutoCaseVariable> autoCaseVariables, AutoTestVariables autoTestVariables) {
+        this.planVariables = autoTestVariables;
+        updateVariables(autoCaseVariables, autoTestVariables);
     }
 
     public AutoTestVariables(Map<String, String> testVariables) {
         variables.putAll(testVariables);
     }
 
-    private void updateVariables(List<AutoCaseVariable> autoCaseVariables, AutoTestVariables planVariables) {
+    private void updateVariables(List<AutoCaseVariable> autoCaseVariables, AutoTestVariables autoTestVariables) {
         if(autoCaseVariables == null) {
             return;
         }
         for (int i = 0; i < autoCaseVariables.size(); i++) {
             AutoCaseVariable autoCaseVariable = autoCaseVariables.get(i);
             caseVariableMap.put(autoCaseVariable.getName(), autoCaseVariable);
-            if(StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()) && planVariables != null
-                    && planVariables.exists(autoCaseVariable.getPlanVariableName())) {
-                put(autoCaseVariable.getName(), planVariables.get(autoCaseVariable.getPlanVariableName()));
+            if(StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()) && autoTestVariables != null
+                    && autoTestVariables.exists(autoCaseVariable.getPlanVariableName())) {
+                put(autoCaseVariable.getName(), autoTestVariables.get(autoCaseVariable.getPlanVariableName()));
             } else {
                 put(autoCaseVariable.getName(), autoCaseVariable.getValue());
             }
@@ -59,17 +59,19 @@ public class AutoTestVariables {
     }
 
     public void replace(AutoTestVariables newVariables) {
-        for (Map.Entry<String, Object> entry : variables.entrySet()) {
-            String variableName = entry.getKey();
-            AutoCaseVariable autoCaseVariable = caseVariableMap.get(variableName);
-            // 如果计划变量不为空, 且用例变量配置了计划变量, 则 不用组合变量设置的值 做替换
-            if(!(planVariables != null && autoCaseVariable != null && StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()))
-                    && newVariables.getVariables().containsKey(variableName)) {
-                String value = newVariables.get(variableName);
-                if(ReUtil.isMatch(ExpressionUtils.FUNCTION_CALL_PATTERN, value)) {
-                    value = ExpressionUtils.replaceExpression(value, variables);
+        if(newVariables != null) {
+            for (Map.Entry<String, Object> entry : variables.entrySet()) {
+                String variableName = entry.getKey();
+                AutoCaseVariable autoCaseVariable = caseVariableMap.get(variableName);
+                // 如果计划变量不为空, 且用例变量配置了计划变量, 则 不用组合变量设置的值 做替换
+                if(!(planVariables != null && autoCaseVariable != null && StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()))
+                        && newVariables.getVariables().containsKey(variableName)) {
+                    String value = newVariables.get(variableName);
+                    if(ReUtil.isMatch(ExpressionUtils.FUNCTION_CALL_PATTERN, value)) {
+                        value = ExpressionUtils.replaceExpression(value, variables);
+                    }
+                    this.put(variableName, value);
                 }
-                this.put(variableName, value);
             }
         }
     }
