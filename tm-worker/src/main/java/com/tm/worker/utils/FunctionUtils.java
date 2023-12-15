@@ -26,21 +26,25 @@ public final class FunctionUtils {
     }
 
     public static Integer randomUnitEvenNumber() {
+        int i;
         while (true) {
-            int i = RandomUtils.nextInt(1, 10);
-            if (i % 2 <= 0) {
-                return i;
+            i = RandomUtils.nextInt(1, 10);
+            if (i % 2 == 0) {
+                break;
             }
         }
+        return i;
     }
 
     public static Integer randomUnitOddNumber() {
+        int i;
         while (true) {
-            int i = RandomUtils.nextInt(1, 10);
-            if (i % 2 > 0) {
-                return i;
+            i = RandomUtils.nextInt(1, 10);
+            if (i % 2!= 0) {
+                break;
             }
         }
+        return i;
     }
 
     //知识点：

@@ -233,16 +233,18 @@ public class TaskService {
     }
 
     private void waitForTaskFinish(PlanTask planSetupTask) {
-        while (true) {
-            if(planSetupTask.isFinished()) {
-                break;
-            }
+        int i = 0;
+        while (i < 3600 && !planSetupTask.isFinished()) {
             try {
-                TimeUnit.SECONDS.sleep(10);
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 log.info("", e);
                 Thread.currentThread().interrupt();
             }
+            i++;
+        }
+        if(!planSetupTask.isFinished()) {
+            planSetupTask.stop();
         }
     }
 
