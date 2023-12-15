@@ -99,7 +99,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
             taskService.setIsUpdateRunning(planTask);
             init();
             currStepNode = caseStepTree;
-            while (running && currStepNode != null) {
+            while (!isStopped() && currStepNode != null) {
                 if (currStepNode.getType().equals(StepNodeTypeDefineEnum.TEARDOWN.value()) && teardownNode == null) {
                     teardownNode = currStepNode;
                     teardownNode.setEnded(true);
@@ -129,7 +129,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
                 if(currStepNode == null) {
                     currStepNode = findTeardownNode();
                 }
-                while (running && currStepNode != null) {
+                while (!isStopped() && currStepNode != null) {
                     currStepNode = runStepNode(currStepNode);
                 }
             } catch (Exception exception) {
@@ -142,6 +142,10 @@ public class CaseTaskThread implements Callable<BaseResponse> {
             teardown();
         }
         return ResultUtils.success();
+    }
+
+    private boolean isStopped() {
+        return !running && planTask.isStopped();
     }
 
     private StepNode findTeardownNode() {

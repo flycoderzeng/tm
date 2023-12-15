@@ -117,8 +117,8 @@ public class TaskService {
         int cores = Runtime.getRuntime().availableProcessors();
         ThreadFactory springThreadFactory = new CustomizableThreadFactory("worker-pool-");
         int nThreads = cores * 4;
-        if(nThreads < 50) {
-            nThreads = 50;
+        if(nThreads < 64) {
+            nThreads = 64;
         }
         executorService = Executors.newFixedThreadPool(nThreads, springThreadFactory);
         threadPoolExecutor = (ThreadPoolExecutor) executorService;
