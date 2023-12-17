@@ -44,4 +44,10 @@ public class AutoTestController extends BaseController {
         User user = getLoginUser();
         return autoTestService.retryFailedCase(body, user);
     }
+
+    @PostMapping(value = "/stopPlan", produces = {"application/json;charset=UTF-8"})
+    public BaseResponse stopPlan(@RequestBody @Valid RetryFailedCaseBody body) {
+        User user = getLoginUser();
+        return autoTestService.stopPlan(body.getPlanResultId(), user);
+    }
 }

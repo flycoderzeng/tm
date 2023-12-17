@@ -489,6 +489,10 @@ public class TaskService {
         return planTaskList.get(index);
     }
 
+    public PlanTask getPlanTaskByPlanExecuteResultId(Integer planExecuteResultId) {
+        return planTaskList.getWithPlanExecuteResultId(planExecuteResultId);
+    }
+
     public WorkerCaseTaskQueue getCaseTaskQueue(Integer planResultId) {
         return caseTaskQueueMap.get(planResultId);
     }
@@ -501,14 +505,31 @@ public class TaskService {
         planExecuteResultDao.setPlanExecuteResultStatus(planTask.getPlanExecuteResult(), status);
     }
 
-    public void stopPlanTask(PlanTask planTask) {
+    public void stopPlanTask(Integer planExecuteResultId) {
+        final PlanTask planTask = getPlanTaskByPlanExecuteResultId(planExecuteResultId);
+        if(planTask != null && planTask.getPlanExecuteResultId().equals(planExecuteResultId)) {
+            stopPlanTask(planTask, PlanExecuteResultStatusEnum.CANCELED);
+        }
+        if(planTask == null) {
+            log.info("计划结果id: {}, planTask is null", planExecuteResultId);
+        }
+        if(planTask != null && !planTask.getPlanExecuteResultId().equals(planExecuteResultId)) {
+            log.info("计划结果id: {}, 可能已经执行结束，不需要停止", planExecuteResultId);
+        }
+    }
+
+    public void stopPlanTask(PlanTask planTask, PlanExecuteResultStatusEnum resultStatusEnum) {
         planTaskList.stop(planTask.getPlanExecuteResultId());
         planTaskList.stopPassive(planTask.getPlanExecuteResultId());
-        setPlanExecuteResultStatus(planTask, PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN);
+        setPlanExecuteResultStatus(planTask, resultStatusEnum);
         boolean removed = removePlanTask(planTask.getPlanExecuteResultId());
         if (!removed) {
             log.error("remove failed, {}", planTask.getPlanExecuteResultId());
         }
+    }
+
+    public void stopPlanTask(PlanTask planTask) {
+        stopPlanTask(planTask, PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN);
     }
 
     public boolean removePlanTask(Integer planExecuteResultId) {

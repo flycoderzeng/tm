@@ -226,4 +226,10 @@ public class AutoTestService {
         retryFailedCase(planExecuteResult, snapshot);
         return ResultUtils.success();
     }
+
+    public BaseResponse stopPlan(Integer planResultId, User user) {
+        log.info("user {} 停止计划,结果id {}", user.getUsername(), planResultId);
+        taskService.stopPlanTask(planResultId);
+        return ResultUtils.success();
+    }
 }

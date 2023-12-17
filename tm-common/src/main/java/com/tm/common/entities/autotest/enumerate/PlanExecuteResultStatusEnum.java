@@ -1,7 +1,7 @@
 package com.tm.common.entities.autotest.enumerate;
 
 
-// 计划结果状态 1-初始化中 2-任务初始化完毕，等待调度执行 3-执行中 4-执行完成 5-暂停中 6-取消执行 7-任务队列已满
+// 计划结果状态 1-初始化中 2-任务初始化完毕，等待调度执行 3-执行中 4-执行完成 5-暂停中 6-停止执行 7-任务队列已满
 // 8-setup计划执行结果存在失败用例 9-setup计划执行中 10-有用例执行失败,停止执行
 // 99-异常结束
 public enum PlanExecuteResultStatusEnum {
