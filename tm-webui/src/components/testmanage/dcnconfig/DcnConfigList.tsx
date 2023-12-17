@@ -9,7 +9,7 @@ const { Search } = Input;
 
 class DcnConfigList extends CommonListPage {
     constructor(props) {
-        super(props);
+        super(props, 'DcnConfigList');
         const commonApiUrlModel: CommonApiUrlModel = {
             listUrl: ApiUrlConfig.QUERY_DCN_CONFIG_LIST_URL,
             saveUrl: ApiUrlConfig.SAVE_DCN_CONFIG_URL,

@@ -20,4 +20,6 @@ public class BatchCopyCommonConfigBody {
 
     @NotBlank(message = "端口号不能为空")
     private String port;
+
+    private String schemaName;
 }

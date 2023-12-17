@@ -68,6 +68,7 @@ const DcnConfigEdit: React.FC<IState> = (props) => {
                     const ret = resp.data;
                     setId(ret.data.id);
                     message.success('操作成功');
+                    back();
                 }
             }).finally(() => {
                 setSaving(false);
@@ -80,6 +81,7 @@ const DcnConfigEdit: React.FC<IState> = (props) => {
                     message.error('操作失败');
                 } else {
                     message.success('操作成功');
+                    back();
                 }
             }).finally(() => {
                 setSaving(false);

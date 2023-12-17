@@ -10,9 +10,9 @@ import axios from "axios";
 const { Search } = Input;
 
 class DbConfigList extends CommonListPage {
-    batchCopyConfigValues = {srcEnvId: null, srcDcnId: null, desEnvId: null, ip: '', port: ''};
+    batchCopyConfigValues = {srcEnvId: null, srcDcnId: null, desEnvId: null, ip: '', port: '', schemaName: ''};
     constructor(props) {
-        super(props);
+        super(props, 'DbConfigList');
         const commonApiUrlModel: CommonApiUrlModel = {
             listUrl: ApiUrlConfig.QUERY_DB_CONFIG_LIST_URL,
             saveUrl: ApiUrlConfig.SAVE_DB_CONFIG_URL,
@@ -43,6 +43,7 @@ class DbConfigList extends CommonListPage {
     onChange = (pagination, filters, sorter) => {
         this.loadDataListSort(pagination, filters, sorter);
         this.setState({sortedInfo: sorter});
+        this.updateCommonState(this.constructor.name, filters, sorter);
     }
 
     onChangeBatchCopyConfigValues = (key, value) => {
@@ -131,28 +132,11 @@ class DbConfigList extends CommonListPage {
                 dataIndex: 'dcnName',
                 render: text => <span>{text}</span>,
             },{
-                title: '创建者',
-                dataIndex: 'addUser',
-                render: text => <span>{text}</span>,
-            },{
-                title: '创建时间',
-                dataIndex: 'addTime',
-                key: 'addTime',
-                sorter: ()=>{},
-                render: text => <span>{text}</span>,
-            },{
-                title: '修改者',
-                dataIndex: 'lastModifyUser',
-                render: text => <span>{text}</span>,
-            },{
-                title: '修改时间',
-                dataIndex: 'lastModifyTime',
-                key: 'lastModifyTime',
-                sorter: ()=>{},
-                render: text => <span>{text}</span>,
-            },{
                 title: '操作',
                 fixed: 'right',
+                filteredValue: this.state.filteredValue,
+                filters: this.columnFilters,
+                onFilter: (value, record) => this.onFilter(value,record),
                 render: (text, record) => (
                     <div>
                         <Button className="padding-left0" size="small" type="link" onClick={() => this.edit(record.id)}>修改</Button>
@@ -162,6 +146,8 @@ class DbConfigList extends CommonListPage {
             },
         ];
         const {area} = this.state.queryInfo;
+        this.showCommonColumns(columns);
+
         return (<div className="card">
             <div className="card-header card-header-divider">数据库配置
                 <span className="card-subtitle">数据库ip、端口配置</span>
@@ -184,7 +170,6 @@ class DbConfigList extends CommonListPage {
                 </div>
                 <Table columns={columns}
                        dataSource={this.state.data}
-                       scroll={{ x: window.outerWidth-200, y: window.outerHeight-300 }}
                        size="small"
                        footer={() => '共' + this.state.pagination.total + '条数据'}
                        loading={this.state.loading}
@@ -196,7 +181,7 @@ class DbConfigList extends CommonListPage {
             <Modal title="复制数据库配置到新环境" open={this.state.isModalVisible}
                    onOk={this.handleOk}
                    onCancel={this.handleCancel}>
-                <CommonBatchCopyConfig onChange={this.onChangeBatchCopyConfigValues}></CommonBatchCopyConfig>
+                <CommonBatchCopyConfig type={'db'} onChange={this.onChangeBatchCopyConfigValues}></CommonBatchCopyConfig>
             </Modal>
         </div>)
     }

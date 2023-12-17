@@ -65,6 +65,9 @@ public class DbConfigService extends BaseService {
                 dbConfig.setEnvId(runEnv.getId());
                 dbConfig.setIp(body.getIp());
                 dbConfig.setPort(body.getPort());
+                if(StringUtils.isNoneBlank(body.getSchemaName())) {
+                    dbConfig.setSchemaName(body.getSchemaName());
+                }
                 dbConfig.setAddTime(new Date());
                 dbConfig.setAddUser(loginUser.getUsername());
                 newList.add(dbConfig);
