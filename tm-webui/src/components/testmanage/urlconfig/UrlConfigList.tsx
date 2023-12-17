@@ -44,6 +44,7 @@ class UrlConfigList extends CommonListPage {
     onChange = (pagination, filters, sorter) => {
         this.loadDataListSort(pagination, filters, sorter);
         this.setState({sortedInfo: sorter});
+        this.updateCommonState(this.constructor.name, filters, sorter);
     }
 
     onChangeBatchCopyConfigValues = (key, value) => {
@@ -119,28 +120,11 @@ class UrlConfigList extends CommonListPage {
                 dataIndex: 'dcnName',
                 render: text => <span>{text}</span>,
             },{
-                title: '创建者',
-                dataIndex: 'addUser',
-                render: text => <span>{text}</span>,
-            },{
-                title: '创建时间',
-                dataIndex: 'addTime',
-                key: 'addTime',
-                sorter: ()=>{},
-                render: text => <span>{text}</span>,
-            },{
-                title: '修改者',
-                dataIndex: 'lastModifyUser',
-                render: text => <span>{text}</span>,
-            },{
-                title: '修改时间',
-                dataIndex: 'lastModifyTime',
-                key: 'lastModifyTime',
-                sorter: ()=>{},
-                render: text => <span>{text}</span>,
-            },{
                 title: '操作',
                 fixed: 'right',
+                width: 200,
+                filters: this.columnFilters,
+                filteredValue: this.state.filteredValue,
                 render: (text, record) => (
                     <div>
                         <Button className="padding-left0" size="small" type="link" onClick={() => this.edit(record.id)}>修改</Button>
@@ -150,6 +134,9 @@ class UrlConfigList extends CommonListPage {
             },
         ];
         const {area} = this.state.queryInfo;
+
+        this.showCommonColumns(columns);
+
         return (<div className="card">
             <div className="card-header card-header-divider">接口路径配置
                 <span className="card-subtitle">接口路径、ip、端口与环境的关联配置</span>
