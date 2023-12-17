@@ -92,7 +92,7 @@ public class WorkerPlanTaskList<T extends WorkerPlanTask> {
         }
         if(index > -1) {
             T t = planTaskList.get(index);
-            if(t != null) {
+            if(t != null && t.getPlanExecuteResultId().equals(planExecuteResultId)) {
                 t.stop();
             }
         }
@@ -108,9 +108,23 @@ public class WorkerPlanTaskList<T extends WorkerPlanTask> {
         }
         if(index > -1) {
             T t = planTaskList.get(index);
-            if(t != null) {
+            if(t != null && t.getPlanExecuteResultId().equals(planExecuteResultId)) {
                 t.stopPassive();
             }
         }
+    }
+
+    public T getWithPlanExecuteResultId(Integer planExecuteResultId) {
+        int index = -1;
+        for (int i = 0; i < planTaskList.size(); i++) {
+            if(planTaskList.get(i).getPlanExecuteResultId().equals(planExecuteResultId)) {
+                index = i;
+                break;
+            }
+        }
+        if(index > -1) {
+           return planTaskList.get(index);
+        }
+        return null;
     }
 }

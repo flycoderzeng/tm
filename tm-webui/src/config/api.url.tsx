@@ -94,6 +94,7 @@ const ApiUrlConfig = {
     RUN_PLAN_URL: '/web/autotest/runPlan',
     RUN_CASE_URL: '/web/autotest/runCase',
     RETRY_FAILED_CASE_URL: '/worker/autotest/retryFailedCase',
+    STOP_PLAN_URL: '/worker/autotest/stopPlan',
     QUERY_URL_CONFIG_LIST_URL: '/lc/lc/json/api/api_ip_port_config',
     LOAD_URL_CONFIG_URL: '/lc/lc/json/api/api_ip_port_config/',
     SAVE_URL_CONFIG_URL: '/lc/lc/json/api/api_ip_port_config',

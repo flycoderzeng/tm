@@ -164,6 +164,25 @@ const PlanResultPage: React.FC<IState> = (props) => {
         window.open("#/planresult/" + planOrCaseId + "/" + fromType + "/1/" + planSetupResultId);
     }
 
+    function stopPlan() {
+        if(!window.confirm('确定停止计划吗？')) {
+            return ;
+        }
+        axios.post(ApiUrlConfig.STOP_PLAN_URL,
+            {planResultId: planResultId}).then(resp => {
+            if (resp.status !== 200) {
+                message.error('执行失败');
+            } else {
+                const ret = resp.data;
+                if (ret.code !== 0) {
+                    message.error(ret.message);
+                } else {
+                    message.success('操作成功');
+                }
+            }
+        });
+    }
+
     function checkTeardownResult() {
         if(!planTeardownResultId) {
             message.info('没有计划后执行结果');
@@ -212,6 +231,7 @@ const PlanResultPage: React.FC<IState> = (props) => {
                 <Button type="dashed" onClick={()=>{checkTeardownResult();}}>查看计划后结果</Button>
                 {/*<Button type="default" >发送邮件</Button>*/}
                 {/*<Button type="primary" >再次执行</Button>*/}
+                <Button type="default" danger onClick={()=>{stopPlan();}}>停止计划</Button>
             </div>} bordered>
                 <Descriptions.Item label="计划名称">{planOrCaseName}</Descriptions.Item>
                 <Descriptions.Item label="提交信息">{submitInfo}</Descriptions.Item>
