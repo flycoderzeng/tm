@@ -72,6 +72,7 @@ class TagEdit extends React.Component<TagProps, IState> {
                     message.error('操作失败');
                 } else {
                     message.success('操作成功');
+                    this.back();
                 }
             }).finally(() => {
                 this.setState({saving: false});
@@ -85,6 +86,7 @@ class TagEdit extends React.Component<TagProps, IState> {
                     const ret = resp.data;
                     this.setState({id: ret.data.id});
                     message.success('操作成功');
+                    this.back();
                 }
             }).finally(() => {
                 this.setState({saving: false});

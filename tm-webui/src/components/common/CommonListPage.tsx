@@ -49,7 +49,7 @@ class CommonListPage extends React.Component<CommonProps, IState> {
                 area: '1',
                 searchValue: ''
             },
-            filteredValue: LocalStorageUtils.getFilteredValue(className)
+            filteredValue: [...LocalStorageUtils.getFilteredValue(className)]
         };
         this.commonApiUrlModel = {
             saveUrl: '',

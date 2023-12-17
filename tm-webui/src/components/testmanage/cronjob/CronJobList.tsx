@@ -12,7 +12,7 @@ const { Search } = Input;
 
 class CronJobList extends CommonListPage {
     constructor(props) {
-        super(props);
+        super(props, 'CronJobList');
         const commonApiUrlModel: CommonApiUrlModel = {
             listUrl: ApiUrlConfig.QUERY_CRON_JOB_LIST_URL,
             saveUrl: ApiUrlConfig.SAVE_CRON_JOB_URL,
@@ -64,15 +64,6 @@ class CronJobList extends CommonListPage {
             }, {
                 title: '定时表达式',
                 dataIndex: 'cronExpression',
-                render: text => <span>{text}</span>,
-            }, {
-                title: '创建者',
-                dataIndex: 'addUser',
-                render: text => <span>{text}</span>,
-            }, {
-                title: '创建时间',
-                dataIndex: 'addTime',
-                sorter: ()=>{},
                 render: text => <span>{text}</span>,
             }, {
                 title: '最近运行时间',

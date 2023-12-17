@@ -5,6 +5,7 @@ import {DCNSelect} from "../../testmanage/dcnconfig/DCNSelect";
 
 interface IState {
     onChange?: any;
+    type?: 'db' | 'http'
 }
 const layout = {
     labelCol: { span: 6 },
@@ -16,6 +17,8 @@ const CommonBatchCopyConfig: React.FC<IState> = (props) => {
     const [desEnvId, setDesEnvId] = useState('');
     const [ip, setIp] = useState('');
     const [port, setPort] = useState('');
+    const [schemaName, setSchemaName] = useState('');
+    const {type} = props;
     const {onChange} = props;
 
     function onChangeSrcEnvId(v) {
@@ -53,7 +56,26 @@ const CommonBatchCopyConfig: React.FC<IState> = (props) => {
         }
     }
 
+    function onChangeSchemaName(e) {
+        setPort(e.target.value);
+        if(onChange) {
+            onChange('schemaName', e.target.value);
+        }
+    }
+
     const labelCol = {span: 6, offset: 1};
+
+    let schemaCtl;
+    if(type === 'db') {
+        schemaCtl = <Form.Item
+            label="新的schema"
+            name="port"
+            labelCol={labelCol}
+            rules={[{required: false, message: '请输入新的schema!' }]}
+        >
+            <Input value={schemaName} onChange={onChangeSchemaName}/>
+        </Form.Item>
+    }
 
     return (<div>
         <Form.Item
@@ -100,6 +122,8 @@ const CommonBatchCopyConfig: React.FC<IState> = (props) => {
         >
             <Input value={port} onChange={onChangePort}/>
         </Form.Item>
+
+        {schemaCtl}
     </div>)
 }
 export {CommonBatchCopyConfig}

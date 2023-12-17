@@ -64,6 +64,7 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
                     message.error('操作失败');
                 } else {
                     message.success('操作成功');
+                    this.back();
                 }
             }).finally(() => {
                 this.setState({saving: false});
@@ -77,6 +78,7 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
                     const ret = resp.data;
                     this.setState({id: ret.data.id});
                     message.success('操作成功');
+                    this.back();
                 }
             }).finally(() => {
                 this.setState({saving: false});

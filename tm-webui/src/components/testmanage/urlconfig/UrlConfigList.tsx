@@ -12,7 +12,7 @@ const { Search } = Input;
 class UrlConfigList extends CommonListPage {
     batchCopyConfigValues = {srcEnvId: null, srcDcnId: null, desEnvId: null, ip: '', port: ''};
     constructor(props) {
-        super(props);
+        super(props, 'UrlConfigList');
         const commonApiUrlModel: CommonApiUrlModel = {
             listUrl: ApiUrlConfig.QUERY_URL_CONFIG_LIST_URL,
             saveUrl: ApiUrlConfig.SAVE_URL_CONFIG_URL,
@@ -183,7 +183,7 @@ class UrlConfigList extends CommonListPage {
             <Modal title="复制接口配置到新环境" open={this.state.isModalVisible}
                    onOk={this.handleOk}
                    onCancel={this.handleCancel}>
-                <CommonBatchCopyConfig onChange={this.onChangeBatchCopyConfigValues}></CommonBatchCopyConfig>
+                <CommonBatchCopyConfig type={'http'} onChange={this.onChangeBatchCopyConfigValues}></CommonBatchCopyConfig>
             </Modal>
         </div>)
     }
