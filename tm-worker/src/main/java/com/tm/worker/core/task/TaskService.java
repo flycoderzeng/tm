@@ -184,6 +184,26 @@ public class TaskService {
         }
     }
 
+    private void execPlanTeardownCases(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot, AutoTestVariables planVariables) {
+        log.info("计划id: {} 配置了teardown用例", planExecuteResult.getPlanOrCaseId());
+        log.info("初始化 teardown PlanExecuteResult");
+        PlanExecuteResult planTeardownExecuteResult = copyPlanExecuteResult(planExecuteResult, PlanCaseEnum.TEARDOWN.value());
+        planExecuteResultDao.insertBySelective(planTeardownExecuteResult);
+
+        log.info("更新planExecuteResult的 teardown plan result id");
+        planExecuteResult.setPlanTeardownResultId(planTeardownExecuteResult.getId());
+        planExecuteResultDao.updateBySelective(planExecuteResult);
+
+        log.info("初始化 teardown PlanRunningConfigSnapshot");
+        PlanRunningConfigSnapshot planTeardownSnapshot = copyPlanRunningConfigSnapshot(snapshot, planTeardownExecuteResult);
+        planRunningConfigSnapshotDao.insertBySelective(planTeardownSnapshot);
+        PlanTask planTask = handleSubmitPlanTask(planTeardownExecuteResult, planTeardownSnapshot, planVariables, PlanCaseEnum.TEARDOWN.value());
+        waitForTaskFinish(planTask);
+        setFailCount(planTask.getPlanExecuteResultId(), planTask.getFailedCasesCount());
+        setSuccessCount(planTask.getPlanExecuteResultId(),
+                planTask.getFinishedCount() - planTask.getFailedCasesCount());
+    }
+
     @Async
     public void retryFailedCase(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot) {
         log.info("接收到重试失败用例任务，计划结果id：{}，开始初始化", planExecuteResult.getId());
@@ -206,26 +226,6 @@ public class TaskService {
             successCaseMap.put(caseExecuteResult.getCaseId() + "_" + caseExecuteResult.getGroupNo(), true);
         }
         PlanTask planTask = handleSubmitPlanTask(planExecuteResult, snapshot, planVariables, PlanCaseEnum.DEFAULT.value(), successCaseMap);
-        waitForTaskFinish(planTask);
-        setFailCount(planTask.getPlanExecuteResultId(), planTask.getFailedCasesCount());
-        setSuccessCount(planTask.getPlanExecuteResultId(),
-                planTask.getFinishedCount() - planTask.getFailedCasesCount());
-    }
-
-    private void execPlanTeardownCases(PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot snapshot, AutoTestVariables planVariables) {
-        log.info("计划id: {} 配置了teardown用例", planExecuteResult.getPlanOrCaseId());
-        log.info("初始化 teardown PlanExecuteResult");
-        PlanExecuteResult planTeardownExecuteResult = copyPlanExecuteResult(planExecuteResult, PlanCaseEnum.TEARDOWN.value());
-        planExecuteResultDao.insertBySelective(planTeardownExecuteResult);
-
-        log.info("更新planExecuteResult的 teardown plan result id");
-        planExecuteResult.setPlanTeardownResultId(planTeardownExecuteResult.getId());
-        planExecuteResultDao.updateBySelective(planExecuteResult);
-
-        log.info("初始化 teardown PlanRunningConfigSnapshot");
-        PlanRunningConfigSnapshot planTeardownSnapshot = copyPlanRunningConfigSnapshot(snapshot, planTeardownExecuteResult);
-        planRunningConfigSnapshotDao.insertBySelective(planTeardownSnapshot);
-        PlanTask planTask = handleSubmitPlanTask(planTeardownExecuteResult, planTeardownSnapshot, planVariables, PlanCaseEnum.TEARDOWN.value());
         waitForTaskFinish(planTask);
         setFailCount(planTask.getPlanExecuteResultId(), planTask.getFailedCasesCount());
         setSuccessCount(planTask.getPlanExecuteResultId(),

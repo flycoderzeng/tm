@@ -118,6 +118,7 @@ public class HttpSampler extends StepNodeBase {
                 FileUtil.mkdir(LINUX_TEMP_DOWNLOAD_FILES_PATH);
                 saveFilePath = LINUX_TEMP_DOWNLOAD_FILES_PATH + "/" +saveFileName;
             }
+            addResultInfo("保存的文件路径: ").addResultInfoLine(saveFilePath);
             File targetFile = new File(saveFilePath);
             OutputStream outStream = new FileOutputStream(targetFile);
             outStream.write(buffer);
