@@ -20,4 +20,8 @@ public interface PlanExecuteResultMapper {
     List<PlanExecuteResult> getPlanHistoryExecuteResultList(CommonTableQueryBody body);
 
     Integer getPlanHistoryExecuteResultListCount(CommonTableQueryBody body);
+
+    void updatePlanTeardownResultId(PlanExecuteResult planExecuteResult);
+
+    void updatePlanSetupResultId(PlanExecuteResult planExecuteResult);
 }

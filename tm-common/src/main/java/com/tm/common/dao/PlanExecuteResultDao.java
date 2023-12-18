@@ -127,4 +127,12 @@ public class PlanExecuteResultDao {
     public int deleteFailedCaseVariableResult(Integer planResultId, Integer caseId, Integer groupNo, String tableSuffix) {
         return caseVariableValueResultMapper.deleteFailedCaseVariableResult(planResultId, caseId, groupNo, tableSuffix);
     }
+
+    public void updatePlanTeardownResultId(PlanExecuteResult planExecuteResult) {
+        planExecuteResultMapper.updatePlanTeardownResultId(planExecuteResult);
+    }
+
+    public void updatePlanSetupResultId(PlanExecuteResult planExecuteResult) {
+        planExecuteResultMapper.updatePlanSetupResultId(planExecuteResult);
+    }
 }
