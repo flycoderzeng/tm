@@ -232,9 +232,9 @@ public class TaskService {
                 planTask.getFinishedCount() - planTask.getFailedCasesCount());
     }
 
-    private void waitForTaskFinish(PlanTask planSetupTask) {
+    private void waitForTaskFinish(PlanTask planTask) {
         int i = 0;
-        while (i < 3600 && !planSetupTask.isFinished()) {
+        while (i < 3600 && !planTask.isFinished() && !planTask.isStopped()) {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
@@ -243,8 +243,8 @@ public class TaskService {
             }
             i++;
         }
-        if(!planSetupTask.isFinished()) {
-            planSetupTask.stop();
+        if(!planTask.isFinished()) {
+            planTask.stop();
         }
     }
 

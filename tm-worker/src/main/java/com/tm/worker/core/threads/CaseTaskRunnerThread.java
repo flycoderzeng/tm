@@ -98,10 +98,11 @@ public class CaseTaskRunnerThread implements Runnable {
 
         runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
             if(baseResponse != null) {
-                if(baseResponse.getCode().equals(ResultCodeEnum.PLAN_IS_STOPPED_NOT_RUN_CASE)) {
+                if(baseResponse.getCode().equals(ResultCodeEnum.PLAN_IS_STOPPED_NOT_RUN_CASE.getCode())) {
                     planTask.decreasePolledCount();
+                } else {
+                    teardownPlanTask(planTask, baseResponse);
                 }
-                teardownPlanTask(planTask, baseResponse);
             }
             planTask.decreaseVirtualRunningCount();
         }));
