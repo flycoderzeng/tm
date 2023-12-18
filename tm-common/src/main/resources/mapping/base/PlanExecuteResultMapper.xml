@@ -280,4 +280,16 @@
         select count(*) from plan_execute_result
         where plan_or_case_id=#{planOrCaseId,jdbcType=INTEGER} and from_type=#{fromType,jdbcType=INTEGER} and plan_case_type=#{planCaseType,jdbcType=INTEGER}
     </select>
+
+    <update id="updatePlanTeardownResultId" parameterType="com.tm.common.base.model.PlanExecuteResult">
+        update plan_execute_result set
+            plan_teardown_result_id = #{planTeardownResultId,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updatePlanSetupResultId" parameterType="com.tm.common.base.model.PlanExecuteResult">
+        update plan_execute_result set
+            plan_setup_result_id = #{planSetupResultId,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>

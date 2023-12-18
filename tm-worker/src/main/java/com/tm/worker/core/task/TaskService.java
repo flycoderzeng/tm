@@ -192,7 +192,7 @@ public class TaskService {
 
         log.info("更新planExecuteResult的 teardown plan result id");
         planExecuteResult.setPlanTeardownResultId(planTeardownExecuteResult.getId());
-        planExecuteResultDao.updateBySelective(planExecuteResult);
+        planExecuteResultDao.updatePlanTeardownResultId(planExecuteResult);
 
         log.info("初始化 teardown PlanRunningConfigSnapshot");
         PlanRunningConfigSnapshot planTeardownSnapshot = copyPlanRunningConfigSnapshot(snapshot, planTeardownExecuteResult);
@@ -256,7 +256,7 @@ public class TaskService {
 
         log.info("更新planExecuteResult的 setup plan result id");
         planExecuteResult.setPlanSetupResultId(planSetupExecuteResult.getId());
-        planExecuteResultDao.updateBySelective(planExecuteResult);
+        planExecuteResultDao.updatePlanSetupResultId(planExecuteResult);
 
         log.info("初始化 setup PlanRunningConfigSnapshot");
         PlanRunningConfigSnapshot planSetupSnapshot = copyPlanRunningConfigSnapshot(snapshot, planSetupExecuteResult);
