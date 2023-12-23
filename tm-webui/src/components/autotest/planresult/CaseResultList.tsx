@@ -7,6 +7,7 @@ import {DateUtils} from "../../../utils/DateUtils";
 import {CaseResultStatusEnum} from "../../../entities/CaseResultStatusEnum";
 import {VariableResultList} from "./VariableResultList";
 import copy from "copy-to-clipboard";
+import {AutoCaseEditor} from "../case-editor/editor/AutoCaseEditor";
 const { Search } = Input;
 interface IState {
     planResultId: number|null|undefined;
@@ -21,6 +22,8 @@ const CaseResultList: React.FC<IState> = (props) => {
     const [total, setTotal] = useState(0);
     const [visible, setVisible] = useState(false);
     const [caseId, setCaseId] = useState(-1);
+    const [isCaseEditModalVisible, setIsCaseEditModalVisible] = useState(false);
+    const [caseEditTitle, setCaseEditTitle] = useState('');
     const [groupNo, setGroupNo] = useState(-1);
     const [resultInfo, setResultInfo] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -141,6 +144,12 @@ const CaseResultList: React.FC<IState> = (props) => {
         setVisible(true);
     }
 
+    function editCase(record: any) {
+        setCaseId(record.caseId);
+        setIsCaseEditModalVisible(true);
+        setCaseEditTitle(record.name+'(id: '+record.caseId+')');
+    }
+
     function showResultInfo(record: any) {
         if(!record.resultInfo) {
             return ;
@@ -181,6 +190,10 @@ const CaseResultList: React.FC<IState> = (props) => {
 
     function onChange(e) {
         searchValue = e.target.value;
+    }
+
+    function handleCancelEditCase() {
+        setIsCaseEditModalVisible(false);
     }
 
     const columns: any[] = [
@@ -254,7 +267,7 @@ const CaseResultList: React.FC<IState> = (props) => {
             render: (text, record) => (
                 <Space size="middle">
                     <a onClick={() => {viewVariableResult(record)}}>查看变量</a>
-                    <a>编辑</a>
+                    <a onClick={() => {editCase(record)}}>编辑</a>
                 </Space>
             ),
         },
@@ -300,6 +313,10 @@ const CaseResultList: React.FC<IState> = (props) => {
                 }}>复制结果信息</Button>
             </div>
             <pre style={{maxHeight: 'calc(100vh - 300px)'}}>{resultInfo}</pre>
+        </Modal>
+
+        <Modal title={caseEditTitle} open={isCaseEditModalVisible} footer={null} onCancel={handleCancelEditCase} width={1800}>
+            <AutoCaseEditor id={caseId}></AutoCaseEditor>
         </Modal>
     </div>)
 }
