@@ -21,6 +21,7 @@ interface IState {
 }
 const UrlConfigEdit: React.FC<IState> = (props) => {
     const configId = (props as any).match.params.id;
+    const copyFlag = (props as any).match.params.copy;
     const [id, setId] = useState(configId);
     const [saving, setSaving] = useState(false);
     const [ref] = useState(React.createRef<FormInstance>());
@@ -57,6 +58,9 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                 }
             }
         });
+        if(copyFlag === 1 || copyFlag === '1') {
+            setId(0);
+        }
     }
 
     function onFinish(values) {

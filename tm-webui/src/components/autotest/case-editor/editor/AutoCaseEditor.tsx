@@ -374,6 +374,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                     setTreeCheckEnable(false);
                     setTreeData(steps);
                     setCurrStepNode(steps[0]);
+                    setSelectedKeys([steps[0].key]);
                     HAPPY_CURR_STEP_NODE = steps[0];
                     setRootNode(steps[0]);
                     setRunEnvId(ret.data.lastRunEnvId == null ? '' : (ret.data.lastRunEnvId + ''));
