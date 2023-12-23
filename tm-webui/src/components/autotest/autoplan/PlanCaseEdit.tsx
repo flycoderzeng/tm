@@ -7,12 +7,14 @@ import {DataTypeEnum} from "../../../entities/DataTypeEnum";
 import {MathUtils} from "../../../utils/MathUtils";
 import {DataNodeTreeSelect} from "../../common/DataNodeTreeSelect";
 import {DateUtils} from "../../../utils/DateUtils";
+import {AutoCaseEditor} from "../case-editor/editor/AutoCaseEditor";
 
 export interface PlanCaseModel {
     id: number;
     planId: number;
     caseId: number;
     seq: number;
+    caseName: string;
 }
 
 interface IState {
@@ -50,6 +52,9 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalVisible2, setIsModalVisible2] = useState(false);
     const [isChangeCaseSeqModalVisible, setIsChangeCaseSeqModalVisible] = useState(false);
+    const [isCaseEditModalVisible, setIsCaseEditModalVisible] = useState(false);
+    const [caseEditTitle, setCaseEditTitle] = useState('');
+    const [caseId, setCaseId] = useState<null|number>(null);
     const [projectId, setProjectId] = useState(props.projectId);
 
     useEffect(() => {
@@ -190,7 +195,9 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
     }
 
     function editCase(record: PlanCaseModel) {
-
+        setIsCaseEditModalVisible(true);
+        setCaseId(record.caseId);
+        setCaseEditTitle(record.caseName+'(id: '+record.caseId+')');
     }
 
     const columns: any[] = [
@@ -327,6 +334,10 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
         setIsChangeCaseSeqModalVisible(false);
     }
 
+    function handleCancelEditCase() {
+        setIsCaseEditModalVisible(false);
+    }
+
     return (<div>
         <div className="list-toolbar">
             <Input placeholder="用例id/名称" onPressEnter={onPressEnter}
@@ -384,6 +395,9 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
                onOk={handleOkChangeCaseSeq}
                onCancel={handleCancelChangeCaseSeq}>
             <Input placeholder="输入用例位置" type="number" value={seqValue} onChange={onChangeSeqValue}/>
+        </Modal>
+        <Modal title={caseEditTitle} open={isCaseEditModalVisible} footer={null} onCancel={handleCancelEditCase} width={1800}>
+            <AutoCaseEditor id={caseId}></AutoCaseEditor>
         </Modal>
     </div>)
 }
