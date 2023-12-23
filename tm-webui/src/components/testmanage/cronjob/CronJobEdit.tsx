@@ -302,7 +302,7 @@ const CronJobEdit: React.FC<IState> = (props) => {
                             okText="Yes"
                             cancelText="No"
                         >
-                            <a href="#" style={{width: '30px'}}>删除</a>
+                            <a href="#" style={{width: '50px'}}>删除</a>
                         </Popconfirm>
                     </div>
                 </Col>
