@@ -140,6 +140,7 @@ class DbConfigList extends CommonListPage {
                 render: (text, record) => (
                     <div>
                         <Button className="padding-left0" size="small" type="link" onClick={() => this.edit(record.id)}>修改</Button>
+                        <Button className="padding-left0" size="small" type="link" onClick={() => this.copy(record.id)}>复制</Button>
                         <Button danger size="small" type="link" onClick={() => this.delete(record.id)}>删除</Button>
                     </div>
                 ),

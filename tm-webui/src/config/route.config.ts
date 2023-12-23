@@ -132,12 +132,20 @@ const routes = [
                 component: UrlConfigList
             },
             {
+                path: "/urlconfigedit/:id/:copy",
+                component: UrlConfigEdit
+            },
+            {
                 path: "/urlconfigedit/:id",
                 component: UrlConfigEdit
             },
             {
                 path: "/dbconfig",
                 component: DbConfigList
+            },
+            {
+                path: "/dbconfigedit/:id/:copy",
+                component: DbConfigEdit
             },
             {
                 path: "/dbconfigedit/:id",

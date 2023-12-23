@@ -403,6 +403,10 @@ class CommonListPage extends React.Component<CommonProps, IState> {
         this.props.history.push(this.commonApiUrlModel.editUrl.replace(':id', id));
     }
 
+    copy(id) {
+        this.props.history.push(this.commonApiUrlModel.editUrl.replace(':id', id) + "/1");
+    }
+
     render() {
         return (<div></div>);
     }
