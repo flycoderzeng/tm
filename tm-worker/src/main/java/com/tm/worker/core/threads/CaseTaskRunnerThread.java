@@ -37,10 +37,10 @@ public class CaseTaskRunnerThread implements Runnable {
                     TimeUnit.MILLISECONDS.sleep(DEFAULT_SLEEP_SECONDS);
                     continue;
                 }
-
-                for (; ; ) {
-                    PlanTask planTask = taskService.getPlanTask(index);
-                    runTask(planTask);
+                PlanTask planTask = taskService.getPlanTask(index);
+                CaseTask caseTask = getCaseTask(planTask);
+                if(caseTask != null) {
+                    runCaseTask(planTask, caseTask);
                 }
             } catch (InterruptedException e) {
                 log.error("sleep error, ", e);
@@ -51,17 +51,17 @@ public class CaseTaskRunnerThread implements Runnable {
         }
     }
 
-    private boolean runTask(PlanTask planTask) throws InterruptedException {
+    private CaseTask getCaseTask(PlanTask planTask) throws InterruptedException {
         if (planTask == null || planTask.isFinished()) {
             TimeUnit.MILLISECONDS.sleep(DEFAULT_SLEEP_SECONDS);
             index = 0;
-            return true;
+            return null;
         }
         // 获取case task 队列
         WorkerCaseTaskQueue caseTaskQueue = taskService.getCaseTaskQueue(planTask.getPlanExecuteResult().getId());
         if (caseTaskQueue == null || caseTaskQueue.isEmpty()) {
             index++;
-            return true;
+            return null;
         }
         // 获取运行时配置
         PlanRunningConfigSnapshot runningConfigSnapshot = planTask.getRunningConfigSnapshot();
@@ -74,7 +74,7 @@ public class CaseTaskRunnerThread implements Runnable {
         if (planTask.getVirtualRunningCount() >= maxOccurs) {
             TimeUnit.MILLISECONDS.sleep(DEFAULT_SLEEP_SECONDS);
             index++;
-            return true;
+            return null;
         }
         CaseTask caseTask = null;
         if(maxOccurs == 1) {
@@ -89,14 +89,18 @@ public class CaseTaskRunnerThread implements Runnable {
         if (caseTask == null) {
             TimeUnit.MILLISECONDS.sleep(DEFAULT_SLEEP_SECONDS);
             index++;
-            return true;
+            return null;
         }
+        return caseTask;
+    }
+
+    private void runCaseTask(PlanTask planTask, CaseTask caseTask) {
         log.info("取到一个用例任务，计划结果id： {}, 用例id：{}, 用例名称：{}", planTask.getPlanExecuteResultId(),
                 caseTask.getAutoCase().getId(), caseTask.getAutoCase().getName());
         planTask.increasePolledCount();
         planTask.increaseVirtualRunningCount();
 
-        runCase(planTask, caseTask).whenCompleteAsync(((baseResponse, throwable) -> {
+        runCase(planTask, caseTask).whenCompleteAsync((baseResponse, throwable) -> {
             if(baseResponse != null) {
                 if(baseResponse.getCode().equals(ResultCodeEnum.PLAN_IS_STOPPED_NOT_RUN_CASE.getCode())) {
                     planTask.decreasePolledCount();
@@ -105,8 +109,7 @@ public class CaseTaskRunnerThread implements Runnable {
                 }
             }
             planTask.decreaseVirtualRunningCount();
-        }));
-        return false;
+        });
     }
 
     private void removePlanTask(PlanTask planTask) {
