@@ -113,6 +113,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.tm</groupId>
+            <artifactId>common</artifactId>
+            <version>dev-3.0.0</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
