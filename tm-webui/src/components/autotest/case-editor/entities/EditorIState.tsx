@@ -10,4 +10,5 @@ export interface EditorIState<T> {
     onChangeGroupVariables?: any;
     onChange?: any;
     key?: string;
+    groupManageEditorWidth?: number;
 }

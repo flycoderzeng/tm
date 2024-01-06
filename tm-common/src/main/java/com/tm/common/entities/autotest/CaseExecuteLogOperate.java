@@ -3,8 +3,10 @@ package com.tm.common.entities.autotest;
 import com.tm.common.entities.autotest.enumerate.LogOperateTypeEnum;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class CaseExecuteLogOperate {
+public class CaseExecuteLogOperate implements Serializable {
     private LogOperateTypeEnum logOperateTypeEnum;
     private Object logRow;
 

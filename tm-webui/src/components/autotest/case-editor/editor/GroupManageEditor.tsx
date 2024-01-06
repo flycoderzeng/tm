@@ -7,6 +7,7 @@ interface IState {
     groupVariables: string | null | undefined;
     userDefinedVariables: AutoCaseVariable[];
     onChangeGroupVariables: any;
+    groupManageEditorWidth?: number;
 }
 
 
@@ -16,6 +17,7 @@ const GroupManageEditor: React.FC<IState> = (props) => {
     const [removedGroups, setRemovedGroups] = useState<string[]>([]);
     const [userDefinedVariables, setUserDefinedVariables] = useState(props.userDefinedVariables);
     const {onChangeGroupVariables} = props;
+    const {groupManageEditorWidth} = props;
     let headers: any[]|undefined;
     let rows: any[];
     let options: any[]|undefined;
@@ -147,8 +149,11 @@ const GroupManageEditor: React.FC<IState> = (props) => {
 
     rows = renderData();
 
-    const maxWidth = window.innerWidth - 640;
+    let maxWidth = window.innerWidth - 640;
     const maxHeight = window.outerHeight - 435;
+    if(groupManageEditorWidth) {
+        maxWidth = groupManageEditorWidth;
+    }
 
     function renderOptions() {
         if(!headers) {

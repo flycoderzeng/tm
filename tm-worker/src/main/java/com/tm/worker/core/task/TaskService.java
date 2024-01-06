@@ -23,7 +23,6 @@ import com.tm.worker.core.function.extractor.JsonExtractor;
 import com.tm.worker.core.function.random.*;
 import com.tm.worker.core.function.secure.GetMd5;
 import com.tm.worker.core.protocol.jdbc.JDBCDataSourceFactory;
-import com.tm.worker.core.threads.CaseResultLogProcessRunnerThread;
 import com.tm.worker.core.threads.CaseTaskThread;
 import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.service.CaseResultLogService;
@@ -119,9 +118,6 @@ public class TaskService {
         poolExecutor = new ThreadPoolExecutor(nThreads, nThreads,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(), threadFactory);
-        for (int i = 0; i < 10; i++) {
-            poolExecutor.submit(new CaseResultLogProcessRunnerThread(caseResultLogService));
-        }
     }
 
     @Async

@@ -2,8 +2,10 @@ package com.tm.common.base.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class CaseStepExecuteResult {
+public class CaseStepExecuteResult implements Serializable {
     private Integer id;
     private Integer planResultId;
     private Integer caseId;

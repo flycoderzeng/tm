@@ -7,13 +7,12 @@ import com.tm.common.base.model.CaseExecuteResult;
 import com.tm.common.base.model.CaseStepExecuteResult;
 import com.tm.common.base.model.CaseVariableValueResult;
 import com.tm.common.entities.autotest.CaseExecuteLogOperate;
+import com.tm.worker.message.TestResultLogDirectRabbitConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Deque;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 @Slf4j
 @Component
@@ -32,18 +31,12 @@ public class CaseResultLogService {
     @Autowired
     private CaseStepExecuteResultMapper caseStepExecuteResultMapper;
 
-
-    private Deque<CaseExecuteLogOperate> queue = new ConcurrentLinkedDeque<>();
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     public void put(CaseExecuteLogOperate logOperate) {
-        boolean add = queue.add(logOperate);
-        if(!add) {
-            log.error("往日志队列里面插入日志失败");
-        }
-    }
-
-    public Deque<CaseExecuteLogOperate> getLogQueue() {
-        return queue;
+        rabbitTemplate.convertAndSend(TestResultLogDirectRabbitConfig.TEST_RESULT_LOG_DIRECT_EXCHANGE,
+                TestResultLogDirectRabbitConfig.TEST_RESULT_LOG_DIRECT_ROUTING, logOperate);
     }
 
     public int insert(Object logRowObject) {
