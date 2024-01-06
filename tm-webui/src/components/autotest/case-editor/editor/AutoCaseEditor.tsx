@@ -34,7 +34,8 @@ import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 
 
 interface IState {
-    id?: number | null,
+    id?: number | null;
+    groupManageEditorWidth?: number;
 }
 
 interface MenuItem {
@@ -174,6 +175,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
     const [rightMenuList, setRightMenuList] = useState<any[]>([]);
     const [treeCheckEnable, setTreeCheckEnable] = useState<boolean>(false);
     const [checkedKeys, setCheckedKeys] = useState<any[]>([]);
+    const {groupManageEditorWidth} = props;
 
     useEffect(() => {
         setId(props.id);
@@ -917,7 +919,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         switch (currStepNode.type) {
             case "root":
                 return (<RootNodeEditor key={currStepNode.key} refreshTree={refreshTree} stepNode={currStepNode} groupVariables={groupVariables} onChangeGroupVariables={setGroupVariables}
-                                        define={currStepNode.define} onChange={onChangeDefine}>
+                                        define={currStepNode.define} onChange={onChangeDefine} groupManageEditorWidth={groupManageEditorWidth}>
                 </RootNodeEditor>);
             case "if":
                 return (<IfControllerEditor key={currStepNode.key} refreshTree={refreshTree} stepNode={currStepNode}

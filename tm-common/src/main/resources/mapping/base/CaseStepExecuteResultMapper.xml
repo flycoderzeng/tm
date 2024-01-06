@@ -135,7 +135,12 @@
                 result_info = #{resultInfo,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=INTEGER}
+        <if test="id != null" >
+            where id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="id == null" >
+            where plan_result_id = #{planResultId,jdbcType=INTEGER} and case_id = #{caseId,jdbcType=INTEGER} and group_no = #{groupNo,jdbcType=INTEGER} and step_key = #{stepKey,jdbcType=VARCHAR}
+        </if>
     </update>
 
     <update id="createCaseStepExecuteResultTable" parameterType="java.lang.String">

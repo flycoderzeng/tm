@@ -10,6 +10,7 @@ import {GroupManageEditor} from "./GroupManageEditor";
 const RootNodeEditor: React.FC<EditorIState<RootNode>> = (props) => {
     const {onChangeGroupVariables} = props;
     const {onChange} = props;
+    const {groupManageEditorWidth} = props;
     if(!props.define.cookies) {
         props.define.cookies = [];
     }
@@ -24,7 +25,7 @@ const RootNodeEditor: React.FC<EditorIState<RootNode>> = (props) => {
             <Tabs defaultActiveKey="1" onChange={onChangeTab} items={[{label: '用例变量', key: '1',
                 children: (<AutoCaseVariableEditor userDefinedVariables={props.define.userDefinedVariables} onChange={onChange}></AutoCaseVariableEditor>)},
                 {label: 'cookies', key: '2', children: (<KeyValueEditor userDefinedVariables={props.define.userDefinedVariables} rows={props.define.cookies} type={'cookie'}></KeyValueEditor>)},
-                {label: '组合管理', key: '3', children: (<GroupManageEditor groupVariables={props.groupVariables} userDefinedVariables={props.define.userDefinedVariables} onChangeGroupVariables={onChangeGroupVariables}></GroupManageEditor>)}]}>
+                {label: '组合管理', key: '3', children: (<GroupManageEditor groupVariables={props.groupVariables} userDefinedVariables={props.define.userDefinedVariables} onChangeGroupVariables={onChangeGroupVariables} groupManageEditorWidth={groupManageEditorWidth}></GroupManageEditor>)}]}>
             </Tabs>
         </div>
     )

@@ -149,7 +149,7 @@ public class CaseTaskThread implements Callable<BaseResponse> {
     }
 
     private StepNode findTeardownNode() {
-        if (caseStepTree.getChildren() == null || caseStepTree.getChildren().isEmpty()) {
+        if (caseStepTree != null && caseStepTree.getChildren() == null || caseStepTree.getChildren().isEmpty()) {
             return null;
         }
         for (int i = 0; i < caseStepTree.getChildren().size(); i++) {

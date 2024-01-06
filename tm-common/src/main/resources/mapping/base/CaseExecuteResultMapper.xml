@@ -175,7 +175,12 @@
                 steps = #{steps,jdbcType=VARCHAR},
             </if>
         </set>
+        <if test="id != null" >
         where id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="id == null" >
+            where plan_result_id = #{planResultId,jdbcType=INTEGER} and case_id = #{caseId,jdbcType=INTEGER} and group_no = #{groupNo,jdbcType=INTEGER}
+        </if>
     </update>
 
     <update id="createCaseExecuteResultTable" parameterType="java.lang.String">
