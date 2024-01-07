@@ -33,6 +33,14 @@ spring:
       maxOpenPreparedStatements: 20
       auto-commit: true
       default-auto-commit: true
+  #配置rabbitMq 服务器
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: root
+    password: root
+    #虚拟host 可以不设置,使用server默认host
+    virtual-host: AutoTestHost
 
   session:
     store-type: jdbc
