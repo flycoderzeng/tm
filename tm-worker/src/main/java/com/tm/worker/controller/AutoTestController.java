@@ -1,10 +1,7 @@
 package com.tm.worker.controller;
 
 import com.tm.common.base.model.User;
-import com.tm.common.entities.autotest.request.GetPlanRunResultStatusBody;
-import com.tm.common.entities.autotest.request.RetryFailedCaseBody;
-import com.tm.common.entities.autotest.request.RunCaseBody;
-import com.tm.common.entities.autotest.request.RunPlanBody;
+import com.tm.common.entities.autotest.request.*;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.worker.service.AutoTestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +43,8 @@ public class AutoTestController extends BaseController {
     }
 
     @PostMapping(value = "/stopPlan", produces = {"application/json;charset=UTF-8"})
-    public BaseResponse stopPlan(@RequestBody @Valid RetryFailedCaseBody body) {
-        User user = getLoginUser();
-        return autoTestService.stopPlan(body.getPlanResultId(), user);
+    public BaseResponse stopPlan(@RequestBody @Valid StopPlanBody body) {
+        body.setUser(getLoginUser());
+        return autoTestService.stopPlan(body);
     }
 }

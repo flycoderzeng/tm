@@ -7,7 +7,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.jayway.jsonpath.JsonPath;
 import com.tm.common.base.model.ApiIpPortConfig;
-import com.tm.common.entities.autotest.enumerate.BodyTypeNum;
+import com.tm.common.entities.autotest.enumerate.BodyTypeEnum;
 import com.tm.common.entities.autotest.enumerate.ExtractorTypeEnum;
 import com.tm.common.entities.autotest.enumerate.RawTypeNum;
 import com.tm.common.entities.common.KeyValueRow;
@@ -222,12 +222,12 @@ public class HttpSampler extends StepNodeBase {
                     .cookie(cookies).timeout(60000).execute();
         }
 
-        if(HttpMethod.POST.name().equals(requestType) && (StringUtils.equals(bodyType, BodyTypeNum.RAW.value())
-                || StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value()))) {
+        if(HttpMethod.POST.name().equals(requestType) && (StringUtils.equals(bodyType, BodyTypeEnum.RAW.value())
+                || StringUtils.equals(bodyType, BodyTypeEnum.X_WWW_FORM_URLENCODED.value()))) {
             updateContentType(headerMap);
-            if(StringUtils.equals(bodyType, BodyTypeNum.RAW.value()) && StringUtils.isNoneBlank(content)) {
+            if(StringUtils.equals(bodyType, BodyTypeEnum.RAW.value()) && StringUtils.isNoneBlank(content)) {
                 actualContent = ExpressionUtils.replaceExpression(content, caseVariables.getVariables());
-            }else if(StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value())) {
+            }else if(StringUtils.equals(bodyType, BodyTypeEnum.X_WWW_FORM_URLENCODED.value())) {
                 actualContent = getParamStr(caseVariables, formUrlencoded);
             }
             caseVariables.put(AutoTestVariables.BUILTIN_VARIABLE_NAME_REQUEST, content);
@@ -236,7 +236,7 @@ public class HttpSampler extends StepNodeBase {
 
             httpResponse = HttpRequest.post(actualUrl).headerMap(headerMap, true)
                     .cookie(cookies).timeout(60000).body(actualContent).execute();
-        }else if(HttpMethod.POST.name().equals(requestType) && StringUtils.equals(bodyType, BodyTypeNum.FORM_DATA.value())) {
+        }else if(HttpMethod.POST.name().equals(requestType) && StringUtils.equals(bodyType, BodyTypeEnum.FORM_DATA.value())) {
             Map<String, Object> formMap = getFormMap(caseVariables);
             httpResponse = HttpRequest.post(actualUrl).headerMap(headerMap, true).cookie(cookies).form(formMap).timeout(60000).execute();
         }
@@ -273,7 +273,7 @@ public class HttpSampler extends StepNodeBase {
             headerMap.putIfAbsent(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
         }else if(StringUtils.equals(rawType, RawTypeNum.XML.value())) {
             headerMap.putIfAbsent(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE);
-        }else if(StringUtils.equals(bodyType, BodyTypeNum.X_WWW_FORM_URLENCODED.value())) {
+        }else if(StringUtils.equals(bodyType, BodyTypeEnum.X_WWW_FORM_URLENCODED.value())) {
             headerMap.putIfAbsent(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         }
     }
