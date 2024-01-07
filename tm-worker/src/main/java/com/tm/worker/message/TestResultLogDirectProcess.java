@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-
-
 @Slf4j
 @Component
 @RabbitListener(queues = TestResultLogDirectRabbitConfig.TEST_RESULT_LOG_DIRECT_QUEUE, concurrency = "5")
@@ -25,7 +23,7 @@ public class TestResultLogDirectProcess {
             case INSERT -> caseResultLogService.insert(logOperate.getLogRow());
             case UPDATE -> {
                 int update = caseResultLogService.update(logOperate.getLogRow());
-                if(update == 0) {
+                if (update == 0) {
                     log.info("update 0 row");
                     caseResultLogService.put(logOperate);
                 }

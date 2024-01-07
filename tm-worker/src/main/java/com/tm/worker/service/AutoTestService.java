@@ -5,10 +5,7 @@ import com.tm.common.base.model.*;
 import com.tm.common.entities.autotest.RunPlanBean;
 import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.enumerate.PlanRunFromTypeEnum;
-import com.tm.common.entities.autotest.request.GetPlanRunResultStatusBody;
-import com.tm.common.entities.autotest.request.RetryFailedCaseBody;
-import com.tm.common.entities.autotest.request.RunCaseBody;
-import com.tm.common.entities.autotest.request.RunPlanBody;
+import com.tm.common.entities.autotest.request.*;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
@@ -16,6 +13,7 @@ import com.tm.common.utils.DateUtils;
 import com.tm.common.utils.LocalHostUtils;
 import com.tm.common.utils.ResultUtils;
 import com.tm.worker.core.task.TaskService;
+import com.tm.worker.message.MessageSendReceiveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -38,6 +36,8 @@ public class AutoTestService {
     private AutoPlanMapper autoPlanMapper;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private MessageSendReceiveService messageSendReceiveService;
 
     public BaseResponse runAutoCase(RunCaseBody body, User loginUser) {
         BaseResponse checkRunCaseParams = checkRunCaseParams(body);
@@ -227,9 +227,9 @@ public class AutoTestService {
         return ResultUtils.success();
     }
 
-    public BaseResponse stopPlan(Integer planResultId, User user) {
-        log.info("user {} 停止计划,结果id {}", user.getUsername(), planResultId);
-        taskService.stopPlanTask(planResultId);
+    public BaseResponse stopPlan(StopPlanBody body) {
+        log.info("user {} 停止计划,结果id {}", body.getUser().getUsername(), body.getPlanResultId());
+        messageSendReceiveService.stopPlan(body);
         return ResultUtils.success();
     }
 }

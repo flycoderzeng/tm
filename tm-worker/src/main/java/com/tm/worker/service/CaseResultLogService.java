@@ -7,9 +7,8 @@ import com.tm.common.base.model.CaseExecuteResult;
 import com.tm.common.base.model.CaseStepExecuteResult;
 import com.tm.common.base.model.CaseVariableValueResult;
 import com.tm.common.entities.autotest.CaseExecuteLogOperate;
-import com.tm.worker.message.TestResultLogDirectRabbitConfig;
+import com.tm.worker.message.MessageSendReceiveService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -32,11 +31,10 @@ public class CaseResultLogService {
     private CaseStepExecuteResultMapper caseStepExecuteResultMapper;
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private MessageSendReceiveService messageSendReceiveService;
 
     public void put(CaseExecuteLogOperate logOperate) {
-        rabbitTemplate.convertAndSend(TestResultLogDirectRabbitConfig.TEST_RESULT_LOG_DIRECT_EXCHANGE,
-                TestResultLogDirectRabbitConfig.TEST_RESULT_LOG_DIRECT_ROUTING, logOperate);
+        messageSendReceiveService.sendTestResultLog(logOperate);
     }
 
     public int insert(Object logRowObject) {
