@@ -3,6 +3,7 @@ package com.tm.worker.core.protocol.jdbc;
 import com.tm.common.base.model.DbConfig;
 import com.tm.common.utils.RSAUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +46,11 @@ public class JDBCDataSourceFactory {
     public String getDataSourceKey(DbConfig dbConfig) {
         int dcnId = dbConfig.getDcnId() == null? 0 : dbConfig.getDcnId();
 
-        return dbConfig.getDbName() + "-" + dbConfig.getEnvId() + "-" + dcnId;
+        String key = dbConfig.getDbName() + "-" + dbConfig.getEnvId() + "-" + dcnId;
+        if(StringUtils.isNoneBlank(dbConfig.getSchemaName())) {
+            key += "-" + dbConfig.getSchemaName();
+        }
+        return key;
     }
 
     private synchronized JDBCDataSource initDataSource(DbConfig dbConfig) {
