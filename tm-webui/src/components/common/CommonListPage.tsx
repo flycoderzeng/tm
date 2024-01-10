@@ -257,23 +257,24 @@ class CommonListPage extends React.Component<CommonProps, IState> {
             }
             filter += 'addUser==' + LocalStorageUtils.getLoginUsername();
         }
-        if(pagination.searchValue) {
+        const searchValue = pagination.searchValue || this.state.queryInfo.searchValue;
+        if(searchValue) {
             if(filter !== '') {
                 filter += ';';
             }
             filter += '(';
-            if(MathUtils.isNumberSequence(pagination.searchValue)) {
-                filter += 'id==' + pagination.searchValue + ',';
+            if(MathUtils.isNumberSequence(searchValue)) {
+                filter += 'id==' + searchValue + ',';
             }
             if(this.modelType === 'db_config') {
-                filter += 'dbName==*' + pagination.searchValue + '*';
+                filter += 'dbName==*' + searchValue + '*';
             }else if(this.modelType === 'menu') {
-                filter += 'menuName==*' + pagination.searchValue + '*';
+                filter += 'menuName==*' + searchValue + '*';
             }else {
-                filter += 'name==*' + pagination.searchValue + '*';
+                filter += 'name==*' + searchValue + '*';
             }
             if(this.modelType === 'api_ip_port_config') {
-                filter += ',url==*' + pagination.searchValue + '*';
+                filter += ',url==*' + searchValue + '*';
             }
             filter += ')';
         }
