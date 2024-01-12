@@ -50,6 +50,7 @@ public class JDBCDataSourceFactory {
         if(StringUtils.isNoneBlank(dbConfig.getSchemaName())) {
             key += "-" + dbConfig.getSchemaName();
         }
+        key += "-" + dbConfig.getType();
         return key;
     }
 
