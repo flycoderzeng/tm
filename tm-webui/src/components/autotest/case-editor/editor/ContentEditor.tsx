@@ -23,6 +23,7 @@ const ContentEditor: React.FC<IState> = (props) => {
 
     const options = {
         selectOnLineNumbers: true,
+        automaticLayout: true,
         renderSideBySide: false,
         contextmenu: false, // 禁止右键
         fixedOverflowWidgets: true, // 超出编辑器大小的使用fixed属性显示
@@ -130,11 +131,11 @@ const ContentEditor: React.FC<IState> = (props) => {
         refreshContent(value);
     }
 
-    return (<div>
+    return (<div style={{width: '100%', height: '600px'}} >
         <div style={{width: '100%', height: '600px'}} >
             <MonacoEditor
                 width={'100%'}
-                height={600}
+                height={'100%'}
                 theme="vs-dark"
                 language={language}
                 value={content}

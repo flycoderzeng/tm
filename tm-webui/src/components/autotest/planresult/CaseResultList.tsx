@@ -316,7 +316,9 @@ const CaseResultList: React.FC<IState> = (props) => {
         </Modal>
 
         <Modal title={caseEditTitle} open={isCaseEditModalVisible} footer={null} onCancel={handleCancelEditCase} width={1800}>
-            <AutoCaseEditor id={caseId} groupManageEditorWidth={1460}></AutoCaseEditor>
+            <div style={{height: 800}}>
+                <AutoCaseEditor id={caseId} groupManageEditorWidth={1460}></AutoCaseEditor>
+            </div>
         </Modal>
     </div>)
 }
