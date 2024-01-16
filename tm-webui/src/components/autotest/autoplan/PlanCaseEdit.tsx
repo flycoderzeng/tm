@@ -397,7 +397,9 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
             <Input placeholder="输入用例位置" type="number" value={seqValue} onChange={onChangeSeqValue}/>
         </Modal>
         <Modal title={caseEditTitle} open={isCaseEditModalVisible} footer={null} onCancel={handleCancelEditCase} width={1800}>
-            <AutoCaseEditor id={caseId} groupManageEditorWidth={1460}></AutoCaseEditor>
+            <div style={{height: 800}}>
+                <AutoCaseEditor id={caseId} groupManageEditorWidth={1460}></AutoCaseEditor>
+            </div>
         </Modal>
     </div>)
 }
