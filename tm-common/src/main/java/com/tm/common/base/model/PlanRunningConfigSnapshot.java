@@ -22,4 +22,6 @@ public class PlanRunningConfigSnapshot {
     private String planVariables;
     // 最大并发数
     private Integer maxOccurs = 10;
+
+    private RunEnv runEnv;
 }

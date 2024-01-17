@@ -273,6 +273,7 @@ public class TaskService {
         // 计划前\后 用例 按顺序一个一个执行
         planSetupSnapshot.setMaxOccurs(1);
         planSetupSnapshot.setRunType(PlanRunTypeEnum.DEFAULT.value());
+        planSetupSnapshot.setRunEnv(snapshot.getRunEnv());
         return planSetupSnapshot;
     }
 

@@ -7,6 +7,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.jayway.jsonpath.JsonPath;
 import com.tm.common.base.model.ApiIpPortConfig;
+import com.tm.common.base.model.RunEnv;
 import com.tm.common.entities.autotest.enumerate.BodyTypeEnum;
 import com.tm.common.entities.autotest.enumerate.ExtractorTypeEnum;
 import com.tm.common.entities.autotest.enumerate.RawTypeNum;
@@ -314,18 +315,30 @@ public class HttpSampler extends StepNodeBase {
             path = URLUtil.getPath(actualUrl);
             log.info(path);
         }
-        apiIpPortConfigs = context.getTaskService().selectByUrlAndEnvId(path, context.getPlanTask().getRunningConfigSnapshot().getEnvId(), dcnId);
-        if(apiIpPortConfigs != null && apiIpPortConfigs.size() > 1) {
-            throw new TMException("接口: " + path + ", 环境: "
-                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", dcnId: " + dcnId + ", 存在多条配置");
-        }
-        if(apiIpPortConfigs == null || apiIpPortConfigs.isEmpty()) {
-            throw new TMException("接口: " + path + ", 环境: "
-                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", dcnId: " + dcnId + ", 没有对应的接口地址配置, 请去测试管理-接口地址配置 配置!");
-        }
 
         if(StringUtils.isBlank(actualUrl)) {
             throw new TMException("实际的请求地址不能为空");
+        }
+
+        apiIpPortConfigs = context.getTaskService().selectByUrlAndEnvId(path, context.getPlanTask().getRunningConfigSnapshot().getEnvId(), dcnId);
+        if(apiIpPortConfigs == null) {
+            apiIpPortConfigs = new ArrayList<>();
+        }
+        if(apiIpPortConfigs.size() > 1) {
+            throw new TMException("接口: " + path + ", 环境: "
+                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", dcnId: " + dcnId + ", 存在多条配置");
+        }
+        if(apiIpPortConfigs.isEmpty()) {
+            final RunEnv runEnv = context.getPlanTask().getRunningConfigSnapshot().getRunEnv();
+            if(runEnv != null && StringUtils.isNoneBlank(runEnv.getHttpIp())) {
+                apiIpPortConfigs.add(new ApiIpPortConfig());
+                apiIpPortConfigs.get(0).setIp(runEnv.getHttpIp());
+                apiIpPortConfigs.get(0).setPort(runEnv.getHttpPort());
+            }
+        }
+        if(apiIpPortConfigs.isEmpty()) {
+            throw new TMException("接口: " + path + ", 环境: "
+                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", dcnId: " + dcnId + ", 没有对应的接口地址配置, 请去测试管理-接口地址配置 配置!");
         }
 
         // 拼装params

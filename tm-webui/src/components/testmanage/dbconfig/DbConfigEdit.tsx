@@ -163,7 +163,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label="schema名称"
+                    label="所属schema名称"
                     name="schemaName"
                     rules={[{required: false, message: '请输入schema名称!'}]}
                 >
@@ -223,10 +223,7 @@ const DbConfigEdit: React.FC<IState> = (props) => {
                     name="type"
                     rules={[{required: true, message: '请选择数据库类型!'}]}
                 >
-                    <Select style={{ width: 120 }}>
-                        <Option value="1">MySql</Option>
-                        <Option value="2">Postgresql</Option>
-                        <Option value="3">达梦</Option>
+                    <Select style={{ width: 120 }} options={[{label: 'MySql', value: '1'}, {label: 'Postgresql', value: '2'}, {label: '达梦', value: '3'}]}>
                     </Select>
                 </Form.Item>
 

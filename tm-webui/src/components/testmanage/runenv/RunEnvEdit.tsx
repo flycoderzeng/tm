@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import {Form, Input, Button, Tooltip, message} from 'antd';
+import {Form, Input, Button, Tooltip, message, Select} from 'antd';
 import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import { FormInstance } from 'antd/lib/form';
@@ -10,8 +10,16 @@ interface IProps {}
 type RunEnvProps = IProps & RouteComponentProps;
 
 interface RunEnvModel {
-    name: string;
-    description: string;
+    name: string|null;
+    description: string|null;
+    httpIp: string|null;
+    httpPort: string|null;
+    dbUsername: string|null;
+    dbPassword: string|null;
+    dbIp: string|null;
+    dbPort: string|null;
+    dbSchemaName: string|null;
+    dbType: string|null|number;
 }
 
 interface IState {
@@ -41,6 +49,14 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
             initialValues: {
                 name: '',
                 description: '',
+                httpIp: '',
+                httpPort: '',
+                dbUsername: '',
+                dbPassword: '',
+                dbIp: '',
+                dbPort: '',
+                dbSchemaName: '',
+                dbType: null,
             }
         }
     }
@@ -51,7 +67,15 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
                 "type": "run_env",
                 "attributes": {
                     name: values.name,
-                    description: values.description
+                    description: values.description,
+                    httpIp: values.httpIp,
+                    httpPort: values.httpPort,
+                    dbUsername: values.dbUsername,
+                    dbPassword: values.dbPassword,
+                    dbIp: values.dbIp,
+                    dbPort: values.dbPort,
+                    dbSchemaName: values.dbSchemaName,
+                    dbType: values.dbType
                 }
             }
         }
@@ -100,7 +124,15 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
                     if (ret.data) {
                         this.state.ref.current.setFieldsValue({
                             name: ret.data.attributes.name,
-                            description: ret.data.attributes.description
+                            description: ret.data.attributes.description,
+                            httpIp: ret.data.attributes.httpIp,
+                            httpPort: ret.data.attributes.httpPort,
+                            dbUsername: ret.data.attributes.dbUsername,
+                            dbPassword: ret.data.attributes.dbPassword,
+                            dbIp: ret.data.attributes.dbIp,
+                            dbPort: ret.data.attributes.dbPort,
+                            dbSchemaName: ret.data.attributes.dbSchemaName,
+                            dbType: ret.data.attributes.dbType || null,
                         });
                     }
                 }
@@ -113,6 +145,7 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
     }
 
     render() {
+        // @ts-ignore
         return <div className="card">
             <div className="card-header card-header-divider">
                 运行环境编辑
@@ -144,6 +177,71 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
                         rules={[{required: true, message: '请输入环境描述!'}]}
                     >
                         <Input.TextArea rows={4}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="http服务IP"
+                        name="httpIp"
+                        rules={[{required: false, message: '请输入ip!'}]}
+                    >
+                        <Input style={{width: '200px'}} placeholder="如：192.168.1.121"/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="http服务端口"
+                        name="httpPort"
+                        rules={[{required: false, message: '请输入端口!'}]}
+                    >
+                        <Input style={{width: '150px'}} placeholder="如：8080"/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="数据库用户名"
+                        name="dbUsername"
+                        rules={[{required: false, message: '请输入数据库用户名!'}]}
+                    >
+                        <Input style={{width: '300px'}} />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="数据库密码"
+                        name="dbPassword"
+                        rules={[{required: false, message: '请输入数据库密码!'}]}
+                    >
+                        <Input style={{width: '300px'}} />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="数据库IP"
+                        name="dbIp"
+                        rules={[{required: false, message: '请输入ip!'}]}
+                    >
+                        <Input style={{width: '200px'}} placeholder="如：192.168.1.121"/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="数据库端口"
+                        name="dbPort"
+                        rules={[{required: false, message: '请输入端口!'}]}
+                    >
+                        <Input style={{width: '150px'}} placeholder="如：3306"/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="数据库所属schema"
+                        name="dbSchemaName"
+                        rules={[{required: false, message: '请输入数据库所属schema!'}]}
+                    >
+                        <Input style={{width: '200px'}} />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="数据库类型"
+                        name="dbType"
+                        rules={[{required: false, message: '请选择数据库类型!'}]}
+                    >
+                        <Select style={{ width: 120 }} options={[{label: 'MySql', value: '1'}, {label: 'Postgresql', value: '2'}, {label: '达梦', value: '3'}]}>
+                        </Select>
                     </Form.Item>
 
                     <Form.Item {...tailLayout}>
