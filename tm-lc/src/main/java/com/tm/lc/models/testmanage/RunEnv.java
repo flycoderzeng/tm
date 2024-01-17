@@ -25,4 +25,11 @@ import static com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase.P
 public class RunEnv extends CommonSixItemsElideModel {
     private String name;
     private String description;
+    private String httpIp;
+    private String httpPort;
+    private String dbUsername;
+    private String dbPassword;
+    private String dbIp;
+    private String dbPort;
+    private Integer dbType;
 }
