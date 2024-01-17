@@ -5,6 +5,14 @@
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="http_ip" property="httpIp" jdbcType="VARCHAR" />
+        <result column="http_port" property="httpPort" jdbcType="VARCHAR" />
+        <result column="db_username" property="dbUsername" jdbcType="VARCHAR" />
+        <result column="db_password" property="dbPassword" jdbcType="VARCHAR" />
+        <result column="db_ip" property="dbIp" jdbcType="VARCHAR" />
+        <result column="db_port" property="dbPort" jdbcType="VARCHAR" />
+        <result column="db_schema_name" property="dbSchemaName" jdbcType="VARCHAR" />
+        <result column="db_type" property="dbType" jdbcType="INTEGER" />
         <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
         <result column="add_user" property="addUser" jdbcType="VARCHAR" />
         <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
@@ -13,7 +21,7 @@
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, name, description, add_time, add_user, last_modify_time, last_modify_user, status
+        id, name, description, http_ip, http_port, db_username, db_password, db_ip, db_port, db_type, db_schema_name, add_time, add_user, last_modify_time, last_modify_user, status
     </sql>
 
     <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">

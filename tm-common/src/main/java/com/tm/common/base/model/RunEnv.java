@@ -13,4 +13,5 @@ public class RunEnv extends Common6ItemsModel {
     private String dbIp;
     private String dbPort;
     private Integer dbType;
+    private String dbSchemaName;
 }

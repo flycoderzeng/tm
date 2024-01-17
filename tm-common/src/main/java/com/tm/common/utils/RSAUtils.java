@@ -1,6 +1,7 @@
 package com.tm.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -104,6 +105,9 @@ public class RSAUtils {
     }
 
     public static String encrypt(String publicKeyStr, String message) {
+        if(StringUtils.isBlank(message)) {
+            return message;
+        }
         PublicKey publicKey = null;
         try {
             publicKey = RSAUtils.string2PublicKey(publicKeyStr);
@@ -122,6 +126,9 @@ public class RSAUtils {
     }
 
     public static String decrypt(String privateKeyStr, String message) {
+        if(StringUtils.isBlank(message)) {
+            return message;
+        }
         PrivateKey privateKey = null;
         try {
             privateKey = RSAUtils.string2PrivateKey(privateKeyStr);

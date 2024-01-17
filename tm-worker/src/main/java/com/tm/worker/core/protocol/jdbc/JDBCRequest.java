@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tm.common.base.model.DbConfig;
 import com.tm.common.base.model.PlanRunningConfigSnapshot;
+import com.tm.common.base.model.RunEnv;
 import com.tm.common.entities.common.KeyValueRow;
 import com.tm.common.entities.common.enumerate.DbTypeEnum;
 import com.tm.common.entities.common.enumerate.RelationOperatorEnum;
@@ -78,6 +79,18 @@ public class JDBCRequest extends StepNodeBase {
         }
 
         DbConfig dbConfig = context.getTaskService().findDbConfig(runningConfigSnapshot.getEnvId(), dcnId, actualDbName);
+        final RunEnv runEnv = runningConfigSnapshot.getRunEnv();
+        if(dbConfig == null && StringUtils.isNoneBlank(runEnv.getDbUsername()) &&
+                StringUtils.isNoneBlank(runEnv.getDbPassword()) &&
+                StringUtils.isNoneBlank(runEnv.getDbIp()) &&
+                StringUtils.isNoneBlank(runEnv.getDbPort()) && runEnv.getDbType() != null) {
+            dbConfig = new DbConfig(runEnv.getDbUsername(), runEnv.getDbPassword(),
+                    runEnv.getDbIp(), runEnv.getDbPort(), runEnv.getDbType());
+            dbConfig.setDbName(actualDbName);
+            dbConfig.setEnvId(runningConfigSnapshot.getEnvId());
+            dbConfig.setSchemaName(runEnv.getDbSchemaName());
+        }
+
         if(dbConfig == null) {
             throw new TMException(String.format("不存在 环境: %s(id: %s)，DCN id: %s， 数据库名: %s 的配置",
                     runningConfigSnapshot.getEnvName(), runningConfigSnapshot.getEnvId(), dcnId, actualDbName));

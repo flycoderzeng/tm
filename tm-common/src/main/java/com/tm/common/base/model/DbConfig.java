@@ -21,4 +21,12 @@ public class DbConfig extends Common6ItemsModel {
     public String getDataSourceKey() {
         return this.dbName + "-" + this.envId;
     }
+
+    public DbConfig(String username, String password, String ip, String port, Integer type) {
+        this.username = username;
+        this.password = password;
+        this.ip = ip;
+        this.port = port;
+        this.type = type;
+    }
 }

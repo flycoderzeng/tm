@@ -173,7 +173,7 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                 <Form.Item
                     label="port"
                     name="port"
-                    rules={[{required: true, message: '请输入端口!'}]}
+                    rules={[{required: false, message: '请输入端口!'}]}
                 >
                     <Input style={{width: '150px'}} placeholder="如：8080"/>
                 </Form.Item>
