@@ -296,9 +296,14 @@ public class HttpSampler extends StepNodeBase {
 
         String pathParams = ReUtil.get("/\\$\\{(.*?)\\}", url, 0);
         if(StringUtils.isNoneBlank(pathParams)) {
-            path = ReUtil.replaceAll(url, ".*://[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}:[0-9]{1,4}", "");
+            int index = url.replace("//", "||").indexOf('/');
+            if(index > -1) {
+                path = url.substring(index);
+            }else{
+                path = url;
+            }
             log.info(path);
-            int index = path.indexOf("?");
+            index = path.indexOf("?");
             if(index > -1) {
                 path = path.substring(0, index);
                 log.info(path);
@@ -334,8 +339,23 @@ public class HttpSampler extends StepNodeBase {
         if(apiIpPortConfigs != null && !apiIpPortConfigs.isEmpty()) {
             ApiIpPortConfig apiIpPortConfig = apiIpPortConfigs.get(0);
             log.info("将接口路径中的ip和端口替换为环境配置的ip和端口");
-            actualUrl = ReUtil.replaceAll(actualUrl, "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}:[0-9]{1,4}",
-                    apiIpPortConfig.getIp() + ":" + apiIpPortConfig.getPort());
+            int index1 = actualUrl.indexOf("//");
+            int index2 = actualUrl.replace("//", "||").indexOf('/');
+            if(index2 == -1) {
+                index2 = url.length();
+            }
+            if(index1 > -1 && index2 > -1) {
+                String middle = actualUrl.substring(index1 + 2, index2);
+                int index3 = middle.indexOf('@');
+                if(index3 > -1) {
+                    middle = middle.substring(index3+1);
+                }
+                String replacement = apiIpPortConfig.getIp();
+                if(StringUtils.isNoneBlank(apiIpPortConfig.getPort())) {
+                    replacement += ":" + apiIpPortConfig.getPort();
+                }
+                actualUrl = actualUrl.replace(middle, replacement);
+            }
         }
 
         log.info(actualUrl);
