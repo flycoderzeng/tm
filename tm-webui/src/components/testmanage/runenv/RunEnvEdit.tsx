@@ -132,7 +132,7 @@ class RunEnvEdit extends React.Component<RunEnvProps, IState> {
                             dbIp: ret.data.attributes.dbIp,
                             dbPort: ret.data.attributes.dbPort,
                             dbSchemaName: ret.data.attributes.dbSchemaName,
-                            dbType: ret.data.attributes.dbType || null,
+                            dbType: (ret.data.attributes.dbType && ret.data.attributes.dbType+'') || null,
                         });
                     }
                 }
