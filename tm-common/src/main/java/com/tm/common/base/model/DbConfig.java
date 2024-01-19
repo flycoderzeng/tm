@@ -22,6 +22,10 @@ public class DbConfig extends Common6ItemsModel {
         return this.dbName + "-" + this.envId;
     }
 
+    public DbConfig() {
+
+    }
+
     public DbConfig(String username, String password, String ip, String port, Integer type) {
         this.username = username;
         this.password = password;
