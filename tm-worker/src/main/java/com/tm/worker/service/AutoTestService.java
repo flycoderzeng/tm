@@ -224,6 +224,7 @@ public class AutoTestService {
             return ResultUtils.error(ResultCodeEnum.COPY_TASK_OVERFLOW_ERROR);
         }
         final PlanRunningConfigSnapshot snapshot = planRunningConfigSnapshotMapper.selectByPrimaryPlanResultId(body.getPlanResultId());
+        snapshot.setRunEnv(runEnvMapper.findById(snapshot.getEnvId()));
         retryFailedCase(planExecuteResult, snapshot);
         return ResultUtils.success();
     }
