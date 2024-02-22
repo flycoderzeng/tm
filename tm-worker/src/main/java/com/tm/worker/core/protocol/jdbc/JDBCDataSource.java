@@ -32,7 +32,7 @@ public class JDBCDataSource {
         if(DbTypeEnum.DM.value() == dbConfig.getType()) {
             dataSource.setDriverClassName("dm.jdbc.driver.DmDriver");
         }
-        dataSource.setInitialSize(3);
+        dataSource.setInitialSize(1);
         dataSource.setMaxActive(30);
         dataSource.setMinIdle(1);
         // 配置获取连接等待超时的时间，单位毫秒。
@@ -47,7 +47,7 @@ public class JDBCDataSource {
         // 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
         dataSource.setTimeBetweenEvictionRunsMillis(60000);
         // 配置一个连接在池中最小生存的时间，单位是毫秒
-        dataSource.setMinEvictableIdleTimeMillis(300000);
+        dataSource.setMinEvictableIdleTimeMillis(180000);
         // 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭
         dataSource.setPoolPreparedStatements(false);
         try {
