@@ -1,9 +1,16 @@
 package com.tm.worker.core.variable;
 
 import cn.hutool.core.util.ReUtil;
+import com.tm.common.base.model.DbConfig;
+import com.tm.common.base.model.PlanRunningConfigSnapshot;
+import com.tm.common.base.model.RunEnv;
+import com.tm.worker.core.protocol.jdbc.JDBCRequest;
+import com.tm.worker.core.threads.AutoTestContext;
+import com.tm.worker.core.threads.AutoTestContextService;
 import com.tm.worker.utils.ExpressionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +58,29 @@ public class AutoTestVariables {
             caseVariableMap.put(autoCaseVariable.getName(), autoCaseVariable);
             if(StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()) && autoTestVariables != null
                     && autoTestVariables.exists(autoCaseVariable.getPlanVariableName())) {
-                put(autoCaseVariable.getName(), autoTestVariables.get(autoCaseVariable.getPlanVariableName()));
+                String value = autoTestVariables.get(autoCaseVariable.getPlanVariableName());
+                if(StringUtils.isNoneBlank(value) && value.toLowerCase().startsWith("${sql:select") && value.endsWith("}")) {
+                    String sql = value.substring(6, value.length() - 1);
+                    AutoTestContext context = AutoTestContextService.getContext();
+                    final PlanRunningConfigSnapshot runningConfigSnapshot = context.getPlanTask().getRunningConfigSnapshot();
+                    final RunEnv runEnv = runningConfigSnapshot.getRunEnv();
+                    DbConfig dbConfig = new DbConfig(runEnv.getDbUsername(), runEnv.getDbPassword(),
+                            runEnv.getDbIp(), runEnv.getDbPort(), runEnv.getDbType());
+                    final String from = ReUtil.getGroup1(".+[ \t\r\n]+(.+\\..+)[ \r\n\t]*", sql);
+                    if(StringUtils.isNoneBlank(from)) {
+                        dbConfig.setDbName(from.split("\\.")[0]);
+                    }
+                    dbConfig.setEnvId(runningConfigSnapshot.getEnvId());
+                    dbConfig.setSchemaName(runEnv.getDbSchemaName());
+                    List<Map<String, String>> list = JDBCRequest.execSelect(dbConfig, sql, context);
+                    if(list != null && !list.isEmpty()) {
+                        final Collection<String> values = list.get(0).values();
+                        if(values != null && !values.isEmpty()) {
+                            value = values.stream().findFirst().get();
+                        }
+                    }
+                }
+                put(autoCaseVariable.getName(), value);
             } else {
                 put(autoCaseVariable.getName(), autoCaseVariable.getValue());
             }
