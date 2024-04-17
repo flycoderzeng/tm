@@ -119,11 +119,13 @@ public class JDBCRequest extends StepNodeBase {
                 checkError(list);
                 extractResult(list);
             } else if (actualContent.toLowerCase().startsWith("update")) {
-                execUpdate(dbConfig, actualContent);
+                int effectedRows = execUpdate(dbConfig, actualContent, context);
+                saveAffectedRowsValueToVariable(effectedRows, caseVariables);
             } else if (actualContent.toLowerCase().startsWith("delete")) {
-                execDelete(dbConfig, actualContent);
+                execDelete(dbConfig, actualContent, context);
             } else if (actualContent.toLowerCase().startsWith("insert")) {
-                execInsert(dbConfig, actualContent);
+                int effectedRows = execInsert(dbConfig, actualContent, context);
+                saveAffectedRowsValueToVariable(effectedRows, caseVariables);
             }
         }
     }
@@ -284,17 +286,14 @@ public class JDBCRequest extends StepNodeBase {
         return list;
     }
 
-    private void execInsert(DbConfig dbConfig, String content) throws Exception {
-        AutoTestContext context = AutoTestContextService.getContext();
+    public static int execInsert(DbConfig dbConfig, String content, AutoTestContext context) throws Exception {
         Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
         try {
             if (conn == null) {
                 throw new TMException("获取数据库连接失败");
             }
-            int i = JDBCUtils.doExecuteUpdate(conn, content);
-
-            AutoTestVariables caseVariables = context.getCaseVariables();
-            saveAffectedRowsValueToVariable(i, caseVariables);
+            int effectedRows = JDBCUtils.doExecuteUpdate(conn, content);
+            return effectedRows;
         } finally {
             if(conn != null) {
                 log.info("归还数据库连接, {}", dbConfig.getDataSourceKey());
@@ -303,12 +302,11 @@ public class JDBCRequest extends StepNodeBase {
         }
     }
 
-    private void execDelete(DbConfig dbConfig, String content) {
+    private void execDelete(DbConfig dbConfig, String content, AutoTestContext context) {
 
     }
 
-    private void execUpdate(DbConfig dbConfig, String content) throws Exception {
-        AutoTestContext context = AutoTestContextService.getContext();
+    public static int execUpdate(DbConfig dbConfig, String content, AutoTestContext context) throws Exception {
         Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
         try {
             if (content.indexOf("where") < 0 && content.indexOf("WHERE") < 0) {
@@ -317,10 +315,8 @@ public class JDBCRequest extends StepNodeBase {
             if (conn == null) {
                 throw new TMException("获取数据库连接失败");
             }
-            int i = JDBCUtils.doExecuteUpdate(conn, content);
-
-            AutoTestVariables caseVariables = context.getCaseVariables();
-            saveAffectedRowsValueToVariable(i, caseVariables);
+            int effectedRows = JDBCUtils.doExecuteUpdate(conn, content);
+            return effectedRows;
         } finally {
             if(conn != null) {
                 log.info("归还数据库连接, {}", dbConfig.getDataSourceKey());
@@ -329,7 +325,7 @@ public class JDBCRequest extends StepNodeBase {
         }
     }
 
-    private List<Map<String, String>> execSelect(DbConfig dbConfig, String sql, AutoTestContext context) {
+    public static List<Map<String, String>> execSelect(DbConfig dbConfig, String sql, AutoTestContext context) {
         Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
         if(conn == null) {
             throw new TMException("获取数据库连接失败");
