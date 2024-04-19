@@ -12,6 +12,7 @@ interface IState {
     onChange: any;
 }
 
+const VARIABLE_TIPS = "必须以 v_ 开始,只能包含英文字母、数字和下划线";
 
 const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     const [userDefinedVariables, setUserDefinedVariables] = useState(props.userDefinedVariables);
@@ -38,6 +39,12 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     function onChangeName(value: any, index: number) {
         let vName = value.target.value;
         if(!vName.startsWith('v_')) {
+            message.info(VARIABLE_TIPS);
+            return;
+        }
+        const list: any[]|null = vName.match(/v_[a-zA-Z0-9_]{1,100}/g);
+        if(list == null || list.length == 0) {
+            message.info(VARIABLE_TIPS);
             return;
         }
         userDefinedVariables[index].name = vName;
@@ -70,7 +77,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                          }}>
                 <Col span={6} style={{paddingRight: '5px', display: 'flex', alignItems: 'flex-end'}}>
                     <Checkbox style={{marginRight: '5px'}} defaultChecked={value.checked} checked={value.checked} onChange={(v) => {onChangeChecked(v, index);}}></Checkbox>
-                    <Input placeholder="变量名称必须以 v_ 开始" defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
+                    <Input placeholder={VARIABLE_TIPS} defaultValue={value.name} onChange={(v) => {onChangeName(v, index);}}/>
                 </Col>
                 <Col span={6} style={{paddingRight: '5px'}}>
                     <Input defaultValue={value.description} onChange={(v) => {onChangeDescription(v, index);}}/>
@@ -291,6 +298,42 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
         }
     }
 
+    function onClear() {
+        const newVariables: any[] = [];
+        const noUsedVariables: any[] = [];
+        const steps: string = '';
+        const r = /\$\{.*?\}/g;
+        const list: string[]|null = steps.match(r);
+        for (let i = 0; i < userDefinedVariables.length; i++) {
+            if(variableIsUsed(userDefinedVariables[i], list)) {
+                newVariables.push(userDefinedVariables[i]);
+            }else{
+                noUsedVariables.push(userDefinedVariables[i]);
+            }
+        }
+        if(noUsedVariables.length > 0) {
+            onChange('userDefinedVariables', newVariables);
+            setUserDefinedVariables([...newVariables]);
+        }
+    }
+
+    function variableIsUsed(variable: AutoCaseVariable, list: any[]|null): boolean {
+        if(list == null || list.length == 0) {
+            return false;
+        }
+        for (let i = 0; i < list.length; i++) {
+            const matchList: any[]|null = list[i].match(/v_([a-zA-Z0-9_]{1,99})?[a-zA-Z0-9_]/g);
+            if(matchList != null && matchList.length > 0) {
+                for (let j = 0; j < matchList.length; j++) {
+                    if(matchList[j] === variable.name) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     return (
         <div>
             <div>
@@ -300,11 +343,12 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                     <Button size="small" type="primary" danger={true} onClick={onRemove}>删除</Button>
                     <Button size="small" type="primary" onClick={() => onMove(1)}>上移</Button>
                     <Button size="small" type="primary" onClick={() => onMove(2)}>下移</Button>
-                    <Button size="small" type="primary" onClick={onUpSort}>升序</Button>
-                    <Button size="small" type="primary" onClick={onDownSort}>降序</Button>
+                    <Button size="small" type="default" onClick={onUpSort}>升序</Button>
+                    <Button size="small" type="default" onClick={onDownSort}>降序</Button>
                     <Button size="small" type="primary" onClick={() => onTop()}>置顶</Button>
-                    <Button size="small" type="primary" onClick={() => onCopy()}>复制变量</Button>
-                    <Button size="small" type="primary" onClick={() => onPaste()}>粘贴变量</Button>
+                    <Button size="small" type="default" onClick={() => onCopy()}>复制变量</Button>
+                    <Button size="small" type="default" onClick={() => onPaste()}>粘贴变量</Button>
+                    <Button size="small" type="primary" onClick={() => onClear()}>清理变量</Button>
                 </div>
                 <Row style={{paddingTop: '5px'}}>
                     <Col span={6} style={{fontWeight: 600, color: '#6e6e6e'}}>
@@ -327,7 +371,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
                 <Row style={{paddingBottom: '5px'}}>
                     <Col flex="100px" style={{fontWeight: 600, color: '#6e6e6e'}}>变量名称</Col>
                     <Col flex="auto">
-                        <Input placeholder="变量名必须以v_开头" value={variableName} onChange={onChangeNameInModal}/>
+                        <Input placeholder={VARIABLE_TIPS} value={variableName} onChange={onChangeNameInModal}/>
                     </Col>
                 </Row>
                 <Row style={{paddingBottom: '5px'}}>

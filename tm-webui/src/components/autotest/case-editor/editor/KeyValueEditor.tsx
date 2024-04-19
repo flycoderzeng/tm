@@ -372,7 +372,7 @@ const KeyValueEditor: React.FC<IState> = (props) => {
     return (<div>
         <div className="variable-toolbar">
             <Button size="small" type="primary" onClick={add}>添加</Button>
-            <Button size="small" type="primary" onClick={onRemove}>删除</Button>
+            <Button size="small" type="primary" danger={true} onClick={onRemove}>删除</Button>
             {detailBtn}
         </div>
         <Row className="common-header">
