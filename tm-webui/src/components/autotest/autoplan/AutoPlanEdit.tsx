@@ -313,7 +313,7 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
             </Tabs>
         </div>
         <Modal
-            title="计划全局变量"
+            title="计划变量配置"
             open={visiblePlanGlobalVariableModal}
             onOk={() => {
                 setVisiblePlanGlobalVariableModal(false);
