@@ -94,12 +94,35 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     }
 
     function onRemove() {
-        if(!window.confirm('确定删除该变量吗?')) {
-            return;
+        const newVariables: any[] = [];
+        const checkedVariables: any[] = [];
+        for (let i = 0; i < userDefinedVariables.length; i++) {
+            if(!userDefinedVariables[i].checked) {
+                newVariables.push(userDefinedVariables[i]);
+            }else{
+                checkedVariables.push(userDefinedVariables[i]);
+            }
         }
-        userDefinedVariables.splice(currIndex, 1);
-        onChange('userDefinedVariables', userDefinedVariables);
-        setUserDefinedVariables([...userDefinedVariables]);
+        if(checkedVariables.length === 0) {
+            if(currIndex == -1) {
+                message.info('请勾选要删除的变量!');
+                return;
+            }else{
+                if(!window.confirm('确定删除该变量吗?')) {
+                    return;
+                }
+                userDefinedVariables.splice(currIndex, 1);
+                onChange('userDefinedVariables', userDefinedVariables);
+                setUserDefinedVariables([...userDefinedVariables]);
+            }
+        }else{
+            if(!window.confirm('确定删除勾选的变量吗?')) {
+                return;
+            }
+            onChange('userDefinedVariables', newVariables);
+            setUserDefinedVariables([...newVariables]);
+        }
+        setCurrIndex(-1);
     }
 
     function handleOk() {
