@@ -60,31 +60,36 @@ public class AutoTestVariables {
                     && autoTestVariables.exists(autoCaseVariable.getPlanVariableName())) {
                 String value = autoTestVariables.get(autoCaseVariable.getPlanVariableName());
                 if(StringUtils.isNoneBlank(value) && value.toLowerCase().startsWith("${sql:select") && value.endsWith("}")) {
-                    String sql = value.substring(6, value.length() - 1);
-                    AutoTestContext context = AutoTestContextService.getContext();
-                    final PlanRunningConfigSnapshot runningConfigSnapshot = context.getPlanTask().getRunningConfigSnapshot();
-                    final RunEnv runEnv = runningConfigSnapshot.getRunEnv();
-                    DbConfig dbConfig = new DbConfig(runEnv.getDbUsername(), runEnv.getDbPassword(),
-                            runEnv.getDbIp(), runEnv.getDbPort(), runEnv.getDbType());
-                    final String from = ReUtil.getGroup1(".+[ \t\r\n]+(.+\\..+)[ \r\n\t]*", sql);
-                    if(StringUtils.isNoneBlank(from)) {
-                        dbConfig.setDbName(from.split("\\.")[0]);
-                    }
-                    dbConfig.setEnvId(runningConfigSnapshot.getEnvId());
-                    dbConfig.setSchemaName(runEnv.getDbSchemaName());
-                    List<Map<String, String>> list = JDBCRequest.execSelect(dbConfig, sql, context);
-                    if(list != null && !list.isEmpty()) {
-                        final Collection<String> values = list.get(0).values();
-                        if(values != null && !values.isEmpty()) {
-                            value = values.stream().findFirst().get();
-                        }
-                    }
+                    value = getSqlValue(value);
                 }
                 put(autoCaseVariable.getName(), value);
             } else {
                 put(autoCaseVariable.getName(), autoCaseVariable.getValue());
             }
         }
+    }
+
+    private String getSqlValue(String value) {
+        String sql = value.substring(6, value.length() - 1);
+        AutoTestContext context = AutoTestContextService.getContext();
+        final PlanRunningConfigSnapshot runningConfigSnapshot = context.getPlanTask().getRunningConfigSnapshot();
+        final RunEnv runEnv = runningConfigSnapshot.getRunEnv();
+        DbConfig dbConfig = new DbConfig(runEnv.getDbUsername(), runEnv.getDbPassword(),
+                runEnv.getDbIp(), runEnv.getDbPort(), runEnv.getDbType());
+        final String from = ReUtil.getGroup1(".+[ \t\r\n]+(.+\\..+)[ \r\n\t]*", sql);
+        if(StringUtils.isNoneBlank(from)) {
+            dbConfig.setDbName(from.split("\\.")[0]);
+        }
+        dbConfig.setEnvId(runningConfigSnapshot.getEnvId());
+        dbConfig.setSchemaName(runEnv.getDbSchemaName());
+        List<Map<String, String>> list = JDBCRequest.execSelect(dbConfig, sql, context);
+        if(list != null && !list.isEmpty()) {
+            final Collection<String> values = list.get(0).values();
+            if(values != null && !values.isEmpty()) {
+                value = values.stream().findFirst().get();
+            }
+        }
+        return value;
     }
 
     public void replace(AutoTestVariables newVariables) {
