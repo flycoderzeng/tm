@@ -4,12 +4,14 @@ import {Row, Col, message} from 'antd';
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 import {RandomUtils} from "../../../../utils/RandomUtils";
 import {LocalStorageUtils} from "../../../../utils/LocalStorageUtils";
+import {StepNode} from "../entities/StepNode";
 
 const {TextArea} = Input;
 
 interface IState {
     userDefinedVariables: AutoCaseVariable[];
     onChange: any;
+    treeData?: StepNode[];
 }
 
 const VARIABLE_TIPS = "必须以 v_ 开始,只能包含英文字母、数字和下划线";
@@ -21,6 +23,7 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     const [variableName, setVariableName] = useState("");
     const [variableValue, setVariableValue] = useState("");
     const {onChange} = props;
+    const {treeData} = props;
     const [checkedAll, setCheckedAll] = useState(false);
 
     if (JSON.stringify(userDefinedVariables) !== JSON.stringify(props.userDefinedVariables)) {
@@ -301,7 +304,13 @@ const AutoCaseVariableEditor: React.FC<IState> = (props) => {
     function onClear() {
         const newVariables: any[] = [];
         const noUsedVariables: any[] = [];
-        const steps: string = '';
+        let stepNode = treeData && treeData[0];
+        stepNode = JSON.parse(JSON.stringify(stepNode));
+        delete stepNode?.['define'];
+        let steps = '';
+        if(stepNode) {
+            steps = JSON.stringify(stepNode);
+        }
         const r = /\$\{.*?\}/g;
         const list: string[]|null = steps.match(r);
         for (let i = 0; i < userDefinedVariables.length; i++) {

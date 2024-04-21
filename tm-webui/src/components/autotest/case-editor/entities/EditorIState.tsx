@@ -11,4 +11,5 @@ export interface EditorIState<T> {
     onChange?: any;
     key?: string;
     groupManageEditorWidth?: number;
+    treeData?: StepNode[];
 }

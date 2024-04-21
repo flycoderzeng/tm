@@ -919,7 +919,7 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
         switch (currStepNode.type) {
             case "root":
                 return (<RootNodeEditor key={currStepNode.key} refreshTree={refreshTree} stepNode={currStepNode} groupVariables={groupVariables} onChangeGroupVariables={setGroupVariables}
-                                        define={currStepNode.define} onChange={onChangeDefine} groupManageEditorWidth={groupManageEditorWidth}>
+                                        define={currStepNode.define} onChange={onChangeDefine} groupManageEditorWidth={groupManageEditorWidth} treeData={treeData}>
                 </RootNodeEditor>);
             case "if":
                 return (<IfControllerEditor key={currStepNode.key} refreshTree={refreshTree} stepNode={currStepNode}
