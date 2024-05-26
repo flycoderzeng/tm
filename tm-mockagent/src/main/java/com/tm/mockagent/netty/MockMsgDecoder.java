@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tm.mockagent.entities.model.HttpMockRule;
+import com.tm.mockagent.entities.model.MockAgentInstanceInfo;
 import com.tm.mockagent.entities.msg.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,7 +27,7 @@ public class MockMsgDecoder extends ByteToMessageDecoder {
             buf.readBytes(req);
             body = new String(req, StandardCharsets.UTF_8);
         }
-        MockCommunicationMsg requestParam = null;
+        MockCommunicationMsg requestParam;
         Object msg = null;
         switch (type) {
                 // 心跳信息
@@ -72,7 +73,7 @@ public class MockMsgDecoder extends ByteToMessageDecoder {
                 }else{
                     msg = null;
                 }
-                requestParam = new MockCommunicationMsg<>(type, (PushMockRuleMsg)msg);
+                requestParam = new MockCommunicationMsg<>(type, (PushMockRuleMsg<?>)msg);
                 break;
             default:
                 requestParam = new MockCommunicationMsg<>(type, null);

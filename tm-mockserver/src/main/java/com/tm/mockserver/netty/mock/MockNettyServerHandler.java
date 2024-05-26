@@ -52,7 +52,7 @@ public class MockNettyServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         String channelId = ctx.channel().id().asLongText();
-        log.info("客户端被移除，channelId为：" + channelId);
+        log.info("客户端被移除，channelId为：{}", channelId);
         ctx.close();
     }
 

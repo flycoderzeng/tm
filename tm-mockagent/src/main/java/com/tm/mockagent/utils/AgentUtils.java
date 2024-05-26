@@ -1,23 +1,20 @@
 package com.tm.mockagent.utils;
 
-import com.tm.mockagent.entities.model.MockAgentArgsInfo;
+import com.tm.mockagent.entities.model.MockAgentArgs;
 import org.apache.commons.lang3.StringUtils;
 
 public class AgentUtils {
     private AgentUtils() {}
 
-    public static MockAgentArgsInfo getAgentInfo(String agentArgs) {
-        MockAgentArgsInfo info = new MockAgentArgsInfo();
+    public static MockAgentArgs getAgentInfo(String agentArgs) {
+        MockAgentArgs info = new MockAgentArgs();
         if(StringUtils.isBlank(agentArgs)) {
             return info;
         }
         final String[] args = agentArgs.split("\\+");
-        if(args == null || args.length == 0) {
-            return info;
-        }
-        for (int i = 0; i < args.length; i++) {
-            final String[] kv = args[i].split("=");
-            if(kv.length == 2) {
+        for (String arg : args) {
+            final String[] kv = arg.split("=");
+            if (kv.length == 2) {
                 switch (kv[0]) {
                     case "applicationName":
                         info.setApplicationName(kv[1]);
@@ -26,7 +23,7 @@ public class AgentUtils {
                         info.setIp(kv[1]);
                         break;
                     case "port":
-                        if(StringUtils.isNumeric(kv[1])) {
+                        if (StringUtils.isNumeric(kv[1])) {
                             info.setPort(Integer.parseInt(kv[1]));
                         }
                         break;
@@ -40,7 +37,7 @@ public class AgentUtils {
                         info.setMockServerIp(kv[1]);
                         break;
                     case "mockServerPort":
-                        if(StringUtils.isNumeric(kv[1])) {
+                        if (StringUtils.isNumeric(kv[1])) {
                             info.setMockServerPort(Integer.parseInt(kv[1]));
                         }
                         break;

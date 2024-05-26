@@ -12,11 +12,11 @@ public class HttpMockRule {
     private String responseRule;
     // 0-启用 1-禁用
     private Integer enabled;
-
     private String mockSourceIp;
     private Integer mockSourcePort;
     //1-http 2-https
     private Integer httpProtocolType;
     private String mockTargetIp;
     private Integer mockTargetPort;
+    private String mockTargetUri;
 }

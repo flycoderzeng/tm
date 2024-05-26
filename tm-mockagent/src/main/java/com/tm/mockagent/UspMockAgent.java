@@ -2,7 +2,7 @@ package com.tm.mockagent;
 
 import com.sun.tools.attach.*;
 import com.tm.mockagent.boot.MockAgentApplication;
-import com.tm.mockagent.entities.model.MockAgentArgsInfo;
+import com.tm.mockagent.entities.model.MockAgentArgs;
 import com.tm.mockagent.utils.AgentUtils;
 import javassist.*;
 import org.apache.log4j.Logger;
@@ -51,7 +51,7 @@ public class UspMockAgent {
 
     private static void runAgent(String agentArgs) {
         logger.info("agentArgs : " + agentArgs);
-        final MockAgentArgsInfo agentInfo = AgentUtils.getAgentInfo(agentArgs);
+        final MockAgentArgs agentInfo = AgentUtils.getAgentInfo(agentArgs);
         application.init(agentInfo);
         application.run();
     }
