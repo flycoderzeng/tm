@@ -1,7 +1,7 @@
 package com.tm.mockagent.boot;
 
-import com.tm.mockagent.entities.model.MockAgentArgsInfo;
-import com.tm.mockagent.entities.msg.MockAgentInstanceInfo;
+import com.tm.mockagent.entities.model.MockAgentArgs;
+import com.tm.mockagent.entities.model.MockAgentInstanceInfo;
 import com.tm.mockagent.netty.MockNettyClient;
 import com.tm.mockagent.rule.MockRuleFactory;
 import com.tm.mockagent.threads.MockAgentThreadFactory;
@@ -27,7 +27,7 @@ public class MockAgentApplication {
         executorService = Executors.newFixedThreadPool(2, threadFactory);
     }
 
-    private void initContext(MockAgentArgsInfo info) {
+    private void initContext(MockAgentArgs info) {
         context = new MockAgentContext();
         MockNettyClient nettyClient = new MockNettyClient(info.getMockServerIp(), info.getMockServerPort());
         MockRuleFactory ruleFactory = new MockRuleFactory();
@@ -54,7 +54,7 @@ public class MockAgentApplication {
         executorService.submit(new MockRuleManageThread(context));
     }
 
-    public void init(MockAgentArgsInfo info) {
+    public void init(MockAgentArgs info) {
         initContext(info);
         initThreadPool();
     }

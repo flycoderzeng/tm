@@ -1,4 +1,4 @@
-package com.tm.mockagent.entities.msg;
+package com.tm.mockagent.entities.model;
 
 import lombok.Data;
 

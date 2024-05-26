@@ -1,10 +1,11 @@
 package com.tm.mockagent.entities.model;
 
-import com.tm.mockagent.entities.msg.MockAgentInstanceInfo;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class MockAgentArgsInfo extends MockAgentInstanceInfo {
+public class MockAgentArgs extends MockAgentInstanceInfo {
     private String mockServerIp;
     private Integer mockServerPort;
 }

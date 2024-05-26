@@ -12,7 +12,7 @@ public class MockNettyClientHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger = Logger.getLogger(MockNettyClientHandler.class);
 
-    private MockMsgControlService mockMsgControlService = UspMockAgent.application.getContext().getMockMsgControlService();
+    private final MockMsgControlService mockMsgControlService = UspMockAgent.application.getContext().getMockMsgControlService();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -23,8 +23,7 @@ public class MockNettyClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object object) {
         logger.info("收到服务端报文: " + object);
 
-        if (object instanceof MockCommunicationMsg) {
-            MockCommunicationMsg<Object> msg = (MockCommunicationMsg) object;
+        if (object instanceof MockCommunicationMsg<?> msg) {
             try {
                 mockMsgControlService.process(ctx, msg);
             } catch (Exception e) {

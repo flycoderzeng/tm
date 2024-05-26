@@ -15,7 +15,7 @@ public enum MockMsgType {
     DISABLE_MOCK_RULE_ACK (11),
     REMOVE_MOCK_RULE (12),
     REMOVE_MOCK_RULE_ACK (13);
-    private int value;
+    private final int value;
     MockMsgType(int value) {this.value = value;}
 
     public int val() {
@@ -23,37 +23,22 @@ public enum MockMsgType {
     }
 
     public static MockMsgType get(int value) {
-        switch (value) {
-            case 0:
-                return HEARTBEAT;
-            case 1:
-                return HEARTBEAT_ACK;
-            case 2:
-                return REGISTER;
-            case 3:
-                return REGISTER_ACK;
-            case 4:
-                return REQUEST_LOAD_MOCK_RULE;
-            case 5:
-                return REQUEST_LOAD_MOCK_RULE_ACK;
-            case 6:
-                return PUSH_MOCK_RULE;
-            case 7:
-                return PUSH_MOCK_RULE_ACK;
-            case 8:
-                return ENABLE_MOCK_RULE;
-            case 9:
-                return ENABLE_MOCK_RULE_ACK;
-            case 10:
-                return DISABLE_MOCK_RULE;
-            case 11:
-                return DISABLE_MOCK_RULE_ACK;
-            case 12:
-                return REMOVE_MOCK_RULE;
-            case 13:
-                return REMOVE_MOCK_RULE_ACK;
-            default:
-                return null;
-        }
+        return switch (value) {
+            case 0 -> HEARTBEAT;
+            case 1 -> HEARTBEAT_ACK;
+            case 2 -> REGISTER;
+            case 3 -> REGISTER_ACK;
+            case 4 -> REQUEST_LOAD_MOCK_RULE;
+            case 5 -> REQUEST_LOAD_MOCK_RULE_ACK;
+            case 6 -> PUSH_MOCK_RULE;
+            case 7 -> PUSH_MOCK_RULE_ACK;
+            case 8 -> ENABLE_MOCK_RULE;
+            case 9 -> ENABLE_MOCK_RULE_ACK;
+            case 10 -> DISABLE_MOCK_RULE;
+            case 11 -> DISABLE_MOCK_RULE_ACK;
+            case 12 -> REMOVE_MOCK_RULE;
+            case 13 -> REMOVE_MOCK_RULE_ACK;
+            default -> null;
+        };
     }
 }
