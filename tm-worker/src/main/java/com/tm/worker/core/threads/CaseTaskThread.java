@@ -295,9 +295,6 @@ public class CaseTaskThread implements Callable<BaseResponse> {
             case ASSERT -> define = BeanUtils.mapToBean(AssertNode.class, defineMap);
             case GET_GLOBAL_KEY_VALUE -> define = BeanUtils.mapToBean(GetGlobalKeyValueNode.class, defineMap);
             case SET_GLOBAL_KEY_VALUE -> define = BeanUtils.mapToBean(SetGlobalKeyValueNode.class, defineMap);
-            case ENCODE_CIPHER_CREDENTIAL -> define = BeanUtils.mapToBean(CipherCredentialEncodeNode.class, defineMap);
-            case ENCODE_MESSAGES_DIGEST -> define = BeanUtils.mapToBean(MessagesDigestEncodeNode.class, defineMap);
-            case ENCODE_ADMIN_USER_PASSWORD -> define = BeanUtils.mapToBean(AdminUserPasswordEncodeNode.class, defineMap);
             default -> {
                 log.info(type);
                 throw new TMException("未定义处理类的节点类型：" + type);
