@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @SpringBootApplication(exclude= DataSourceAutoConfiguration.class, scanBasePackages = {"com.tm.lc", "com.tm.common"})
-@MapperScan({"com.tm.common"})
+@MapperScan(value = {"com.tm.common"})
 @EntityScan
 @EnableDiscoveryClient
 public class LcApplication {
