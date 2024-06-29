@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.1</version>
+        <version>3.3.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.tm</groupId>
@@ -20,11 +20,10 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>com.tm</groupId>
             <artifactId>common</artifactId>
-            <version>1.0.0</version>
+            <version>dev-3.0.0</version>
         </dependency>
 
         <dependency>
@@ -83,11 +82,12 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.3</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
         </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
@@ -113,13 +113,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.tm</groupId>
-            <artifactId>common</artifactId>
-            <version>dev-3.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-
     </dependencies>
 
     <dependencyManagement>
