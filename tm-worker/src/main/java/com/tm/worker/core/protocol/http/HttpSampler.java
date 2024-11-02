@@ -337,8 +337,7 @@ public class HttpSampler extends StepNodeBase {
             }
         }
         if(apiIpPortConfigs.isEmpty()) {
-            throw new TMException("接口: " + path + ", 环境: "
-                    + context.getPlanTask().getRunningConfigSnapshot().getEnvName() + ", dcnId: " + dcnId + ", 没有对应的接口地址配置, 请去测试管理-接口地址配置 配置!");
+            log.error("接口: {}, 环境: {}, dcnId: {}, 没有对应的接口地址配置, 请去测试管理-接口地址配置 配置!", path, context.getPlanTask().getRunningConfigSnapshot().getEnvName(), dcnId);
         }
 
         // 拼装params
@@ -349,7 +348,7 @@ public class HttpSampler extends StepNodeBase {
             actualUrl += "?" + paramStr;
         }
 
-        if(apiIpPortConfigs != null && !apiIpPortConfigs.isEmpty()) {
+        if(!apiIpPortConfigs.isEmpty()) {
             ApiIpPortConfig apiIpPortConfig = apiIpPortConfigs.get(0);
             log.info("将接口路径中的ip和端口替换为环境配置的ip和端口");
             int index1 = actualUrl.indexOf("//");
@@ -357,7 +356,7 @@ public class HttpSampler extends StepNodeBase {
             if(index2 == -1) {
                 index2 = url.length();
             }
-            if(index1 > -1 && index2 > -1) {
+            if(index1 > -1) {
                 String middle = actualUrl.substring(index1 + 2, index2);
                 int index3 = middle.indexOf('@');
                 if(index3 > -1) {
