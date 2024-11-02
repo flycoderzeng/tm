@@ -112,11 +112,15 @@ public class HttpSampler extends StepNodeBase {
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             String saveFilePath = "";
-            if(OS.indexOf("windows") > -1) {
-                FileUtil.mkdir(WINDOWS_TEMP_DOWNLOAD_FILES_PATH);
+            if(OS.contains("windows")) {
+                if(!new File(WINDOWS_TEMP_DOWNLOAD_FILES_PATH).exists()) {
+                    FileUtil.mkdir(WINDOWS_TEMP_DOWNLOAD_FILES_PATH);
+                }
                 saveFilePath = WINDOWS_TEMP_DOWNLOAD_FILES_PATH + "/" + saveFileName;
             }else{
-                FileUtil.mkdir(LINUX_TEMP_DOWNLOAD_FILES_PATH);
+                if(!new File(LINUX_TEMP_DOWNLOAD_FILES_PATH).exists()) {
+                    FileUtil.mkdir(LINUX_TEMP_DOWNLOAD_FILES_PATH);
+                }
                 saveFilePath = LINUX_TEMP_DOWNLOAD_FILES_PATH + "/" +saveFileName;
             }
             addResultInfo("保存的文件路径: ").addResultInfoLine(saveFilePath);
@@ -255,7 +259,7 @@ public class HttpSampler extends StepNodeBase {
                     formMap.put(name, value);
                 } else if (StringUtils.equals("file", formDatum.getType())) {
                     String filePath;
-                    if(OS.indexOf("windows") > -1) {
+                    if(OS.contains("windows")) {
                         filePath = WINDOWS_TEMP_UPLOAD_FILES_PATH + File.separator + value;
                     }else{
                         filePath = LINUX_TEMP_UPLOAD_FILES_PATH + File.separator + value;
@@ -284,7 +288,7 @@ public class HttpSampler extends StepNodeBase {
         if(StringUtils.isBlank(url)) {
             throw new TMException("请求地址不能为空");
         }
-        log.info(url);
+        log.info("初始的请求地址: {}", url);
 
         String path = "";
 
@@ -370,7 +374,7 @@ public class HttpSampler extends StepNodeBase {
             }
         }
 
-        log.info(actualUrl);
+        log.info("实际的请求地址: {}", actualUrl);
         addResultInfo("实际的请求地址: ").addResultInfoLine(actualUrl);
 
         return actualUrl;
