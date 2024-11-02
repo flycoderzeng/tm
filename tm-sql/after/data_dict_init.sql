@@ -235,9 +235,6 @@ INSERT INTO `menu` VALUES (216, '需求', '', 215, '', 100, '2021-12-24 20:47:15
 INSERT INTO `menu` VALUES (217, '缺陷', '', 215, '', 200, '2021-12-24 20:47:28', 'admin', '2021-12-24 20:47:28', 'admin', 2, 0, NULL);
 INSERT INTO `menu` VALUES (218, '测试用例', '', 215, '', 300, '2021-12-24 20:47:50', 'admin', '2021-12-24 20:47:50', 'admin', 2, 0, NULL);
 INSERT INTO `menu` VALUES (219, '发布计划', '', 215, '', 400, '2021-12-24 21:48:10', 'admin', '2021-12-24 21:48:10', 'admin', 2, 0, NULL);
-INSERT INTO `menu` VALUES (220, '动态mock', '', 0, '', 600, '2022-01-12 21:28:57', 'admin', '2022-01-12 21:28:57', 'admin', 1, 0, NULL);
-INSERT INTO `menu` VALUES (221, '挡板规则', '/mockrules', 220, '', 10, '2022-01-14 19:24:22', 'admin', '2022-01-14 19:24:22', 'admin', 2, 0, NULL);
-INSERT INTO `menu` VALUES (222, '实例管理', '/mockinstances', 220, '', 5, '2022-01-14 19:25:26', 'admin', '2022-01-15 19:08:06', 'admin', 2, 0, NULL);
 INSERT INTO `menu` VALUES (223, '标签', '/tags', 209, NULL, 6000, '2022-12-01 23:58:32', 'admin', '2023-07-31 11:02:32', 'admin', NULL, 0, NULL);
 INSERT INTO `menu` VALUES (224, 'DCN管理', '/dcnlist', 209, NULL, 500, '2023-07-20 10:18:56', 'admin', NULL, NULL, NULL, 0, NULL);
 

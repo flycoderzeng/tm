@@ -163,7 +163,7 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label="ip"
+                    label="IP"
                     name="ip"
                     rules={[{required: true, message: '请输入ip!'}]}
                 >
@@ -171,7 +171,7 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label="port"
+                    label="端口"
                     name="port"
                     rules={[{required: false, message: '请输入端口!'}]}
                 >
