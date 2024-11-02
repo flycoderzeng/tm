@@ -62,13 +62,13 @@ public class ScriptActionNode extends StepNodeBase {
         Process process;
         String cmd = "";
         String cd;
-        if (OS.indexOf("windows") > -1) {
+        if (OS.contains("windows")) {
             cd = "cd /d" + WINDOWS_TEMP_SCRIPT_PATH;
         }else{
             cd = "cd " + LINUX_TEMP_SCRIPT_PATH;
         }
         List<String> cmds = new ArrayList<>();
-        if (OS.indexOf("windows") > -1) {
+        if (OS.contains("windows")) {
             cmds.add("cmd.exe");
             cmds.add("/c");
         } else {
@@ -117,7 +117,7 @@ public class ScriptActionNode extends StepNodeBase {
 
         StringBuilder stderrBuilder = new StringBuilder();
         String charsetName;
-        if (OS.indexOf("windows") > -1) {
+        if (OS.contains("windows")) {
             charsetName = "GBK";
         } else {
             charsetName = "UTF8";
@@ -153,7 +153,7 @@ public class ScriptActionNode extends StepNodeBase {
         }else{
             scriptContent = content;
         }
-        if(OS.indexOf("windows") == -1) {
+        if(!OS.contains("windows")) {
             scriptContent = scriptContent.replace("\r\n", "\n");
         }
         if(StringUtils.isBlank(scriptContent)) {
@@ -162,7 +162,7 @@ public class ScriptActionNode extends StepNodeBase {
         String tempScriptName = System.currentTimeMillis() + "_" + context.getPlanTask().getPlanExecuteResultId()
                 + "_" + context.getCaseTask().getAutoCase().getId() + "_" + context.getCaseTask().getGroupNo();
         String tempScriptPath;
-        if(OS.indexOf("windows") > -1) {
+        if(OS.contains("windows")) {
             FileUtil.mkdir(WINDOWS_TEMP_SCRIPT_PATH);
             tempScriptPath = WINDOWS_TEMP_SCRIPT_PATH + File.separator + tempScriptName + suffix;
         }else{

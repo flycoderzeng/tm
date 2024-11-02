@@ -7,7 +7,6 @@ import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
-import nl.flotsam.xeger.Xeger;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ public final class ExpressionUtils {
     public static final Pattern FUNCTION_CALL_PATTERN = Pattern.compile("\\$\\{__(.*?)\\}");
     public static final Pattern TEMPLATE_GLOBAL_VARIABLE_PATTERN = Pattern.compile("#\\{(.*?)\\}");
     public static final Pattern TEMPLATE_REGEX_PATTERN = Pattern.compile("@/(.*?)/");
+
 
     private ExpressionUtils() {}
 
@@ -83,8 +83,7 @@ public final class ExpressionUtils {
             listExpr.add(m.group(1));
         }
         for (String expr : listExpr) {
-            Xeger generator = new Xeger(expr);
-            src = src.replace("@/" + expr + "/", generator.generate());
+            src = src.replace("@/" + expr + "/", CmdUtils.randomStringByRegex(expr));
         }
         return src;
     }
@@ -131,8 +130,7 @@ public final class ExpressionUtils {
         if(StringUtils.isBlank(expression)) {
             return expression;
         }
-        String result = AviatorEvaluator.execute(expression, envMap).toString();
-        return result;
+        return AviatorEvaluator.execute(expression, envMap).toString();
     }
 
     public static String extractVariable(String expression) {
