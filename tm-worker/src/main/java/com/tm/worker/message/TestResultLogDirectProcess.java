@@ -29,7 +29,6 @@ public class TestResultLogDirectProcess {
                 }
             }
             default -> {
-                break;
             }
         }
     }

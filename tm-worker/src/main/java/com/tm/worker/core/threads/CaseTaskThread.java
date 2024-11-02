@@ -64,11 +64,11 @@ public class CaseTaskThread implements Callable<BaseResponse> {
 
     private StepNode caseStepTree;
 
-    private PlanTask planTask;
+    private final PlanTask planTask;
 
-    private CaseTask caseTask;
+    private final CaseTask caseTask;
 
-    private TaskService taskService;
+    private final TaskService taskService;
 
     private volatile boolean running;
 
@@ -115,13 +115,17 @@ public class CaseTaskThread implements Callable<BaseResponse> {
                 Thread.interrupted();
             }
             error = true;
-            errorStepKey = currStepNode.getKey();
+            if (currStepNode != null) {
+                errorStepKey = currStepNode.getKey();
+            }
             if(exception instanceof TMException) {
                 resultInfo = exception.getMessage();
             }else{
                 resultInfo = org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exception);
             }
-            currStepNode.getDefine().logError(resultInfo);
+            if (currStepNode != null) {
+                currStepNode.getDefine().logError(resultInfo);
+            }
             return ResultUtils.error(ResultCodeEnum.CASE_RUN_ERROR);
         } finally {
             try {
@@ -137,7 +141,9 @@ public class CaseTaskThread implements Callable<BaseResponse> {
                 if (exception instanceof InterruptedException) {
                     Thread.interrupted();
                 }
-                currStepNode.getDefine().logError(exception.getMessage());
+                if (currStepNode != null) {
+                    currStepNode.getDefine().logError(exception.getMessage());
+                }
             }
             teardown();
         }
@@ -149,12 +155,11 @@ public class CaseTaskThread implements Callable<BaseResponse> {
     }
 
     private StepNode findTeardownNode() {
-        if (caseStepTree != null && caseStepTree.getChildren() == null || caseStepTree.getChildren().isEmpty()) {
-            return null;
-        }
-        for (int i = 0; i < caseStepTree.getChildren().size(); i++) {
-            if(caseStepTree.getChildren().get(i).getType().equals(StepNodeTypeDefineEnum.TEARDOWN.value())) {
-                return caseStepTree.getChildren().get(i);
+        if (caseStepTree != null && caseStepTree.getChildren() != null && !caseStepTree.getChildren().isEmpty()) {
+            for (int i = 0; i < caseStepTree.getChildren().size(); i++) {
+                if(caseStepTree.getChildren().get(i).getType().equals(StepNodeTypeDefineEnum.TEARDOWN.value())) {
+                    return caseStepTree.getChildren().get(i);
+                }
             }
         }
         return null;

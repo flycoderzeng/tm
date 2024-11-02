@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class WorkerApplication {
 
     public static void main(String[] args) {
+        System.setProperty("spring.amqp.deserialization.trust.all", "true");
         SpringApplication.run(WorkerApplication.class, args);
     }
 
