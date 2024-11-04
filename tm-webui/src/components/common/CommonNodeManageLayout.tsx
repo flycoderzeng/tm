@@ -118,6 +118,8 @@ class CommonNodeManageLayout extends React.Component<CommonNodeListProps, IState
                     }
                 }
             }
+        }).catch(resp => {
+            message.error(resp.message);
         });
     }
 

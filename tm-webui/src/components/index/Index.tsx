@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { RouteComponentProps } from "react-router-dom";
 import {ApiUrlConfig} from "../../config/api.url";
+import {LocalStorageUtils} from "../../utils/LocalStorageUtils";
 
 const { Content, Header } = Layout;
 
@@ -49,7 +50,13 @@ class Index extends React.Component <IndexProps, IState> {
                     message.error(ret.message);
                 } else {
                     this.setState({menuTreeList: ret.data});
+                    LocalStorageUtils.setItem(LocalStorageUtils.__ALL_MENU_TREE, JSON.stringify(ret.data));
                 }
+            }
+        }).catch(resp => {
+            const item = LocalStorageUtils.getItem(LocalStorageUtils.__ALL_MENU_TREE);
+            if(item) {
+                this.setState({menuTreeList: JSON.parse(item)});
             }
         });
     }
