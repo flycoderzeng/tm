@@ -45,9 +45,11 @@ class Main extends React.Component<MainProps, IState> {
                 } else {
                     this.setState({
                         myProjects: ret.data
-                    })
+                    });
                 }
             }
+        }).catch(resp => {
+            message.error(resp.message);
         });
     }
 

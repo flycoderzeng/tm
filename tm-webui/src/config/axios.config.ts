@@ -18,7 +18,7 @@ const initAxios = () =>
         },
         error => {
             if(!error.response) {
-                return Promise.reject({code: -1, message: ''});
+                return Promise.reject({code: -1, message: '服务异常'});
             }
             if (error.response.status === 401) {
                 const data = {

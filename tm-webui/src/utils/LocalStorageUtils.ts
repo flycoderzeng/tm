@@ -5,6 +5,8 @@ export class LocalStorageUtils {
     public static __COPY_VARIABLES = '__COPY_VARIABLES';
     public static __CURR_DIR_ONLY = '__CURR_DIR_ONLY';
 
+    public static __ALL_MENU_TREE = '__ALL_MENU_TREE';
+
     public static saveFilteredValue(className: string, filteredValue: string[]): void {
         localStorage.setItem(className + '_filteredValue', JSON.stringify(filteredValue));
     }
