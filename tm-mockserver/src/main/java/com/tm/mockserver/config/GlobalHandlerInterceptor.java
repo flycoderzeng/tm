@@ -6,10 +6,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 
 @Slf4j
+@Component
 public class GlobalHandlerInterceptor implements HandlerInterceptor {
     public static final String SESSION_KEY_USER = "username";
     public static final String CUSTOMIZE_MOCK_URI_PREFIX = "/__customize_mock/";

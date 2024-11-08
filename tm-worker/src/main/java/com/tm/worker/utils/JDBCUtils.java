@@ -54,8 +54,6 @@ public class JDBCUtils {
             ps.setBlob(index, (Blob) value);
         } else if (value instanceof Clob) {
             ps.setClob(index, (Clob) value);
-        } else if (value instanceof NClob) {
-            ps.setNClob(index, (NClob) value);
         } else if (value instanceof ByteArrayInputStream) {
             ps.setBinaryStream(index, (ByteArrayInputStream) value);
         } else {

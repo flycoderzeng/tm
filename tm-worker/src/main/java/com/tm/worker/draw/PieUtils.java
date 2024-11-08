@@ -99,7 +99,7 @@ public class PieUtils {
         plot.setShadowYOffset(0);
         plot.setShadowPaint(ChartColor.WHITE);
 
-        plot.setLabelFont( new Font( "黑体", Font.TRUETYPE_FONT, 14));
+        plot.setLabelFont( new Font( "黑体", Font.PLAIN, 14));
 
 
         objChart.getLegend().setItemFont(new Font("黑体", Font.PLAIN, 14));

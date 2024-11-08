@@ -261,17 +261,7 @@ public class JDBCRequest extends StepNodeBase {
             name = name.toUpperCase();
         }
         Object leftOperand = map.get(name);
-        final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
-        final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
-        String info = name + "[" + leftOperand + "] " + relationOperator.desc() + " " + value;
-        addResultInfo(info);
-        if(AssertUtils.compare(leftOperand, relationOperator, value)) {
-            addResultInfoLine(" [成功]");
-            return null;
-        }else{
-            addResultInfoLine(" [失败]");
-            return info + " [失败]";
-        }
+        return check(caseVariables, keyValueRow, name, leftOperand);
     }
 
     private List<Map<String, String>> execMySQLSelect(DbConfig dbConfig, String sql) {
@@ -368,10 +358,8 @@ public class JDBCRequest extends StepNodeBase {
                 log.error("close statement error, ", e);
             }
 
-            if(conn != null) {
-                log.info("归还数据库连接, {}", dbConfig.getDataSourceKey());
-                context.getTaskService().closeJDBCConnection(dbConfig, conn);
-            }
+            log.info("归还数据库连接, {}", dbConfig.getDataSourceKey());
+            context.getTaskService().closeJDBCConnection(dbConfig, conn);
         }
         return list;
     }

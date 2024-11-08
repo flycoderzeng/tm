@@ -58,7 +58,7 @@ public class SubStringNode extends FunctionNode {
                 toIndexExclude = index;
             }
         }
-        if(toIndexExclude == null && length != null) {
+        if(toIndexExclude == null) {
             toIndexExclude = fromIndexInclude + length;
         }
 

@@ -14,11 +14,13 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 
 @Slf4j
+@Component
 public class PlanQuartzJob extends QuartzJobBean {
     public static final String PLAN_QUARTZ_PARAM_KEY = "PLAN_QUARTZ_PARAM_KEY";
     public static final String PLAN_CRON_JOB_LOCK = "PLAN_CRON_JOB_LOCK";

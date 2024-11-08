@@ -37,7 +37,7 @@ public class SleepNode extends FunctionNode {
             throw new TMException("seconds 必须是整数");
         }
         addResultInfo("休眠秒数: ").addResultInfoLine(secondsStr);
-        Integer seconds = Integer.valueOf(secondsStr);
+        int seconds = Integer.parseInt(secondsStr);
         if(seconds > 24 * 3600) {
             throw new TMException("seconds 必须小于24 * 3600 秒");
         }

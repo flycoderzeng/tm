@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Slf4j
 @Service("autoTestService")
 public class AutoTestService {
@@ -216,8 +218,8 @@ public class AutoTestService {
             log.error("无效的计划结果id：{}", body.getPlanResultId());
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
         }
-        if(PlanExecuteResultStatusEnum.FINISHED.value() != planExecuteResult.getResultStatus()
-                && PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN.value() != planExecuteResult.getResultStatus()) {
+        if(!Objects.equals(PlanExecuteResultStatusEnum.FINISHED.value(), planExecuteResult.getResultStatus())
+                && !Objects.equals(PlanExecuteResultStatusEnum.CASE_FAIL_STOP_PLAN.value(), planExecuteResult.getResultStatus())) {
             return ResultUtils.error(ResultCodeEnum.CURR_PLAN_RESULT_STATUS_NOT_PERMITTED);
         }
         if(!taskService.canSubmitPlanTask()) {

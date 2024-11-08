@@ -74,7 +74,7 @@ public class HttpClientBuilderProxy {
         SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
         KeyStore keyStore = KeyStore.getInstance(format);
         try (FileInputStream inStream
-                     = new FileInputStream(new File(credentialsPath + File.separator + keyStoreRelativePath))) {
+                     = new FileInputStream(credentialsPath + File.separator + keyStoreRelativePath)) {
             keyStore.load(inStream, keyPassword.toCharArray());
         }
         sslContextBuilder.loadKeyMaterial(keyStore, keyPassword.toCharArray());
@@ -83,7 +83,7 @@ public class HttpClientBuilderProxy {
         }
         KeyStore trustStore = KeyStore.getInstance(format);
         try (FileInputStream inStream
-                     = new FileInputStream(new File(credentialsPath  + File.separator + trustStoreRelativePath))) {
+                     = new FileInputStream(credentialsPath  + File.separator + trustStoreRelativePath)) {
             trustStore.load(inStream, trustPassword.toCharArray());
         }
         sslContextBuilder.loadTrustMaterial(trustStore, new TrustAllStrategy());

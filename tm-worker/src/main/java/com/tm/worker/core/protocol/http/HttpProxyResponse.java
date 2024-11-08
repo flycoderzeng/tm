@@ -18,14 +18,14 @@ public class HttpProxyResponse {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("");
+        StringBuilder builder = new StringBuilder();
         builder.append("url: ").append(url).append("\n");
         builder.append("statusCode: ").append(statusCode).append("\n");
         builder.append("reasonPhrase: ").append(reasonPhrase).append("\n");
         builder.append("\n");
         builder.append("request Headers: \n");
-        for (int i = 0; i < requestAllHeaders.length; i++) {
-            builder.append(requestAllHeaders[i].getName()).append(": ").append(requestAllHeaders[i].getValue()).append("\n");
+        for (Header requestAllHeader : requestAllHeaders) {
+            builder.append(requestAllHeader.getName()).append(": ").append(requestAllHeader.getValue()).append("\n");
         }
         builder.append("\n");
         builder.append("requestBodyContent: ");

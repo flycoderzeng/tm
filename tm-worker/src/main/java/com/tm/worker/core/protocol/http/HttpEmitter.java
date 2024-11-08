@@ -61,19 +61,17 @@ public class HttpEmitter {
         String requestBodyContent = data == null ? "" : data.toString();
         proxyResponse.setRequestBodyContent(requestBodyContent);
 
-        CloseableHttpClient httpClient = HttpClientFactory.createHttpClient(cookies);
-
-        CloseableHttpResponse response;
-        try {
+        try (CloseableHttpClient httpClient = HttpClientFactory.createHttpClient(cookies)) {
+            CloseableHttpResponse response;
             HttpPost httpPost;
-            if(params != null) {
+            if (params != null) {
                 URIBuilder uriBuilder = createURIBuilder(url, params);
-                if(uriBuilder != null) {
+                if (uriBuilder != null) {
                     httpPost = new HttpPost(uriBuilder.build());
-                }else{
+                } else {
                     httpPost = new HttpPost(url);
                 }
-            }else{
+            } else {
                 httpPost = new HttpPost(url);
             }
             httpPost.setConfig(requestConfig);
@@ -91,8 +89,6 @@ public class HttpEmitter {
 
             proxyResponse.setRequestAllHeaders(httpPost.getAllHeaders());
             packingHttpProxyResponse(proxyResponse, response);
-        } finally {
-            httpClient.close();
         }
 
         return proxyResponse;
@@ -292,23 +288,22 @@ public class HttpEmitter {
         HttpProxyResponse proxyResponse = new HttpProxyResponse();
         proxyResponse.setUrl(url);
 
-        CloseableHttpClient httpClient = HttpClientFactory.createHttpClient(cookies);
-
-        CloseableHttpResponse response;
-        try {
+        try (CloseableHttpClient httpClient = HttpClientFactory.createHttpClient(cookies)) {
+            CloseableHttpResponse response;
             HttpPost httpPost = new HttpPost(url);
             httpPost.setConfig(requestConfig);
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            StringBuilder requestContent = new StringBuilder("");
+            StringBuilder requestContent = new StringBuilder();
             params.forEach(param -> {
                 requestContent.append(param.toString()).append("\n");
-                if(param.getType().equalsIgnoreCase("text")) {
+                if (param.getType().equalsIgnoreCase("text")) {
                     builder.addTextBody(param.getName(), param.getValue());
-                }else if(param.getType().equalsIgnoreCase("file")) {
+                } else if (param.getType().equalsIgnoreCase("file")) {
                     builder.addBinaryBody(param.getName(), new File(param.getValue()),
                             ContentType.APPLICATION_OCTET_STREAM, param.getValue());
                 }
             });
+            log.info("request params: {}", requestContent);
             HttpEntity entity = builder.build();
 
             httpPost.setEntity(entity);
@@ -318,13 +313,12 @@ public class HttpEmitter {
             }
 
             response = httpClient.execute(httpPost);
-            log.info("状态码: {}\t\t{}", response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+            log.info("状态码: {}\t\t{}", response.getStatusLine().getStatusCode(),
+                    response.getStatusLine().getReasonPhrase());
 
             proxyResponse.setRequestAllHeaders(httpPost.getAllHeaders());
             packingHttpProxyResponse(proxyResponse, response);
 
-        } finally {
-            httpClient.close();
         }
 
         return proxyResponse;
