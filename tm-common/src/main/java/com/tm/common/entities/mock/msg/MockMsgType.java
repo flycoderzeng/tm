@@ -15,7 +15,7 @@ public enum MockMsgType {
     DISABLE_MOCK_RULE_ACK (11),
     REMOVE_MOCK_RULE (12),
     REMOVE_MOCK_RULE_ACK (13);
-    private int value;
+    private final int value;
     MockMsgType(int value) {this.value = value;}
 
     public int val() {

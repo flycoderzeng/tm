@@ -8,8 +8,8 @@ public enum RelationOperatorEnum {
     IS_EMPTY("13", "是空的"), IS_NOT_EMPTY("14", "不是空的"), REGEX_PATTERN("15", "正则匹配"),
     PATH_NOT_EXISTS("16", "路径不存在"), IS_NOT_BLANK("17", "不是空白"), IS_BLANK("18", "是空白"),
     IS_NUMBER("19", "是数字");
-    String value;
-    String description;
+    final String value;
+    final String description;
     RelationOperatorEnum(String value, String description) {
         this.value = value;
         this.description = description;

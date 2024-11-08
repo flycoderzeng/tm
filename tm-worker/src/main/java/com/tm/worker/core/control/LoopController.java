@@ -23,8 +23,8 @@ public class LoopController extends GenericController {
         if(total <= -1) {
             String result = ExpressionUtils.replaceExpression(condition, caseVariables.getVariables());
             if(StringUtils.isNotBlank(result)) {
-                Double count = Double.valueOf(result);
-                total = count.intValue();
+                double count = Double.parseDouble(result);
+                total = (int) count;
                 if(total > 10000) {
                     total = 10000;
                 }

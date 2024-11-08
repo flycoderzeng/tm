@@ -51,7 +51,7 @@ public class GetRandomIntNode extends FunctionNode {
                 throw new TMException("[" + ARG_1 + "]参数值类型错误，必须是数字。当前的值是：" + count);
             }
             addResultInfo("count: ").addResultInfoLine(count);
-            Integer intLen = Integer.valueOf(count);
+            int intLen = Integer.parseInt(count);
             generateResult = RandomStringUtils.randomNumeric(intLen);
         }
 

@@ -30,7 +30,7 @@ public class GetDate extends AbstractFunction {
     }
 
     private Integer getOffset(Map<String, Object> env,  AviatorObject arg) {
-        Integer offset = 0;
+        int offset = 0;
         if(arg == null) {
             return offset;
         }
@@ -42,7 +42,7 @@ public class GetDate extends AbstractFunction {
             if(!StringUtils.isNotBlank(offsetString) && offsetString.startsWith("-") && !StringUtils.isNumeric(offsetString.substring(1))) {
                 throw new TMException("[" + arg + "]参数值类型错误，必须是数字。当前的值是：" + offsetString);
             }
-            offset = Integer.valueOf(offsetString);
+            offset = Integer.parseInt(offsetString);
         } else {
             offset = FunctionUtils.getNumberValue(arg, env).intValue();
         }

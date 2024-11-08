@@ -347,7 +347,7 @@ public class TaskService {
         planExecuteResultDao.setPlanExecuteResultStatus(planExecuteResult, PlanExecuteResultStatusEnum.INIT_END);
 
         planTask.setTotalCases(caseTaskQueue.size() + planExecuteResult.getSuccessCount());
-        for (Integer i = 0; i < planExecuteResult.getSuccessCount(); i++) {
+        for (int i = 0; i < planExecuteResult.getSuccessCount(); i++) {
             planTask.increaseFinishedCount();
         }
 

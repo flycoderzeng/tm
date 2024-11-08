@@ -3,9 +3,9 @@ package com.tm.mockagent.entities.enumerate;
 public enum HttpMethod {
     GET(1, "GET"),
     POST(2, "POST");
-    private Integer value;
+    private final Integer value;
 
-    private String description;
+    private final String description;
 
     HttpMethod(Integer value, String description) {
         this.value = value;

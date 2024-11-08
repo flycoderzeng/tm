@@ -78,7 +78,7 @@ public class GetChineseIdCardNoNode extends FunctionNode {
             if(StringUtils.isNotBlank(baseDateString)) {
                 baseDate = DateUtils.stringDateToDate(baseDateString);
             }
-            Date date = DateUtils.addYears(baseDate, 0 - age);
+            Date date = DateUtils.addYears(baseDate, -age);
             String ymd = DateUtils.parseTimestampToFormatDate(date.getTime(), DateUtils.DATE_PATTERN_YMD);
             result = result.substring(0, 6) + ymd + result.substring(14);
         }

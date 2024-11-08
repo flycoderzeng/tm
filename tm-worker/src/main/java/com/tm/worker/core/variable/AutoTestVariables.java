@@ -59,7 +59,7 @@ public class AutoTestVariables {
             if(StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()) && autoTestVariables != null
                     && autoTestVariables.exists(autoCaseVariable.getPlanVariableName())) {
                 String value = autoTestVariables.get(autoCaseVariable.getPlanVariableName());
-                if(StringUtils.isNoneBlank(value) && value.toLowerCase().startsWith("${sql:select") && value.endsWith("}")) {
+                if (value != null && value.toLowerCase().startsWith("${sql:select") && value.endsWith("}")) {
                     value = getSqlValue(value);
                 }
                 put(autoCaseVariable.getName(), value);
@@ -83,9 +83,9 @@ public class AutoTestVariables {
         dbConfig.setEnvId(runningConfigSnapshot.getEnvId());
         dbConfig.setSchemaName(runEnv.getDbSchemaName());
         List<Map<String, String>> list = JDBCRequest.execSelect(dbConfig, sql, context);
-        if(list != null && !list.isEmpty()) {
+        if(!list.isEmpty()) {
             final Collection<String> values = list.get(0).values();
-            if(values != null && !values.isEmpty()) {
+            if(!values.isEmpty()) {
                 value = values.stream().findFirst().get();
             }
         }

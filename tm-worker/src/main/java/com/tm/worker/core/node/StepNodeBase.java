@@ -5,12 +5,18 @@ import com.tm.common.base.model.CaseStepExecuteResult;
 import com.tm.common.entities.autotest.CaseExecuteLogOperate;
 import com.tm.common.entities.autotest.enumerate.CaseExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.enumerate.LogOperateTypeEnum;
+import com.tm.common.entities.common.KeyValueRow;
+import com.tm.common.entities.common.enumerate.RelationOperatorEnum;
 import com.tm.common.utils.TableSuffixUtils;
+import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.task.CaseTask;
 import com.tm.worker.core.task.PlanTask;
 import com.tm.worker.core.task.TaskService;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
+import com.tm.worker.core.variable.AutoTestVariables;
+import com.tm.worker.utils.AssertUtils;
+import com.tm.worker.utils.ExpressionUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -99,5 +105,22 @@ public class StepNodeBase {
         caseStepExecuteResult.setResultStatus(CaseExecuteResultStatusEnum.FAIL.value());
         CaseExecuteLogOperate caseExecuteLogOperate = new CaseExecuteLogOperate(LogOperateTypeEnum.UPDATE, caseStepExecuteResult);
         taskService.putResultLog(caseExecuteLogOperate);
+    }
+
+    public String check(AutoTestVariables caseVariables, KeyValueRow keyValueRow, String name, Object leftOperand) {
+        final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
+        final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
+        if(relationOperator == null) {
+            throw new TMException("无效的操作符");
+        }
+        String info = name + "[" + leftOperand + "] " + relationOperator.desc() + " " + value;
+        addResultInfo(info);
+        if(AssertUtils.compare(leftOperand, relationOperator, value)) {
+            addResultInfoLine(" [成功]");
+            return null;
+        }else{
+            addResultInfoLine(" [失败]");
+            return info + " [失败]";
+        }
     }
 }

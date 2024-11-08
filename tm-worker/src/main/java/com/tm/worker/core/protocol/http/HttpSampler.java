@@ -205,17 +205,7 @@ public class HttpSampler extends StepNodeBase {
     private String checkResponseBody(AutoTestVariables caseVariables, HttpResponse httpResponse, KeyValueRow keyValueRow) {
         final String name = ExpressionUtils.replaceExpression(keyValueRow.getName(), caseVariables.getVariables());
         Object leftOperand = extractLeftOperand(httpResponse, keyValueRow, name);
-        final String value = ExpressionUtils.replaceExpression(keyValueRow.getValue(), caseVariables.getVariables());
-        final RelationOperatorEnum relationOperator = RelationOperatorEnum.get(keyValueRow.getRelationOperator());
-        String info = name + "[" + leftOperand + "] " + relationOperator.desc() + " " + value;
-        addResultInfo(info);
-        if(AssertUtils.compare(leftOperand, relationOperator, value)) {
-            addResultInfoLine(" [成功]");
-            return null;
-        }else{
-            addResultInfoLine(" [失败]");
-            return info + " [失败]";
-        }
+        return check(caseVariables, keyValueRow, name, leftOperand);
     }
 
     private HttpResponse executeHttp(AutoTestVariables caseVariables, String actualUrl, Map<String, String> headerMap, List<HttpCookie> cookies) throws UnsupportedEncodingException {
@@ -395,7 +385,7 @@ public class HttpSampler extends StepNodeBase {
     }
 
     private String getParamStr(AutoTestVariables caseVariables, List<KeyValueRow> keyValueRows) throws UnsupportedEncodingException {
-        StringBuilder builder = new StringBuilder("");
+        StringBuilder builder = new StringBuilder();
         if (keyValueRows != null) {
             for (int i = 0; i < keyValueRows.size(); i++) {
                 KeyValueRow param = keyValueRows.get(i);
