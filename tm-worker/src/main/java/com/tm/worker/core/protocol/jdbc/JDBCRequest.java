@@ -299,14 +299,13 @@ public class JDBCRequest extends StepNodeBase {
     public static int execUpdate(DbConfig dbConfig, String content, AutoTestContext context) throws Exception {
         Connection conn = context.getTaskService().getJDBCConnection(dbConfig);
         try {
-            if (content.indexOf("where") < 0 && content.indexOf("WHERE") < 0) {
+            if (!content.contains("where") && !content.contains("WHERE")) {
                 throw new TMException("SQL语句中必须有where条件");
             }
             if (conn == null) {
                 throw new TMException("获取数据库连接失败");
             }
-            int effectedRows = JDBCUtils.doExecuteUpdate(conn, content);
-            return effectedRows;
+            return JDBCUtils.doExecuteUpdate(conn, content);
         } finally {
             if(conn != null) {
                 log.info("归还数据库连接, {}", dbConfig.getDataSourceKey());

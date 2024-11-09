@@ -28,7 +28,7 @@ public class EnumValueValidator implements ConstraintValidator<EnumValue, Object
             }
         } else if (value instanceof Integer) {
             for (int s : intValues) {
-                if (s == ((Integer) value).intValue()) {
+                if (s == (Integer) value) {
                     return true;
                 }
             }

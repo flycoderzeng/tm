@@ -3,27 +3,33 @@ package com.tm.worker.core.task;
 import com.tm.common.base.model.PlanExecuteResult;
 import com.tm.common.base.model.PlanRunningConfigSnapshot;
 import com.tm.worker.core.variable.AutoTestVariables;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class PlanTask extends WorkerPlanTask {
+    @Getter
     private PlanRunningConfigSnapshot runningConfigSnapshot;
+    @Getter
     private AutoTestVariables planVariables;
 
+    @Setter
     private Integer totalCases = -1;
 
+    @Getter
     private Boolean isUpdateRunning = false;
 
-    private AtomicInteger finishedCasesCount = new AtomicInteger(0);
+    private final AtomicInteger finishedCasesCount = new AtomicInteger(0);
 
-    private AtomicInteger runningCasesCount = new AtomicInteger(0);
+    private final AtomicInteger runningCasesCount = new AtomicInteger(0);
 
-    private AtomicInteger virtualRunningCasesCount = new AtomicInteger(0);
+    private final AtomicInteger virtualRunningCasesCount = new AtomicInteger(0);
 
-    private AtomicInteger failedCasesCount = new AtomicInteger(0);
+    private final AtomicInteger failedCasesCount = new AtomicInteger(0);
 
-    private AtomicInteger polledCount = new AtomicInteger(0);
+    private final AtomicInteger polledCount = new AtomicInteger(0);
 
     public PlanTask(Integer priority, PlanExecuteResult planExecuteResult, PlanRunningConfigSnapshot runningConfigSnapshot,
                     AutoTestVariables planVariables) {
@@ -64,10 +70,6 @@ public class PlanTask extends WorkerPlanTask {
         return failedCasesCount.get();
     }
 
-    public Boolean getIsUpdateRunning() {
-        return isUpdateRunning;
-    }
-
     public void setIsUpdateRunning() {
         isUpdateRunning = true;
     }
@@ -84,14 +86,6 @@ public class PlanTask extends WorkerPlanTask {
         return finishedCasesCount.get();
     }
 
-    public PlanRunningConfigSnapshot getRunningConfigSnapshot() {
-        return runningConfigSnapshot;
-    }
-
-    public AutoTestVariables getPlanVariables() {
-        return planVariables;
-    }
-
     public Integer getRunningTotal() {
         return runningCasesCount.get();
     }
@@ -106,10 +100,6 @@ public class PlanTask extends WorkerPlanTask {
 
     public Integer getPolledCount() {
         return polledCount.get();
-    }
-
-    public void setTotalCases(Integer total) {
-        this.totalCases = total;
     }
 
     synchronized public boolean isFinished() {

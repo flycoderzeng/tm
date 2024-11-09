@@ -52,15 +52,12 @@ public class PieUtils {
     }
 
     public static void createPieFile(String title, String subtitle, Map<String, Double> dataset, String filePath) throws IOException {
-        JFreeChart objChart = createPieChart(title, subtitle, dataset);
-        saveChartAsJPEG(new File(filePath), objChart, DEFAULT_PIE_WIDTH, DEFAULT_PIE_HEIGHT);
+        createPieFile(title, subtitle, dataset, DEFAULT_PIE_WIDTH, DEFAULT_PIE_HEIGHT, filePath);
     }
 
     public static JFreeChart createPieChart(String title, String subtitle, Map<String, Double> dataset) {
         DefaultPieDataset pieDataset = new DefaultPieDataset();
-        dataset.forEach((series, value) -> {
-            pieDataset.setValue(series+"("+value+")", value);
-        });
+        dataset.forEach((series, value) -> pieDataset.setValue(series+"("+value+")", value));
 
         JFreeChart objChart = ChartFactory.createPieChart (
                 title,
@@ -99,7 +96,7 @@ public class PieUtils {
         plot.setShadowYOffset(0);
         plot.setShadowPaint(ChartColor.WHITE);
 
-        plot.setLabelFont( new Font( "黑体", Font.TRUETYPE_FONT, 14));
+        plot.setLabelFont( new Font( "黑体", Font.PLAIN, 14));
 
 
         objChart.getLegend().setItemFont(new Font("黑体", Font.PLAIN, 14));

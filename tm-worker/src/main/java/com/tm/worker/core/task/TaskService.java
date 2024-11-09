@@ -376,7 +376,7 @@ public class TaskService {
                 log.info("组合方式运行， 用例id: {}", caseId);
                 HashMap<String, String>[] groups = gson.fromJson(groupVariablesStr, groupVariablesTypeToken);
                 long start = System.currentTimeMillis();
-                log.info("init start: " + start);
+                log.info("init start: {}", start);
                 for (int j = 0; j < groups.length; j++) {
                     final String key = caseId + "_" + j;
                     if(!excludeCaseMap.isEmpty() && !excludeCaseMap.containsKey(key)) {
@@ -399,8 +399,8 @@ public class TaskService {
                     i++;
                 }
                 long end = System.currentTimeMillis();
-                log.info("init end: " + end);
-                log.info("cost time: " + (end - start)/1000.0 + "(s)");
+                log.info("init end: {}", end);
+                log.info("cost time: {}(s)", (end - start) / 1000.0);
             } else {
                 final String key = caseId + "_0";
                 if(!excludeCaseMap.isEmpty() && !excludeCaseMap.containsKey(key)) {

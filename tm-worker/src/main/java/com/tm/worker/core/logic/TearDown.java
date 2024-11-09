@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TearDown extends StepNodeBase {
     @Override
     public void run() {
-        log.info("run " + getName());
-        log.info("run " + getName() + " self end");
+        log.info("run {}", getName());
+        log.info("run {} self end", getName());
     }
 }

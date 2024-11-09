@@ -8,6 +8,7 @@ import com.tm.common.base.model.CaseStepExecuteResult;
 import com.tm.common.base.model.CaseVariableValueResult;
 import com.tm.common.entities.autotest.CaseExecuteLogOperate;
 import com.tm.worker.message.MessageSendReceiveService;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +17,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class CaseResultLogService {
+    @Getter
     @Value("${spring.autotest.result.case-result-split-table-type}")
     private Integer splitCaseResultTableType;
+    @Getter
     @Value("${spring.autotest.result.variable-result-split-table-type}")
     private Integer splitVariableTableType;
+    @Getter
     @Value("${spring.autotest.result.case-step-result-split-table-type}")
     private Integer splitCaseStepResultTableType;
 
@@ -59,15 +63,4 @@ public class CaseResultLogService {
         return i;
     }
 
-    public Integer getSplitCaseResultTableType() {
-        return this.splitCaseResultTableType;
-    }
-
-    public Integer getSplitVariableTableType() {
-        return this.splitVariableTableType;
-    }
-
-    public Integer getSplitCaseStepResultTableType() {
-        return this.splitCaseStepResultTableType;
-    }
 }

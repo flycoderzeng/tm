@@ -53,10 +53,9 @@ public class AutoTestVariables {
         if(autoCaseVariables == null) {
             return;
         }
-        for (int i = 0; i < autoCaseVariables.size(); i++) {
-            AutoCaseVariable autoCaseVariable = autoCaseVariables.get(i);
+        for (AutoCaseVariable autoCaseVariable : autoCaseVariables) {
             caseVariableMap.put(autoCaseVariable.getName(), autoCaseVariable);
-            if(StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()) && autoTestVariables != null
+            if (StringUtils.isNotBlank(autoCaseVariable.getPlanVariableName()) && autoTestVariables != null
                     && autoTestVariables.exists(autoCaseVariable.getPlanVariableName())) {
                 String value = autoTestVariables.get(autoCaseVariable.getPlanVariableName());
                 if (value != null && value.toLowerCase().startsWith("${sql:select") && value.endsWith("}")) {

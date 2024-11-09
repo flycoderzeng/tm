@@ -3,8 +3,8 @@ package com.tm.common.entities.autotest.enumerate;
 public enum ExtractorTypeEnum {
     RESPONSE_BODY("1", "响应体"), COOKIE("2", "cookie"),
     RESPONSE_HEADER("3", "响应头"), RESPONSE_STATUS("4", "http响应码");
-    String value;
-    String description;
+    final String value;
+    final String description;
     ExtractorTypeEnum(String value, String description) {
         this.value = value;
         this.description = description;

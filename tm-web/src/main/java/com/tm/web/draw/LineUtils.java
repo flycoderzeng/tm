@@ -88,8 +88,7 @@ public class LineUtils {
     }
 
     public static void createLineFile(String title, DefaultCategoryDataset dataset, String categoryAxisLabel, String valueAxisLabel, String filePath) throws IOException {
-        JFreeChart chart = createLineChart(title, dataset, categoryAxisLabel, valueAxisLabel);
-        ChartUtils.saveChartAsJPEG(new File(filePath), chart, DEFAULT_BAR_WIDTH, DEFAULT_BAR_HEIGHT, null);
+        createLineFile(title, dataset, categoryAxisLabel, valueAxisLabel, filePath, DEFAULT_BAR_WIDTH, DEFAULT_BAR_HEIGHT);
     }
 
     public static byte[] createLineBytes(String title, DefaultCategoryDataset dataset, String categoryAxisLabel, String valueAxisLabel, Integer width, Integer height) throws IOException {

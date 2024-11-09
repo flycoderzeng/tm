@@ -19,9 +19,8 @@ public class WorkerRunner implements ApplicationRunner {
     @Autowired
     private TaskService taskService;
 
-    private ExecutorService executorService;
-    private ThreadPoolExecutor threadPoolExecutor;
-    private CaseTaskRunnerThread caseTaskRunnerThread;
+    private final ExecutorService executorService;
+    private final ThreadPoolExecutor threadPoolExecutor;
 
     public WorkerRunner() {
         executorService = Executors.newFixedThreadPool(2);
@@ -30,7 +29,7 @@ public class WorkerRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        caseTaskRunnerThread = new CaseTaskRunnerThread(taskService);
+        CaseTaskRunnerThread caseTaskRunnerThread = new CaseTaskRunnerThread(taskService);
         threadPoolExecutor.submit(caseTaskRunnerThread);
     }
 }

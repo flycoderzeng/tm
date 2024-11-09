@@ -58,9 +58,7 @@ public class PieUtils {
 
     public static JFreeChart createPieChart(String title, String subtitle, Map<String, Double> dataset) {
         DefaultPieDataset pieDataset = new DefaultPieDataset();
-        dataset.forEach((series, value) -> {
-            pieDataset.setValue(series+"("+value+")", value);
-        });
+        dataset.forEach((series, value) -> pieDataset.setValue(series+"("+value+")", value));
 
         JFreeChart objChart = ChartFactory.createPieChart (
                 title,

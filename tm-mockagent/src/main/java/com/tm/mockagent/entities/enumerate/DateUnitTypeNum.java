@@ -7,9 +7,9 @@ public enum DateUnitTypeNum {
     SECOND(1, "秒"), MINUTE(2, "分"),
     HOUR(3, "时"), DAY(4, "日"),
     MONTH(5, "月"), YEAR(6, "年");
-    private Integer value;
+    private final Integer value;
 
-    private String description;
+    private final String description;
 
     DateUnitTypeNum(Integer value, String description) {
         this.value = value;

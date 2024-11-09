@@ -226,15 +226,13 @@ public class HttpEmitter {
         proxyResponse.setUrl(url);
         log.info(url);
 
-        CloseableHttpClient httpClient = HttpClientFactory.createHttpClient(cookies);
-
-        CloseableHttpResponse response;
-        try {
+        try (CloseableHttpClient httpClient = HttpClientFactory.createHttpClient(cookies)) {
+            CloseableHttpResponse response;
             HttpGet httpGet;
             URIBuilder uriBuilder = createURIBuilder(url, params);
-            if(uriBuilder == null) {
+            if (uriBuilder == null) {
                 httpGet = new HttpGet(url);
-            }else{
+            } else {
                 httpGet = new HttpGet(uriBuilder.build());
             }
             httpGet.setConfig(requestConfig);
@@ -249,8 +247,6 @@ public class HttpEmitter {
             proxyResponse.setRequestAllHeaders(httpGet.getAllHeaders());
             packingHttpProxyResponse(proxyResponse, response);
 
-        } finally {
-            httpClient.close();
         }
 
         return proxyResponse;

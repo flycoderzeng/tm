@@ -44,7 +44,7 @@ public class DateUtils {
         cal.setTime(date);
         int m = cal.get(Calendar.MONTH) + months;
         if (m < 0) {
-            m += -12;
+            m -= 12;
         }
         cal.roll(Calendar.YEAR, m / 12);
         cal.roll(Calendar.MONTH, months);
@@ -199,16 +199,14 @@ public class DateUtils {
         if(baseDate == null) {
             baseDate = new Date();
         }
-        Date resultDate = switch (unitTypeNum) {
+        return switch (unitTypeNum) {
             case SECOND -> DateUtils.addSeconds(baseDate, offset);
             case MINUTE -> DateUtils.addMinutes(baseDate, offset);
             case HOUR -> DateUtils.addHours(baseDate, offset);
             case DAY -> DateUtils.addDays(baseDate, offset);
             case MONTH -> DateUtils.addMonths(baseDate, offset);
             case YEAR -> DateUtils.addYears(baseDate, offset);
-            default -> baseDate;
         };
-        return resultDate;
     }
 
     public static Date stringDateToDate(String timeString) {
@@ -217,9 +215,9 @@ public class DateUtils {
             return baseDate;
         }
         if(StringUtils.isNumeric(timeString) && timeString.length() == 13) {
-            baseDate = new Date(Long.valueOf(timeString));
+            baseDate = new Date(Long.parseLong(timeString));
         }else if(StringUtils.isNumeric(timeString) && timeString.length() == 10) {
-            baseDate = new Date(Integer.valueOf(timeString) * 1000);
+            baseDate = new Date(Long.parseLong(timeString) * 1000);
         }else if(StringUtils.isNotBlank(timeString)) {
             baseDate = DateUtils.toDate(timeString, DateUtils.getDateFormat(timeString));
         }

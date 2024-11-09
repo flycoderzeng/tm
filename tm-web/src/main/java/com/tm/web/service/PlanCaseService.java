@@ -85,8 +85,8 @@ public class PlanCaseService {
         if(seq == null) {
             seq = 0;
         }
-        for (int i = 0; i < notExistCaseIdList.size(); i++) {
-            planCaseList.add(new PlanCase(body.getPlanId(), notExistCaseIdList.get(i), seq+1));
+        for (Integer integer : notExistCaseIdList) {
+            planCaseList.add(new PlanCase(body.getPlanId(), integer, seq + 1));
             seq++;
         }
         if(!planCaseList.isEmpty()) {
@@ -98,12 +98,12 @@ public class PlanCaseService {
                 planCaseTeardownMapper.batchInsert(planCaseList);
             }
         }
-        if(repeatedIdList != null && !repeatedIdList.isEmpty()) {
+        if(!repeatedIdList.isEmpty()) {
             if(body.getType() == 0) {
                 planCaseMapper.deleteByPrimaryKeyList(body.getPlanId(), repeatedIdList);
             }else if(body.getType() == 1) {
                 planCaseSetupMapper.deleteByPrimaryKeyList(body.getPlanId(), repeatedIdList);
-            }else if(body.getType() == 1) {
+            }else if(body.getType() == 2) {
                 planCaseTeardownMapper.deleteByPrimaryKeyList(body.getPlanId(), repeatedIdList);
             }
         }

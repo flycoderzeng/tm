@@ -120,10 +120,7 @@ public class BarUtils {
     }
 
     public static byte[] createBarBytes(String title, String subtitle, double[][] dataset, String[] rowKeys, String[] columnKeys, String categoryAxisLabel, String valueAxisLabel) throws IOException {
-        JFreeChart objChart = createBarChart(title, subtitle, dataset, rowKeys, columnKeys, categoryAxisLabel, valueAxisLabel);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        writeChartAsJPEG(outputStream, objChart, DEFAULT_BAR_WIDTH, DEFAULT_BAR_HEIGHT);
-        return outputStream.toByteArray();
+        return createBarBytes(title, subtitle, dataset, rowKeys, columnKeys, categoryAxisLabel, valueAxisLabel, DEFAULT_BAR_WIDTH, DEFAULT_BAR_HEIGHT);
     }
 
 

@@ -9,7 +9,7 @@ public enum PlanExecuteResultStatusEnum {
     PAUSED(5),CANCELED(6),TASK_OVERFLOW(7), SETUP_FAIL(8),
     SETUP_PLAN_RUNNING(9), CASE_FAIL_STOP_PLAN(10),
     EXCEPTION(99);
-    Integer value;
+    final Integer value;
     PlanExecuteResultStatusEnum(int value) {this.value = value;}
     public Integer value() {return value;}
     public static PlanExecuteResultStatusEnum get(Integer value) {

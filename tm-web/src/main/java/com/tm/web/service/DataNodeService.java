@@ -198,7 +198,7 @@ public class DataNodeService {
         if(body.getPrevId() != null && !body.getPrevId().equals(-1)) {
             if(prevNode == null) {
                 dataNode.setSeq(1);
-            }else if(prevNode != null){
+            }else {
                 dataNode.setSeq(prevNode.getSeq()+1);
             }
         }
@@ -245,10 +245,7 @@ public class DataNodeService {
             } catch (NoSuchMethodException e) {
                 log.error("get method error: {}", e);
                 return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
-            } catch (IllegalAccessException e) {
-                log.error("set method error: {}", e);
-                return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
-            } catch (InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 log.error("set method error: {}", e);
                 return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
             }
@@ -261,10 +258,7 @@ public class DataNodeService {
         } catch (NoSuchMethodException e) {
             log.error("get method error: {}", e);
             return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
-        } catch (InvocationTargetException e) {
-            log.error("set method error: {}", e);
-            return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
-        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException | IllegalAccessException e) {
             log.error("set method error: {}", e);
             return ResultUtils.error(ResultCodeEnum.SYSTEM_ERROR);
         }
@@ -428,9 +422,7 @@ public class DataNodeService {
                 getNodesTreeBody.setParentId(copyNode.getId());
                 List<DataNode> nodeList = dataNodeMapper.getNodesTree(getNodesTreeBody);
                 if(nodeList != null && !nodeList.isEmpty()) {
-                    nodeList.forEach(node -> {
-                        stack.add(node.getId());
-                    });
+                    nodeList.forEach(node -> stack.add(node.getId()));
                 }
             }
         }

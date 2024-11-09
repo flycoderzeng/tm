@@ -37,14 +37,14 @@ public class GetChineseIdCardNoNode extends FunctionNode {
         Integer age = null;
         if(parametersMap.containsKey(ARG_1)) {
             String ageString = ExpressionUtils.replaceExpression(parametersMap.get(ARG_1), caseVariables.getVariables());
-            age = FunctionUtils.getIntegerFromString(ageString, ARG_1, age);
+            age = FunctionUtils.getIntegerFromString(ageString, ARG_1, null);
         }
         addResultInfo("age: ").addResultInfoLine(age);
 
         Integer sex = null;
         if(parametersMap.containsKey(ARG_2)) {
             String ageString = ExpressionUtils.replaceExpression(parametersMap.get(ARG_2), caseVariables.getVariables());
-            sex = FunctionUtils.getIntegerFromString(ageString, ARG_2, sex);
+            sex = FunctionUtils.getIntegerFromString(ageString, ARG_2, null);
         }
         addResultInfo("sex: ").addResultInfoLine(sex);
 
