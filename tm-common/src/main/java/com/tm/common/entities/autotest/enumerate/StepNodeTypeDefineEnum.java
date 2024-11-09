@@ -18,7 +18,7 @@ public enum StepNodeTypeDefineEnum {
     ENCODE_ADMIN_USER_PASSWORD("__encodeAdminUserPassword"),
     SUB_STRING("__subString"),
     MD_5("__md5");
-    String value;
+    final String value;
 
     StepNodeTypeDefineEnum(String value) {
         this.value = value;

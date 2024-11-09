@@ -16,9 +16,9 @@ public enum ResultCodeEnum {
     CURR_PLAN_RESULT_STATUS_NOT_PERMITTED(100009, "当前计划结果状态不允许重试失败用例"),
     SYSTEM_ERROR(999999, "系统错误"),
     ;
-    private Integer code;
+    private final Integer code;
 
-    private String msg;
+    private final String msg;
 
     ResultCodeEnum(Integer code, String msg) {
         this.code = code;

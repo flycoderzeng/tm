@@ -24,9 +24,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> collection) {
         // 迭代器遍历目标url的权限列表
-        Iterator<ConfigAttribute> iterator = collection.iterator();
-        while (iterator.hasNext()) {
-            ConfigAttribute ca = iterator.next();
+        for (ConfigAttribute ca : collection) {
             String needRole = ca.getAttribute();
             log.info("需要的角色：{}", needRole);
             if (ROLE_LOGIN.equals(needRole)) {
@@ -43,7 +41,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
                 if (authority.getAuthority().equals(needRole)) {
                     return;
                 }
-                if(authority.getAuthority().equals(ROLE_ROOT_ADMIN)) {
+                if (authority.getAuthority().equals(ROLE_ROOT_ADMIN)) {
                     return;
                 }
             }

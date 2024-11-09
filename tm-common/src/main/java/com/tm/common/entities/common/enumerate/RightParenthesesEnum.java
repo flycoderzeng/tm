@@ -2,9 +2,9 @@ package com.tm.common.entities.common.enumerate;
 
 public enum RightParenthesesEnum {
     RIGHT_PARENTHESES(1, "右括号"), NONE(2, "无");
-    private Integer value;
+    private final Integer value;
 
-    private String description;
+    private final String description;
 
     private RightParenthesesEnum(Integer value, String description) {
         this.value = value;

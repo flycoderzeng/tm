@@ -2,9 +2,9 @@ package com.tm.common.entities.common.enumerate;
 
 public enum LogicOperatorEnum {
     AND(1, "and"), OR(2, "or");
-    private Integer value;
+    private final Integer value;
 
-    private String description;
+    private final String description;
 
     private LogicOperatorEnum(Integer value, String description) {
         this.value = value;

@@ -83,7 +83,7 @@ public class AutoPlanService extends BaseService {
     }
 
     public BaseResponse save(AutoPlan autoPlan, User user) {
-        if(autoPlan.getId() != null || autoPlan.getId() > 0) {
+        if(autoPlan.getId() != null && autoPlan.getId() > 0) {
             autoPlanMapper.updateBySelective(autoPlan);
         }else{
             return ResultUtils.error(ResultCodeEnum.PARAM_ERROR);
@@ -92,7 +92,7 @@ public class AutoPlanService extends BaseService {
     }
 
     public BaseResponse savePlanVariables(AutoPlan autoPlan, User user) {
-        if(autoPlan.getId() != null || autoPlan.getId() > 0) {
+        if(autoPlan.getId() != null && autoPlan.getId() > 0) {
             autoPlanMapper.updateBySelective(autoPlan);
             return ResultUtils.success();
         }else{

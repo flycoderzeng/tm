@@ -43,8 +43,8 @@ public class UserDetailsImpl implements UserDetails {
         if(roles == null) {
             return false;
         }
-        for (int i = 0; i < roles.size(); i++) {
-            if(roles.get(i).getName().equals(roleName)) {
+        for (Role role : roles) {
+            if (role.getName().equals(roleName)) {
                 return true;
             }
         }

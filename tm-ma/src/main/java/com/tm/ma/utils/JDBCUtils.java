@@ -70,8 +70,6 @@ public class JDBCUtils {
         try {
             ps = conn.createStatement();
             return ps.execute(sql);
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -82,15 +80,13 @@ public class JDBCUtils {
         try {
             ps = conn.createStatement();
             return ps.executeUpdate(sql);
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
     }
 
     public static List<Map<String, Object>> doQuery(Connection conn, String sql) throws Exception {
-        List<Map<String, Object>> ret = new ArrayList();
+        List<Map<String, Object>> ret = new ArrayList<>();
         Statement ps = null;
         try {
             ps = conn.createStatement();
@@ -110,7 +106,7 @@ public class JDBCUtils {
 
     public static <T> List<T> doQuery(Connection conn, String sql, Class<T> clazz) throws Exception {
         List<Map<String, Object>> maps = doQuery(conn, sql);
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         for (Map<String, Object> map : maps) {
             T row = BeanUtil.fillBeanWithMap(map, clazz.newInstance(), false);
             list.add(row);
@@ -120,7 +116,7 @@ public class JDBCUtils {
 
     public static List<Map<String, Object>> doQuery(Connection conn, String sql, Object... param) throws Exception {
         PreparedStatement ps = null;
-        List<Map<String, Object>> ret = new ArrayList();
+        List<Map<String, Object>> ret = new ArrayList<>();
         try {
             ps = conn.prepareStatement(sql);
             if (param != null) {
@@ -133,8 +129,6 @@ public class JDBCUtils {
             while (rs.next()) {
                 ret.add(getRowData(fieldMap, rs));
             }
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -158,8 +152,6 @@ public class JDBCUtils {
                 }
             }
             return effected;
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -182,21 +174,18 @@ public class JDBCUtils {
             }
             int r = ps.executeUpdate();
             return r;
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
     }
 
     public static List doBatchQuery(Connection conn, String sql, Object[]... params) throws Exception {
-        List<Map<String, Object>> ret = new ArrayList();
+        List<Map<String, Object>> ret = new ArrayList<>();
         PreparedStatement ps = null;
         try {
             conn.setAutoCommit(false);
             ps = conn.prepareStatement(sql);
-            for (int i = 0; i < params.length; i++) {
-                Object[] param = params[i];
+            for (Object[] param : params) {
                 for (int j = 0; j < param.length; j++) {
                     setParameter(ps, j + 1, param[j]);
                 }
@@ -204,8 +193,6 @@ public class JDBCUtils {
             }
             int[] r = ps.executeBatch();
             conn.commit();
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -230,39 +217,27 @@ public class JDBCUtils {
             int[] r = ps.executeBatch();
             conn.commit();
             return r;
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
     }
 
     public static void doCommit(Connection conn, String[] sqls) throws Exception {
-        try {
-            conn.setAutoCommit(false);
-            for (int i = 0; i < sqls.length; i++) {
-                String sql = sqls[i];
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.execute();
-            }
-            conn.commit();
-        } catch (Exception e) {
-            throw e;
+        conn.setAutoCommit(false);
+        for (String sql : sqls) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.execute();
         }
+        conn.commit();
     }
 
     public static void doRollback(Connection conn, String[] sqls) throws Exception {
-        try {
-            conn.setAutoCommit(false);
-            for (int i = 0; i < sqls.length; i++) {
-                String sql = sqls[i];
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.execute();
-            }
-            conn.rollback();
-        } catch (Exception e) {
-            throw e;
+        conn.setAutoCommit(false);
+        for (String sql : sqls) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.execute();
         }
+        conn.rollback();
     }
 
     public static Integer insertReturnId(Connection conn, String sql, int columnIndex, Object... param) throws Exception {
@@ -280,8 +255,6 @@ public class JDBCUtils {
                 return generatedKeys.getInt(1);
             }
             return null;
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -290,24 +263,21 @@ public class JDBCUtils {
     public static List ThreadPool(final DataSource ds, final String sql, final Object... params) throws SQLException {
         int threadNum = 20, taskNum = 1000;
         ExecutorService executor = Executors.newFixedThreadPool(threadNum);
-        List<Object> result = new LinkedList();
+        List<Object> result = new LinkedList<>();
         final List<Object> synchronizedList = Collections.synchronizedList(result);
         for (int i = 0; i < taskNum; i++) {
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Connection conn = ds.getConnection();
-                        if (sql.startsWith("select")) {
-                            List ret = doQuery(conn, sql, params);
-                            synchronizedList.add(ret);
-                        } else {
-                            long r = doUpdate(conn, sql, params);
-                            synchronizedList.add(r);
-                        }
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+            executor.execute(() -> {
+                try {
+                    Connection conn = ds.getConnection();
+                    if (sql.startsWith("select")) {
+                        List ret = doQuery(conn, sql, params);
+                        synchronizedList.add(ret);
+                    } else {
+                        long r = doUpdate(conn, sql, params);
+                        synchronizedList.add(r);
                     }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
                 }
             });
         }
@@ -322,24 +292,21 @@ public class JDBCUtils {
 
     public static List ThreadPool(final DataSource ds, int threadNum, int taskNum, final String sql, final Object... params) throws SQLException {
         ExecutorService executor = Executors.newFixedThreadPool(threadNum);
-        List<Object> result = new LinkedList();
+        List<Object> result = new LinkedList<>();
         final List<Object> synchronizedList = Collections.synchronizedList(result);
         for (int i = 0; i < taskNum; i++) {
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Connection conn = ds.getConnection();
-                        if (sql.toLowerCase().startsWith("select")) {
-                            List ret = doQuery(conn, sql, params);
-                            synchronizedList.addAll(ret);
-                        } else {
-                            long r = doUpdate(conn, sql, params);
-                            synchronizedList.addAll(Arrays.asList(r));
-                        }
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+            executor.execute(() -> {
+                try {
+                    Connection conn = ds.getConnection();
+                    if (sql.toLowerCase().startsWith("select")) {
+                        List ret = doQuery(conn, sql, params);
+                        synchronizedList.addAll(ret);
+                    } else {
+                        long r = doUpdate(conn, sql, params);
+                        synchronizedList.addAll(Arrays.asList(r));
                     }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
                 }
             });
         }
@@ -354,24 +321,21 @@ public class JDBCUtils {
 
     public static List ThreadPoolBatch(final DataSource ds, int threadNum, int taskNum, final String sql, final Object[]... params) throws SQLException {
         ExecutorService executor = Executors.newFixedThreadPool(threadNum);
-        List<Object> result = new LinkedList();
+        List<Object> result = new LinkedList<>();
         final List<Object> synchronizedList = Collections.synchronizedList(result);
         for (int i = 0; i < taskNum; i++) {
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Connection conn = ds.getConnection();
-                        if (sql.startsWith("select")) {
-                            List ret = doBatchQuery(conn, sql, params);
-                            synchronizedList.addAll(ret);
-                        } else {
-                            int[] r = doBatchUpdate(conn, sql, params);
-                            synchronizedList.addAll(Arrays.asList(r));
-                        }
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+            executor.execute(() -> {
+                try {
+                    Connection conn = ds.getConnection();
+                    if (sql.startsWith("select")) {
+                        List ret = doBatchQuery(conn, sql, params);
+                        synchronizedList.addAll(ret);
+                    } else {
+                        int[] r = doBatchUpdate(conn, sql, params);
+                        synchronizedList.addAll(Arrays.asList(r));
                     }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
                 }
             });
         }
@@ -413,7 +377,7 @@ public class JDBCUtils {
     public static Map<Integer, String> getFieldTitle(ResultSet rs) throws SQLException {
         ResultSetMetaData md = rs.getMetaData();
         int count = md.getColumnCount();
-        Map<Integer, String> fieldMap = new HashMap<Integer, String>();
+        Map<Integer, String> fieldMap = new HashMap<>();
         for (int i = 0; i < count; i++) {
             String val = md.getColumnLabel(i + 1);
             String fieldName = val == null || "".equals(val) ? "NULL" : val;
@@ -427,7 +391,7 @@ public class JDBCUtils {
     }
 
     public static Map<String, Object> getRowData(Map<Integer, String> fieldMap, ResultSet rs) throws SQLException {
-        Map<String, Object> row = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, Object> row = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         ResultSetMetaData rsmd = rs.getMetaData();
         int count = rsmd.getColumnCount();
         for (int i = 0; i < count; ++i) {

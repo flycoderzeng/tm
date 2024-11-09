@@ -39,8 +39,8 @@ public class HttpProxyResponse {
         }
         builder.append("\n");
         builder.append("response Headers: \n");
-        for (int i = 0; i < responseAllHeaders.length; i++) {
-            builder.append(responseAllHeaders[i].getName()).append(": ").append(responseAllHeaders[i].getValue()).append("\n");
+        for (Header responseAllHeader : responseAllHeaders) {
+            builder.append(responseAllHeader.getName()).append(": ").append(responseAllHeader.getValue()).append("\n");
         }
         builder.append("\n");
         builder.append("responseBodyContent: ");

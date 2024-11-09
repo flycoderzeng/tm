@@ -59,17 +59,17 @@ public class JdbcDataSource extends BaseDataSource {
         try {
             Class.forName(jdbcConfig.getDriverClassName());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
         ConnectionFactory connectionFactory =
                 new DriverManagerConnectionFactory(jdbcConfig.getJdbcUrl(), jdbcConfig.getUsername(), jdbcConfig.getPassword());
         PoolableConnectionFactory poolableConnectionFactory =
                 new PoolableConnectionFactory(connectionFactory, null);
         ObjectPool<PoolableConnection> connectionPool =
-                new GenericObjectPool<PoolableConnection>(poolableConnectionFactory);
+                new GenericObjectPool<>(poolableConnectionFactory);
 
         poolableConnectionFactory.setPool(connectionPool);
-        dataSource = new PoolingDataSource<PoolableConnection>(connectionPool);
+        dataSource = new PoolingDataSource<>(connectionPool);
     }
 
     public void initHikariCPDataSource() {

@@ -4,9 +4,9 @@ public enum LeftOperandFromTypeEnum {
     REQUEST_URI(1, "请求路径"), REQUEST_BODY(2, "请求体"),
     REQUEST_HEADERS(3, "请求头"), COOKIES(4, "cookies"),
     RESPONSE_BODY(5, "响应体"), RESPONSE_HEADERS(6, "响应头");
-    private Integer value;
+    private final Integer value;
 
-    private String description;
+    private final String description;
 
     private LeftOperandFromTypeEnum(Integer value, String description) {
         this.value = value;

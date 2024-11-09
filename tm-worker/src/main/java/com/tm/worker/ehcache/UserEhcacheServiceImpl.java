@@ -19,17 +19,17 @@ import java.io.IOException;
 @Service("ehcacheService")
 public class UserEhcacheServiceImpl implements EhcacheService {
     private static Logger logger = LoggerFactory.getLogger(UserEhcacheServiceImpl.class);
-    private CacheManager cacheManager;
     private Cache cache;
     public static final String UserPrivilegesCache = "UserPrivilegesCache";
     @Autowired
     private UserMapper userMapper;
     @PostConstruct
     public void init() {
+        CacheManager cacheManager;
         try {
             cacheManager = CacheManager.create(new ClassPathResource("ehcache.xml").getInputStream());
         } catch (IOException e) {
-            logger.error("init error: {}", e);
+            logger.error("init error: ", e);
             return ;
         }
         cache = cacheManager.getCache(UserPrivilegesCache);

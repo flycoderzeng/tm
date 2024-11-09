@@ -2,8 +2,8 @@ package com.tm.common.entities.autotest.enumerate;
 
 public enum AssertLevelEnum {
     ERROR("error", "断言失败，用例结束"), WARNING("warning", "断言失败，用例继续执行");
-    String value;
-    String description;
+    final String value;
+    final String description;
     AssertLevelEnum(String value, String description) {
         this.value = value;
         this.description = description;

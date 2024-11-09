@@ -76,12 +76,12 @@ public class AssertUtils {
                 if(leftOperandString == null) {
                     return false;
                 }
-                return leftOperandString.indexOf(rightOperand) > -1;
+                return leftOperandString.contains(rightOperand);
             case NOT_INCLUDE:
                 if(leftOperandString == null) {
                     return false;
                 }
-                return leftOperandString.indexOf(rightOperand) == -1;
+                return !leftOperandString.contains(rightOperand);
             case START_WITH:
                 if(leftOperandString == null) {
                     return false;

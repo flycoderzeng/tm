@@ -50,12 +50,7 @@ public class HttpClientBuilderProxy {
     public final HttpClientBuilderProxy ignoreCredentials() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         SSLContext sslcontext = SSLContexts.custom()
                 // 忽略掉对服务器端证书的校验
-                .loadTrustMaterial(new TrustStrategy() {
-                    @Override
-                    public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                        return true;
-                    }
-                }).build();
+                .loadTrustMaterial((TrustStrategy) (chain, authType) -> true).build();
         if(sslcontext != null) {
             SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslcontext,
                     new String[] { "TLSv1", "TLSv1.1", "TLSv1.2"}, null,

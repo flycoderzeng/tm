@@ -11,9 +11,7 @@ public class CookieStoreManage {
     public static BasicCookieStore createCookieStore(List<BasicClientCookie> cookies) {
         BasicCookieStore cookieStore = new BasicCookieStore();
         if(cookies != null && !cookies.isEmpty()) {
-            cookies.forEach(cookie -> {
-                cookieStore.addCookie(cookie);
-            });
+            cookies.forEach(cookieStore::addCookie);
         }
         return cookieStore;
     }

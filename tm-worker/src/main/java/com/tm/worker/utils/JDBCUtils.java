@@ -66,8 +66,6 @@ public class JDBCUtils {
         try {
             ps = conn.createStatement();
             return ps.execute(sql);
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -78,8 +76,6 @@ public class JDBCUtils {
         try {
             ps = conn.createStatement();
             return ps.executeUpdate(sql);
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -95,8 +91,6 @@ public class JDBCUtils {
             while (rs.next()) {
                 ret.add(getRowData(fieldMap, rs));
             }
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -128,8 +122,6 @@ public class JDBCUtils {
             while (rs.next()) {
                 ret.add(getRowData(fieldMap, rs));
             }
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -146,8 +138,6 @@ public class JDBCUtils {
                 }
             }
             return ps.executeUpdate();
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -170,8 +160,6 @@ public class JDBCUtils {
             }
             int r = ps.executeUpdate();
             return r;
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -183,8 +171,7 @@ public class JDBCUtils {
         try {
             conn.setAutoCommit(false);
             ps = conn.prepareStatement(sql);
-            for (int i = 0; i < params.length; i++) {
-                Object[] param = params[i];
+            for (Object[] param : params) {
                 for (int j = 0; j < param.length; j++) {
                     setParameter(ps, j + 1, param[j]);
                 }
@@ -192,8 +179,6 @@ public class JDBCUtils {
             }
             int[] r = ps.executeBatch();
             conn.commit();
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -218,39 +203,27 @@ public class JDBCUtils {
             int[] r = ps.executeBatch();
             conn.commit();
             return r;
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
     }
 
     public static void doCommit(Connection conn, String[] sqls) throws Exception {
-        try {
-            conn.setAutoCommit(false);
-            for (int i = 0; i < sqls.length; i++) {
-                String sql = sqls[i];
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.execute();
-            }
-            conn.commit();
-        } catch (Exception e) {
-            throw e;
+        conn.setAutoCommit(false);
+        for (String sql : sqls) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.execute();
         }
+        conn.commit();
     }
 
     public static void doRollback(Connection conn, String[] sqls) throws Exception {
-        try {
-            conn.setAutoCommit(false);
-            for (int i = 0; i < sqls.length; i++) {
-                String sql = sqls[i];
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.execute();
-            }
-            conn.rollback();
-        } catch (Exception e) {
-            throw e;
+        conn.setAutoCommit(false);
+        for (String sql : sqls) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.execute();
         }
+        conn.rollback();
     }
 
     public static Integer insertReturnId(Connection conn, String sql, String columnName, Object... param) throws Exception {
@@ -275,8 +248,6 @@ public class JDBCUtils {
                 return generatedKeys.getInt(1);
             }
             return null;
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -297,8 +268,6 @@ public class JDBCUtils {
                 return generatedKeys.getInt(1);
             }
             return null;
-        } catch (Exception e) {
-            throw e;
         } finally {
             close(ps);
         }
@@ -405,13 +374,13 @@ public class JDBCUtils {
             ps.executeQuery();
         } catch (SQLException e) {
             log.error("error, ", e);
-            if (e.getMessage().indexOf("doesn't exist") > -1 || e.getMessage().indexOf("does not exist") > -1) {
+            if (e.getMessage().contains("doesn't exist") || e.getMessage().contains("does not exist")) {
                 return false;
             }
-            if (e.getMessage().indexOf("对象名 'test." + tableName + "' 无效") > -1) {
+            if (e.getMessage().contains("对象名 'test." + tableName + "' 无效")) {
                 return false;
             }
-            if (e.getMessage().indexOf("表或视图不存在") > -1) {
+            if (e.getMessage().contains("表或视图不存在")) {
                 return false;
             }
         }

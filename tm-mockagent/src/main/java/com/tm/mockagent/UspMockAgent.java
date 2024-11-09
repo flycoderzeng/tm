@@ -26,7 +26,7 @@ public class UspMockAgent {
     public static void main(String[] args) throws IOException, AttachNotSupportedException, AgentLoadException, AgentInitializationException {
         List<VirtualMachineDescriptor> list = VirtualMachine.list();
         for (VirtualMachineDescriptor vmd : list) {
-            if (vmd.displayName().indexOf("MockServerApplication") > -1) {
+            if (vmd.displayName().contains("MockServerApplication")) {
                 VirtualMachine virtualMachine = VirtualMachine.attach(vmd.id());
                 try {
                     virtualMachine.loadAgent("C:\\mockagent-1.0.0-jar-with-dependencies.jar", "applicationName=com.tm.mockserver.MockServerApplication+ip=127.0.0.1+port=8082+name=mock-server+description=mock-server+mockServerIp=127.0.0.1+mockServerPort=54321");

@@ -44,7 +44,7 @@ public class DateUtils {
         cal.setTime(date);
         int m = cal.get(Calendar.MONTH) + months;
         if (m < 0) {
-            m += -12;
+            m -= 12;
         }
         cal.roll(Calendar.YEAR, m / 12);
         cal.roll(Calendar.MONTH, months);
@@ -52,22 +52,22 @@ public class DateUtils {
     }
 
     public static Date addDays(Date date, int days) {
-        long now = date.getTime() + (days * DAY_IN_MILLISECOND);
+        long now = date.getTime() + ((long) days * DAY_IN_MILLISECOND);
         return new Date(now);
     }
 
     public static Date addHours(Date date, int hours) {
-        long now = date.getTime() + (hours * HOUR_IN_MILLISECOND);
+        long now = date.getTime() + ((long) hours * HOUR_IN_MILLISECOND);
         return new Date(now);
     }
 
     public static Date addMinutes(Date date, int minutes) {
-        long now = date.getTime() + (minutes * MINUTE_IN_MILLISECOND);
+        long now = date.getTime() + ((long) minutes * MINUTE_IN_MILLISECOND);
         return new Date(now);
     }
 
     public static Date addSeconds(Date date, int seconds) {
-        long now = date.getTime() + (seconds * SECOND_IN_MILLISECOND);
+        long now = date.getTime() + ((long) seconds * SECOND_IN_MILLISECOND);
         return new Date(now);
     }
 
@@ -82,8 +82,7 @@ public class DateUtils {
 
     public static Date toDate(String dateString) {
         try {
-            Date date = new SimpleDateFormat(getDateFormat(dateString)).parse(dateString);
-            return date;
+            return new SimpleDateFormat(getDateFormat(dateString)).parse(dateString);
         } catch (ParseException e) {
             return null;
         }
@@ -92,7 +91,7 @@ public class DateUtils {
     public static Date toDate(Long time) {
         Date date;
         if (String.valueOf(time).length() == 10) {
-            date = new Date(Long.valueOf(time + "000"));
+            date = new Date(Long.parseLong(time + "000"));
         }else{
             date = new Date(time);
         }
@@ -234,9 +233,9 @@ public class DateUtils {
             return baseDate;
         }
         if(StringUtils.isNumeric(timeString) && timeString.length() == 13) {
-            baseDate = new Date(Long.valueOf(timeString));
+            baseDate = new Date(Long.parseLong(timeString));
         }else if(StringUtils.isNumeric(timeString) && timeString.length() == 10) {
-            baseDate = new Date(Integer.valueOf(timeString) * 1000);
+            baseDate = new Date(Long.parseLong(timeString) * 1000);
         }else if(StringUtils.isNotBlank(timeString)) {
             baseDate = DateUtils.toDate(timeString, DateUtils.getDateFormat(timeString));
         }

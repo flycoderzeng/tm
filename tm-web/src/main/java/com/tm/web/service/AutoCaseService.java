@@ -42,7 +42,7 @@ public class AutoCaseService extends BaseService {
     }
 
     public BaseResponse saveAutoCase(AutoCase autoCase, User user) {
-        if(autoCase.getId() != null || autoCase.getId() > 0) {
+        if(autoCase.getId() != null && autoCase.getId() > 0) {
             final AutoCase oldCase = autoCaseMapper.selectByPrimaryId(autoCase.getId());
             if(!StringUtils.equals(autoCase.getSteps(), oldCase.getSteps()) ||
                     !StringUtils.equals(autoCase.getGroupVariables(), oldCase.getGroupVariables())) {
