@@ -4,10 +4,10 @@ import com.tm.common.entities.autotest.enumerate.RabbitMessageTypeEnum;
 import com.tm.common.entities.autotest.message.AutoTestRabbitMessage;
 import com.tm.common.entities.autotest.request.StopPlanBody;
 import com.tm.worker.core.task.TaskService;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -18,8 +18,12 @@ import org.springframework.stereotype.Component;
     )
 )
 public class AutoTestFanoutProcess {
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
+
+    @Inject
+    public AutoTestFanoutProcess(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @RabbitHandler
     public void process(AutoTestRabbitMessage message) {

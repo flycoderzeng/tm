@@ -6,7 +6,7 @@ import com.tm.common.base.model.Menu;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +16,12 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/menu")
 public class MenuController extends BaseController {
-    @Autowired
-    private MenuMapper menuMapper;
+    private final MenuMapper menuMapper;
+
+    @Inject
+    public MenuController(MenuMapper menuMapper) {
+        this.menuMapper = menuMapper;
+    }
 
     @GetMapping(value = "/getAllMenuTree")
     public BaseResponse getAllMenuTree() {

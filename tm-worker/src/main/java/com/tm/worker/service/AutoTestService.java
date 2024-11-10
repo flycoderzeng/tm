@@ -14,8 +14,8 @@ import com.tm.common.utils.LocalHostUtils;
 import com.tm.common.utils.ResultUtils;
 import com.tm.worker.core.task.TaskService;
 import com.tm.worker.message.MessageSendReceiveService;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -24,22 +24,30 @@ import java.util.Objects;
 @Slf4j
 @Service("autoTestService")
 public class AutoTestService {
-    @Autowired
-    private PlanExecuteResultMapper planExecuteResultMapper;
-    @Autowired
-    private DataNodeMapper dataNodeMapper;
-    @Autowired
-    private PlanRunningConfigSnapshotMapper planRunningConfigSnapshotMapper;
-    @Autowired
-    private RunEnvMapper runEnvMapper;
-    @Autowired
-    private AutoCaseMapper autoCaseMapper;
-    @Autowired
-    private AutoPlanMapper autoPlanMapper;
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private MessageSendReceiveService messageSendReceiveService;
+    private final PlanExecuteResultMapper planExecuteResultMapper;
+    private final DataNodeMapper dataNodeMapper;
+    private final PlanRunningConfigSnapshotMapper planRunningConfigSnapshotMapper;
+    private final RunEnvMapper runEnvMapper;
+    private final AutoCaseMapper autoCaseMapper;
+    private final AutoPlanMapper autoPlanMapper;
+    private final TaskService taskService;
+    private final MessageSendReceiveService messageSendReceiveService;
+
+    @Inject
+    public AutoTestService(PlanExecuteResultMapper planExecuteResultMapper, DataNodeMapper dataNodeMapper,
+                           PlanRunningConfigSnapshotMapper planRunningConfigSnapshotMapper,
+                           RunEnvMapper runEnvMapper, AutoCaseMapper autoCaseMapper,
+                           AutoPlanMapper autoPlanMapper, TaskService taskService,
+                           MessageSendReceiveService messageSendReceiveService) {
+        this.planExecuteResultMapper = planExecuteResultMapper;
+        this.dataNodeMapper = dataNodeMapper;
+        this.planRunningConfigSnapshotMapper = planRunningConfigSnapshotMapper;
+        this.runEnvMapper = runEnvMapper;
+        this.autoCaseMapper = autoCaseMapper;
+        this.autoPlanMapper = autoPlanMapper;
+        this.taskService = taskService;
+        this.messageSendReceiveService = messageSendReceiveService;
+    }
 
     public BaseResponse runAutoCase(RunCaseBody body, User loginUser) {
         BaseResponse checkRunCaseParams = checkRunCaseParams(body);

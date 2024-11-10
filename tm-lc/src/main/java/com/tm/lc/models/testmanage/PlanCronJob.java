@@ -7,10 +7,10 @@ import com.tm.lc.models.CommonSixItemsElideModel;
 import com.yahoo.elide.annotation.DeletePermission;
 import com.yahoo.elide.annotation.Include;
 import com.yahoo.elide.annotation.LifeCycleHookBinding;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.persistence.*;
 import java.util.Set;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;

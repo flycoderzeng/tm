@@ -9,8 +9,8 @@ import com.tm.common.entities.autotest.request.SaveNodeBody;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +18,14 @@ import java.util.List;
 @Slf4j
 @Service("autoShellService")
 public class AutoShellService extends BaseService {
-    @Autowired
-    private DataDictMapper dataDictMapper;
-    @Autowired
-    private AutoScriptMapper autoScriptMapper;
+    private final DataDictMapper dataDictMapper;
+    private final AutoScriptMapper autoScriptMapper;
+
+    @Inject
+    public AutoShellService(DataDictMapper dataDictMapper, AutoScriptMapper autoScriptMapper) {
+        this.dataDictMapper = dataDictMapper;
+        this.autoScriptMapper = autoScriptMapper;
+    }
 
     public BaseResponse copy(SaveNodeBody body) {
         return ResultUtils.success();

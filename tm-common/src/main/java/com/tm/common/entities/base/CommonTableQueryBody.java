@@ -1,6 +1,5 @@
 package com.tm.common.entities.base;
 
-import com.tm.common.retention.EnumValue;
 import lombok.Data;
 
 import javax.validation.constraints.Pattern;

@@ -3,8 +3,8 @@ package com.tm.web.exception;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,8 +16,12 @@ import java.util.Locale;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
+
+    @Inject
+    public GlobalExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @ExceptionHandler(value = Exception.class)
     public BaseResponse handle(Exception e){

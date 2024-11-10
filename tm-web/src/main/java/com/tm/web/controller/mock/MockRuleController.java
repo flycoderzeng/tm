@@ -6,7 +6,7 @@ import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.common.CommonIdBody;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.MockRuleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +17,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/mock")
 public class MockRuleController extends BaseController {
-    @Autowired
-    private MockRuleService mockRuleService;
+    private final MockRuleService mockRuleService;
+
+    @Inject
+    public MockRuleController(MockRuleService mockRuleService) {
+        this.mockRuleService = mockRuleService;
+    }
 
     @PostMapping(value = "/saveHttpMockRule", produces = {"application/json;charset=UTF-8"})
     public BaseResponse saveHttpMockRule(@RequestBody @Valid HttpMockRule rule) {

@@ -4,8 +4,8 @@ package com.tm.common.security;
 import com.tm.common.base.mapper.RoleMapper;
 import com.tm.common.base.mapper.UserMapper;
 import com.tm.common.base.model.User;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,10 +15,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     public static final String INVALID_USERNAME = "用户名不存在";
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private RoleMapper roleMapper;
+    private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
+
+    @Inject
+    public UserDetailsServiceImpl(UserMapper userMapper, RoleMapper roleMapper) {
+        this.userMapper = userMapper;
+        this.roleMapper = roleMapper;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) {

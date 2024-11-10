@@ -1,7 +1,7 @@
 package com.tm.common.security;
 
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,8 +19,12 @@ import java.util.Collection;
 public class TMAuthenticationProvider implements AuthenticationProvider {
     public static final String INVALID_USERNAME = "用户名不存在";
     public static final String INVALID_PASSWORD = "密码不正确";
-    @Autowired
-    private UserDetailsServiceImpl userService;
+    private final UserDetailsServiceImpl userService;
+
+    @Inject
+    public TMAuthenticationProvider(final UserDetailsServiceImpl userService) {
+        this.userService = userService;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) {

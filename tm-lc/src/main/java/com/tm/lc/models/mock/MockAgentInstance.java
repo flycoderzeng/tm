@@ -5,9 +5,8 @@ import com.yahoo.elide.annotation.CreatePermission;
 import com.yahoo.elide.annotation.DeletePermission;
 import com.yahoo.elide.annotation.Include;
 import com.yahoo.elide.annotation.UpdatePermission;
-import lombok.Data;
-
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "mock_agent_instances")

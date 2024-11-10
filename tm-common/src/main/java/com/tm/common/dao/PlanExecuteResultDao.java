@@ -12,21 +12,33 @@ import com.tm.common.base.model.PlanExecuteResult;
 import com.tm.common.entities.autotest.enumerate.PlanExecuteResultStatusEnum;
 import com.tm.common.entities.autotest.request.GetNewestPlanExecuteResultBody;
 import com.tm.common.entities.base.CommonTableQueryBody;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
 @Component
 public class PlanExecuteResultDao {
-    @Autowired
-    private PlanExecuteResultMapper planExecuteResultMapper;
-    @Autowired
-    private CaseExecuteResultMapper caseExecuteResultMapper;
-    @Autowired
-    private CaseVariableValueResultMapper caseVariableValueResultMapper;
-    @Autowired
-    private CaseStepExecuteResultMapper caseStepExecuteResultMapper;
+    private final PlanExecuteResultMapper planExecuteResultMapper;
+    private final CaseExecuteResultMapper caseExecuteResultMapper;
+    private final CaseVariableValueResultMapper caseVariableValueResultMapper;
+    private final CaseStepExecuteResultMapper caseStepExecuteResultMapper;
+
+    @Inject
+    public PlanExecuteResultDao(PlanExecuteResultMapper planExecuteResultMapper,
+                                CaseExecuteResultMapper caseExecuteResultMapper,
+                                CaseVariableValueResultMapper caseVariableValueResultMapper,
+                                CaseStepExecuteResultMapper caseStepExecuteResultMapper) {
+        Assert.notNull(planExecuteResultMapper, "PlanExecuteResultMapper must not be null!");
+        Assert.notNull(caseExecuteResultMapper, "CaseExecuteResultMapper must not be null!");
+        Assert.notNull(caseVariableValueResultMapper, "CaseVariableValueResultMapper must not be null!");
+        Assert.notNull(caseStepExecuteResultMapper, "CaseStepExecuteResultMapper must not be null!");
+        this.planExecuteResultMapper = planExecuteResultMapper;
+        this.caseExecuteResultMapper = caseExecuteResultMapper;
+        this.caseVariableValueResultMapper = caseVariableValueResultMapper;
+        this.caseStepExecuteResultMapper = caseStepExecuteResultMapper;
+    }
 
     public void insertBySelective(PlanExecuteResult record) {
         planExecuteResultMapper.insertBySelective(record);

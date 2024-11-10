@@ -13,9 +13,9 @@ import com.tm.common.entities.base.CommonTableQueryResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
 import com.tm.common.utils.TableSuffixUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +33,12 @@ public class PlanResultService {
     @Value("${spring.autotest.result.case-step-result-split-table-type}")
     private Integer splitCaseStepResultTableType;
 
-    @Autowired
-    private PlanExecuteResultDao planExecuteResultDao;
+    private final PlanExecuteResultDao planExecuteResultDao;
+
+    @Inject
+    public PlanResultService(PlanExecuteResultDao planExecuteResultDao) {
+        this.planExecuteResultDao = planExecuteResultDao;
+    }
 
     public BaseResponse getNewestPlanExecuteResult(GetNewestPlanExecuteResultBody body) {
         PlanExecuteResult executeResult = planExecuteResultDao.getNewestPlanExecuteResult(body);

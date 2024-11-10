@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {EditorIState} from "../entities/EditorIState";
 import {ScriptActionNode} from "../entities/ScriptActionNode";
 import {CommonNameComments} from "./CommonNameComments";
-import {AutoComplete, Col, Input, Row} from "antd";
+import {AutoComplete, Col, Row} from "antd";
 import {ContentEditor} from "./ContentEditor";
 import {DataTypeEnum} from "../../../../entities/DataTypeEnum";
 import {CommonRemoteSearchSingleSelect} from "../../../common/components/CommonRemoteSearchSingleSelect";

@@ -5,6 +5,7 @@ import {ApiUrlConfig} from "../../../config/api.url";
 import {Button, Input, Radio, Table} from "antd";
 import {OptionsConfig} from "../../../config/options.config";
 import React from "react";
+
 const { Search } = Input;
 
 class DcnConfigList extends CommonListPage {

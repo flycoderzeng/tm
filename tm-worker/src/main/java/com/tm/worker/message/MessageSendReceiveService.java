@@ -4,17 +4,21 @@ import com.tm.common.entities.autotest.CaseExecuteLogOperate;
 import com.tm.common.entities.autotest.enumerate.RabbitMessageTypeEnum;
 import com.tm.common.entities.autotest.message.AutoTestRabbitMessage;
 import com.tm.common.entities.autotest.request.StopPlanBody;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 public class MessageSendReceiveService {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
+
+    @Inject
+    public MessageSendReceiveService(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     public void sendTestResultLog(CaseExecuteLogOperate logOperate) {
         rabbitTemplate.convertAndSend(TestResultLogDirectRabbitConfig.TEST_RESULT_LOG_DIRECT_EXCHANGE,

@@ -4,6 +4,7 @@ import {ArrowLeftOutlined} from "@ant-design/icons";
 import {FormInstance} from "antd/lib/form";
 import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
+
 const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },

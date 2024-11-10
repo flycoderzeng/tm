@@ -60,26 +60,7 @@ public class BarUtils {
             chart.addSubtitle(subTextTitle);
         }
 
-        BarRenderer renderer = new IntervalBarRenderer();
-        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-        //设置柱子上字体是否可见
-        renderer.setDefaultItemLabelsVisible(true);
-        //设置柱子上的数字字体及大小
-        renderer.setDefaultItemLabelFont(new Font("宋体", Font.PLAIN, 12));
-        //设置每个地区所包含的平行柱的之间距离,占每组宽的30%
-        renderer.setItemMargin(0.2);
-        //柱子上的字体跟柱顶之间的距离
-        renderer.setItemLabelAnchorOffset(5d);
-        renderer.setDefaultPositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-        for (int i = 0; i < data.length; i++) {
-            if(i < ColorSet.colors.length) {
-                renderer.setSeriesPaint(i, ColorSet.colors[i]);
-            }
-        }
-        // 设置柱子为平面图不是立体的
-        renderer.setBarPainter(new StandardBarPainter());
-        renderer.setShadowVisible(false);
-        renderer.setMaximumBarWidth(0.1);
+        BarRenderer renderer = getBarRenderer(data);
 
         plot.setRenderer(renderer);
         //x轴标题显示在下端(柱子竖直)或左侧(柱子水平)
@@ -101,6 +82,30 @@ public class BarUtils {
         chart.getLegend().setItemFont(new Font("宋体", Font.PLAIN, 12));
 
         return chart;
+    }
+
+    public static BarRenderer getBarRenderer(double[][] data) {
+        BarRenderer renderer = new IntervalBarRenderer();
+        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        //设置柱子上字体是否可见
+        renderer.setDefaultItemLabelsVisible(true);
+        //设置柱子上的数字字体及大小
+        renderer.setDefaultItemLabelFont(new Font("宋体", Font.PLAIN, 12));
+        //设置每个地区所包含的平行柱的之间距离,占每组宽的30%
+        renderer.setItemMargin(0.2);
+        //柱子上的字体跟柱顶之间的距离
+        renderer.setItemLabelAnchorOffset(5d);
+        renderer.setDefaultPositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+        for (int i = 0; i < data.length; i++) {
+            if(i < ColorSet.colors.length) {
+                renderer.setSeriesPaint(i, ColorSet.colors[i]);
+            }
+        }
+        // 设置柱子为平面图不是立体的
+        renderer.setBarPainter(new StandardBarPainter());
+        renderer.setShadowVisible(false);
+        renderer.setMaximumBarWidth(0.1);
+        return renderer;
     }
 
     public static void createBarFile(String title, String subtitle, double[][] dataset, String[] rowKeys, String[] columnKeys, String categoryAxisLabel, String valueAxisLabel, Integer width, Integer height, String filePath) throws IOException {

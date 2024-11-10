@@ -1,7 +1,7 @@
-import {Input, Button, message} from 'antd';
+import {Button, Input, message} from 'antd';
 import React from 'react';
 import axios from 'axios';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {ApiUrlConfig} from "../config/api.url";
 import {LocalStorageUtils} from "../utils/LocalStorageUtils";
 

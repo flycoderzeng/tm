@@ -1,13 +1,12 @@
 package com.tm.mockserver.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tm.common.base.mapper.HttpMockRuleMapper;
+import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +16,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 
+@Getter
 @Slf4j
 @Service
 public class CustomizeMockRequestHandleService {
 
-    public static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-
-    @Autowired
-    private HttpMockRuleMapper httpMockRuleMapper;
+    private final HttpMockRuleMapper httpMockRuleMapper;
 
     public static final String MOCK_RULE_ID = "__MOCK_RULE_ID";
+
+    @Inject
+    public CustomizeMockRequestHandleService(HttpMockRuleMapper httpMockRuleMapper) {
+        this.httpMockRuleMapper = httpMockRuleMapper;
+    }
 
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestURI = request.getRequestURI();
@@ -68,4 +70,5 @@ public class CustomizeMockRequestHandleService {
         printWriter.flush();
         printWriter.close();
     }
+
 }

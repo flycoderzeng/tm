@@ -8,9 +8,9 @@ import com.tm.common.entities.mock.msg.*;
 import com.tm.common.utils.DateUtils;
 import com.tm.mockserver.netty.mock.ChannelHandlerContextFactory;
 import io.netty.channel.ChannelHandlerContext;
+import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,17 +28,21 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class MockMsgControlService {
 
-    @Autowired
-    private ChannelHandlerContextFactory channelHandlerContextFactory;
-
-    @Autowired
-    private MockAgentInstanceMapper mockAgentInstanceMapper;
-
-    @Autowired
-    private MockRuleAgentRelationMapper mockRuleAgentRelationMapper;
+    private final ChannelHandlerContextFactory channelHandlerContextFactory;
+    private final MockAgentInstanceMapper mockAgentInstanceMapper;
+    private final MockRuleAgentRelationMapper mockRuleAgentRelationMapper;
 
     @Getter
     private Map<Integer, Long> lastHeartbeatTimestampMap = new ConcurrentHashMap<>();
+
+    @Inject
+    public MockMsgControlService(ChannelHandlerContextFactory channelHandlerContextFactory,
+                                 MockAgentInstanceMapper mockAgentInstanceMapper,
+                                 MockRuleAgentRelationMapper mockRuleAgentRelationMapper) {
+        this.channelHandlerContextFactory = channelHandlerContextFactory;
+        this.mockAgentInstanceMapper = mockAgentInstanceMapper;
+        this.mockRuleAgentRelationMapper = mockRuleAgentRelationMapper;
+    }
 
     @PostConstruct
     private void init() {

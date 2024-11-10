@@ -12,7 +12,7 @@ import com.tm.common.entities.system.DeleteProjectUserRoleBody;
 import com.tm.common.entities.system.QueryProjectUserBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,12 +22,18 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/project")
 public class ProjectController extends BaseController {
-    @Autowired
-    private ProjectMapper projectMapper;
-    @Autowired
-    private ProjectUserMapper projectUserMapper;
-    @Autowired
-    private ProjectUserRoleMapper projectUserRoleMapper;
+    private final ProjectMapper projectMapper;
+    private final ProjectUserMapper projectUserMapper;
+    private final ProjectUserRoleMapper projectUserRoleMapper;
+
+    @Inject
+    public ProjectController(ProjectMapper projectMapper,
+                             ProjectUserMapper projectUserMapper,
+                             ProjectUserRoleMapper projectUserRoleMapper) {
+        this.projectMapper = projectMapper;
+        this.projectUserMapper = projectUserMapper;
+        this.projectUserRoleMapper = projectUserRoleMapper;
+    }
 
     @PostMapping(value = "/addProjectUser", produces = {"application/json;charset=UTF-8"})
     public BaseResponse addProjectUser(@RequestBody @Valid AddUserToProjectBody body) {

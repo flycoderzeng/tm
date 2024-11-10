@@ -1,21 +1,15 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
-import { RouteComponentProps } from "react-router-dom";
-import {Form, Input, Button, Tooltip, Select, Radio, message} from "antd";
-import {ArrowLeftOutlined} from "@ant-design/icons";
+import {RouteComponentProps, withRouter} from "react-router-dom";
+import {Button, Collapse, Form, Input, message, Radio, Select, Tabs, Tooltip} from "antd";
+import {ArrowLeftOutlined, CaretRightOutlined} from "@ant-design/icons";
 import {FormInstance} from "antd/lib/form";
-import { Tabs } from 'antd';
 import MonacoEditor from 'react-monaco-editor';
 
 // 引入编辑器组件
 import BraftEditor from 'braft-editor'
 // 引入编辑器样式
 import 'braft-editor/dist/index.css'
-
-
-import { Collapse } from 'antd';
-import { CaretRightOutlined } from '@ant-design/icons';
-import { JsonDefineEditor } from "./JsonDefineEditor";
+import {JsonDefineEditor} from "./JsonDefineEditor";
 import {FormEditor} from "./FormEditor";
 import {HttpApiModel} from "../../../entities/HttpApiModel";
 import axios from "axios";

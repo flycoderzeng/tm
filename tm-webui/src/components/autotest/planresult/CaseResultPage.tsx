@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {message, Modal, Space, Table, Tag, Tree} from "antd";
-import { CloseCircleTwoTone } from '@ant-design/icons';
+import {CloseCircleTwoTone} from '@ant-design/icons';
 import {TreeUtils} from "../../../utils/TreeUtils";
 import {PlanResultStatusUtils} from "../../../utils/PlanResultStatusUtils";
 import {CaseResultStatusEnum} from "../../../entities/CaseResultStatusEnum";

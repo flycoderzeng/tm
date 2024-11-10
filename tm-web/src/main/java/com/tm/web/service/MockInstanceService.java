@@ -6,8 +6,8 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.base.CommonTableQueryResponse;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,8 +16,12 @@ import java.util.List;
 @Slf4j
 @Service
 public class MockInstanceService {
-    @Autowired
-    private MockAgentInstanceMapper mockAgentInstanceMapper;
+    private final MockAgentInstanceMapper mockAgentInstanceMapper;
+
+    @Inject
+    public MockInstanceService(MockAgentInstanceMapper mockAgentInstanceMapper) {
+        this.mockAgentInstanceMapper = mockAgentInstanceMapper;
+    }
 
     public BaseResponse queryInstanceList(CommonTableQueryBody body) {
         List<MockAgentInstance> mockAgentInstances = new ArrayList<>();

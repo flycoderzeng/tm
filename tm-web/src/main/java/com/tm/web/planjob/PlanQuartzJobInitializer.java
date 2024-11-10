@@ -1,11 +1,9 @@
 package com.tm.web.planjob;
 
-import com.tm.common.base.mapper.CronJobPlanRelationMapper;
 import com.tm.common.base.mapper.PlanCronJobMapper;
-import com.tm.common.base.model.CronJobPlanRelation;
 import com.tm.common.base.model.PlanCronJob;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
@@ -17,11 +15,15 @@ import java.util.List;
 @Component
 @Order(value = 10000)
 public class PlanQuartzJobInitializer implements ApplicationRunner {
-    @Autowired
-    private PlanQuartzJobManager planQuartzJobManager;
+    private final PlanQuartzJobManager planQuartzJobManager;
+    private final PlanCronJobMapper planCronJobMapper;
 
-    @Autowired
-    private PlanCronJobMapper planCronJobMapper;
+    @Inject
+    public PlanQuartzJobInitializer(PlanQuartzJobManager planQuartzJobManager,
+                                    PlanCronJobMapper planCronJobMapper) {
+        this.planQuartzJobManager = planQuartzJobManager;
+        this.planCronJobMapper = planCronJobMapper;
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

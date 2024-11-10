@@ -5,10 +5,9 @@ import com.tm.lc.hooks.EntityPublicModifyHook;
 import com.yahoo.elide.annotation.DeletePermission;
 import com.yahoo.elide.annotation.Include;
 import com.yahoo.elide.annotation.LifeCycleHookBinding;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
-
-import jakarta.persistence.Entity;
 
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.CREATE;
 import static com.yahoo.elide.annotation.LifeCycleHookBinding.Operation.UPDATE;

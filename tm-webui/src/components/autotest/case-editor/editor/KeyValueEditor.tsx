@@ -4,6 +4,7 @@ import {AutoComplete, Button, Col, Input, Modal, Row, Select} from "antd";
 import {ContentEditor} from "./ContentEditor";
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 import {RandomUtils} from "../../../../utils/RandomUtils";
+
 const { Option } = Select;
 
 export interface IState {

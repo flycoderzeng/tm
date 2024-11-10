@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Menu, message, Modal, Tree} from "antd";
 import {RootNodeEditor} from "./RootNodeEditor";
 import {
-    SettingOutlined,
-    PlusOutlined,
-    DeleteOutlined,
     CopyOutlined,
-    PlayCircleOutlined,
+    DeleteOutlined,
     PauseOutlined,
-    QuestionOutlined
+    PlayCircleOutlined,
+    PlusOutlined,
+    QuestionOutlined,
+    SettingOutlined
 } from '@ant-design/icons';
 import axios from "axios";
 import {ApiUrlConfig} from "../../../../config/api.url";

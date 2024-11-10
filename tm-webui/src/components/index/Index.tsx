@@ -1,14 +1,10 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import type {MenuProps} from 'antd';
+import {Button, Dropdown, Layout, Menu, message} from 'antd';
 import axios from 'axios';
-import { message, Button, Dropdown } from 'antd';
-import { Link } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
-import type { MenuProps } from 'antd';
-import {
-    DownOutlined,
-} from '@ant-design/icons';
-import { RouteComponentProps } from "react-router-dom";
+import {Link, RouteComponentProps} from 'react-router-dom';
+import {renderRoutes} from 'react-router-config';
+import {DownOutlined,} from '@ant-design/icons';
 import {ApiUrlConfig} from "../../config/api.url";
 import {LocalStorageUtils} from "../../utils/LocalStorageUtils";
 

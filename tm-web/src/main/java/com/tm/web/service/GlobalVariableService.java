@@ -9,17 +9,21 @@ import com.tm.common.entities.autotest.request.SaveNodeBody;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service("globalVariableService")
 public class GlobalVariableService extends BaseService {
-    @Autowired
-    private GlobalVariableMapper globalVariableMapper;
-    @Autowired
-    private DataNodeMapper dataNodeMapper;
+    private final GlobalVariableMapper globalVariableMapper;
+    private final DataNodeMapper dataNodeMapper;
+
+    @Inject
+    public GlobalVariableService(GlobalVariableMapper globalVariableMapper, DataNodeMapper dataNodeMapper) {
+        this.globalVariableMapper = globalVariableMapper;
+        this.dataNodeMapper = dataNodeMapper;
+    }
 
     public BaseResponse copy(SaveNodeBody body) {
         return ResultUtils.success();

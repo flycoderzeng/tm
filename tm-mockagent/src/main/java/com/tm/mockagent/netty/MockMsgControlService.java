@@ -2,8 +2,8 @@ package com.tm.mockagent.netty;
 
 import com.tm.mockagent.UspMockAgent;
 import com.tm.mockagent.entities.enumerate.MockMsgType;
-import com.tm.mockagent.entities.msg.BaseMockMsg;
 import com.tm.mockagent.entities.model.MockAgentInstanceInfo;
+import com.tm.mockagent.entities.msg.BaseMockMsg;
 import com.tm.mockagent.entities.msg.MockCommunicationMsg;
 import com.tm.mockagent.entities.msg.PushMockRuleMsg;
 import com.tm.mockagent.utils.DateUtils;

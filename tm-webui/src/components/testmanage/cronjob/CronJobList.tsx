@@ -1,6 +1,5 @@
 import React from 'react';
-import {Table, Button, Radio, Tag, message} from 'antd';
-import { Input } from 'antd';
+import {Button, Input, message, Radio, Table, Tag} from 'antd';
 import {withRouter} from "react-router-dom";
 import CommonListPage from "../../common/CommonListPage";
 import {CommonApiUrlModel} from "../../../entities/CommonApiUrlModel";

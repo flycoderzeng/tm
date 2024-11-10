@@ -9,6 +9,7 @@ import {CommonNameComments} from "./CommonNameComments";
 import {EditOutlined} from "@ant-design/icons";
 import {ContentEditor} from "./ContentEditor";
 import {RandomUtils} from "../../../../utils/RandomUtils";
+
 const Option = Select.Option;
 
 const PlatformApiEditor: React.FC<EditorIState<PlatformApiNode>> = (props) => {

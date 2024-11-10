@@ -1,10 +1,11 @@
 import React from 'react';
-import { RouteComponentProps,withRouter } from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 import axios from "axios";
-import {Button, message, Table, Tooltip, Select} from "antd";
+import {Button, message, Select, Table, Tooltip} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
 import moment from "moment";
 import {ApiUrlConfig} from "../../../config/api.url";
+
 interface IProps {}
 type CurrProps = IProps & RouteComponentProps;
 const { Option } = Select;

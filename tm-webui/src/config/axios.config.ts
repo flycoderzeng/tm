@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {BaseUrl} from "./api.url";
 import {message} from 'antd';
+
 const initAxios = () =>
 {
     axios.defaults.baseURL = BaseUrl;

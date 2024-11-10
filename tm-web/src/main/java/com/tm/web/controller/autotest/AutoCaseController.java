@@ -6,8 +6,8 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.IdBody;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.AutoCaseService;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/autocase")
 public class AutoCaseController extends BaseController {
-    @Autowired
-    private AutoCaseService autoCaseService;
+    private final AutoCaseService autoCaseService;
+
+    @Inject
+    public AutoCaseController(AutoCaseService autoCaseService) {
+        this.autoCaseService = autoCaseService;
+    }
 
     @PostMapping(value = "/save", produces = {"application/json;charset=UTF-8"})
     public BaseResponse save(@RequestBody AutoCase autoCase) {

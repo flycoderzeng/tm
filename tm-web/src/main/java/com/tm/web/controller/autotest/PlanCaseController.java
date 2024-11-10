@@ -8,7 +8,7 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.service.PlanCaseService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +19,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/plancase")
 public class PlanCaseController {
-    @Autowired
-    private PlanCaseService planCaseService;
+    private final PlanCaseService planCaseService;
+
+    @Inject
+    public PlanCaseController(PlanCaseService planCaseService) {
+        this.planCaseService = planCaseService;
+    }
 
     @PostMapping(value = "/queryList", produces = {"application/json;charset=UTF-8"})
     public BaseResponse queryList(@RequestBody @Valid CommonTableQueryBody body) {

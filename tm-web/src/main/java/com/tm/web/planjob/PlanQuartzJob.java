@@ -9,10 +9,10 @@ import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.lock.DistributedLockMysql;
 import com.tm.web.controller.autotest.AutoTestFeignInterface;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
@@ -25,14 +25,21 @@ public class PlanQuartzJob extends QuartzJobBean {
     public static final String PLAN_QUARTZ_PARAM_KEY = "PLAN_QUARTZ_PARAM_KEY";
     public static final String PLAN_CRON_JOB_LOCK = "PLAN_CRON_JOB_LOCK";
 
-    @Autowired
-    private DistributedLockMysql distributedLockMysql;
-    @Autowired
-    private PlanCronJobMapper planCronJobMapper;
-    @Autowired
-    private AutoTestFeignInterface autoTestFeignInterface;
-    @Autowired
-    private CronJobPlanRelationMapper cronJobPlanRelationMapper;
+    private final DistributedLockMysql distributedLockMysql;
+    private final PlanCronJobMapper planCronJobMapper;
+    private final AutoTestFeignInterface autoTestFeignInterface;
+    private final CronJobPlanRelationMapper cronJobPlanRelationMapper;
+
+    @Inject
+    public PlanQuartzJob(DistributedLockMysql distributedLockMysql,
+                         PlanCronJobMapper planCronJobMapper,
+                         AutoTestFeignInterface autoTestFeignInterface,
+                         CronJobPlanRelationMapper cronJobPlanRelationMapper) {
+        this.distributedLockMysql = distributedLockMysql;
+        this.planCronJobMapper = planCronJobMapper;
+        this.autoTestFeignInterface = autoTestFeignInterface;
+        this.cronJobPlanRelationMapper = cronJobPlanRelationMapper;
+    }
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {

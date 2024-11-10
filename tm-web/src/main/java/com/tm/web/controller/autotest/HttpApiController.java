@@ -7,8 +7,8 @@ import com.tm.common.entities.base.IdBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.HttpApiService;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,8 +17,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/httpapi")
 public class HttpApiController extends BaseController {
-    @Autowired
-    private HttpApiService httpApiService;
+    private final HttpApiService httpApiService;
+
+    @Inject
+    public HttpApiController(HttpApiService httpApiService) {
+        this.httpApiService = httpApiService;
+    }
 
     @GetMapping(value = "/getHttpMethodList")
     public BaseResponse getScriptTypeList() {

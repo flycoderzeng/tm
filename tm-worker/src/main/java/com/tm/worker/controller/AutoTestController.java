@@ -4,7 +4,8 @@ import com.tm.common.base.model.User;
 import com.tm.common.entities.autotest.request.*;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.worker.service.AutoTestService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +16,13 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/autotest")
 public class AutoTestController extends BaseController {
-    @Autowired
-    private AutoTestService autoTestService;
+    private final AutoTestService autoTestService;
+
+    @Inject
+    public AutoTestController(AutoTestService autoTestService) {
+        Assert.notNull(autoTestService, "AutoTestService must not be null!");
+        this.autoTestService = autoTestService;
+    }
 
     @PostMapping(value = "/runCase")
     public BaseResponse runAutoCase(@RequestBody @Valid RunCaseBody body) {

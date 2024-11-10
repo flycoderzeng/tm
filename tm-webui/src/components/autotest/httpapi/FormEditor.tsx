@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {Button, Row, Col, Input, Select} from "antd";
-import { CloseOutlined, } from '@ant-design/icons';
+import {Button, Col, Input, Row, Select} from "antd";
+import {CloseOutlined,} from '@ant-design/icons';
 import {RandomUtils} from "../../../utils/RandomUtils";
 
 // type 1-form 2-kv 3-query 4-headers

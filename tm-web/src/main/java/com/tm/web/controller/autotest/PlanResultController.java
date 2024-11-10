@@ -6,7 +6,7 @@ import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.base.IdBody;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.PlanResultService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +18,12 @@ import javax.validation.Valid;
 @RequestMapping(value = "/planresult")
 public class PlanResultController extends BaseController {
 
-    @Autowired
-    private PlanResultService planResultService;
+    private final PlanResultService planResultService;
+
+    @Inject
+    public PlanResultController(PlanResultService planResultService) {
+        this.planResultService = planResultService;
+    }
 
     @PostMapping(value = "/getNewestPlanExecuteResult", produces = {"application/json;charset=UTF-8"})
     public BaseResponse getNewestPlanExecuteResult(@RequestBody @Valid GetNewestPlanExecuteResultBody body) {

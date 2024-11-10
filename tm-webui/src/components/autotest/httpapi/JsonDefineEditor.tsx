@@ -1,8 +1,16 @@
 import React, {useState} from "react";
 
-import {Input, Checkbox, Select, Tooltip, Menu, Dropdown, Modal, Button} from 'antd';
-import { CaretRightOutlined,CaretDownOutlined,PlusOutlined,CloseOutlined,SettingOutlined,EditOutlined } from '@ant-design/icons';
+import {Button, Checkbox, Dropdown, Input, Menu, Modal, Select, Tooltip} from 'antd';
+import {
+    CaretDownOutlined,
+    CaretRightOutlined,
+    CloseOutlined,
+    EditOutlined,
+    PlusOutlined,
+    SettingOutlined
+} from '@ant-design/icons';
 import {RandomUtils} from "../../../utils/RandomUtils";
+
 const Option = Select.Option;
 const { TextArea } = Input;
 interface IState {

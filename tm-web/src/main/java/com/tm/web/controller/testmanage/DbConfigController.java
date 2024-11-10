@@ -5,7 +5,7 @@ import com.tm.common.entities.common.CommonIdBody;
 import com.tm.common.entities.testmanage.BatchCopyCommonConfigBody;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.DbConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -13,8 +13,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/dbconfig")
 public class DbConfigController extends BaseController {
-    @Autowired
-    private DbConfigService dbConfigService;
+    private final DbConfigService dbConfigService;
+
+    @Inject
+    public DbConfigController(DbConfigService dbConfigService) {
+        this.dbConfigService = dbConfigService;
+    }
 
     @PostMapping(value = "/batchCopyDbConfig", produces = {"application/json;charset=UTF-8"})
     public BaseResponse batchCopyDbConfig(@RequestBody @Valid BatchCopyCommonConfigBody body) {

@@ -4,9 +4,8 @@ import com.tm.lc.convert.DateAndString;
 import com.yahoo.elide.annotation.DeletePermission;
 import com.yahoo.elide.annotation.Include;
 import com.yahoo.elide.annotation.UpdatePermission;
-import lombok.Data;
-
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "auto_case_history")
