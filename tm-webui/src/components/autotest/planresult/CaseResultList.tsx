@@ -200,7 +200,7 @@ const CaseResultList: React.FC<IState> = (props) => {
     const columns: any[] = [
         {
             width: 150,
-            title: '用例id',
+            title: '用例ID',
             dataIndex: 'caseId',
             key: 'id',
             render: (text, record) => <a onClick={() => {onClickViewCaseResult(record);}}>{text}</a>,

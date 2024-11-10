@@ -53,6 +53,7 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
     const [currFolderChecked, setCurrFolderChecked] = useState<boolean>(false);
     const [totalSelect, setTotalSelect] = useState<number>(0);
     const [selectedIdList, setSelectedList] = useState<number[]>([]);
+    const [searchValue, setSearchValue] = useState<string>("");
 
     const [pagination, setPagination] = useState({
         current: 1,
@@ -146,6 +147,10 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
             filterConditionList = [];
         }
         _onSearch(filterConditionList);
+    }
+
+    function onChangeSearchValue(e) {
+        setSearchValue(e.target.value);
     }
 
     function onChange(pageCondition, filters) {
@@ -244,6 +249,7 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
     function onChangeCurrFolder(e) {
         setCurrFolderChecked(e.target.checked);
         LocalStorageUtils.setItem(LocalStorageUtils.__CURR_DIR_ONLY, e.target.checked);
+        onSearch(searchValue);
     }
 
     let operateColumn;
@@ -372,7 +378,8 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
         {cardHeader}
         <div className="card-body">
             <div className="list-toolbar">
-                <Search placeholder="Id或者名称" onSearch={onSearch} enterButton style={{width: 400,}}/>
+                <Search placeholder="Id或者名称" onSearch={onSearch} onChange={onChangeSearchValue}
+                        allowClear enterButton style={{width: 400,}}/>
                 {currFolderCheck}
                 {caseTagSelect}
                 {countTag}
