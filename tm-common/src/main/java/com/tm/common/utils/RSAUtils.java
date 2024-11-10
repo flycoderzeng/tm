@@ -108,14 +108,14 @@ public class RSAUtils {
         if(StringUtils.isBlank(message)) {
             return message;
         }
-        PublicKey publicKey = null;
+        PublicKey publicKey;
         try {
             publicKey = RSAUtils.string2PublicKey(publicKeyStr);
         } catch (Exception e) {
             log.error("encrypt error, ", e);
             return message;
         }
-        byte[] publicEncrypt = new byte[0];
+        byte[] publicEncrypt;
         try {
             publicEncrypt = RSAUtils.publicEncrypt(message.getBytes(), publicKey);
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class RSAUtils {
         if(StringUtils.isBlank(message)) {
             return message;
         }
-        PrivateKey privateKey = null;
+        PrivateKey privateKey;
         try {
             privateKey = RSAUtils.string2PrivateKey(privateKeyStr);
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class RSAUtils {
             return message;
         }
         byte[] base642Byte = RSAUtils.base642Byte(message);
-        byte[] privateDecrypt = new byte[0];
+        byte[] privateDecrypt;
         try {
             privateDecrypt = RSAUtils.privateDecrypt(base642Byte, privateKey);
         } catch (Exception e) {

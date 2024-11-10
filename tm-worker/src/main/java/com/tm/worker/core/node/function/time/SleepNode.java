@@ -21,7 +21,7 @@ public class SleepNode extends FunctionNode {
         log.info("执行平台api：休眠");
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
-        String secondsStr = "";
+        String secondsStr;
         if (!parametersMap.containsKey(ARG_1)) {
             secondsStr = "0";
         }else {

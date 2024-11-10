@@ -6,8 +6,7 @@ import java.util.List;
 
 public class FindUtils {
     public static<T> T find(T dest, List<T> list) {
-        if(dest instanceof CronJobPlanRelation) {
-            CronJobPlanRelation jobPlanRelation = (CronJobPlanRelation)dest;
+        if(dest instanceof CronJobPlanRelation jobPlanRelation) {
             for (Object o : list) {
                 CronJobPlanRelation relation = (CronJobPlanRelation)o;
                 if(relation.getId().equals(jobPlanRelation.getId())) {

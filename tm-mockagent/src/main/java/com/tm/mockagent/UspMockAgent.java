@@ -93,7 +93,7 @@ public class UspMockAgent {
 
         public static byte[] mockSpringRestTemplateHttp(ClassLoader loader, byte[] classfileBuffer) {
             ClassPool classPool = ClassPool.getDefault();
-            CtClass cc = null;
+            CtClass cc;
             classPool.appendClassPath(new LoaderClassPath(loader));
 
             try {

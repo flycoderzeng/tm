@@ -33,7 +33,7 @@ public final class XMLUtils {
             return null;
         }
         InputSource source = new InputSource(new StringReader(xmlContent));
-        Document document = null;
+        Document document;
         try {
             document = reader.read(source);
         } catch (DocumentException e) {

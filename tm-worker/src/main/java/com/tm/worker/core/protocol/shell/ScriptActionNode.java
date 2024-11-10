@@ -136,7 +136,7 @@ public class ScriptActionNode extends StepNodeBase {
     }
 
     private String makeTempScript(AutoTestContext context) {
-        String scriptContent = "";
+        String scriptContent;
         String suffix = "";
         if(scriptId != null) {
             AutoScript autoScript = context.getTaskService().findAutoScript(scriptId);

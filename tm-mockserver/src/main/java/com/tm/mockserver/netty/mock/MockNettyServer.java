@@ -43,7 +43,7 @@ public class MockNettyServer {
                 // 两小时内没有数据的通信时,TCP会自动发送一个活动探测数据报文
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
         //绑定端口,开始接收进来的连接
-        ChannelFuture future = null;
+        ChannelFuture future;
         try {
             future = bootstrap.bind(socketAddress).sync();
             log.info("服务器启动开始监听端口: {}", socketAddress.getPort());

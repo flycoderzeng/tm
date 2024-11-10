@@ -31,7 +31,7 @@ public class MockMsgDecoder extends ByteToMessageDecoder {
             body = new String(req, StandardCharsets.UTF_8);
         }
         MockCommunicationMsg requestParam;
-        Object msg = null;
+        Object msg;
         switch (type) {
                 // 心跳信息
             case 0:

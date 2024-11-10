@@ -30,7 +30,7 @@ public class GetDateNode extends FunctionNode {
         log.info("执行平台api：获取时间");
         AutoTestContext context = AutoTestContextService.getContext();
         AutoTestVariables caseVariables = context.getCaseVariables();
-        String format = "";
+        String format;
         if (!parametersMap.containsKey(ARG_1)) {
             format = DateUtils.DATE_PATTERN_DEFAULT;
         }else{

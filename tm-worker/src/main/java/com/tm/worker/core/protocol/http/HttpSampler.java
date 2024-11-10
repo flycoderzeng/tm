@@ -109,7 +109,7 @@ public class HttpSampler extends StepNodeBase {
             InputStream inputStream = response.bodyStream();
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
-            String saveFilePath = "";
+            String saveFilePath;
             if(OS.contains("windows")) {
                 if(!new File(WINDOWS_TEMP_DOWNLOAD_FILES_PATH).exists()) {
                     FileUtil.mkdir(WINDOWS_TEMP_DOWNLOAD_FILES_PATH);
@@ -278,14 +278,14 @@ public class HttpSampler extends StepNodeBase {
         }
         log.info("初始的请求地址: {}", url);
 
-        String path = "";
+        String path;
 
         addResultInfo("请求地址: ").addResultInfoLine(url);
 
-        List<ApiIpPortConfig> apiIpPortConfigs = new ArrayList<>();
+        List<ApiIpPortConfig> apiIpPortConfigs;
 
 
-        String actualUrl = "";
+        String actualUrl;
 
         String pathParams = ReUtil.get("/\\$\\{(.*?)\\}", url, 0);
         if(StringUtils.isNoneBlank(pathParams)) {
