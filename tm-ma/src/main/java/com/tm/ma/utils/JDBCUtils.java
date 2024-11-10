@@ -396,9 +396,6 @@ public class JDBCUtils {
         int count = rsmd.getColumnCount();
         for (int i = 0; i < count; ++i) {
             Object object = rs.getObject(i + 1);
-//            if(object instanceof byte[]) {
-//                object = new String((byte[])object, StandardCharsets.UTF_8);
-//            }
             row.put(fieldMap.get(i), object);
         }
         return row;

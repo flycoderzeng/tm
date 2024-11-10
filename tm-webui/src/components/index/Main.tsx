@@ -1,10 +1,10 @@
 import React from "react";
 import {Card, message} from 'antd';
 import axios from "axios";
-import { withRouter } from "react-router-dom";
-import { RouteComponentProps } from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 import {ApiUrlConfig} from "../../config/api.url";
 import {RandomUtils} from "../../utils/RandomUtils";
+
 interface IProps {}
 type MainProps = IProps & RouteComponentProps;
 

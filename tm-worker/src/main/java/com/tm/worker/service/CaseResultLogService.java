@@ -8,9 +8,9 @@ import com.tm.common.base.model.CaseStepExecuteResult;
 import com.tm.common.base.model.CaseVariableValueResult;
 import com.tm.common.entities.autotest.CaseExecuteLogOperate;
 import com.tm.worker.message.MessageSendReceiveService;
+import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,15 +27,21 @@ public class CaseResultLogService {
     @Value("${spring.autotest.result.case-step-result-split-table-type}")
     private Integer splitCaseStepResultTableType;
 
-    @Autowired
-    private CaseExecuteResultMapper caseExecuteResultMapper;
-    @Autowired
-    private CaseVariableValueResultMapper caseVariableValueResultMapper;
-    @Autowired
-    private CaseStepExecuteResultMapper caseStepExecuteResultMapper;
+    private final CaseExecuteResultMapper caseExecuteResultMapper;
+    private final CaseVariableValueResultMapper caseVariableValueResultMapper;
+    private final CaseStepExecuteResultMapper caseStepExecuteResultMapper;
+    private final MessageSendReceiveService messageSendReceiveService;
 
-    @Autowired
-    private MessageSendReceiveService messageSendReceiveService;
+    @Inject
+    public CaseResultLogService(CaseExecuteResultMapper caseExecuteResultMapper,
+                                CaseVariableValueResultMapper caseVariableValueResultMapper,
+                                CaseStepExecuteResultMapper caseStepExecuteResultMapper,
+                                MessageSendReceiveService messageSendReceiveService) {
+        this.caseExecuteResultMapper = caseExecuteResultMapper;
+        this.caseVariableValueResultMapper = caseVariableValueResultMapper;
+        this.caseStepExecuteResultMapper = caseStepExecuteResultMapper;
+        this.messageSendReceiveService = messageSendReceiveService;
+    }
 
     public void put(CaseExecuteLogOperate logOperate) {
         messageSendReceiveService.sendTestResultLog(logOperate);

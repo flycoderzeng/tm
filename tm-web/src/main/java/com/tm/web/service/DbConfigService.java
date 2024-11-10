@@ -9,9 +9,9 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.entities.testmanage.BatchCopyCommonConfigBody;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,10 +21,14 @@ import java.util.List;
 @Slf4j
 @Service("dbConfigService")
 public class DbConfigService extends BaseService {
-    @Autowired
-    private DbConfigMapper dbConfigMapper;
-    @Autowired
-    private RunEnvMapper runEnvMapper;
+    private final DbConfigMapper dbConfigMapper;
+    private final RunEnvMapper runEnvMapper;
+
+    @Inject
+    public DbConfigService(DbConfigMapper dbConfigMapper, RunEnvMapper runEnvMapper) {
+        this.dbConfigMapper = dbConfigMapper;
+        this.runEnvMapper = runEnvMapper;
+    }
 
     public BaseResponse getAllDatabaseNames() {
         return ResultUtils.success(dbConfigMapper.getAllDatabaseNames());

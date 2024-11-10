@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import {Button, Input, Modal, Checkbox} from "antd";
-import {Row, Col, message} from 'antd';
+import {Button, Checkbox, Col, Input, message, Modal, Row} from "antd";
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
 import {RandomUtils} from "../../../../utils/RandomUtils";
 import {LocalStorageUtils} from "../../../../utils/LocalStorageUtils";

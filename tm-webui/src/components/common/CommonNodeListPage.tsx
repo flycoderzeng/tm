@@ -1,10 +1,7 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import {DataTypeEnumDescription} from "../../entities/DataTypeEnumDescription";
-import {Button, Checkbox, message, Table, Tag} from "antd";
-import {
-    CheckCircleOutlined, CheckCircleTwoTone
-} from '@ant-design/icons';
-import {Input} from 'antd';
+import {Button, Checkbox, Input, message, Table, Tag} from "antd";
+import {CheckCircleOutlined, CheckCircleTwoTone} from '@ant-design/icons';
 import axios from "axios";
 import moment from "moment";
 import {ApiUrlConfig} from "../../config/api.url";

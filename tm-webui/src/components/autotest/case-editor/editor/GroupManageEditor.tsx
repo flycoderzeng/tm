@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
-import {Button, Switch, Table, Input, Modal, Select} from "antd";
+import {Button, Input, Modal, Select, Switch, Table} from "antd";
 
 
 interface IState {

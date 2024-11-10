@@ -3,12 +3,12 @@ package com.tm.web.ehcache;
 
 import com.tm.common.base.mapper.UserMapper;
 import com.tm.common.base.model.User;
+import jakarta.inject.Inject;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +21,20 @@ public class UserEhcacheServiceImpl implements EhcacheService {
     private static Logger logger = LoggerFactory.getLogger(UserEhcacheServiceImpl.class);
     private Cache cache;
     public static final String UserPrivilegesCache = "UserPrivilegesCache";
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+
+    @Inject
+    public UserEhcacheServiceImpl(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
     @PostConstruct
     public void init() {
         CacheManager cacheManager;
         try {
             cacheManager = CacheManager.create(new ClassPathResource("ehcache.xml").getInputStream());
         } catch (IOException e) {
-            logger.error("init error: {}", e);
+            logger.error("init error: ", e);
             return ;
         }
         cache = cacheManager.getCache(UserPrivilegesCache);

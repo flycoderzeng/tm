@@ -8,6 +8,7 @@ import {CaseResultStatusEnum} from "../../../entities/CaseResultStatusEnum";
 import {VariableResultList} from "./VariableResultList";
 import copy from "copy-to-clipboard";
 import {AutoCaseEditor} from "../case-editor/editor/AutoCaseEditor";
+
 const { Search } = Input;
 interface IState {
     planResultId: number|null|undefined;

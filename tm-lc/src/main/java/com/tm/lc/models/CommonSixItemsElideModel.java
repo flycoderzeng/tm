@@ -1,9 +1,8 @@
 package com.tm.lc.models;
 
 import com.tm.lc.convert.DateAndString;
-import lombok.Data;
-
 import jakarta.persistence.*;
+import lombok.Data;
 
 
 @MappedSuperclass

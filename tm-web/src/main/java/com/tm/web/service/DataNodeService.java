@@ -8,8 +8,8 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,33 +23,49 @@ import java.util.Stack;
 @Service("dataNodeService")
 public class DataNodeService {
 
-    @Autowired
-    private DataNodeMapper dataNodeMapper;
-    @Autowired
-    private AutoCaseMapper autoCaseMapper;
-    @Autowired
-    private PlatformApiMapper platformApiMapper;
-    @Autowired
-    private GlobalVariableMapper globalVariableMapper;
-    @Autowired
-    private AutoScriptMapper autoScriptMapper;
-    @Autowired
-    private AutoPlanMapper autoPlanMapper;
-    @Autowired
-    private HttpApiMapper httpApiMapper;
+    private final DataNodeMapper dataNodeMapper;
+    private final AutoCaseMapper autoCaseMapper;
+    private final PlatformApiMapper platformApiMapper;
+    private final GlobalVariableMapper globalVariableMapper;
+    private final AutoScriptMapper autoScriptMapper;
+    private final AutoPlanMapper autoPlanMapper;
+    private final HttpApiMapper httpApiMapper;
 
-    @Autowired
-    private AutoCaseService autoCaseService;
-    @Autowired
-    private HttpApiService httpApiService;
-    @Autowired
-    private AutoShellService autoShellService;
-    @Autowired
-    private GlobalVariableService globalVariableService;
-    @Autowired
-    private PlatformApiService platformApiService;
-    @Autowired
-    private AutoPlanService autoPlanService;
+    private final AutoCaseService autoCaseService;
+    private final HttpApiService httpApiService;
+    private final AutoShellService autoShellService;
+    private final GlobalVariableService globalVariableService;
+    private final PlatformApiService platformApiService;
+    private final AutoPlanService autoPlanService;
+
+    @Inject
+    public DataNodeService(DataNodeMapper dataNodeMapper,
+                           AutoCaseMapper autoCaseMapper,
+                           PlatformApiMapper platformApiMapper,
+                           GlobalVariableMapper globalVariableMapper,
+                           AutoScriptMapper autoScriptMapper,
+                           AutoPlanMapper autoPlanMapper,
+                           HttpApiMapper httpApiMapper,
+                           AutoCaseService autoCaseService,
+                           HttpApiService httpApiService,
+                           AutoShellService autoShellService,
+                           GlobalVariableService globalVariableService,
+                           PlatformApiService platformApiService,
+                           AutoPlanService autoPlanService) {
+        this.dataNodeMapper = dataNodeMapper;
+        this.autoCaseMapper = autoCaseMapper;
+        this.platformApiMapper = platformApiMapper;
+        this.globalVariableMapper = globalVariableMapper;
+        this.autoScriptMapper = autoScriptMapper;
+        this.autoPlanMapper = autoPlanMapper;
+        this.httpApiMapper = httpApiMapper;
+        this.autoCaseService = autoCaseService;
+        this.httpApiService = httpApiService;
+        this.autoShellService = autoShellService;
+        this.globalVariableService = globalVariableService;
+        this.platformApiService = platformApiService;
+        this.autoPlanService = autoPlanService;
+    }
 
     public BaseResponse deleteNode(SaveNodeBody body) {
         if(body.getId().equals(1)) {

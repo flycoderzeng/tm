@@ -11,8 +11,8 @@ import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,16 +21,24 @@ import java.util.List;
 @Service("autoPlanService")
 public class AutoPlanService extends BaseService {
 
-    @Autowired
-    private AutoPlanMapper autoPlanMapper;
-    @Autowired
-    private DataNodeMapper dataNodeMapper;
-    @Autowired
-    private PlanCaseMapper planCaseMapper;
-    @Autowired
-    private PlanCaseSetupMapper planCaseSetupMapper;
-    @Autowired
-    private PlanCaseTeardownMapper planCaseTeardownMapper;
+    private final AutoPlanMapper autoPlanMapper;
+    private final DataNodeMapper dataNodeMapper;
+    private final PlanCaseMapper planCaseMapper;
+    private final PlanCaseSetupMapper planCaseSetupMapper;
+    private final PlanCaseTeardownMapper planCaseTeardownMapper;
+
+    @Inject
+    public AutoPlanService(AutoPlanMapper autoPlanMapper,
+                           DataNodeMapper dataNodeMapper,
+                           PlanCaseMapper planCaseMapper,
+                           PlanCaseSetupMapper planCaseSetupMapper,
+                           PlanCaseTeardownMapper planCaseTeardownMapper) {
+        this.autoPlanMapper = autoPlanMapper;
+        this.dataNodeMapper = dataNodeMapper;
+        this.planCaseMapper = planCaseMapper;
+        this.planCaseSetupMapper = planCaseSetupMapper;
+        this.planCaseTeardownMapper = planCaseTeardownMapper;
+    }
 
     public BaseResponse copy(SaveNodeBody body) {
         AutoPlan autoPlan = autoPlanMapper.selectByPrimaryId(body.getCopyId());

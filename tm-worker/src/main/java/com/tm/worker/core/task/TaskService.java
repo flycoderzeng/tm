@@ -28,11 +28,11 @@ import com.tm.worker.core.variable.AutoTestVariables;
 import com.tm.worker.service.CaseResultLogService;
 import com.tm.worker.service.DbConfigService;
 import com.tm.worker.utils.DataTypeAdapter;
+import jakarta.inject.Inject;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Component;
@@ -64,28 +64,42 @@ public class TaskService {
     public static final String GROUP_VARIABLE_GROUP_NAME = "__groupDescription";
 
 
-    @Autowired
-    private PlanCaseDao planCaseDao;
-    @Autowired
-    private PlanExecuteResultDao planExecuteResultDao;
-    @Autowired
-    private PlanRunningConfigSnapshotDao planRunningConfigSnapshotDao;
-    @Autowired
-    private AutoCaseDao autoCaseDao;
-    @Autowired
-    private AutoScriptDao autoScriptDao;
-    @Autowired
-    private GlobalVariableDao globalVariableDao;
-    @Autowired
-    private DataNodeDao dataNodeDao;
-    @Autowired
-    private CaseResultLogService caseResultLogService;
-    @Autowired
-    private DbConfigService dbConfigService;
-    @Autowired
-    private ApiIpPortConfigDao apiIpPortConfigDao;
-    @Autowired
-    private JDBCDataSourceFactory jdbcDataSourceFactory;
+    private final PlanCaseDao planCaseDao;
+    private final PlanExecuteResultDao planExecuteResultDao;
+    private final PlanRunningConfigSnapshotDao planRunningConfigSnapshotDao;
+    private final AutoCaseDao autoCaseDao;
+    private final AutoScriptDao autoScriptDao;
+    private final GlobalVariableDao globalVariableDao;
+    private final DataNodeDao dataNodeDao;
+    private final CaseResultLogService caseResultLogService;
+    private final DbConfigService dbConfigService;
+    private final ApiIpPortConfigDao apiIpPortConfigDao;
+    private final JDBCDataSourceFactory jdbcDataSourceFactory;
+
+    @Inject
+    public TaskService(PlanCaseDao planCaseDao,
+                       PlanExecuteResultDao planExecuteResultDao,
+                       PlanRunningConfigSnapshotDao planRunningConfigSnapshotDao,
+                       AutoCaseDao autoCaseDao,
+                       AutoScriptDao autoScriptDao,
+                       GlobalVariableDao globalVariableDao,
+                       DataNodeDao dataNodeDao,
+                       CaseResultLogService caseResultLogService,
+                       DbConfigService dbConfigService,
+                       ApiIpPortConfigDao apiIpPortConfigDao,
+                       JDBCDataSourceFactory jdbcDataSourceFactory) {
+        this.planCaseDao = planCaseDao;
+        this.planExecuteResultDao = planExecuteResultDao;
+        this.planRunningConfigSnapshotDao = planRunningConfigSnapshotDao;
+        this.autoCaseDao = autoCaseDao;
+        this.autoScriptDao = autoScriptDao;
+        this.globalVariableDao = globalVariableDao;
+        this.dataNodeDao = dataNodeDao;
+        this.caseResultLogService = caseResultLogService;
+        this.dbConfigService = dbConfigService;
+        this.apiIpPortConfigDao = apiIpPortConfigDao;
+        this.jdbcDataSourceFactory = jdbcDataSourceFactory;
+    }
 
     @PostConstruct
     public void init() {

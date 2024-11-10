@@ -3,16 +3,15 @@ package com.tm.web.service;
 import com.tm.common.base.mapper.ApiIpPortConfigMapper;
 import com.tm.common.base.mapper.RunEnvMapper;
 import com.tm.common.base.model.ApiIpPortConfig;
-import com.tm.common.base.model.DbConfig;
 import com.tm.common.base.model.RunEnv;
 import com.tm.common.base.model.User;
 import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.entities.testmanage.BatchCopyCommonConfigBody;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,10 +21,14 @@ import java.util.List;
 @Slf4j
 @Service("apiIpPortConfigService")
 public class ApiIpPortConfigService {
-    @Autowired
-    private ApiIpPortConfigMapper apiIpPortConfigMapper;
-    @Autowired
-    private RunEnvMapper runEnvMapper;
+    private final ApiIpPortConfigMapper apiIpPortConfigMapper;
+    private final RunEnvMapper runEnvMapper;
+
+    @Inject
+    public ApiIpPortConfigService(ApiIpPortConfigMapper apiIpPortConfigMapper, RunEnvMapper runEnvMapper) {
+        this.apiIpPortConfigMapper = apiIpPortConfigMapper;
+        this.runEnvMapper = runEnvMapper;
+    }
 
     public BaseResponse batchCopyApiIpPortConfig(BatchCopyCommonConfigBody body, User loginUser) {
         final List<ApiIpPortConfig> apiIpPortConfigs = apiIpPortConfigMapper.selectConfigByEnvId(body.getSrcEnvId());

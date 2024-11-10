@@ -1,8 +1,7 @@
 import React from "react";
 import axios from "axios";
 import {message, Select} from 'antd';
-import { withRouter } from "react-router-dom";
-import { RouteComponentProps } from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 import {CommonNodeTree} from "../common/CommonNodeTree";
 import {ProjectModel} from "../../entities/ProjectModel";
 import {AntDataNode} from "../../entities/AntDataNode";

@@ -1,11 +1,11 @@
 import React from "react";
 import axios from "axios";
-import {Form, Input, Button, Tooltip, message} from 'antd';
-import { withRouter } from "react-router-dom";
-import { RouteComponentProps } from "react-router-dom";
-import { FormInstance } from 'antd/lib/form';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import {Button, Form, Input, message, Tooltip} from 'antd';
+import {RouteComponentProps, withRouter} from "react-router-dom";
+import {FormInstance} from 'antd/lib/form';
+import {ArrowLeftOutlined} from '@ant-design/icons';
 import {ApiUrlConfig} from "../../../config/api.url";
+
 interface IProps {}
 
 type UserProps = IProps & RouteComponentProps;

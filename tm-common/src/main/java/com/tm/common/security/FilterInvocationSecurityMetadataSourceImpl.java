@@ -5,9 +5,9 @@ import com.tm.common.base.mapper.RightMapper;
 import com.tm.common.base.mapper.RoleMapper;
 import com.tm.common.base.model.Right;
 import com.tm.common.base.model.Role;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,10 +23,14 @@ import java.util.List;
 @Component
 public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
     public static final String ROLE_LOGIN = "ROLE_LOGIN";
-    @Autowired
-    private RightMapper rightMapper;
-    @Autowired
-    private RoleMapper roleMapper;
+    private final RightMapper rightMapper;
+    private final RoleMapper roleMapper;
+
+    @Inject
+    public FilterInvocationSecurityMetadataSourceImpl(RightMapper rightMapper, RoleMapper roleMapper) {
+        this.rightMapper = rightMapper;
+        this.roleMapper = roleMapper;
+    }
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o)  {

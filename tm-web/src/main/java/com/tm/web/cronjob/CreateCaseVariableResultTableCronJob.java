@@ -3,7 +3,7 @@ package com.tm.web.cronjob;
 
 import com.tm.common.base.mapper.CaseVariableValueResultMapper;
 import com.tm.common.utils.TableSuffixUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,8 +15,12 @@ public class CreateCaseVariableResultTableCronJob {
     @Value("${spring.autotest.result.variable-result-split-table-type}")
     private Integer splitTableType;
 
-    @Autowired
-    private CaseVariableValueResultMapper caseVariableValueResultMapper;
+    private final CaseVariableValueResultMapper caseVariableValueResultMapper;
+
+    @Inject
+    public CreateCaseVariableResultTableCronJob(CaseVariableValueResultMapper caseVariableValueResultMapper) {
+        this.caseVariableValueResultMapper = caseVariableValueResultMapper;
+    }
 
     @Scheduled(cron = "0 */1 * * * ?")
     public void createCaseVariableResultTable() {

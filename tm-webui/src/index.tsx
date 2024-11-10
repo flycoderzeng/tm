@@ -9,6 +9,7 @@ import 'moment/locale/zh-cn';
 
 
 import init from './config/axios.config';
+
 init.initAxios();
 
 moment.locale('zh-cn');

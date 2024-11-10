@@ -14,9 +14,9 @@ import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.DataNodeService;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,11 +30,14 @@ import java.util.List;
 @RequestMapping(value = "/node")
 public class DataNodeController extends BaseController {
 
-    @Autowired
-    private DataNodeMapper dataNodeMapper;
+    private final DataNodeMapper dataNodeMapper;
+    private final DataNodeService dataNodeService;
 
-    @Autowired
-    private DataNodeService dataNodeService;
+    @Inject
+    public DataNodeController(DataNodeMapper dataNodeMapper, DataNodeService dataNodeService) {
+        this.dataNodeMapper = dataNodeMapper;
+        this.dataNodeService = dataNodeService;
+    }
 
     @PostMapping(value = "/getNodesTree", produces = {"application/json;charset=UTF-8"})
     public BaseResponse getNodesTree(@RequestBody @Valid GetNodesTreeBody body) {

@@ -1,5 +1,5 @@
-import { Select, Spin, message } from 'antd';
-import { SelectProps } from 'antd/es/select';
+import {message, Select, Spin} from 'antd';
+import {SelectProps} from 'antd/es/select';
 import debounce from 'lodash/debounce';
 import React, {useState} from "react";
 import {ApiUrlConfig} from "../../../config/api.url";

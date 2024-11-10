@@ -7,6 +7,7 @@ import {OptionsConfig} from "../../../config/options.config";
 import React from "react";
 import {CommonBatchCopyConfig} from "../../common/components/CommonBatchCopyConfig";
 import axios from "axios";
+
 const { Search } = Input;
 
 class UrlConfigList extends CommonListPage {

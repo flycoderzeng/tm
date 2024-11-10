@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {EditorIState} from "../entities/EditorIState";
 import {CommonNameComments} from "./CommonNameComments";
-import {Input, Tabs, Select, Radio, Col, AutoComplete, Row} from "antd";
+import {AutoComplete, Col, Input, Radio, Row, Select, Tabs} from "antd";
 import {HttpNode} from "../entities/HttpNode";
 import {KeyValueEditor} from "./KeyValueEditor";
 import {ContentEditor} from "./ContentEditor";

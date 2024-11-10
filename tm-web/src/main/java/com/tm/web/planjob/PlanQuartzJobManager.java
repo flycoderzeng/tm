@@ -1,9 +1,9 @@
 package com.tm.web.planjob;
 
 import com.tm.common.base.model.PlanCronJob;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +12,12 @@ import org.springframework.stereotype.Component;
 public class PlanQuartzJobManager {
     private final String JOB_NAME = "PLAN_JOB_";
 
-    @Autowired
-    private SchedulerFactoryBean schedulerFactoryBean;
+    private final SchedulerFactoryBean schedulerFactoryBean;
+
+    @Inject
+    public PlanQuartzJobManager(SchedulerFactoryBean schedulerFactoryBean) {
+        this.schedulerFactoryBean = schedulerFactoryBean;
+    }
 
     public Scheduler getScheduler(){
         return schedulerFactoryBean.getScheduler();

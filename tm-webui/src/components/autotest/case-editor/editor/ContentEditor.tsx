@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import MonacoEditor from "react-monaco-editor";
 import {AutoCaseVariable} from "../entities/AutoCaseVariable";
-import {StepNode} from "../entities/StepNode";
 
 interface IState {
     language: string;

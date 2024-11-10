@@ -13,9 +13,9 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,13 +23,18 @@ import java.util.Date;
 @Slf4j
 @Service("autoTestService")
 public class AutoCaseService extends BaseService {
-    @Autowired
-    private AutoCaseMapper autoCaseMapper;
-    @Autowired
-    private DataNodeMapper dataNodeMapper;
-    @Autowired
-    private AutoCaseHistoryMapper autoCaseHistoryMapper;
+    private final AutoCaseMapper autoCaseMapper;
+    private final DataNodeMapper dataNodeMapper;
+    private final AutoCaseHistoryMapper autoCaseHistoryMapper;
 
+    @Inject
+    public AutoCaseService(AutoCaseMapper autoCaseMapper,
+                           DataNodeMapper dataNodeMapper,
+                           AutoCaseHistoryMapper autoCaseHistoryMapper) {
+        this.autoCaseMapper = autoCaseMapper;
+        this.dataNodeMapper = dataNodeMapper;
+        this.autoCaseHistoryMapper = autoCaseHistoryMapper;
+    }
 
     public BaseResponse copy(SaveNodeBody body) {
         AutoCase autoCase = autoCaseMapper.selectByPrimaryId(body.getCopyId());

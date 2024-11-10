@@ -8,8 +8,8 @@ import com.tm.common.entities.base.IdBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.PlatformApiService;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,8 +18,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/platformapi")
 public class PlatformApiController extends BaseController {
-    @Autowired
-    private PlatformApiService platformApiService;
+    private final PlatformApiService platformApiService;
+
+    @Inject
+    public PlatformApiController(PlatformApiService platformApiService) {
+        this.platformApiService = platformApiService;
+    }
 
     @PostMapping(value = "/load", produces = {"application/json;charset=UTF-8"})
     public BaseResponse load(@RequestBody @Valid IdBody body) {

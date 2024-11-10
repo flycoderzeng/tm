@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Input} from "antd";
-import { Row, Col } from 'antd';
+import {Col, Input, Row} from "antd";
 import {BaseNode} from "../entities/BaseNode";
 import {EditorIState} from "../entities/EditorIState";
 import {ActionType} from "../entities/ActionType";

@@ -5,7 +5,7 @@ import com.tm.common.entities.common.CommonIdBody;
 import com.tm.common.entities.testmanage.BatchCopyCommonConfigBody;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.ApiIpPortConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +16,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/apiipportconfig")
 public class ApiIpPortConfigController extends BaseController {
-    @Autowired
-    private ApiIpPortConfigService apiIpPortConfigService;
+    private final ApiIpPortConfigService apiIpPortConfigService;
+
+    @Inject
+    public ApiIpPortConfigController(ApiIpPortConfigService apiIpPortConfigService) {
+        this.apiIpPortConfigService = apiIpPortConfigService;
+    }
 
     @PostMapping(value = "/batchCopyApiIpPortConfig", produces = {"application/json;charset=UTF-8"})
     public BaseResponse batchCopyApiIpPortConfig(@RequestBody @Valid BatchCopyCommonConfigBody body) {

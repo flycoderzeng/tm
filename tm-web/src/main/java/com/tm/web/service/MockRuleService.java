@@ -8,7 +8,7 @@ import com.tm.common.entities.base.CommonTableQueryBody;
 import com.tm.common.entities.base.CommonTableQueryResponse;
 import com.tm.common.entities.common.enumerate.ResultCodeEnum;
 import com.tm.common.utils.ResultUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,8 +17,12 @@ import java.util.List;
 
 @Service
 public class MockRuleService {
-    @Autowired
-    private HttpMockRuleMapper httpMockRuleMapper;
+    private final HttpMockRuleMapper httpMockRuleMapper;
+
+    @Inject
+    public MockRuleService(HttpMockRuleMapper httpMockRuleMapper) {
+        this.httpMockRuleMapper = httpMockRuleMapper;
+    }
 
     public BaseResponse saveHttpMockRule(HttpMockRule rule, User loginUser) {
         if(rule.getId() == null || rule.getId() < 1) {

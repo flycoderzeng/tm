@@ -1,22 +1,31 @@
 package com.tm.mockserver.netty.mock;
 
+import com.tm.mockserver.service.MockMsgControlService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import jakarta.inject.Inject;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-
 import java.net.InetSocketAddress;
 
+@Getter
 @Component
 @Slf4j
 public class MockNettyServer {
     public static final InetSocketAddress socketAddress = new InetSocketAddress("localhost", 54321);
+    private final MockMsgControlService mockMsgControlService;
+
+    @Inject
+    public MockNettyServer(MockMsgControlService mockMsgControlService) {
+        this.mockMsgControlService = mockMsgControlService;
+    }
 
     @Async
     public void start() {
@@ -27,7 +36,7 @@ public class MockNettyServer {
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(bossGroup, workGroup)
                 .channel(NioServerSocketChannel.class)
-                .childHandler(new MockNettyServerChannelInitializer())
+                .childHandler(new MockNettyServerChannelInitializer(mockMsgControlService))
                 .localAddress(socketAddress)
                 //设置队列大小
                 .option(ChannelOption.SO_BACKLOG, 1024)

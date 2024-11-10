@@ -7,7 +7,7 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.system.AddRoleRightBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +19,12 @@ import java.util.Date;
 @RestController
 @RequestMapping(value = "/role")
 public class RoleController extends BaseController {
-    @Autowired
-    private RoleRightMapper roleRightMapper;
+    private final RoleRightMapper roleRightMapper;
+
+    @Inject
+    public RoleController(RoleRightMapper roleRightMapper) {
+        this.roleRightMapper = roleRightMapper;
+    }
 
     @PostMapping(value = "/deleteRoleRight", produces = {"application/json;charset=UTF-8"})
     public BaseResponse deleteRoleRight(@RequestBody @Valid RoleRight body) {

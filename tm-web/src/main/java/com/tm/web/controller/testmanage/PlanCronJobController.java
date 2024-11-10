@@ -4,7 +4,7 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.testmanage.CheckExpressionBody;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.PlanCronJobService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +15,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/cronjob")
 public class PlanCronJobController extends BaseController {
-    @Autowired
-    private PlanCronJobService planCronJobService;
+    private final PlanCronJobService planCronJobService;
+
+    @Inject
+    public PlanCronJobController(PlanCronJobService planCronJobService) {
+        this.planCronJobService = planCronJobService;
+    }
 
     @PostMapping(value = "/checkCronExpression", produces = {"application/json;charset=UTF-8"})
     public BaseResponse checkCronExpression(@RequestBody @Valid CheckExpressionBody body) {

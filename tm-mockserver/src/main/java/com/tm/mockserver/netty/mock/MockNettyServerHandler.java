@@ -6,7 +6,6 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -19,8 +18,11 @@ public class MockNettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private static MockNettyServerHandler serverHandler;
 
-    @Autowired
-    private MockMsgControlService mockMsgControlService;
+    private final MockMsgControlService mockMsgControlService;
+
+    public MockNettyServerHandler(MockMsgControlService mockMsgControlService) {
+        this.mockMsgControlService = mockMsgControlService;
+    }
 
     @PostConstruct
     public void init(){

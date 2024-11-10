@@ -7,8 +7,8 @@ import com.tm.common.entities.base.IdBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.AutoShellService;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,8 +17,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/autoscript")
 public class AutoScriptController extends BaseController {
-    @Autowired
-    private AutoShellService autoShellService;
+    private final AutoShellService autoShellService;
+
+    @Inject
+    public AutoScriptController(AutoShellService autoShellService) {
+        this.autoShellService = autoShellService;
+    }
 
     @GetMapping(value = "/getScriptTypeList")
     public BaseResponse getScriptTypeList() {

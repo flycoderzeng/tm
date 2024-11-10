@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import {message} from "antd";
-import { RouteComponentProps } from "react-router-dom";
+import {RouteComponentProps} from "react-router-dom";
 import {CommonApiUrlModel} from "../../entities/CommonApiUrlModel";
 import {DateUtils} from "../../utils/DateUtils";
 import {LocalStorageUtils} from "../../utils/LocalStorageUtils";

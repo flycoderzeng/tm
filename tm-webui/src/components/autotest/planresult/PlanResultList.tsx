@@ -4,6 +4,7 @@ import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
 import {DateUtils} from "../../../utils/DateUtils";
 import {PlanResultStatusUtils} from "../../../utils/PlanResultStatusUtils";
+
 interface IState {
     planOrCaseId: number|null|undefined;
     fromType: number|null|undefined;

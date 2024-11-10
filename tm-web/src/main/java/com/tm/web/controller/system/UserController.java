@@ -9,7 +9,7 @@ import com.tm.common.entities.base.IdBody;
 import com.tm.common.entities.system.AddUserRoleBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +22,12 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/user")
 public class UserController extends BaseController {
+    private final UserRoleMapper userRoleMapper;
 
-    @Autowired
-    private UserRoleMapper userRoleMapper;
+    @Inject
+    public UserController(UserRoleMapper userRoleMapper) {
+        this.userRoleMapper = userRoleMapper;
+    }
 
     @PostMapping(value = "/queryUserRoleList", produces = {"application/json;charset=UTF-8"})
     public BaseResponse queryUserRoleList(@RequestBody @Valid IdBody body) {

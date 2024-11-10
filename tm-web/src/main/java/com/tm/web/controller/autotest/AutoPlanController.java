@@ -6,7 +6,7 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.base.IdBody;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.AutoPlanService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/autoplan")
 public class AutoPlanController extends BaseController {
-    @Autowired
-    private AutoPlanService autoPlanService;
+    private final AutoPlanService autoPlanService;
+
+    @Inject
+    public AutoPlanController(AutoPlanService autoPlanService) {
+        this.autoPlanService = autoPlanService;
+    }
 
     @PostMapping(value = "/load", produces = {"application/json;charset=UTF-8"})
     public BaseResponse load(@RequestBody IdBody body) {

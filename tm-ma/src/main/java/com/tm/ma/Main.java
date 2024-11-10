@@ -9,7 +9,6 @@ import com.tm.ma.jdbc.JDBCConfig;
 import com.tm.ma.jdbc.JdbcDataSource;
 import com.tm.ma.utils.JDBCUtils;
 import org.apache.commons.cli.*;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

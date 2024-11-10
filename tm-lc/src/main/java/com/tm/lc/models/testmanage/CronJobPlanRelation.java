@@ -1,10 +1,9 @@
 package com.tm.lc.models.testmanage;
 
 import com.yahoo.elide.annotation.Include;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import jakarta.persistence.*;
 
 @Table(name = "cron_job_plan_relation")
 @Include(name="cron_job_plan_relation")

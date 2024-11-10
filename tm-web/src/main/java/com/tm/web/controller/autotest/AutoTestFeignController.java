@@ -1,12 +1,11 @@
 package com.tm.web.controller.autotest;
 
-import com.tm.common.base.model.User;
 import com.tm.common.entities.autotest.request.GetPlanRunResultStatusBody;
 import com.tm.common.entities.autotest.request.RetryFailedCaseBody;
 import com.tm.common.entities.autotest.request.RunCaseBody;
 import com.tm.common.entities.autotest.request.RunPlanBody;
 import com.tm.common.entities.base.BaseResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.inject.Inject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +16,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/autotest")
 public class AutoTestFeignController {
-    @Autowired
-    private AutoTestFeignInterface autoTestFeignInterface;
+    private final AutoTestFeignInterface autoTestFeignInterface;
+
+    @Inject
+    public AutoTestFeignController(AutoTestFeignInterface autoTestFeignInterface) {
+        this.autoTestFeignInterface = autoTestFeignInterface;
+    }
 
     @PostMapping(value = "/runCase")
     public BaseResponse runAutoCase(@RequestBody @Valid RunCaseBody body) {

@@ -13,10 +13,10 @@ import com.tm.common.entities.base.BaseResponse;
 import com.tm.common.entities.common.BaseIdNameModel;
 import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.common.utils.ResultUtils;
+import jakarta.inject.Inject;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,10 +26,14 @@ import java.util.List;
 @Slf4j
 @Service("platformApiService")
 public class PlatformApiService extends BaseService {
-    @Autowired
-    private PlatformApiMapper platformApiMapper;
-    @Autowired
-    private DataNodeMapper dataNodeMapper;
+    private final PlatformApiMapper platformApiMapper;
+    private final DataNodeMapper dataNodeMapper;
+
+    @Inject
+    public PlatformApiService(PlatformApiMapper platformApiMapper, DataNodeMapper dataNodeMapper) {
+        this.platformApiMapper = platformApiMapper;
+        this.dataNodeMapper = dataNodeMapper;
+    }
 
     public BaseResponse copy(SaveNodeBody body) {
         return ResultUtils.success();

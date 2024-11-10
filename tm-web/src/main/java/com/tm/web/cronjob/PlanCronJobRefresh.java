@@ -3,10 +3,10 @@ package com.tm.web.cronjob;
 import com.tm.common.base.mapper.PlanCronJobMapper;
 import com.tm.common.base.model.PlanCronJob;
 import com.tm.web.planjob.PlanQuartzJobManager;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronTrigger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,11 +15,14 @@ import java.util.List;
 @Slf4j
 @Component
 public class PlanCronJobRefresh {
-    @Autowired
-    private PlanQuartzJobManager planQuartzJobManager;
+    private final PlanQuartzJobManager planQuartzJobManager;
+    private final PlanCronJobMapper planCronJobMapper;
 
-    @Autowired
-    private PlanCronJobMapper planCronJobMapper;
+    @Inject
+    public PlanCronJobRefresh(PlanQuartzJobManager planQuartzJobManager, PlanCronJobMapper planCronJobMapper) {
+        this.planQuartzJobManager = planQuartzJobManager;
+        this.planCronJobMapper = planCronJobMapper;
+    }
 
     @Scheduled(cron = "0 */5 * * * ?")
     public void refreshPlanCronJob() {

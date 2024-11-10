@@ -1,11 +1,11 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import axios from "axios";
-import {Form, Input, Button, Select, Tooltip, message, Table, Space } from 'antd';
-import { ArrowLeftOutlined,PlusOutlined,CloseOutlined } from '@ant-design/icons';
+import {Button, Form, Input, message, Select, Space, Table, Tooltip} from 'antd';
+import {ArrowLeftOutlined, CloseOutlined, PlusOutlined} from '@ant-design/icons';
 import {ParameterDefineRow} from "../../../entities/ParameterDefineRow";
 import {ApiUrlConfig} from "../../../config/api.url";
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import {DndProvider, useDrag, useDrop} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import {DataTypeEnum} from "../../../entities/DataTypeEnum";
 import {RandomUtils} from "../../../utils/RandomUtils";

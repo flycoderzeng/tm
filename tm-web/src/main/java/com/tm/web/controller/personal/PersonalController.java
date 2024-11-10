@@ -4,24 +4,27 @@ import com.tm.common.base.mapper.ProjectMapper;
 import com.tm.common.base.model.Project;
 import com.tm.common.base.model.User;
 import com.tm.common.entities.base.BaseResponse;
-import com.tm.common.entities.common.CommonIdBody;
 import com.tm.common.utils.ResultUtils;
 import com.tm.web.controller.BaseController;
 import com.tm.web.service.ProjectService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import jakarta.inject.Inject;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/personal")
 public class PersonalController extends BaseController {
-    @Autowired
-    private ProjectMapper projectMapper;
+    private final ProjectMapper projectMapper;
+    private final ProjectService projectService;
 
-    @Autowired
-    private ProjectService projectService;
+    @Inject
+    public PersonalController(ProjectMapper projectMapper, ProjectService projectService) {
+        this.projectMapper = projectMapper;
+        this.projectService = projectService;
+    }
 
     @GetMapping(value = "/getMyProjects")
     public BaseResponse getMyProjects() {

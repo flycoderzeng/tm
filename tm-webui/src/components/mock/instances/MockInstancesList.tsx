@@ -1,10 +1,10 @@
 import React from 'react';
-import {Table, Button, message, Tag, Input, Space} from 'antd';
+import type {TableColumnsType} from 'antd';
+import {Button, Input, message, Space, Table, Tag} from 'antd';
 import {withRouter} from "react-router-dom";
 import CommonListPage from "../../common/CommonListPage";
 import {CommonApiUrlModel} from "../../../entities/CommonApiUrlModel";
 import {ApiUrlConfig} from "../../../config/api.url";
-import type { TableColumnsType } from 'antd';
 import axios from "axios";
 import {StrUtils} from "../../../utils/StrUtils";
 import {LocalStorageUtils} from "../../../utils/LocalStorageUtils";

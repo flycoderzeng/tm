@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input, message, Select, Tabs, Tooltip, Radio, Modal} from "antd";
+import {Button, Form, Input, message, Modal, Radio, Select, Tabs, Tooltip} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
 import {DataTypeEnum} from "../../../entities/DataTypeEnum";
-import {CommonRemoteSearchMultiSelect} from "../../common/components/CommonRemoteSearchMultiSelect";
 import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
 import {RunEnvSelect} from "../../testmanage/runenv/RunEnvSelect";
