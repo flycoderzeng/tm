@@ -102,7 +102,7 @@ public final class ExpressionUtils {
                 continue;
             }
             Object object = AviatorEvaluator.execute(expr, envMap);
-            String result = "";
+            String result;
             if(object instanceof String) {
                 result = (String)object;
             }else{

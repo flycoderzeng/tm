@@ -37,7 +37,7 @@ public class GetRandomIntNode extends FunctionNode {
         String maxInclude = getParameterValue(ARG_5, caseVariables, "maxInclude: ");
         Long max = getMinMaxIntValue(maxInclude);
 
-        String generateResult = "";
+        String generateResult;
 
         if(min != null && max != null) {
             generateResult = RandomUtils.nextLong(min, max+1) + "";

@@ -33,101 +33,110 @@ public class AssertUtils {
 
     public static boolean compare(Object leftOperand, RelationOperatorEnum relationOperatorEnum, String rightOperand) {
         String leftOperandString = objectToString(leftOperand);
-        switch (relationOperatorEnum) {
-            case EQUAL:
-                if(leftOperand == null) {
-                    return false;
+        return switch (relationOperatorEnum) {
+            case EQUAL -> {
+                if (leftOperand == null) {
+                    yield false;
                 }
-                return StringUtils.equals(leftOperandString, rightOperand);
-            case NOT_EQUAL:
-                if(leftOperand == null) {
-                    return false;
+                yield StringUtils.equals(leftOperandString, rightOperand);
+            }
+            case NOT_EQUAL -> {
+                if (leftOperand == null) {
+                    yield false;
                 }
-                return !StringUtils.equals(leftOperandString, rightOperand);
-            case LESS_THAN:
-                if(NumberUtil.isNumber(leftOperandString) && NumberUtil.isNumber(rightOperand)) {
+                yield !StringUtils.equals(leftOperandString, rightOperand);
+            }
+            case LESS_THAN -> {
+                if (NumberUtil.isNumber(leftOperandString) && NumberUtil.isNumber(rightOperand)) {
                     Double left = Convert.toDouble(leftOperandString);
                     Double right = Convert.toDouble(rightOperand);
-                    return left < right;
+                    yield left < right;
                 }
-                return false;
-            case LESS_EQUAL:
-                if(NumberUtil.isNumber(leftOperandString) && NumberUtil.isNumber(rightOperand)) {
+                yield false;
+            }
+            case LESS_EQUAL -> {
+                if (NumberUtil.isNumber(leftOperandString) && NumberUtil.isNumber(rightOperand)) {
                     Double left = Convert.toDouble(leftOperandString);
                     Double right = Convert.toDouble(rightOperand);
-                    return left <= right;
+                    yield left <= right;
                 }
-                return false;
-            case GREATER_THAN:
-                if(NumberUtil.isNumber(leftOperandString) && NumberUtil.isNumber(rightOperand)) {
+                yield false;
+            }
+            case GREATER_THAN -> {
+                if (NumberUtil.isNumber(leftOperandString) && NumberUtil.isNumber(rightOperand)) {
                     Double left = Convert.toDouble(leftOperandString);
                     Double right = Convert.toDouble(rightOperand);
-                    return left > right;
+                    yield left > right;
                 }
-                return false;
-            case GREATER_EQUAL:
-                if(NumberUtil.isNumber(leftOperandString) && NumberUtil.isNumber(rightOperand)) {
+                yield false;
+            }
+            case GREATER_EQUAL -> {
+                if (NumberUtil.isNumber(leftOperandString) && NumberUtil.isNumber(rightOperand)) {
                     Double left = Convert.toDouble(leftOperandString);
                     Double right = Convert.toDouble(rightOperand);
-                    return left >= right;
+                    yield left >= right;
                 }
-                return false;
-            case INCLUDE:
-                if(leftOperandString == null) {
-                    return false;
+                yield false;
+            }
+            case INCLUDE -> {
+                if (leftOperandString == null) {
+                    yield false;
                 }
-                return leftOperandString.contains(rightOperand);
-            case NOT_INCLUDE:
-                if(leftOperandString == null) {
-                    return false;
+                yield leftOperandString.contains(rightOperand);
+            }
+            case NOT_INCLUDE -> {
+                if (leftOperandString == null) {
+                    yield false;
                 }
-                return !leftOperandString.contains(rightOperand);
-            case START_WITH:
-                if(leftOperandString == null) {
-                    return false;
+                yield !leftOperandString.contains(rightOperand);
+            }
+            case START_WITH -> {
+                if (leftOperandString == null) {
+                    yield false;
                 }
-                return leftOperandString.startsWith(rightOperand);
-            case END_WITH:
-                if(leftOperandString == null) {
-                    return false;
+                yield leftOperandString.startsWith(rightOperand);
+            }
+            case END_WITH -> {
+                if (leftOperandString == null) {
+                    yield false;
                 }
-                return leftOperandString.endsWith(rightOperand);
-            case IS_NULL:
-                return leftOperand == null;
-            case IS_NOT_NULL:
-                return leftOperand != null;
-            case IS_EMPTY:
-                return StringUtils.isEmpty(leftOperandString);
-            case IS_NOT_EMPTY:
-                return StringUtils.isNoneEmpty(leftOperandString);
-            case REGEX_PATTERN:
-                if(leftOperand == null) {
-                    return false;
+                yield leftOperandString.endsWith(rightOperand);
+            }
+            case IS_NULL -> leftOperand == null;
+            case IS_NOT_NULL -> leftOperand != null;
+            case IS_EMPTY -> StringUtils.isEmpty(leftOperandString);
+            case IS_NOT_EMPTY -> StringUtils.isNoneEmpty(leftOperandString);
+            case REGEX_PATTERN -> {
+                if (leftOperand == null) {
+                    yield false;
                 }
-                return ReUtil.isMatch(rightOperand, leftOperandString);
-            case PATH_NOT_EXISTS:
-                if(leftOperand == null) {
-                    return false;
+                yield ReUtil.isMatch(rightOperand, leftOperandString);
+            }
+            case PATH_NOT_EXISTS -> {
+                if (leftOperand == null) {
+                    yield false;
                 }
-                return leftOperand instanceof com.jayway.jsonpath.PathNotFoundException;
-            case IS_BLANK:
-                if(leftOperand == null) {
-                    return true;
+                yield leftOperand instanceof com.jayway.jsonpath.PathNotFoundException;
+            }
+            case IS_BLANK -> {
+                if (leftOperand == null) {
+                    yield true;
                 }
-                return StringUtils.isBlank(leftOperandString);
-            case IS_NOT_BLANK:
-                if(leftOperand == null) {
-                    return false;
+                yield StringUtils.isBlank(leftOperandString);
+            }
+            case IS_NOT_BLANK -> {
+                if (leftOperand == null) {
+                    yield false;
                 }
-                return StringUtils.isNoneBlank(leftOperandString);
-            case IS_NUMBER:
-                if(leftOperand == null) {
-                    return false;
+                yield StringUtils.isNoneBlank(leftOperandString);
+            }
+            case IS_NUMBER -> {
+                if (leftOperand == null) {
+                    yield false;
                 }
-                return StrUtil.isNumeric(leftOperandString);
-            default:
-                break;
-        }
-        return false;
+                yield StrUtil.isNumeric(leftOperandString);
+            }
+            default -> false;
+        };
     }
 }

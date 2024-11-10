@@ -81,8 +81,8 @@ public class DataNodeService {
     }
 
     public BaseResponse saveNode(SaveNodeBody body, User loginUser) {
-        DataNode dataNode = null;
-        DataNode parentDataNode = null;
+        DataNode dataNode;
+        DataNode parentDataNode;
         DataNode prevNode = null;
         boolean isNew = false;
         if(body.getParentId().equals(1)) {
@@ -115,7 +115,7 @@ public class DataNodeService {
         }
 
         if(body.getDataTypeId().equals(DataTypeEnum.AUTO_CASE.value())) {
-            AutoCase autoCase = null;
+            AutoCase autoCase;
             if(body.getId() != null && body.getId() > 0) {
                 autoCase = autoCaseMapper.selectByPrimaryId(body.getId());
                 if(autoCase == null) {
@@ -129,7 +129,7 @@ public class DataNodeService {
                 isNew = true;
             }
         }else if(body.getDataTypeId().equals(DataTypeEnum.PLATFORM_API.value())) {
-            PlatformApi platformApi = null;
+            PlatformApi platformApi;
             if(body.getId() != null && body.getId() > 0) {
                 platformApi = platformApiMapper.selectByPrimaryId(body.getId());
                 if(platformApi == null) {
@@ -142,7 +142,7 @@ public class DataNodeService {
                 isNew = true;
             }
         }else if(body.getDataTypeId().equals(DataTypeEnum.GLOBAL_VARIABLE.value())) {
-            GlobalVariable globalVariable = null;
+            GlobalVariable globalVariable;
             if(body.getId() != null && body.getId() > 0) {
                 globalVariable = globalVariableMapper.selectByPrimaryId(body.getId());
                 if(globalVariable == null) {
@@ -155,7 +155,7 @@ public class DataNodeService {
                 isNew = true;
             }
         }else if(body.getDataTypeId().equals(DataTypeEnum.AUTO_SHELL.value())) {
-            AutoScript autoScript = null;
+            AutoScript autoScript;
             if(body.getId() != null && body.getId() > 0) {
                 autoScript = autoScriptMapper.selectByPrimaryId(body.getId());
                 if(autoScript == null) {
@@ -169,7 +169,7 @@ public class DataNodeService {
                 isNew = true;
             }
         }else if (body.getDataTypeId().equals(DataTypeEnum.AUTO_PLAN.value())) {
-            AutoPlan autoPlan = null;
+            AutoPlan autoPlan;
             if(body.getId() != null && body.getId() > 0) {
                 autoPlan = autoPlanMapper.selectByPrimaryId(body.getId());
                 if(autoPlan == null) {
@@ -183,7 +183,7 @@ public class DataNodeService {
                 isNew = true;
             }
         }else if (body.getDataTypeId().equals(DataTypeEnum.APP_API.value())) {
-            HttpApi httpApi = null;
+            HttpApi httpApi;
             if(body.getId() != null && body.getId() > 0) {
                 httpApi = httpApiMapper.selectByPrimaryId(body.getId());
                 if(httpApi == null) {
@@ -267,7 +267,7 @@ public class DataNodeService {
             }
         }
         String setMethodName = "setParent" + parentDataNode.getLevel();
-        Method setMethod = null;
+        Method setMethod;
         try {
             setMethod = dataNodeClass.getMethod(setMethodName, new Class[]{Integer.class});
             setMethod.invoke(dataNode, parentDataNode.getId());
@@ -283,8 +283,8 @@ public class DataNodeService {
     }
 
     public BaseResponse moveNode(SaveNodeBody body, User loginUser) {
-        DataNode dataNode = null;
-        DataNode parentDataNode = null;
+        DataNode dataNode;
+        DataNode parentDataNode;
         DataNode prevNode = null;
         dataNode = dataNodeMapper.selectByPrimaryKey(body.getId(), body.getDataTypeId());
         if(dataNode == null) {

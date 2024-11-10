@@ -19,8 +19,7 @@ public class JDBCUtils {
     public static void setParameter(PreparedStatement ps, int index, Object value) throws Exception {
         if (value == null) {
             ps.setObject(index, null);
-        } else if (value instanceof String) {
-            String val = (String) value;
+        } else if (value instanceof String val) {
             if ("null".equalsIgnoreCase(val)) {
                 ps.setObject(index, null);
             } else if ("setNull".equalsIgnoreCase(val)) {
@@ -362,7 +361,7 @@ public class JDBCUtils {
     }
 
     public static boolean isTableExists(Connection conn, String tableName, String checkTableExistSql) {
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         try {
             ps = conn.prepareStatement(checkTableExistSql);
         } catch (SQLException e) {

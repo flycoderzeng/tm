@@ -174,23 +174,15 @@ public class DateUtils {
         if(date == null) {
             return null;
         }
-        switch (timeType) {
-            case YEAR:
-                return addYears(date, diff);
-            case MONTH:
-                return addMonths(date, diff);
-            case DAY:
-                return addDays(date, diff);
-            case HOUR:
-                return addHours(date, diff);
-            case MINUTE:
-                return addMinutes(date, diff);
-            case SECOND:
-                return addSeconds(date, diff);
-            default:
-                break;
-        }
-        return null;
+        return switch (timeType) {
+            case YEAR -> addYears(date, diff);
+            case MONTH -> addMonths(date, diff);
+            case DAY -> addDays(date, diff);
+            case HOUR -> addHours(date, diff);
+            case MINUTE -> addMinutes(date, diff);
+            case SECOND -> addSeconds(date, diff);
+            default -> null;
+        };
     }
 
     public enum TimeType {
@@ -201,7 +193,7 @@ public class DateUtils {
         if(baseDate == null) {
             baseDate = new Date();
         }
-        Date resultDate = null;
+        Date resultDate;
         switch (unitTypeNum) {
             case SECOND:
                 resultDate = DateUtils.addSeconds(baseDate, offset);
