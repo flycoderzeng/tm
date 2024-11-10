@@ -206,7 +206,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
             dataIndex: 'seq',
             render: text => <span>{text}</span>,
         }, {
-            title: '用例id',
+            title: '用例ID',
             dataIndex: 'caseId',
             render: text => <span>{text}</span>,
         }, {
@@ -214,7 +214,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
             dataIndex: 'caseName',
             render: text => <span>{text}</span>,
         }, {
-            title: '创建者',
+            title: '用例创建者',
             dataIndex: 'caseCreateUsername',
             render: text => <span>{text}</span>,
         }, {
@@ -340,7 +340,7 @@ const PlanCaseEdit: React.FC<IState> = (props) => {
 
     return (<div>
         <div className="list-toolbar">
-            <Input placeholder="用例id/名称" onPressEnter={onPressEnter}
+            <Input placeholder="用例ID/名称" onPressEnter={onPressEnter}
                    onChange={onChange} value={searchValue} style={{width: 300,}}/>
             <Button className="margin-left5" type="primary" onClick={onSearch}>搜索</Button>
             <Button className="margin-left5" type="primary" onClick={onAddCase}>添加用例</Button>

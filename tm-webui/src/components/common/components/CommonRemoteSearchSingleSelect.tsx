@@ -35,7 +35,7 @@ const CommonRemoteSearchSingleSelect: React.FC<IState> = (props) => {
     if(type === 'user') {
         placeholder = '输入英文名或中文名搜索';
     }else if(type === 'resource') {
-        placeholder = '输入id或名称搜索';
+        placeholder = '输入ID或名称搜索';
     }
 
     if(value && rows.length < 1) {

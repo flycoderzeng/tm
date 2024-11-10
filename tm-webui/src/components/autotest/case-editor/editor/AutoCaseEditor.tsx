@@ -1213,8 +1213,10 @@ const AutoCaseEditor: React.FC<IState> = (props) => {
                 }}>批量复制步骤</Button>
                 <Button type="default" onClick={() => {
                     copyCaseId();
-                }}>复制用例id</Button>
-                <Button icon={<QuestionOutlined />}>查看帮助文档</Button>
+                }}>复制用例ID</Button>
+                <Button icon={<QuestionOutlined />} onClick={() => {
+                    showHelpPage();
+                }}>查看帮助文档</Button>
             </div>
             <div className="case-editor-main-content">
                 <Resizable
