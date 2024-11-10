@@ -193,30 +193,14 @@ public class DateUtils {
         if(baseDate == null) {
             baseDate = new Date();
         }
-        Date resultDate;
-        switch (unitTypeNum) {
-            case SECOND:
-                resultDate = DateUtils.addSeconds(baseDate, offset);
-                break;
-            case MINUTE:
-                resultDate = DateUtils.addMinutes(baseDate, offset);
-                break;
-            case HOUR:
-                resultDate = DateUtils.addHours(baseDate, offset);
-                break;
-            case DAY:
-                resultDate = DateUtils.addDays(baseDate, offset);
-                break;
-            case MONTH:
-                resultDate = DateUtils.addMonths(baseDate, offset);
-                break;
-            case YEAR:
-                resultDate = DateUtils.addYears(baseDate, offset);
-                break;
-            default:
-                resultDate = baseDate;
-        }
-        return resultDate;
+        return switch (unitTypeNum) {
+            case SECOND -> DateUtils.addSeconds(baseDate, offset);
+            case MINUTE -> DateUtils.addMinutes(baseDate, offset);
+            case HOUR -> DateUtils.addHours(baseDate, offset);
+            case DAY -> DateUtils.addDays(baseDate, offset);
+            case MONTH -> DateUtils.addMonths(baseDate, offset);
+            case YEAR -> DateUtils.addYears(baseDate, offset);
+        };
     }
 
     public static Date stringDateToDate(String timeString) {
