@@ -63,8 +63,7 @@ public class FunctionNode extends StepNodeBase {
             log.info("结果变量是空: {}", parameterName);
             return null;
         }
-        String resultVariable = ExpressionUtils.extractVariable(result);
-        return resultVariable;
+        return ExpressionUtils.extractVariable(result);
     }
 
     protected void putResultVariable(String argName, String value) {

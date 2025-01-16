@@ -18,7 +18,6 @@ public class StepNode {
     private String key;
     private boolean isLeaf;
 
-    // 执行一次就加1
     private int runCount = 0;
 
     private List<StepNode> children;
@@ -41,8 +40,7 @@ public class StepNode {
     }
 
     public StepNode next() {
-        StepNode nextNode = getNext();
-        return nextNode;
+        return getNext();
     }
 
     private StepNode getNext() {
@@ -62,7 +60,7 @@ public class StepNode {
                 setEnded(true);
                 return getNextBrotherNode();
             }else{
-                if(children != null && children.size() > 0) {
+                if(children != null && !children.isEmpty()) {
                     return children.get(0);
                 }else{
                     log.info("{} 没有子步骤", define.getName());
@@ -71,7 +69,7 @@ public class StepNode {
                 }
             }
         }else{
-            if (children != null && children.size() > 0) {
+            if (children != null && !children.isEmpty()) {
                 return children.get(0);
             }
             setEnded(true);

@@ -36,7 +36,7 @@ public final class ExpressionUtils {
 
     private ExpressionUtils() {}
 
-    public static String replaceExpression(String expression, Map envMap) {
+    public static String replaceExpression(String expression, Map<String, Object> envMap) {
         return replaceGlobalVariable(replaceRegex(replaceCaseVariable(expression, envMap)));
     }
 
@@ -88,7 +88,7 @@ public final class ExpressionUtils {
         return src;
     }
 
-    public static String replaceCaseVariable(String src, Map envMap) {
+    public static String replaceCaseVariable(String src, Map<String, Object> envMap) {
         if(StringUtils.isBlank(src)) {
             return src;
         }
@@ -109,14 +109,10 @@ public final class ExpressionUtils {
                 result = object + "";
             }
             result += "";
-            if(StringUtils.equals("v_columnFormat", expr) && StringUtils.isBlank(result)) {
-                src = src.replace("\"${" + expr + "}\"", "null");
-            } else if(StringUtils.equals(result, "null")) {
+            if(StringUtils.equals(result, "null")) {
                 src = src.replace("\"${" + expr + "}\"", result);
-                src = src.replace("${" + expr + "}", result);
-            } else {
-                src = src.replace("${" + expr + "}", result);
             }
+            src = src.replace("${" + expr + "}", result);
         }
 
         if(StringUtils.equals(__PLATFORM_PRIVATE_NULL, src)) {
@@ -126,7 +122,7 @@ public final class ExpressionUtils {
         return src;
     }
 
-    public static String executeExpression(String expression, Map envMap) {
+    public static String executeExpression(String expression, Map<String, Object> envMap) {
         if(StringUtils.isBlank(expression)) {
             return expression;
         }
