@@ -1,6 +1,6 @@
 let BaseUrl = '';
 if(window.location.href.startsWith('http://localhost')) {
-    BaseUrl = 'http://localhost/tmservice';
+    BaseUrl = 'http://localhost:8080/tmservice';
 }else{
     BaseUrl = 'http://192.168.18.41/tmservice';
 }

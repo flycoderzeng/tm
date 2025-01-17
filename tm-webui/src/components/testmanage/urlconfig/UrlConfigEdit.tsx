@@ -188,7 +188,7 @@ const UrlConfigEdit: React.FC<IState> = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label="DCN"
+                    label="分布式节点"
                     name="dcnId"
                     rules={[{required: false, message: '请选择DCN!'}]}
                 >

@@ -88,7 +88,7 @@ const CommonBatchCopyConfig: React.FC<IState> = (props) => {
         </Form.Item>
 
         <Form.Item
-            label="源DCN"
+            label="源分布式节点"
             name="srcDcnId"
             labelCol={labelCol}
             rules={[{required: false}]}
