@@ -1,5 +1,5 @@
 /**@import '~antd/dist/antd.compact.css';**/
-@import '~antd/dist/antd.css';
+/*@import '~antd/dist/antd.css';*/
 .logo {
   float: left;
   width: 120px;
@@ -560,4 +560,22 @@ span.expand-icon:hover {
 *::-webkit-scrollbar-track {
   background: #efefef;
   border-radius: 2px;
+}
+
+.el_package {
+  padding-left: 18px;
+  background-image: url(resources/package.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.span-cover-info {
+  min-width: fit-content;
+  margin-left: 10px;
+  color: #1890ff;
+}
+
+.span-cover-info-td {
+  display: flex;
+  flex-direction: row;
 }

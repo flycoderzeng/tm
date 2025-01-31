@@ -92,7 +92,7 @@ class RightList extends CommonListPage {
             </div>
             <div className="card-body">
                 <div className="list-toolbar">
-                    <Search placeholder="id或名称" onSearch={this.onSearch} enterButton style={{ width: 400,}}/>
+                    <Search placeholder="id或名称" onSearch={this.onSearch} enterButton style={{ width: 400, marginRight: '5px'}}/>
                     <Button type="primary" onClick={() => this.edit(0)}>添加权限</Button>
                 </div>
                 <Table columns={columns}

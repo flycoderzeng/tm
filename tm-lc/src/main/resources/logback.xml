@@ -17,7 +17,7 @@
 
 
     <!--指定最基础的日志输出级别-->
-    <root level="DEBUG">
+    <root level="INDO">
         <!--appender将会添加到这个loger-->
         <appender-ref ref="consoleLog"/>
     </root>

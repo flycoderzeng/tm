@@ -2,9 +2,11 @@ package com.tm.common.base.model;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class AutoScript extends CommonNameDescriptionModel {
     public static final Integer AutoScriptTypeShell = 1;

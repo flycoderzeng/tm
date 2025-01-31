@@ -2,7 +2,7 @@ let BaseUrl = '';
 if(window.location.href.startsWith('http://localhost')) {
     BaseUrl = 'http://localhost:8080/tmservice';
 }else{
-    BaseUrl = 'http://192.168.18.41/tmservice';
+    BaseUrl = '/tmservice';
 }
 
 
@@ -125,5 +125,9 @@ const ApiUrlConfig = {
     SAVE_HTTP_MOCK_RULE_URL: '/web/mock/saveHttpMockRule',
     DELETE_HTTP_MOCK_RULE_URL: '/web/mock/deleteHttpMockRule',
     LOAD_HTTP_MOCK_RULE_URL: '/web/mock/loadHttpMockRule',
+    UPLOAD_WITH_COVERAGE_INFO_URL: '/web/coverage/uploadWithCoverageInfo',
+    GET_COVERAGE_INFO_URL: '/web/coverage/getCoverageInfo',
+    GET_PACKAGE_COVER_INFO_URL: '/web/coverage/getPackageLevelCoverageInfo',
+    QUERY_COVERAGE_INFO_LIST_URL: '/lc/lc/json/api/coverage_info',
 };
 export {ApiUrlConfig, BaseUrl};

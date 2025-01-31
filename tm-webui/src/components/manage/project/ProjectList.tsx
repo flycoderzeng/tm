@@ -93,7 +93,7 @@ class ProjectList extends CommonListPage {
             </div>
             <div className="card-body">
                 <div className="list-toolbar">
-                    <Search placeholder="id或项目名称" onSearch={this.onSearch} enterButton style={{ width: 400,}}/>
+                    <Search placeholder="id或项目名称" onSearch={this.onSearch} enterButton style={{ width: 400, marginRight: '5px'}}/>
                     <Button type="primary" onClick={() => this.edit(0)}>添加项目</Button>
                 </div>
                 <Table columns={columns}

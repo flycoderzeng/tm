@@ -32,12 +32,18 @@ import DcnConfigList from "../components/testmanage/dcnconfig/DcnConfigList";
 import {DcnConfigEdit} from "../components/testmanage/dcnconfig/DcnConfigEdit";
 import TagList from "../components/testmanage/tags/TagList";
 import TagEdit from "../components/testmanage/tags/TagEdit";
+import {CoverageList} from "../components/testmanage/coverage/CoverageList";
+import {CoverageInfo} from "../components/testmanage/coverage/CoverageInfo";
 
 const routes = [
     {
         path: "/login",
         component: Login,
         exact: true,
+    },
+    {
+        path: "/coverage/:id",
+        component: CoverageInfo
     },
     {
         path: "/",
@@ -114,6 +120,10 @@ const routes = [
             {
                 path: "/cronjoblist",
                 component: CronJobList
+            },
+            {
+                path: "/coveragelist",
+                component: CoverageList
             },
             {
                 path: "/cronjobedit/:id",

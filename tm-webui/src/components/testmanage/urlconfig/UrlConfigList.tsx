@@ -103,13 +103,13 @@ class UrlConfigList extends CommonListPage {
                 key: 'url',
                 sorter: ()=>{},
             },{
-                title: 'ip',
+                title: 'IP',
                 dataIndex: 'ip',
                 key: 'ip',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             },{
-                title: 'port',
+                title: '端口',
                 dataIndex: 'port',
                 render: text => <span>{text}</span>,
             },{

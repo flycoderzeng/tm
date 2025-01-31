@@ -2,6 +2,7 @@ package com.tm.common.entities.common.enumerate;
 
 public enum ResultCodeEnum {
     SUCCESS(0, "success"),
+    ERROR(10000, "error"),
     PARAM_ERROR(100001, "参数错误"),
     LOGIN_ERROR(100002, "用户名或密码错误"),
     NODE_TREE_LEVEL_OVERFLOW_ERROR(100003, "不能超过10层"),

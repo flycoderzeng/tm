@@ -92,7 +92,7 @@ class MenuList extends CommonListPage {
             </div>
             <div className="card-body">
                 <div className="list-toolbar">
-                    <Search placeholder="Id或者名称" onSearch={this.onSearch} enterButton style={{ width: 400,}}/>
+                    <Search placeholder="Id或者名称" onSearch={this.onSearch} enterButton style={{ width: 400, marginRight: '5px'}}/>
                     <Button type="primary" onClick={() => this.edit(0)}>添加菜单</Button>
                 </div>
                 <Table columns={columns}

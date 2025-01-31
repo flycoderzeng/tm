@@ -24,7 +24,7 @@ const initAxios = () =>
             if (error.response.status === 401) {
                 const data = {
                     code: -1,
-                    message: '未授权'
+                    message: '未授权！'
                 }
                 window["__ROUTER__"].push('/login');
                 return Promise.reject(data)
