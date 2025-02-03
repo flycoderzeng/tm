@@ -12,6 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class BaseController {
     @Autowired
     private EhcacheService ehcacheService;
+    public static String OS = System.getProperty("os.name").toLowerCase();
 
     public HttpServletRequest getRequest() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();

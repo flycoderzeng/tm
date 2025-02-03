@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tm.common.config.FileDirConfig.WINDOWS_TEMP_DOWNLOAD_FILES_PATH;
 
 @Slf4j
 @Data
@@ -109,17 +108,10 @@ public class HttpSampler extends StepNodeBase {
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             String saveFilePath;
-            if(OS.contains("windows")) {
-                if(!new File(FileDirConfig.WINDOWS_TEMP_DOWNLOAD_FILES_PATH).exists()) {
-                    FileUtil.mkdir(FileDirConfig.WINDOWS_TEMP_DOWNLOAD_FILES_PATH);
-                }
-                saveFilePath = WINDOWS_TEMP_DOWNLOAD_FILES_PATH + "/" + saveFileName;
-            }else{
-                if(!new File(FileDirConfig.LINUX_TEMP_DOWNLOAD_FILES_PATH).exists()) {
-                    FileUtil.mkdir(FileDirConfig.LINUX_TEMP_DOWNLOAD_FILES_PATH);
-                }
-                saveFilePath = FileDirConfig.LINUX_TEMP_DOWNLOAD_FILES_PATH + "/" +saveFileName;
+            if(!new File(FileDirConfig.TEMP_DOWNLOAD_FILES_PATH).exists()) {
+                FileUtil.mkdir(FileDirConfig.TEMP_DOWNLOAD_FILES_PATH);
             }
+            saveFilePath = FileDirConfig.TEMP_DOWNLOAD_FILES_PATH + "/" +saveFileName;
             addResultInfo("保存的文件路径: ").addResultInfoLine(saveFilePath);
             File targetFile = new File(saveFilePath);
             OutputStream outStream = new FileOutputStream(targetFile);
@@ -246,11 +238,7 @@ public class HttpSampler extends StepNodeBase {
                     formMap.put(name, value);
                 } else if (StringUtils.equals("file", formDatum.getType())) {
                     String filePath;
-                    if(OS.contains("windows")) {
-                        filePath = FileDirConfig.WINDOWS_TEMP_UPLOAD_FILES_PATH + File.separator + value;
-                    }else{
-                        filePath = FileDirConfig.LINUX_TEMP_UPLOAD_FILES_PATH + File.separator + value;
-                    }
+                    filePath = FileDirConfig.TEMP_UPLOAD_FILES_PATH + File.separator + value;
                     formMap.put(name, new File(filePath));
                 }
             }

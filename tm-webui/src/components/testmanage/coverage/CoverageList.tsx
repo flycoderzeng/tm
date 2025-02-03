@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
-import {Button, Table, Modal, Form, Input, message, Progress} from "antd";
+import {Button, Form, Input, message, Modal, Progress, Table} from "antd";
 import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
 import {FormInstance} from "antd/lib/form";
@@ -207,7 +207,15 @@ const CoverageList: React.FC<IState> = (props) => {
             width: 200,
             dataIndex: 'lineCover',
             key: 'lineCover',
-            render: (text, record) => (<div style={{display: 'flex', flexDirection: 'column'}}><Progress size="small" percent={record.lineCover} strokeColor={record.lineCover < 80 ? 'red' : 'green'} /><span style={{color: '#1890ff'}}>{record.lineCoverInfo}</span></div>)
+            render: (text, record) => {
+                const div = <>
+                    <div style={{display: 'flex', flexDirection: 'column'}}><Progress size="small"
+                                                                                      percent={record.lineCover}
+                                                                                      strokeColor={record.lineCover < 80 ? 'red' : 'green'}/><span
+                        style={{color: '#1890ff'}}>{record.lineCoverInfo}</span></div>
+                </>;
+                return div;
+            }
         },
         {
             title: '创建者',

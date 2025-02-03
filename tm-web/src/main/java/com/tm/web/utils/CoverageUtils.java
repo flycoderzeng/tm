@@ -114,9 +114,7 @@ public class CoverageUtils {
                         String sourceFileName = classElement.getAttribute("sourcefilename");
                         classCoverageResult.setSourceFileName(sourceFileName);
 
-                        if(classURIList.size() == 1) {
-                            fillLineCoverageResult(packageElement, sourceFileName, classCoverageResult);
-                        }
+                        fillLineCoverageResult(packageElement, sourceFileName, classCoverageResult);
 
                         NodeList childNodes = classElement.getChildNodes();
                         for (int k = 0; k < childNodes.getLength(); k++) {
@@ -226,5 +224,21 @@ public class CoverageUtils {
         methodCoverageResult.setLine(line);
         methodCoverageResult.setCounters(new ArrayList<>());
         return methodCoverageResult;
+    }
+
+    public static String extractDirectoryName(String gitUrl) {
+        // 统一处理URL格式
+        String path = gitUrl.replace(".git", ""); // 去掉.git后缀
+        path = path.replace("https://", "") // 去掉https://
+                .replace("git@", "") // 去掉git@
+                .replace(":", "/"); // 将SSH格式中的冒号替换为斜杠
+
+        // 提取最后一部分
+        String[] parts = path.split("/");
+        if (parts.length > 0) {
+            return parts[parts.length - 1]; // 返回最后一部分
+        } else {
+            throw new IllegalArgumentException("Invalid Git URL format: " + gitUrl);
+        }
     }
 }

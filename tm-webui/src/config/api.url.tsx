@@ -128,6 +128,8 @@ const ApiUrlConfig = {
     UPLOAD_WITH_COVERAGE_INFO_URL: '/web/coverage/uploadWithCoverageInfo',
     GET_COVERAGE_INFO_URL: '/web/coverage/getCoverageInfo',
     GET_PACKAGE_COVER_INFO_URL: '/web/coverage/getPackageLevelCoverageInfo',
+    OPEN_PACKAGE_COVER_INFO_URL: '/web/coverage/openPackageLevelCoverageInfo',
+    OPEN_CLASS_COVER_INFO_URL: '/web/coverage/openClassCoverageInfo',
     QUERY_COVERAGE_INFO_LIST_URL: '/lc/lc/json/api/coverage_info',
 };
 export {ApiUrlConfig, BaseUrl};

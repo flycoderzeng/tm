@@ -569,6 +569,20 @@ span.expand-icon:hover {
   background-repeat: no-repeat;
 }
 
+.el_class {
+  padding-left: 18px;
+  background-image: url(resources/class.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.el_method {
+  padding-left: 18px;
+  background-image: url(resources/method.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
 .span-cover-info {
   min-width: fit-content;
   margin-left: 10px;

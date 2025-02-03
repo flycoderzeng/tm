@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * Jacoco是从代码指令（Instructions， Coverage），分支（Branches， Coverage），圈复杂度（Cyclomatic Complexity），行（Lines），方法（Methods），类（Classes）等维度进行分析的。
@@ -174,6 +173,7 @@ public class JacocoCoverageResult {
     @Data
     public static class PackageCoverageResult {
         private String name;
+        private String type = "package";
         private List<Counter> counters;
         private List<ClassCoverageResult> classCoverageResults;
 
@@ -185,6 +185,7 @@ public class JacocoCoverageResult {
     @Data
     public static class ClassCoverageResult {
         private String name;
+        private String type = "class";
         private String sourceFileName;
         private List<Counter> counters;
         private List<MethodCoverageResult> methodCoverageResults;
@@ -194,6 +195,7 @@ public class JacocoCoverageResult {
     @Data
     public static class MethodCoverageResult {
         private String name;
+        private String type = "method";
         private String desc;
         private String line;
         private List<Counter> counters;
