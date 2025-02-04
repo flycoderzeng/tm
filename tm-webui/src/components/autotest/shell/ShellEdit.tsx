@@ -190,12 +190,15 @@ class ShellEdit extends React.Component<ShellProps, IState> {
 
     editorDidMountHandle(editor, monaco) {
         editor.focus();
+        editor.setSelection(new monaco.Range(1, 1, 1, 1));
     }
 
     render() {
         const options = {
             selectOnLineNumbers: true,
-            renderSideBySide: false
+            renderSideBySide: false,
+            autoFocus: false,
+            automaticLayout: true,
         };
         return <div className="card stretch-left">
             <div className="card-header card-header-divider">

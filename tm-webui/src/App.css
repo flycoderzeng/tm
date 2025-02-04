@@ -593,3 +593,15 @@ span.expand-icon:hover {
   display: flex;
   flex-direction: row;
 }
+
+.covered-line {
+  background-color: rgb(204 255 204);
+}
+
+.uncovered-line {
+  background-color: rgb(255 170 170);
+}
+
+.covered-part-line {
+  background-color: rgb(255 255 204)
+}

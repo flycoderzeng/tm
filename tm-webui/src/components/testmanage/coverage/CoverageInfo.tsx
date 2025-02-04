@@ -5,6 +5,15 @@ import axios from "axios";
 import {ApiUrlConfig} from "../../../config/api.url";
 import {DateUtils} from "../../../utils/DateUtils";
 import {RandomUtils} from "../../../utils/RandomUtils";
+import MonacoEditor from "react-monaco-editor";
+
+interface LineCoverageItem {
+    nr: number;
+    mi: number;
+    ci: number;
+    mb: number;
+    cb: number;
+}
 
 interface DataType {
     key: React.Key;
@@ -25,6 +34,7 @@ interface DataType {
     lineCoverInfo: string;
     methodCoverageResults?: DataType[];
     counters?: any[];
+    lineCoverageResults?: LineCoverageItem[];
 }
 interface IState {
 }
@@ -32,13 +42,14 @@ interface IState {
 const CoverageInfo: React.FC<IState> = (props) => {
     const [id, setId] = useState((props as any).match.params.id);
     const [title, setTitle] = useState('覆盖率分析结果');
+    const [sourceCode, setSourceCode] = useState('');
     const [hiddenClassCover, setHiddenClassCover] = useState(false);
-    const [summaryTitle, setSummaryTitle] = useState('覆盖率分析结果');
+    const [classCoverageInfo, setClassCoverageInfo] = useState<DataType>();
     const [className, setClassName] = useState('');
     const [packageName, setPackageName] = useState('');
     const [breadcrumbItems, setBreadcrumbItems] = useState([
         {
-            title: <a href="javascript:return;" onClick={() => load(id)}>{title}</a>,
+            title: <a href="#" onClick={(e) => {e.preventDefault();load(id);return;}}>{title}</a>,
         },
     ]);
     const [instructionCover, setInstructionCover] = useState(0);
@@ -55,6 +66,9 @@ const CoverageInfo: React.FC<IState> = (props) => {
     const [lineCoverInfo, setLineCoverInfo] = useState('');
     const [createInfo, setCreateInfo] = useState('');
     const [rows, setRows] = useState<DataType[]>([]);
+    const [editor, setEditor] = useState();
+    const [monaco, setMonaco] = useState();
+    const [showCodeCoverage, setShowCodeCoverage] = useState(false);
 
     useEffect(() => {
         setId((props as any).match.params.id);
@@ -71,9 +85,8 @@ const CoverageInfo: React.FC<IState> = (props) => {
                     message.error(ret.message);
                 } else {
                     setTitle(ret.data.name);
-                    setSummaryTitle(ret.data.name);
                     setBreadcrumbItems([{
-                        title: <a href="javascript:;" onClick={() => load(infoId)}>{ret.data.name}</a>,
+                        title: <a href="#" onClick={(e) => {e.preventDefault();load(infoId);return;}}>{ret.data.name}</a>,
                     },]);
                     if((ret.data.coveredInstructions+ret.data.missedInstructions) < 1) {
                         setInstructionCover(0);
@@ -133,6 +146,7 @@ const CoverageInfo: React.FC<IState> = (props) => {
                 } else {
                     for (let i = 0; i < ret.data.length; i++) {
                         const row = ret.data[i];
+                        row.key = RandomUtils.getKey();
                         handleCounters(row);
                     }
                     setRows(ret.data);
@@ -228,6 +242,7 @@ const CoverageInfo: React.FC<IState> = (props) => {
                 } else {
                     for (let i = 0; i < ret.data.length; i++) {
                         const row = ret.data[i];
+                        row.key = RandomUtils.getKey();
                         row.name = row.sourceFileName;
                         handleCounters(row);
                     }
@@ -247,23 +262,37 @@ const CoverageInfo: React.FC<IState> = (props) => {
 
     function openPackage(record: DataType) {
         setBreadcrumbItems([breadcrumbItems[0], {
-            title: <a href="javascript:;" className={'el_package'} onClick={() => openPackage(record)}><span style={{marginLeft: 15}}>{record.name}</span></a>,
+            title: <a href="#" className={'el_package'} onClick={(e) => {e.preventDefault();openPackage(record);return;}}><span style={{marginLeft: 15}}>{record.name}</span></a>,
         },]);
         openPackage2(id, record);
         setHiddenClassCover(false);
+        setShowCodeCoverage(false);
     }
 
     function openClass(record: DataType) {
+        if(showCodeCoverage) {
+            setShowCodeCoverage(false);
+            return;
+        }
+        if(record.name === className) {
+            return;
+        }
         setBreadcrumbItems([breadcrumbItems[0], breadcrumbItems[1], {
-            title: <span className={'el_class'}>{record.name}</span>,
+            title: <a href="#" className={'el_class'} onClick={(e) => {e.preventDefault();openClass(record);return;}}><span style={{marginLeft: 15}}>{record.name}</span></a>,
         },]);
         openClass2(record);
+        setClassCoverageInfo(record);
         setHiddenClassCover(true);
+        setShowCodeCoverage(false);
     }
 
     function openClass2(record: DataType) {
         const dataTypes = record.methodCoverageResults||[];
+        if(dataTypes[0]?.name.endsWith(')')) {
+            return;
+        }
         for (let i = 0; i < dataTypes.length; i++) {
+            dataTypes[i].key = RandomUtils.getKey();
             const desc = dataTypes[i].desc;
             if(desc) {
                 dataTypes[i].name += parseJavaMethodDescriptor(desc.substring(desc.indexOf('('), desc.lastIndexOf(')')+1));
@@ -288,7 +317,8 @@ const CoverageInfo: React.FC<IState> = (props) => {
                 if (ret.code !== 0) {
                     message.error(ret.message);
                 } else {
-
+                    setSourceCode(ret.data);
+                    setShowCodeCoverage(true);
                 }
             }
         }).catch(resp => {
@@ -346,12 +376,46 @@ const CoverageInfo: React.FC<IState> = (props) => {
             }
         }
         for (let j = 0; j < result.length; j++) {
-            if(result[j].startsWith('java.lang.')) {
-                result[j] = result[j].substring(10);
+            if(result[j].lastIndexOf(".") > -1) {
+                result[j] = result[j].substring(result[j].lastIndexOf(".")+1);
             }
         }
 
         return `(${result.join(', ')})`;
+    }
+
+    function editorDidMountHandle(editor1, monaco1) {
+        setEditor(editor1);
+        setMonaco(monaco1);
+        let coveredDecorations = classCoverageInfo?.lineCoverageResults?.filter(row => row.mi === 0 && row.mb === 0).map(row => {
+            return {
+                range: new monaco1.Range(row.nr, 1, row.nr, monaco1.editor.getModels()[0].getLineMaxColumn(row.nr)),
+                options: {
+                    isWholeLine: false,
+                    className: 'covered-line',
+                },
+            };
+        });
+        if(!coveredDecorations) {
+            coveredDecorations = []
+        }
+        let uncoveredDecorations = classCoverageInfo?.lineCoverageResults?.filter(row => row.ci === 0 && row.cb === 0).map(row => {
+            return {
+                range: new monaco1.Range(row.nr, 1, row.nr, monaco1.editor.getModels()[0].getLineMaxColumn(row.nr)),
+                options: {
+                    isWholeLine: false,
+                    className: 'uncovered-line',
+                },
+            };
+        });
+        if(!uncoveredDecorations) {
+            uncoveredDecorations = []
+        }
+
+        editor1.deltaDecorations([], [
+            ...coveredDecorations,
+            ...uncoveredDecorations,
+        ]);
     }
 
     const columns: TableColumnsType<DataType> = [
@@ -492,30 +556,57 @@ const CoverageInfo: React.FC<IState> = (props) => {
             children: <span>{createInfo}</span>,
         },
     ];
-
+    const options = {
+        selectOnLineNumbers: true,
+        renderSideBySide: false,
+        autoFocus: false,
+        automaticLayout: true,
+        readOnly: true,
+    };
+    let divEditor;
+    if(showCodeCoverage) {
+        divEditor = <div style={{height: window.outerHeight}}>
+            <MonacoEditor
+                theme="vs"
+                language={'java'}
+                value={sourceCode}
+                options={options}
+                editorDidMount={editorDidMountHandle}
+            />
+        </div>
+    }
+    let table;
+    if(!showCodeCoverage) {
+        table = <Table<DataType>
+            scroll={{x: 1350}}
+            columns={columns}
+            dataSource={rows}
+            pagination={false}
+            onRow={(record) => {
+                if(record.type === 'total') {
+                    return {
+                        style: {background: 'aliceblue'}
+                    }
+                }
+                else {
+                    return {};
+                }
+            }}
+            size="small" />
+    }
+    let summary;
+    if(!showCodeCoverage) {
+        summary = <Descriptions title={'覆盖率总计'} items={items} />
+    }
     return (<div style={{padding: '10px'}}>
         <Breadcrumb
             style={{paddingBottom: 15}}
             items={breadcrumbItems}
         />
-        <Descriptions title={'覆盖率总计'} items={items} />
+        {summary}
         <div style={{paddingTop: '10px'}}>
-            <Table<DataType>
-                scroll={{x: 1350}}
-                columns={columns}
-                dataSource={rows}
-                pagination={false}
-                onRow={(record) => {
-                    if(record.type === 'total') {
-                        return {
-                            style: {background: 'aliceblue'}
-                        }
-                    }
-                    else {
-                        return {};
-                    }
-                }}
-                size="small" />
+            {table}
+            {divEditor}
         </div>
     </div>)
 }

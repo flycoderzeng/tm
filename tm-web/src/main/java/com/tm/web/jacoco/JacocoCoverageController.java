@@ -145,16 +145,16 @@ public class JacocoCoverageController extends BaseController {
             }
             log.info(output);
         }else{
-            if (OS.contains("windows")) {
-                byte[] bytes = new ProcessExecutor().command("cmd", "/c", "cd /d " + dirPath + " && git pull origin " + coverageInfo.getBranch())
-                        .readOutput(true).execute().output();
-                output = new String(bytes, "GBK");
-            } else {
-                output = new ProcessExecutor().command("/bin/bash", "-c", "cd " + dirPath + " && git pull origin " + coverageInfo.getBranch())
-                        .readOutput(true).execute()
-                        .outputUTF8();
-            }
-            log.info(output);
+//            if (OS.contains("windows")) {
+//                byte[] bytes = new ProcessExecutor().command("cmd", "/c", "cd /d " + dirPath + " && git pull origin " + coverageInfo.getBranch())
+//                        .readOutput(true).execute().output();
+//                output = new String(bytes, "GBK");
+//            } else {
+//                output = new ProcessExecutor().command("/bin/bash", "-c", "cd " + dirPath + " && git pull origin " + coverageInfo.getBranch())
+//                        .readOutput(true).execute()
+//                        .outputUTF8();
+//            }
+//            log.info(output);
         }
         List<File> files = FileUtil.loopFiles(dirPath, pathname -> pathname.getAbsolutePath().contains(body.getPackageName().replace(".", File.separator) + File.separator + body.getSourceFileName()));
         if(!files.isEmpty()) {
