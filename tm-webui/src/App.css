@@ -602,6 +602,23 @@ span.expand-icon:hover {
   background-color: rgb(255 170 170);
 }
 
-.covered-part-line {
-  background-color: rgb(255 255 204)
+.covered-part-branch-line {
+  background-color: rgb(255 255 204);
+  background-image: url(resources/branchpc.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.covered-full-branch-line {
+  background-color: rgb(255 255 204);
+  background-image: url(resources/branchfc.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.covered-none-branch-line {
+  background-color: rgb(255 170 170);
+  background-image: url(resources/branchnc.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
 }

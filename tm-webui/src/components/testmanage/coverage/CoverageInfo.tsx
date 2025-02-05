@@ -399,7 +399,7 @@ const CoverageInfo: React.FC<IState> = (props) => {
         if(!coveredDecorations) {
             coveredDecorations = []
         }
-        let uncoveredDecorations = classCoverageInfo?.lineCoverageResults?.filter(row => row.ci === 0 && row.cb === 0).map(row => {
+        let uncoveredDecorations = classCoverageInfo?.lineCoverageResults?.filter(row => row.ci === 0 && row.cb === 0 && row.mb === 0).map(row => {
             return {
                 range: new monaco1.Range(row.nr, 1, row.nr, monaco1.editor.getModels()[0].getLineMaxColumn(row.nr)),
                 options: {
@@ -412,9 +412,54 @@ const CoverageInfo: React.FC<IState> = (props) => {
             uncoveredDecorations = []
         }
 
+        let coveredPartBranchDecorations = classCoverageInfo?.lineCoverageResults?.filter(row => row.mb > 0 && row.cb > 0).map(row => {
+            return {
+                range: new monaco1.Range(row.nr, 1, row.nr, monaco1.editor.getModels()[0].getLineMaxColumn(row.nr)),
+                options: {
+                    isWholeLine: false,
+                    className: 'covered-part-branch-line',
+                    hoverMessage: { value: row.mb + ' of ' + (row.mb + row.cb) + ' branches missed.' }
+                },
+            };
+        });
+        if(!coveredPartBranchDecorations) {
+            coveredPartBranchDecorations = []
+        }
+
+        let coveredFullBranchDecorations = classCoverageInfo?.lineCoverageResults?.filter(row => row.mb === 0 && row.cb > 0).map(row => {
+            return {
+                range: new monaco1.Range(row.nr, 1, row.nr, monaco1.editor.getModels()[0].getLineMaxColumn(row.nr)),
+                options: {
+                    isWholeLine: false,
+                    className: 'covered-full-branch-line',
+                    hoverMessage: { value: 'All ' + (row.mb + row.cb) + ' branches covered.' }
+                },
+            };
+        });
+        if(!coveredFullBranchDecorations) {
+            coveredFullBranchDecorations = []
+        }
+
+        let coveredNoneBranchDecorations = classCoverageInfo?.lineCoverageResults?.filter(row => row.mb > 0 && row.cb === 0).map(row => {
+            return {
+                range: new monaco1.Range(row.nr, 1, row.nr, monaco1.editor.getModels()[0].getLineMaxColumn(row.nr)),
+                options: {
+                    isWholeLine: false,
+                    className: 'covered-none-branch-line',
+                    hoverMessage: { value: 'All ' + (row.mb + row.cb) + ' branches missed.' }
+                },
+            };
+        });
+        if(!coveredNoneBranchDecorations) {
+            coveredNoneBranchDecorations = []
+        }
+
         editor1.deltaDecorations([], [
             ...coveredDecorations,
             ...uncoveredDecorations,
+            ...coveredPartBranchDecorations,
+            ...coveredFullBranchDecorations,
+            ...coveredNoneBranchDecorations,
         ]);
     }
 
@@ -565,7 +610,7 @@ const CoverageInfo: React.FC<IState> = (props) => {
     };
     let divEditor;
     if(showCodeCoverage) {
-        divEditor = <div style={{height: window.outerHeight}}>
+        divEditor = <div style={{height: screen.height - 100}}>
             <MonacoEditor
                 theme="vs"
                 language={'java'}
