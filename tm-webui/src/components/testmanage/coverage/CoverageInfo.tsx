@@ -393,6 +393,7 @@ const CoverageInfo: React.FC<IState> = (props) => {
                 options: {
                     isWholeLine: false,
                     className: 'covered-line',
+                    marginClassName: 'margin-class-name'
                 },
             };
         });
@@ -610,7 +611,7 @@ const CoverageInfo: React.FC<IState> = (props) => {
     };
     let divEditor;
     if(showCodeCoverage) {
-        divEditor = <div style={{height: screen.height - 100}}>
+        divEditor = <div style={{height: window.outerHeight - 100}}>
             <MonacoEditor
                 theme="vs"
                 language={'java'}

@@ -361,7 +361,7 @@ const CoverageList: React.FC<IState> = (props) => {
                         name="gitCommitId1"
                         rules={[{ required: false}]}
                     >
-                        <Input placeholder={'两个git commit之间比较输入此项!'} />
+                        <Input placeholder={'同一分支两个commit之间比较输入此项!'} />
                     </Form.Item>
 
                     <Form.Item
@@ -369,7 +369,7 @@ const CoverageList: React.FC<IState> = (props) => {
                         name="gitCommitId2"
                         rules={[{ required: false}]}
                     >
-                        <Input placeholder={'两个git commit之间比较输入此项!'} />
+                        <Input placeholder={'同一分支两个commit之间比较输入此项!'} />
                     </Form.Item>
 
                     <Form.Item

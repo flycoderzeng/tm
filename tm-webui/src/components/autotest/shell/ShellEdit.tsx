@@ -189,8 +189,8 @@ class ShellEdit extends React.Component<ShellProps, IState> {
     }
 
     editorDidMountHandle(editor, monaco) {
-        editor.focus();
-        editor.setSelection(new monaco.Range(1, 1, 1, 1));
+        //editor.focus();
+        //editor.setSelection(new monaco.Range(1, 1, 1, 1));
     }
 
     render() {
