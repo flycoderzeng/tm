@@ -201,19 +201,23 @@ const AutoPlanEdit: React.FC<IState> = (props) => {
     }
 
     return (<div className="card">
-        <div className="card-header card-header-divider">
-            编辑自动化计划
-            <Tooltip title="返回">
-                <Button onClick={back} type="primary" shape="circle" size={'small'} icon={<ArrowLeftOutlined/>}/>
-            </Tooltip>
-            <span style={{float: 'right'}}>
+        <div className="card-header card-header-divider" style={{display: 'flex', alignItems: 'flex-end'}}>
+            <div style={{flexGrow: 1}}>
+                <span>
+                    <span>编辑自动化计划</span>
+                    <Tooltip title="返回">
+                        <Button onClick={back} type="primary" shape="circle" size={'small'} icon={<ArrowLeftOutlined/>}/>
+                    </Tooltip>
+                </span>
+            </div>
+            <div>
                 <Button type="primary" onClick={() => {
                     setVisiblePlanGlobalVariableModal(true);
                 }}>计划变量配置</Button>
                 <Button className="margin-left5" onClick={runPlan} loading={running1} type="default">运行计划</Button>
                 <Button className="margin-left5" onClick={runPlanWithGroup} loading={running2} type="primary">组合运行</Button>
                 <Button className="margin-left5" onClick={checkPlanResult} type="default">查看运行结果</Button>
-            </span>
+            </div>
         </div>
         <div className="card-body">
             <Tabs defaultActiveKey="1" onChange={onChangeTab} items={[

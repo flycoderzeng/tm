@@ -301,7 +301,7 @@ const CoverageList: React.FC<IState> = (props) => {
                 loading={loading}/>
         </div>
         <Modal
-            title="添加覆盖率分析结果"
+            title="添加覆盖率分析"
             open={visible}
             onOk={() => setVisible(false)}
             onCancel={() => setVisible(false)}
