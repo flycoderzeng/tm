@@ -10,5 +10,3 @@ testman
 
 # 自动化用例运行结果
 ![image](https://github.com/user-attachments/assets/135eef91-eb6f-443a-a57b-f0b06ce00f8e)
-
-

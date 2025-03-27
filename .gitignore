@@ -40,3 +40,4 @@ build/
 /tm-mockagent/src/test/
 /tm-lc/src/test/
 /tm-eureka/src/test/
+jacoco.exec
