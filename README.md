@@ -3,11 +3,12 @@ testman
 一个接口自动化测试平台
 
 # 自动化用例管理
-![img.png](img.png)
+![image](https://github.com/user-attachments/assets/c6cf829e-efdf-4123-96f7-a073dcae8f61)
 
 # 自动化用例编辑
-![img_2.png](img_2.png)
+![image](https://github.com/user-attachments/assets/a9e5b15f-3ac1-4daa-9433-564c6dbba8df)
 
 # 自动化用例运行结果
-![img_3.png](img_3.png)
+![image](https://github.com/user-attachments/assets/135eef91-eb6f-443a-a57b-f0b06ce00f8e)
+
 
