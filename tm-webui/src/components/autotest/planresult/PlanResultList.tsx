@@ -110,7 +110,7 @@ const PlanResultList: React.FC<IState> = (props) => {
 
     const columns: any[] = [
         {
-            title: '结果id',
+            title: '结果ID',
             dataIndex: 'id',
             key: 'id',
             render: (text, record) => <a onClick={() => {viewPlanResult(record);}}>{text}</a>,

@@ -13,7 +13,7 @@ const { Content, Header } = Layout;
 interface IProps {}
 
 type IndexProps = IProps & RouteComponentProps;
-
+type MenuItem = Required<MenuProps>['items'][number];
 interface IState {
     collapsed: boolean;
     route: any;
@@ -68,7 +68,7 @@ class Index extends React.Component <IndexProps, IState> {
 
     render() {
         const menuTreeList = this.state.menuTreeList;
-        const items:any[] = [];
+        const items:MenuItem [] = [];
         menuTreeList.map(row => {
             if(row.children && row.children.length > 0) {
                 const m1: any = {label: row.menuName, key: row.id.toString(), children: []};
@@ -88,9 +88,9 @@ class Index extends React.Component <IndexProps, IState> {
 
         const rightItems: MenuProps = {items: [{label: (<Button type="link" onClick={() => this.logout()}>退出</Button>), key: '1'}]};
         return (<Layout style={{ minHeight: '100vh' }}>
-                <Header style={{display: 'flex'}}>
+                <Header style={{display: 'flex', background: '#FFFFFF'}}>
                     <div className="logo-text">testman</div>
-                    <Menu theme="dark" defaultSelectedKeys={['1']} mode="horizontal" style={{flex: 1, marginLeft: '200px'}} items={items}></Menu>
+                    <Menu theme="light" defaultSelectedKeys={['1']} mode="horizontal" style={{flex: 1, marginLeft: '200px'}} items={items}/>
                     <div style={{float: 'right'}}>
                         <Dropdown menu={rightItems}>
                             <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>

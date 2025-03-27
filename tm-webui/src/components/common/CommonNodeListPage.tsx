@@ -379,7 +379,7 @@ const CommonNodeListPage: React.FC<IState> = forwardRef((props, ref) => {
         <div className="card-body">
             <div className="list-toolbar">
                 <Search placeholder="Id或者名称" onSearch={onSearch} onChange={onChangeSearchValue}
-                        allowClear enterButton style={{width: 400,}}/>
+                        allowClear enterButton style={{width: 400, marginRight: '5px'}}/>
                 {currFolderCheck}
                 {caseTagSelect}
                 {countTag}

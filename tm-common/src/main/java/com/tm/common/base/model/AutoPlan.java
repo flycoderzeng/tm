@@ -1,7 +1,9 @@
 package com.tm.common.base.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class AutoPlan extends DataNode {
     private Integer id;

@@ -7,11 +7,15 @@ import com.tm.common.entities.common.enumerate.DataTypeEnum;
 import com.tm.worker.core.exception.TMException;
 import com.tm.worker.core.threads.AutoTestContext;
 import com.tm.worker.core.threads.AutoTestContextService;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.zeroturnaround.exec.ProcessExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +28,7 @@ import java.util.regex.Pattern;
  * 引用 "正则表达式"  根据正则表达式 生成字符串替换
  * @/[0-9]{1,3}/
  */
+@Slf4j
 public final class ExpressionUtils {
     public static final String __PLATFORM_PRIVATE_NULL = "__NULL__";
 
@@ -36,8 +41,14 @@ public final class ExpressionUtils {
 
     private ExpressionUtils() {}
 
-    public static String replaceExpression(String expression, Map envMap) {
+    @SneakyThrows
+    public static String replaceExpression(String expression, Map<String, Object> envMap) {
         return replaceGlobalVariable(replaceRegex(replaceCaseVariable(expression, envMap)));
+    }
+
+    @SneakyThrows
+    public static String replaceCmdExpression(String expression, Map<String, Object> envMap) {
+        return replaceCmdExpression(replaceGlobalVariable(replaceRegex(replaceCaseVariable(expression, envMap))));
     }
 
     public static String replaceGlobalVariable(String src) {
@@ -88,7 +99,7 @@ public final class ExpressionUtils {
         return src;
     }
 
-    public static String replaceCaseVariable(String src, Map envMap) {
+    public static String replaceCaseVariable(String src, Map<String, Object> envMap) {
         if(StringUtils.isBlank(src)) {
             return src;
         }
@@ -109,14 +120,10 @@ public final class ExpressionUtils {
                 result = object + "";
             }
             result += "";
-            if(StringUtils.equals("v_columnFormat", expr) && StringUtils.isBlank(result)) {
-                src = src.replace("\"${" + expr + "}\"", "null");
-            } else if(StringUtils.equals(result, "null")) {
+            if(StringUtils.equals(result, "null")) {
                 src = src.replace("\"${" + expr + "}\"", result);
-                src = src.replace("${" + expr + "}", result);
-            } else {
-                src = src.replace("${" + expr + "}", result);
             }
+            src = src.replace("${" + expr + "}", result);
         }
 
         if(StringUtils.equals(__PLATFORM_PRIVATE_NULL, src)) {
@@ -126,7 +133,7 @@ public final class ExpressionUtils {
         return src;
     }
 
-    public static String executeExpression(String expression, Map envMap) {
+    public static String executeExpression(String expression, Map<String, Object> envMap) {
         if(StringUtils.isBlank(expression)) {
             return expression;
         }
@@ -143,4 +150,52 @@ public final class ExpressionUtils {
         }
         return expression;
     }
+
+    public static String replaceCmdExpression(String input) throws Exception {
+        if(StringUtils.isBlank(input) || !input.contains("$(")) {
+            return input;
+        }
+        StringBuilder result = new StringBuilder();
+        Stack<Integer> stack = new Stack<>();
+        int i = 0;
+
+        while (i < input.length()) {
+            char c = input.charAt(i);
+
+            if (c == '$' && i + 1 < input.length() && input.charAt(i + 1) == '(') {
+                stack.push(result.length());
+                i += 2;
+            } else if (c == ')' && !stack.isEmpty()) {
+                int start = stack.pop();
+                String command = result.substring(start);
+                result.setLength(start);
+                String parsedCommand = replaceCmdExpression(command);
+                String commandResult = executeCommand(parsedCommand);
+                result.append(commandResult);
+                i++;
+            } else {
+                result.append(c);
+                i++;
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static String executeCommand(String command) throws Exception {
+        if(StringUtils.isBlank(command)) {
+            return "";
+        }
+        command = command.trim();
+        log.info("command: {}", command);
+        if(System.getProperty("os.name").toLowerCase().contains("win")) {
+            return new ProcessExecutor().command("cmd", "/c", command)
+                    .readOutput(true).execute()
+                    .outputUTF8().trim();
+        }
+        return new ProcessExecutor().command("sh", "-c", command)
+                .readOutput(true).execute()
+                .outputUTF8().trim();
+    }
+
 }

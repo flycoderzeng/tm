@@ -103,13 +103,13 @@ class UrlConfigList extends CommonListPage {
                 key: 'url',
                 sorter: ()=>{},
             },{
-                title: 'ip',
+                title: 'IP',
                 dataIndex: 'ip',
                 key: 'ip',
                 sorter: ()=>{},
                 render: text => <span>{text}</span>,
             },{
-                title: 'port',
+                title: '端口',
                 dataIndex: 'port',
                 render: text => <span>{text}</span>,
             },{
@@ -117,7 +117,7 @@ class UrlConfigList extends CommonListPage {
                 dataIndex: 'envName',
                 render: text => <span>{text}</span>,
             },{
-                title: 'DCN名称',
+                title: '分布式节点名称',
                 dataIndex: 'dcnName',
                 render: text => <span>{text}</span>,
             },{

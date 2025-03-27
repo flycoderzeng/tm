@@ -181,7 +181,7 @@ const HttpEditor: React.FC<EditorIState<HttpNode>> = (props) => {
         </div>
         <div style={{paddingTop: '5px'}}>
             <Row style={{paddingBottom: '5px', alignItems: 'center'}}>
-                <Col flex={width}>DCN</Col>
+                <Col flex={width}>分布式节点</Col>
                 <Col flex="auto">
                     <DCNSelect value={dcnId} onChange={onChangeDcnId} style={{width: '250px'}}></DCNSelect>
                 </Col>

@@ -34,7 +34,7 @@ const DCNSelect: React.FC<IState> = (props) => {
     async function renderOptions() {
         const resp = await axios.get(ApiUrlConfig.LOAD_ALL_DCN_URL);
         if (resp.status !== 200) {
-            message.error('加载DCN列表失败');
+            message.error('加载分布式节点列表失败');
         } else {
             const ret = resp.data;
             if(ret.data) {
@@ -58,7 +58,7 @@ const DCNSelect: React.FC<IState> = (props) => {
         allowClear
         defaultValue={value || undefined}
         value={value || undefined}
-        placeholder="请选择DCN"
+        placeholder="请选择分布式节点"
         style={props.style}
         defaultActiveFirstOption={false}
         optionFilterProp="children"

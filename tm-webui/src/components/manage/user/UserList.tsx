@@ -93,7 +93,7 @@ class UserList extends CommonListPage {
             </div>
             <div className="card-body">
                 <div className="list-toolbar">
-                    <Search placeholder="英文名或中文名" onSearch={this.onSearch} enterButton style={{ width: 400,}}/>
+                    <Search placeholder="英文名或中文名" onSearch={this.onSearch} enterButton style={{ width: 400, marginRight: '5px'}}/>
                     <Button type="primary" onClick={() => this.edit(0)}>添加用户</Button>
                 </div>
                 <Table columns={columns}

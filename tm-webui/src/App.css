@@ -1,5 +1,5 @@
 /**@import '~antd/dist/antd.compact.css';**/
-@import '~antd/dist/antd.css';
+/*@import '~antd/dist/antd.css';*/
 .logo {
   float: left;
   width: 120px;
@@ -560,4 +560,65 @@ span.expand-icon:hover {
 *::-webkit-scrollbar-track {
   background: #efefef;
   border-radius: 2px;
+}
+
+.el_package {
+  padding-left: 18px;
+  background-image: url(resources/package.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.el_class {
+  padding-left: 18px;
+  background-image: url(resources/class.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.el_method {
+  padding-left: 18px;
+  background-image: url(resources/method.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.span-cover-info {
+  min-width: fit-content;
+  margin-left: 10px;
+  color: #1890ff;
+}
+
+.span-cover-info-td {
+  display: flex;
+  flex-direction: row;
+}
+
+.covered-line {
+  background-color: rgb(204 255 204);
+}
+
+.uncovered-line {
+  background-color: rgb(255 170 170);
+}
+
+.covered-part-branch-line {
+  background-color: rgb(255 255 204);
+  background-image: url(resources/branchpc.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.covered-full-branch-line {
+  background-color: rgb(255 255 204);
+  background-image: url(resources/branchfc.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.covered-none-branch-line {
+  background-color: rgb(255 170 170);
+  background-image: url(resources/branchnc.gif);
+  background-position: left center;
+  background-repeat: no-repeat;
 }

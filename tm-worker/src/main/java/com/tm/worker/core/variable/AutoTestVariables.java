@@ -32,8 +32,8 @@ public class AutoTestVariables {
     public static final String BUILTIN_VARIABLE_NAME_GROUP_NAME = "__group_name";
 
 
-    private final Map<String, Object> variables = new HashMap();
-    private final Map<String, AutoCaseVariable> caseVariableMap = new HashMap();
+    private final Map<String, Object> variables = new HashMap<>();
+    private final Map<String, AutoCaseVariable> caseVariableMap = new HashMap<>();
     private AutoTestVariables planVariables;
 
     public AutoTestVariables() {
@@ -152,7 +152,7 @@ public class AutoTestVariables {
     }
 
     public Map<String, Object> getVariables() {
-        Map<String, Object> newVariables = new HashMap();
+        Map<String, Object> newVariables = new HashMap<>();
         for (Map.Entry<String, Object> entry : variables.entrySet()) {
             String key = entry.getKey();
             newVariables.put(key, this.getObject(key));

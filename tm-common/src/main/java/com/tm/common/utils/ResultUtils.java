@@ -30,4 +30,11 @@ public class ResultUtils {
         baseResponse.setMessage(msg);
         return baseResponse;
     }
+
+    public static BaseResponse error(String msg) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setCode(ResultCodeEnum.ERROR.getCode());
+        baseResponse.setMessage(msg);
+        return baseResponse;
+    }
 }

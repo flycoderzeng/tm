@@ -276,7 +276,7 @@ const CaseResultList: React.FC<IState> = (props) => {
 
     return (<div>
         <div className="list-toolbar" style={{paddingBottom: '5px'}}>
-            <Search placeholder="Id或者名称" onChange={onChange} onSearch={onSearch} enterButton style={{ width: 400,}}/>
+            <Search placeholder="Id或者名称" onChange={onChange} onSearch={onSearch} enterButton style={{ width: 400, marginRight: '5px'}}/>
             <Button type="primary" onClick={()=>{refresh();}} >刷新</Button>
         </div>
         <Table

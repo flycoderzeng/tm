@@ -8,6 +8,7 @@ import cn.hutool.http.HttpResponse;
 import com.jayway.jsonpath.JsonPath;
 import com.tm.common.base.model.ApiIpPortConfig;
 import com.tm.common.base.model.RunEnv;
+import com.tm.common.config.FileDirConfig;
 import com.tm.common.entities.autotest.enumerate.BodyTypeEnum;
 import com.tm.common.entities.autotest.enumerate.ExtractorTypeEnum;
 import com.tm.common.entities.autotest.enumerate.RawTypeNum;
@@ -37,13 +38,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Slf4j
 @Data
 public class HttpSampler extends StepNodeBase {
-    private String WINDOWS_TEMP_DOWNLOAD_FILES_PATH = System.getProperty("user.home") + "/data/ci/autotest/temp/download-files";
-    private String LINUX_TEMP_DOWNLOAD_FILES_PATH = "/data/ci/autotest/temp/download-files";
-    private String WINDOWS_TEMP_UPLOAD_FILES_PATH = System.getProperty("user.home") + "/data/ci/autotest/temp/upload-files";
-    private String LINUX_TEMP_UPLOAD_FILES_PATH = "/data/ci/autotest/temp/upload-files";
 
     // GET POST etc.
     private String requestType;
@@ -110,17 +108,10 @@ public class HttpSampler extends StepNodeBase {
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             String saveFilePath;
-            if(OS.contains("windows")) {
-                if(!new File(WINDOWS_TEMP_DOWNLOAD_FILES_PATH).exists()) {
-                    FileUtil.mkdir(WINDOWS_TEMP_DOWNLOAD_FILES_PATH);
-                }
-                saveFilePath = WINDOWS_TEMP_DOWNLOAD_FILES_PATH + "/" + saveFileName;
-            }else{
-                if(!new File(LINUX_TEMP_DOWNLOAD_FILES_PATH).exists()) {
-                    FileUtil.mkdir(LINUX_TEMP_DOWNLOAD_FILES_PATH);
-                }
-                saveFilePath = LINUX_TEMP_DOWNLOAD_FILES_PATH + "/" +saveFileName;
+            if(!new File(FileDirConfig.TEMP_DOWNLOAD_FILES_PATH).exists()) {
+                FileUtil.mkdir(FileDirConfig.TEMP_DOWNLOAD_FILES_PATH);
             }
+            saveFilePath = FileDirConfig.TEMP_DOWNLOAD_FILES_PATH + "/" +saveFileName;
             addResultInfo("保存的文件路径: ").addResultInfoLine(saveFilePath);
             File targetFile = new File(saveFilePath);
             OutputStream outStream = new FileOutputStream(targetFile);
@@ -219,7 +210,7 @@ public class HttpSampler extends StepNodeBase {
                 || StringUtils.equals(bodyType, BodyTypeEnum.X_WWW_FORM_URLENCODED.value()))) {
             updateContentType(headerMap);
             if(StringUtils.equals(bodyType, BodyTypeEnum.RAW.value()) && StringUtils.isNoneBlank(content)) {
-                actualContent = ExpressionUtils.replaceExpression(content, caseVariables.getVariables());
+                actualContent = ExpressionUtils.replaceCmdExpression(content, caseVariables.getVariables());
             }else if(StringUtils.equals(bodyType, BodyTypeEnum.X_WWW_FORM_URLENCODED.value())) {
                 actualContent = getParamStr(caseVariables, formUrlencoded);
             }
@@ -247,11 +238,7 @@ public class HttpSampler extends StepNodeBase {
                     formMap.put(name, value);
                 } else if (StringUtils.equals("file", formDatum.getType())) {
                     String filePath;
-                    if(OS.contains("windows")) {
-                        filePath = WINDOWS_TEMP_UPLOAD_FILES_PATH + File.separator + value;
-                    }else{
-                        filePath = LINUX_TEMP_UPLOAD_FILES_PATH + File.separator + value;
-                    }
+                    filePath = FileDirConfig.TEMP_UPLOAD_FILES_PATH + File.separator + value;
                     formMap.put(name, new File(filePath));
                 }
             }

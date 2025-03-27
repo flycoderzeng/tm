@@ -22,8 +22,8 @@ import static com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase.P
 @LifeCycleHookBinding(operation = CREATE, phase = PRECOMMIT, hook = EntityPublicCreateHook.class)
 @LifeCycleHookBinding(operation = UPDATE, phase = PRECOMMIT, hook = EntityPublicModifyHook.class)
 @DeletePermission(expression = "user is a root admin")
-@UpdatePermission(expression = "user is a common admin")
-@CreatePermission(expression = "user is a common admin")
+@UpdatePermission(expression = "user is a root admin OR user is a common admin")
+@CreatePermission(expression = "user is a root admin OR user is a common admin")
 public class Menu extends CommonSixItemsElideModel {
     @Column(name = "menu_name")
     private String menuName;
