@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
 public class WorkerCaseTaskQueue {
-    private ConcurrentLinkedQueue<CaseTask> caseTaskQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<CaseTask> caseTaskQueue = new ConcurrentLinkedQueue<>();
     private int total;
 
     public WorkerCaseTaskQueue() {

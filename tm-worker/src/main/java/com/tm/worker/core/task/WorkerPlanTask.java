@@ -1,6 +1,7 @@
 package com.tm.worker.core.task;
 
 import com.tm.common.base.model.PlanExecuteResult;
+import lombok.Getter;
 
 import java.util.Comparator;
 
@@ -13,8 +14,10 @@ public class WorkerPlanTask {
 
     private volatile boolean running = true;
 
+    @Getter
     private volatile boolean caseFailStopPlan = false;
 
+    @Getter
     private PlanExecuteResult planExecuteResult;
 
     public WorkerPlanTask(PlanExecuteResult planExecuteResult) {
@@ -30,10 +33,6 @@ public class WorkerPlanTask {
         this.planExecuteResult = planExecuteResult;
     }
 
-    public PlanExecuteResult getPlanExecuteResult() {
-        return planExecuteResult;
-    }
-
     public Integer getPlanExecuteResultId() {
         return planExecuteResult.getId();
     }
@@ -44,10 +43,6 @@ public class WorkerPlanTask {
 
     public void stopPassive() {
         caseFailStopPlan = true;
-    }
-
-    public boolean isCaseFailStopPlan() {
-        return caseFailStopPlan;
     }
 
     public boolean isStopped() {

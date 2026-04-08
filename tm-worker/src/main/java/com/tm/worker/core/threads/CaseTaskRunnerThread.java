@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class CaseTaskRunnerThread implements Runnable {
     public static final long DEFAULT_SLEEP_SECONDS = 100;
-    private TaskService taskService;
+    private final TaskService taskService;
 
     public CaseTaskRunnerThread(TaskService taskService) {
         this.taskService = taskService;

@@ -92,11 +92,11 @@ const DcnConfigEdit: React.FC<IState> = (props) => {
 
     return (<div className="card">
         <div className="card-header card-header-divider">
-            DCN配置
+            节点配置
             <Tooltip title="返回">
                 <Button onClick={() => back()} type="primary" size="small" shape="circle" icon={<ArrowLeftOutlined />} />
             </Tooltip>
-            <span className="card-subtitle">DCN名称和描述等配置</span>
+            <span className="card-subtitle">节点名称和描述等配置</span>
         </div>
         <div className="card-body">
             <Form
@@ -107,17 +107,17 @@ const DcnConfigEdit: React.FC<IState> = (props) => {
                 onFinish={onFinish}
             >
                 <Form.Item
-                    label="DCN名称"
+                    label="节点名称"
                     name="dcnName"
-                    rules={[{required: true, message: '请输入DCN名称!'}]}
+                    rules={[{required: true, message: '请输入节点名称!'}]}
                 >
                     <Input style={{width: '300px'}}/>
                 </Form.Item>
 
                 <Form.Item
-                    label="DCN描述"
+                    label="节点描述"
                     name="dcnDescription"
-                    rules={[{required: true, message: '请输入DCN描述!'}]}
+                    rules={[{required: true, message: '请输入节点描述!'}]}
                 >
                     <Input.TextArea style={{width: '500px'}} rows={5} />
                 </Form.Item>

@@ -50,7 +50,7 @@ class DcnConfigList extends CommonListPage {
                 dataIndex: 'id',
                 render: text => <span>{text}</span>,
             },{
-                title: 'DCN名称',
+                title: '节点名称',
                 dataIndex: 'dcnName',
                 key: 'dcn_name',
                 sorter: ()=>{},
@@ -60,7 +60,7 @@ class DcnConfigList extends CommonListPage {
                     type="link"
                     onClick={() => this.edit(record.id)}>{text}</Button>,
             },{
-                title: 'DCN描述',
+                title: '节点描述',
                 dataIndex: 'dcnDescription',
                 key: 'dcn_description',
                 sorter: ()=>{},
@@ -97,12 +97,12 @@ class DcnConfigList extends CommonListPage {
         ];
         const {area} = this.state.queryInfo;
         return (<div className="card">
-            <div className="card-header card-header-divider">DCN配置
-                <span className="card-subtitle">DCN名称、描述配置</span>
+            <div className="card-header card-header-divider">节点配置
+                <span className="card-subtitle">节点名称、描述配置</span>
             </div>
             <div className="card-body">
                 <div className="list-toolbar">
-                    <Search placeholder="Id或者DCN名称" onSearch={this.onSearch} enterButton
+                    <Search placeholder="Id或者节点名称" onSearch={this.onSearch} enterButton
                             onChange={this.onChangeSearchValue}
                             style={{ width: 400,marginRight: '5px'}}/>
                     <Radio.Group
