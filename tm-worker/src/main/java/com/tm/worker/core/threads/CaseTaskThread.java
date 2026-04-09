@@ -167,6 +167,13 @@ public class CaseTaskThread implements Callable<BaseResponse> {
     }
 
     private StepNode runStepNode(StepNode currStepNode) throws Exception {
+        if (currStepNode == null) {
+            return null;
+        }
+        if (currStepNode.getDefine() == null) {
+            log.warn("当前步骤定义为空: {}", currStepNode.getKey());
+            return currStepNode.next();
+        }
         currStepNode.getDefine().logStart(currStepNode.getKey());
         currStepNode.run();
         if ((currStepNode.getType().equals(StepNodeTypeDefineEnum.WHILE.value())
@@ -184,9 +191,18 @@ public class CaseTaskThread implements Callable<BaseResponse> {
     }
 
     private void teardown() {
-        log.info("用例id： {}，组合编号：{} 执行结束", caseTask.getAutoCase().getId(), caseTask.getGroupNo());
-        teardownCaseTask();
-        AutoTestContextService.removeContext();
+        try {
+            log.info("用例id： {}，组合编号：{} 执行结束", caseTask.getAutoCase().getId(), caseTask.getGroupNo());
+            teardownCaseTask();
+        } catch (Exception exception) {
+            log.error("teardown case error, ", exception);
+        } finally {
+            try {
+                AutoTestContextService.removeContext();
+            } catch (Exception e) {
+                log.error("清理上下文失败", e);
+            }
+        }
     }
 
     private void teardownCaseTask() {
@@ -199,6 +215,10 @@ public class CaseTaskThread implements Callable<BaseResponse> {
     }
 
     private void saveCaseResultStatus() {
+        if (caseExecuteResult == null) {
+            log.warn("caseExecuteResult is null, cannot save result status");
+            return;
+        }
         if(error) {
             caseExecuteResult.setResultStatus(CaseExecuteResultStatusEnum.FAIL.value());
             caseExecuteResult.setResultInfo(resultInfo);
@@ -231,30 +251,35 @@ public class CaseTaskThread implements Callable<BaseResponse> {
     }
 
     public void change(Map node, StepNode parentNode, boolean first) {
-        List<Map> children = null;
-        if(node.containsKey("children")) {
-            children = (List<Map>) node.remove("children");
-        }
-        Map define = null;
-        if(node.containsKey("define")) {
-            define = (Map) node.remove("define");
-        }
-
-        StepNode stepNode = BeanUtils.mapToBean(StepNode.class, node);
-        if(first) {
-            caseStepTree = stepNode;
-        }
-
-        stepNode.setDefine(getDefine(node, define));
-        stepNode.setChildren(new ArrayList<>());
-        stepNode.setParent(parentNode);
-        if(parentNode != null) {
-            parentNode.getChildren().add(stepNode);
-        }
-        if(children != null && !children.isEmpty()) {
-            for (Map child : children) {
-                change(child, stepNode, false);
+        try {
+            List<Map> children = null;
+            if (node.containsKey("children")) {
+                children = (List<Map>) node.remove("children");
             }
+            Map define = null;
+            if (node.containsKey("define")) {
+                define = (Map) node.remove("define");
+            }
+
+            StepNode stepNode = BeanUtils.mapToBean(StepNode.class, node);
+            if (first) {
+                caseStepTree = stepNode;
+            }
+
+            stepNode.setDefine(getDefine(node, define));
+            stepNode.setChildren(new ArrayList<>());
+            stepNode.setParent(parentNode);
+            if (parentNode != null) {
+                parentNode.getChildren().add(stepNode);
+            }
+            if (children != null && !children.isEmpty()) {
+                for (Map child : children) {
+                    change(child, stepNode, false);
+                }
+            }
+        } catch (Exception e) {
+            log.error("解析节点失败", e);
+            throw new TMException("解析节点失败: " + e.getMessage());
         }
     }
 
